@@ -30,9 +30,8 @@ export function AuthPage() {
             </button>
           ))}
         </div>
-        {activeTab === "login" ? <LoginForm /> : <RegisterForm />}
+        {activeTab === "login" ? <LoginForm onSwitchToRegister={() => setActiveTab("register")} /> : <RegisterForm onSwitchToLogin={() => setActiveTab("login")} />}
       </div>
       </div>
     );
   }
-  

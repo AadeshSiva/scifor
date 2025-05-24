@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext"; // Adjust path as needed
 
-export default function LoginForm() {
+interface LoginFormProps {
+    onSwitchToRegister: () => void;
+  }
+
+  export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [formData, setFormData] = useState({
     identifier: '',
     password: ''
@@ -84,7 +88,7 @@ export default function LoginForm() {
   };
 
   const handleRegisterClick = () => {
-    navigate('/register'); // or whatever your register route is
+    onSwitchToRegister();
   };
 
   return (

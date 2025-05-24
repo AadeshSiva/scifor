@@ -45,7 +45,11 @@ interface OtpResponse {
   message: string;
 }
 
-export function RegisterForm(): JSX.Element {
+interface RegisterFormProps {
+    onSwitchToLogin: () => void;
+  }
+
+  export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
   const [hasLinkedIn, setHasLinkedIn] = useState<boolean | null>(null);
   const [formData, setFormData] = useState<FormData>({
     full_name: '',
@@ -346,7 +350,7 @@ export function RegisterForm(): JSX.Element {
   };
 
   const handleLoginClick = (): void => {
-    navigate('/login');
+    onSwitchToLogin();
   };
 
   const handlePhoneChange = (value: string): void => {
