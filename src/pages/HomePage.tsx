@@ -1,5 +1,133 @@
+import { useAuth } from "@/utils/AuthContext";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+
+const countries = [
+    { code: "+1", flag: "🇺🇸", name: "United States" },
+    { code: "+1", flag: "🇨🇦", name: "Canada" },
+    { code: "+44", flag: "🇬🇧", name: "United Kingdom" },
+    { code: "+33", flag: "🇫🇷", name: "France" },
+    { code: "+49", flag: "🇩🇪", name: "Germany" },
+    { code: "+39", flag: "🇮🇹", name: "Italy" },
+    { code: "+34", flag: "🇪🇸", name: "Spain" },
+    { code: "+31", flag: "🇳🇱", name: "Netherlands" },
+    { code: "+46", flag: "🇸🇪", name: "Sweden" },
+    { code: "+47", flag: "🇳🇴", name: "Norway" },
+    { code: "+45", flag: "🇩🇰", name: "Denmark" },
+    { code: "+41", flag: "🇨🇭", name: "Switzerland" },
+    { code: "+43", flag: "🇦🇹", name: "Austria" },
+    { code: "+32", flag: "🇧🇪", name: "Belgium" },
+    { code: "+351", flag: "🇵🇹", name: "Portugal" },
+    { code: "+91", flag: "🇮🇳", name: "India" },
+    { code: "+86", flag: "🇨🇳", name: "China" },
+    { code: "+81", flag: "🇯🇵", name: "Japan" },
+    { code: "+82", flag: "🇰🇷", name: "South Korea" },
+    { code: "+61", flag: "🇦🇺", name: "Australia" },
+    { code: "+64", flag: "🇳🇿", name: "New Zealand" },
+    { code: "+55", flag: "🇧🇷", name: "Brazil" },
+    { code: "+52", flag: "🇲🇽", name: "Mexico" },
+    { code: "+54", flag: "🇦🇷", name: "Argentina" },
+    { code: "+56", flag: "🇨🇱", name: "Chile" },
+    { code: "+57", flag: "🇨🇴", name: "Colombia" },
+    { code: "+51", flag: "🇵🇪", name: "Peru" },
+    { code: "+27", flag: "🇿🇦", name: "South Africa" },
+    { code: "+234", flag: "🇳🇬", name: "Nigeria" },
+    { code: "+20", flag: "🇪🇬", name: "Egypt" }
+  ];
+
+  const PhoneInputDropdown = ({ onPhoneChange, error }) => {
+  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredCountries = countries.filter(country =>
+    country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    country.code.includes(searchTerm)
+  );
+
+  const handleCountrySelect = (country) => {
+    setSelectedCountry(country);
+    setIsDropdownOpen(false);
+    setSearchTerm("");
+    // Notify parent component of the change
+    onPhoneChange(country.code + phoneNumber);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    setPhoneNumber(value);
+    // Notify parent component of the change
+    onPhoneChange(selectedCountry.code + value);
+  };
+
+  return (
+    <div className="mb-3">
+      <label className="text-black text-xs font-medium block mb-1">
+        Phone Number
+      </label>
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-20 h-9 border border-gray-400 rounded-lg flex items-center justify-center bg-white text-xs hover:bg-gray-50 transition-colors"
+          >
+            <span className="mr-1">{selectedCountry.flag}</span>
+            <span className="text-xs">{selectedCountry.code}</span>
+            <svg
+              className="w-3 h-3 ml-1 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-hidden">
+              <div className="p-2 border-b border-gray-200">
+                <input
+                  type="text"
+                  placeholder="Search countries..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="max-h-48 overflow-y-auto">
+                {filteredCountries.map((country, index) => (
+                  <button
+                    key={`${country.code}-${country.name}-${index}`}
+                    type="button"
+                    onClick={() => handleCountrySelect(country)}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                  >
+                    <span className="text-lg">{country.flag}</span>
+                    <span className="font-medium">{country.code}</span>
+                    <span className="text-gray-600">{country.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <input
+          type="tel"
+          placeholder="Enter phone number"
+          value={phoneNumber}
+          onChange={handlePhoneNumberChange}
+          className="text-gray-600 border text-xs flex-1 p-2 rounded-lg border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      {error && (
+        <p className="text-red-500 text-xs mt-1">Phone number is required</p>
+      )}
+    </div>
+  );
+};
 
 // Form Data Type
 type FormData = {
@@ -15,10 +143,39 @@ type PasswordData = {
   confirmPassword: string;
 };
 
+const Navbar: React.FC = () => {
+  return (
+    <header className="bg-white shadow-md w-full flex items-center justify-between px-12 py-6 border-b border-gray-200">
+      <div className="flex items-center">
+        <img
+          src="/api/placeholder/120/40"
+          alt="PRSPERA"
+          className="h-10 object-contain"
+        />
+      </div>
+      
+      <nav className="flex items-center space-x-10">
+        <a href="#coi" className="text-lg text-black hover:text-gray-600 transition-colors">COI</a>
+        <a href="#winning" className="text-lg text-black hover:text-gray-600 transition-colors">WINNING</a>
+        <a href="#free" className="text-lg text-black hover:text-gray-600 transition-colors">FREE</a>
+        <a href="#join" className="text-lg text-black hover:text-gray-600 transition-colors">JOIN</a>
+        <a href="#live" className="text-lg text-black hover:text-gray-600 transition-colors">LIVE</a>
+      </nav>
+      
+      <button
+        className="bg-black text-white px-8 py-2 rounded hover:bg-gray-800 transition-colors"
+        aria-label="Login"
+      >
+        Login
+      </button>
+    </header>
+  );
+};
+
 const HeroSection: React.FC = () => {
   return (
-    <div>
-    <aside className="absolute w-[150px] right-0 top-[137px] max-sm:hidden">
+    <section className="flex flex-col items-center text-center py-12">
+      <aside className="absolute w-[150px] right-0 top-[137px] max-sm:hidden">
       <img
         src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
         alt="Side Logo"
@@ -29,13 +186,11 @@ const HeroSection: React.FC = () => {
         <span className="font-bold">Exit Richer™</span>
       </div>
     </aside>
-    <section className="flex flex-col items-center text-center py-12">
-      
-      <h1 className="text-gray-500 text-6xl font-light mb-1 w-full max-w-4xl mx-auto">
+      <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
         You had a dream.
       </h1>
       
-      <h2 className="text-gray-600 text-6xl font-normal mb-10 w-full max-w-4xl mx-auto">
+      <h2 className="text-gray-600 text-6xl font-normal mb-10 w-full max-w-4xl mx-auto font-walbaum font-thin">
         His came true. What about yours?
       </h2>
       
@@ -58,7 +213,6 @@ const HeroSection: React.FC = () => {
         Our Solution helped him defy these odds. You can too - for FREE !
       </p>
     </section>
-    </div>
   );
 };
 
@@ -233,9 +387,10 @@ const FormSection: React.FC = () => {
   const [userEmail, setUserEmail] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [popupDismissed, setPopupDismissed] = useState(false);
+  const {login} = useAuth()
 
   // API Base URL - adjust this to your backend URL
-  const API_BASE_URL = 'https://intern-project-final.onrender.com';
+  const API_BASE_URL = 'http://127.0.0.1:8000';
 
   // Load form data from localStorage on component mount
   useEffect(() => {
@@ -311,6 +466,17 @@ const FormSection: React.FC = () => {
       });
 
       const result = await response.json();
+
+      if (result.tokens) {
+        await login(result.tokens);
+        console.log('Registration successful with tokens:', result.message);
+      } else {
+        // Fallback to localStorage if auth context is not available
+        if (result.tokens) {
+          localStorage.setItem('access_token', result.tokens.access);
+          localStorage.setItem('refresh_token', result.tokens.refresh);
+        }
+      }
 
       if (response.ok) {
         setIsRegistered(true);
@@ -510,23 +676,11 @@ const FormSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="mb-3">
-              <label className="text-black text-xs font-medium block mb-1">
-                Phone Number
-              </label>
-              <div className="flex items-center gap-2">
-                <div className="w-16 h-9 border border-gray-400 rounded-lg flex items-center justify-center bg-gray-100 text-xs">
-                  +1
-                </div>
-                <input
-                  type="tel"
-                  placeholder="Enter phone number"
-                  className="text-gray-600 border text-xs flex-1 p-2 rounded-lg border-gray-400"
-                  {...register("phoneNumber", { required: true })}
-                  aria-invalid={errors.phoneNumber ? "true" : "false"}
+            <PhoneInputDropdown 
+                onPhoneChange={(fullNumber) => setValue('phoneNumber', fullNumber)}
+                error={errors.phoneNumber}
+                register={register}
                 />
-              </div>
-            </div>
 
             <div className="flex items-center gap-2 mb-6">
               <input
@@ -577,10 +731,10 @@ const StorySection: React.FC = () => {
   return (
     <section className="flex flex-col items-center pt-36 pb-10">
       <div className="bg-gray-100 w-full py-12 px-4 text-center mb-12">
-        <h2 className="text-gray-500 text-6xl font-light mb-1">
+        <h2 className="text-gray-500 text-6xl font-light mb-1 font-walbaum">
           From Dreams to Done
         </h2>
-        <h3 className="text-gray-600 text-6xl font-normal mb-8">
+        <h3 className="text-gray-600 text-6xl font-normal mb-8 font-walbaum ">
           in 6 Steps.
         </h3>
         
@@ -669,48 +823,48 @@ const StepsSection: React.FC = () => {
           </h2>
           
           <p className="text-xl font-light mb-6">
-            Jeff didn't just build a profitable company.
+            Jeff didn't just build a profitable company.​
           </p>
           
           <div className="text-teal-600 text-2xl mb-6">
-            He built a valuable company.<br />
-            He made it valuable for the buyer - from day one.<br />
+            He built a valuable company. ​<br />
+            He made it valuable for the buyer - from day one.​<br />
             He was growing it for the richer exit.
           </div>
           
           <p className="text-xl mb-4">
-            He maximized value where value matters: 
+            He maximized value where value matters: ​
             <span className="underline">intangibles</span>.
           </p>
           
           <p className="text-teal-600 mb-4">
-            He made sure that this value was bankable:
+            ​He made sure that this value was bankable: ​
             <span className="underline">monetizing the intangibles.</span>
           </p>
           
           <p className="text-xl mb-6">
             He had it all set up for:{" "}
-            <span className="underline">maximum after tax value</span>.
+            <span className="underline">​maximum after tax value</span>.
           </p>
           
           <div className="text-xl leading-8 mb-10">
             <p className="text-teal-600 mb-2">
-              Jeff made his dream come true... 
+              Jeff made his dream come true... ​
             </p>
             <p className="mb-2">
               <span className="font-bold">With one asset,</span>
               <span className="font-bold underline"> the UPh</span>
               <span className="font-normal underline">™</span>
-              <span className="font-bold">, the DNA of his business</span>
+              <span className="font-bold">, the DNA of his business​</span>
             </p>
             <p className="text-teal-600 mb-2">
-              implemented everywhere
+              implemented everywhere​
             </p>
             <p className="font-bold mb-2">
-              tying all intangible assets together
+              tying all intangible assets together​
             </p>
             <p className="text-teal-600">
-              then structuring it all tax effectively.
+              then structuring it all tax effectively.​
             </p>
           </div>
         </div>
@@ -742,7 +896,7 @@ const StepsSection: React.FC = () => {
         
         <div className="flex justify-center">
           <button className="bg-black text-white text-xl font-medium py-6 px-12 rounded max-w-xl w-full text-center hover:bg-gray-800 transition-colors">
-            It's now or never. I refuse to risk anything more
+            It's now or never.​ I refuse to risk anything more​
           </button>
         </div>
       </div>
@@ -762,27 +916,27 @@ const CtaSection: React.FC = () => {
         </h3>
         
         <p className="text-gray-700 text-xl mb-8">
-          Congratulations, you have a profitable company.<br />
+          Congratulations, you have a profitable company. ​<br />
           Sadly, that's not enough.
         </p>
         
         <p className="text-red-600 text-xl mb-4">
-          Is your company valuable - to you or your buyer?
+          Is your company valuable – to you or your buyer?​
         </p>
         
         <p className="text-red-600 text-xl mb-6">
-          You will exit for how much?
+          You will exit for how much?​
         </p>
         
         <p className="text-red-600 text-xl font-semibold mb-8">
-          Will the wealth you keep on exit equal <br />
+          Will the wealth you keep on exit equal ​<br />
           everything you sacrificed for all those years building your
-          business?
+          business?​
         </p>
         
         <p className="text-gray-700 text-xl mb-12">
-          NOT growing to exit richer? <br />
-          Why else are you growing your business ?
+          NOT growing to exit richer? ​<br />
+          Why else are you growing your business ?​
         </p>
         
         <p className="text-black text-3xl font-semibold mb-10">
@@ -805,7 +959,7 @@ const CtaSection: React.FC = () => {
 
 const Index: React.FC = () => {
   return (
-    <>
+    <div className="">
       <div className="max-w-7xl w-full px-4 mx-auto">
         <HeroSection />
         <div className="relative">
@@ -815,7 +969,7 @@ const Index: React.FC = () => {
         <StepsSection />
         <CtaSection />
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 
+import { useAuth } from '@/utils/AuthContext';
 import React, { useState, useEffect } from 'react';
 
 interface FormData {
@@ -149,7 +150,7 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
             <button
               onClick={handleVerifyNow}
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-black text-white py-2 px-4 rounded-md hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Processing...' : 'Verify Now'}
             </button>
@@ -240,7 +241,7 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
           <button
             onClick={handleVerify}
             disabled={loading || otp.length !== 6}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-black text-white py-2 px-4 rounded-md hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Verifying...' : 'Verify'}
           </button>
@@ -280,6 +281,7 @@ const COI: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [popupInterval, setPopupInterval] = useState<NodeJS.Timeout | null>(null);
+  const {login} = useAuth()
 
   // Check for stored form data on component mount
   useEffect(() => {
@@ -359,7 +361,7 @@ const COI: React.FC = () => {
         no_linkedin: true
       };
 
-      const response = await fetch('https://intern-project-final.onrender.com/register/', {
+      const response = await fetch('http://127.0.0.1:8000/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -368,6 +370,17 @@ const COI: React.FC = () => {
       });
 
       const data = await response.json();
+
+      if (data.tokens) {
+        await login(data.tokens);
+        console.log('Registration successful with tokens:', data.message);
+      } else {
+        // Fallback to localStorage if auth context is not available
+        if (data.tokens) {
+          localStorage.setItem('access_token', data.tokens.access);
+          localStorage.setItem('refresh_token', data.tokens.refresh);
+        }
+      }
 
       if (!response.ok) {
         if (data.user_exists) {
@@ -390,7 +403,7 @@ const COI: React.FC = () => {
     setError('');
     
     try {
-      const response = await fetch('https://intern-project-final.onrender.com/send_email_otp/', {
+      const response = await fetch('http://127.0.0.1:8000/send_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -424,7 +437,7 @@ const COI: React.FC = () => {
     setError('');
     
     try {
-      const response = await fetch('https://intern-project-final.onrender.com/verify_email_otp/', {
+      const response = await fetch('http://127.0.0.1:8000/verify_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -675,35 +688,85 @@ const COI: React.FC = () => {
   return (
     <div className="min-h-screen relative">
       <main className="container mx-auto px-6 py-8 max-w-7xl">
-        {/* Hero Title */}
-        <div className="text-center mb-12  text-8xl font-light w-full mt-10 mx-auto my-0 max-sm:text-5xl">
-          <h1 className="text-gray-500">
-            <span className="block">Warren still doesn't know</span>
-            <span className="block">what Jeff knows.</span>
-          </h1>
-        </div>
+      <section className="w-full flex justify-center items-center px-0 py-20">
+  <div className="w-full max-w-[957px] px-5 text-center">
+    <h1 className="text-[#D02C31] text-6xl max-md:text-5xl max-sm:text-[32px] font-walbaum font-thin mb-5">
+      Your value and wealth is at risk,
+    </h1>
+    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-walbaum font-light mb-5">
+      more and more each day
+    </h2>
+    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-light">
+      as your exit nears.
+    </h2>
+  </div>
+</section>
 
-        {/* Success Message */}
-        {successMessage && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-center max-w-2xl mx-auto">
-            {successMessage}
-          </div>
-        )}
+        
+       {/* Value Proposition */}
+<section className="flex flex-col justify-center items-center gap-6 max-w-[1036px] w-full mx-auto px-0 py-10 max-sm:p-5">
+  <h3 className="text-black text-2xl font-semibold text-center max-w-[726px] w-full max-sm:text-lg">
+    When 84% of your business value is locked inside your intangible assets
+  </h3>
+  <p className="text-[#595959] text-center text-2xl font-normal max-w-[1036px] w-full max-sm:text-lg">
+    (your brand, goodwill, strategic advantage, growth potential, intellectual property, human capital etc)
+  </p>
+  <div className="text-black text-center text-2xl font-semibold max-w-[857px] w-full max-sm:text-lg">
+    <p>your business value and generational wealth is at risk – unless you unlock that value. ..</p>
+    <p>maximize it, and monetize it tax effectively, and</p>
+    <p>have ALL YOUR PEOPLE help you do that</p>
+  </div>
+  <p className="text-black text-2xl font-semibold text-center max-w-[228px] w-full max-sm:text-lg">
+    (you will see why here)
+  </p>
+</section>
 
-        {/* Filter Categories */}
-        <div className="flex flex-wrap gap-4 justify-center mb-12">
-          {categories.map((category, index) => (
-            <button
-              key={index}
-              className="border border-black text-sm px-6 py-3 rounded-xl hover:bg-black hover:text-white transition-colors duration-200 whitespace-nowrap"
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+<section className="w-full flex flex-col justify-center items-center px-0 py-20">
+  <div className="w-full max-w-[843px] text-center">
+    <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
+      You didn't get into business
+    </h2>
+    <h2 className="text-[#777] text-7xl font-normal mt-5 max-w-[492px] mx-auto max-md:text-5xl max-sm:text-[32px] font-walbaum">
+      to LOSE...right?
+    </h2>
+  </div>
+</section>
+
+<section className="w-full flex flex-col justify-center items-center px-0 py-20">
+  <div className="w-full max-w-[828px] text-center">
+    <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
+      But here's why it's easier to
+    </h2>
+    <h2 className="text-[#777] text-7xl font-normal mt-5 max-w-[736px] mx-auto max-md:text-5xl max-sm:text-[32px] font-walbaum">
+      LOSE than it is to WIN.
+    </h2>
+  </div>
+</section>
+
+{/* Video Player */}
+<div className="w-full flex justify-center items-center px-0 py-10">
+  <div dangerouslySetInnerHTML={{
+    __html: `<svg class="video-player" width="1078" height="513" viewBox="0 0 1078 513" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 1078px; height: auto; background: #007C7A">
+      <rect width="1078" height="513" fill="#007C7A"></rect>
+      <circle cx="539" cy="257" r="70" fill="url(#paint0_linear_42_1796)" fill-opacity="0.4"></circle>
+      <path d="M570 257L523.5 283.847V230.153L570 257Z" fill="white"></path>
+      <defs>
+        <linearGradient id="paint0_linear_42_1796" x1="539" y1="187" x2="539" y2="327" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#D9D9D9" stop-opacity="0.5"></stop>
+          <stop offset="1" stop-color="#737373"></stop>
+        </linearGradient>
+      </defs>
+    </svg>`
+  }} />
+</div>
+
+<h2 className="text-[#777] text-7xl font-normal text-center px-0 py-20 max-md:text-5xl max-sm:text-[32px] font-walbaum">
+  The truth is in the data.
+</h2>
+
 
         {/* Main Content Layout */}
-        <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center">
+        <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center py-20">
           {/* Registration Form */}
           <div className="w-full max-w-sm bg-white p-8 px-4 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0">
             <h2 className="text-gray-700 text-center text-lg font-thin mb-6">

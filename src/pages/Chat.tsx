@@ -5,6 +5,33 @@ import { PasswordChangeForm } from '@/components/settings/PasswordChangeForm';
 import EmailSettings from '@/components/settings/EmailSettings';
 import ChangeUsernameForm from '@/components/settings/ChangeUsernameForm';
 
+const filterAbusiveContent = async (text) => {
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAsZ7bQiqUZdrAn9FVW1zUUjx6h1JsPZzg`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `Please analyze this text for abusive, offensive, or inappropriate content. If the text contains abusive words, profanity, hate speech, or inappropriate content, respond with "BLOCKED". If the text is clean and appropriate, respond with "CLEAN". Text to analyze: "${text}"`
+          }]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const result = data.candidates[0]?.content?.parts[0]?.text?.trim();
+    
+    return result === "BLOCKED";
+  } catch (error) {
+    console.error('Error filtering content:', error);
+    // If API fails, allow the message (fail-safe approach)
+    return false;
+  }
+};
+
 interface Message {
   id: number;
   sender: string;
@@ -78,6 +105,7 @@ const Chat = () => {
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [inappropriateMessageAlert, setInappropriateMessageAlert] = useState(null);
   
   const messagesEndRef = useRef(null);
   
@@ -101,8 +129,29 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
   
-  const handleSendMessage = (messageText) => {
+  const handleSendMessage = async (messageText) => {
     if (!messageText.trim()) return;
+    
+    // Check for abusive content
+    const isAbusive = await filterAbusiveContent(messageText);
+    
+    if (isAbusive) {
+      // Show inappropriate message alert in chat
+      const alertMessage = {
+        id: Date.now(), // Use timestamp as unique ID
+        type: 'inappropriate',
+        text: 'Your message contains inappropriate content and cannot be sent.',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setInappropriateMessageAlert(alertMessage);
+      
+      // Clear the alert after 5 seconds
+      setTimeout(() => {
+        setInappropriateMessageAlert(null);
+      }, 5000);
+      
+      return;
+    }
     
     const newMessage = {
       id: messages.length + 1,
@@ -142,9 +191,9 @@ const Chat = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleSendMessage(message);
+    await handleSendMessage(message);
     setMessage('');
   };
   
@@ -447,6 +496,31 @@ const Chat = () => {
                 )}
               </div>
             ))}
+            {inappropriateMessageAlert && (
+  <div className="flex justify-center my-4">
+    <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 max-w-md">
+      <div className="flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z" fill="#DC2626"/>
+        </svg>
+        <div>
+          <div className="text-red-800 font-medium text-sm">Message Blocked</div>
+          <div className="text-red-600 text-xs mt-1">{inappropriateMessageAlert.text}</div>
+          <div className="text-red-500 text-xs mt-1">{inappropriateMessageAlert.time}</div>
+        </div>
+        <button 
+          onClick={() => setInappropriateMessageAlert(null)}
+          className="ml-2 p-1 hover:bg-red-100 rounded-full"
+          aria-label="Dismiss alert"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10.586l4.95-4.95 1.415 1.415-4.95 4.95 4.95 4.95-1.415 1.415-4.95-4.95-4.95 4.95-1.415-1.415 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" fill="#DC2626"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+)}
             <div ref={messagesEndRef} />
           </div>
         </div>

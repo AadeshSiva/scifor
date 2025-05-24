@@ -72,7 +72,7 @@ export const PasswordChangeForm: React.FC = () => {
         return;
       }
 
-      const response = await fetch("https://intern-project-final.onrender.com/change-password/", {
+      const response = await fetch("http://127.0.0.1:8000/change-password/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

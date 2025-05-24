@@ -47,7 +47,7 @@ const ChangeUsernameForm: React.FC = () => {
   }>({});
 
   // API configuration
-  const API_BASE_URL = 'https://intern-project-final.onrender.com';
+  const API_BASE_URL = 'http://127.0.0.1:8000';
 
   const COLOR_OPTIONS = [
     'Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Black', 
@@ -453,7 +453,7 @@ const ChangeUsernameForm: React.FC = () => {
               </div>
 
               {/* Username Preview (placed to the side) */}
-              <div className="bg-white rounded-lg px-4 py-4 text-black text-sm font-mono font-bold flex items-center ">
+              <div className="bg-white rounded-lg px-4 py-4 text-black text-sm font-mono font-bold flex items-center pt-12 ">
                 @{formData.usernameColor}{formData.usernameObject}{formData.usernameNum || "___"}
               </div>
             </div>

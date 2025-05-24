@@ -45,7 +45,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
   // API call helper
   const apiCall = async (url: string, method: string = 'GET', data?: any): Promise<any> => {
     const token = getAuthToken();
-    const response = await fetch('https://intern-project-final.onrender.com' + url, {
+    const response = await fetch('http://127.0.0.1:8000' + url, {
       method,
       headers: {
         'Content-Type': 'application/json',
@@ -218,28 +218,23 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
         {/* Secondary Emails */}
         {emails.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-xl text-gray-800 mb-4">Secondary Emails</h2>
+            <h2 className="text-xl text-gray-800 mb-4">Secondary Email</h2>
             {emails.map((emailData, index) => (
               emailData.email !== primaryEmail && (
-                <div key={index} className="flex items-center justify-between bg-gray-50 p-4 rounded-lg mb-3">
+                <div key={index} className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <span className="text-base">{emailData.email}</span>
-                    {emailData.verified && (
-                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                        Verified
-                      </span>
-                    )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-8">
                     <button
                       onClick={() => openPasswordModal('makePrimary', emailData.email)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600"
+                      className="text-black text-base underline hover:no-underline cursor-pointer"
                     >
                       Make Primary
                     </button>
                     <button
                       onClick={() => openPasswordModal('remove', emailData.email)}
-                      className="bg-red-500 text-white px-4 py-2 rounded text-sm hover:bg-red-600"
+                      className="text-black text-base underline hover:no-underline cursor-pointer"
                     >
                       Remove
                     </button>
@@ -269,8 +264,21 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
       {/* Add Email Modal */}
       {showAddEmailModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-xl font-semibold mb-4">Add New Email</h3>
+          <div className="bg-white p-8 rounded-2xl w-96 mx-4">
+            <h3 className="text-xl font-medium mb-6 text-center">Enter New Email ID</h3>
+            
+            <input
+              type="email"
+              placeholder="Enter your new email id"
+              value={newEmail}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewEmail(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-blue-500"
+              disabled={loading}
+            />
+            
+            <p className="text-sm text-gray-600 mb-6 text-center">
+              We'll send a verification code to this email id
+            </p>
             
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -278,27 +286,18 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
               </div>
             )}
             
-            <input
-              type="email"
-              placeholder="Enter email address"
-              value={newEmail}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
-              disabled={loading}
-            />
-            
             <div className="flex gap-4">
               <button
                 onClick={handleAddEmail}
                 disabled={loading}
-                className="flex-1 bg-black text-white py-3 rounded hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
-                {loading ? 'Sending...' : 'Send OTP'}
+                {loading ? 'Sending...' : 'Next'}
               </button>
               <button
                 onClick={closeAllModals}
                 disabled={loading}
-                className="flex-1 border border-gray-300 py-3 rounded hover:bg-gray-50"
+                className="flex-1 border border-gray-300 py-3 rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>
@@ -310,9 +309,31 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
       {/* OTP Verification Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
-            <h3 className="text-xl font-semibold mb-4">Verify Email</h3>
-            <p className="text-gray-600 mb-4">Enter the OTP sent to {newEmail}</p>
+          <div className="bg-white p-8 rounded-2xl w-96 mx-4">
+            <h3 className="text-xl font-medium mb-2 text-center">Enter the 6-digit code</h3>
+            <p className="text-sm text-gray-600 mb-1 text-center">Check {newEmail.replace(/(.{3}).*(@.*)/, '$1*****$2')} for a verification code.</p>
+            <button 
+              onClick={() => setShowAddEmailModal(true) & setShowOtpModal(false)}
+              className="text-blue-500 text-sm mb-6 block mx-auto hover:underline"
+            >
+              Change
+            </button>
+            
+            <input
+              type="text"
+              placeholder=""
+              value={otp}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-blue-500 text-center text-2xl tracking-widest"
+              maxLength={6}
+              disabled={loading}
+            />
+            
+            <button 
+              className="text-blue-500 text-sm mb-6 block mx-auto hover:underline"
+            >
+              Resend Code
+            </button>
             
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -320,32 +341,17 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
               </div>
             )}
             
-            <input
-              type="text"
-              placeholder="Enter 6-digit OTP"
-              value={otp}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
-              maxLength={6}
+            <button
+              onClick={handleVerifyOtp}
               disabled={loading}
-            />
+              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50 mb-4"
+            >
+              {loading ? 'Verifying...' : 'Submit'}
+            </button>
             
-            <div className="flex gap-4">
-              <button
-                onClick={handleVerifyOtp}
-                disabled={loading}
-                className="flex-1 bg-black text-white py-3 rounded hover:bg-gray-800 disabled:opacity-50"
-              >
-                {loading ? 'Verifying...' : 'Verify OTP'}
-              </button>
-              <button
-                onClick={closeAllModals}
-                disabled={loading}
-                className="flex-1 border border-gray-300 py-3 rounded hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            </div>
+            <p className="text-xs text-gray-500 text-center">
+              If you didn't see the email in your inbox, check your spam folder. If it's not there, the email address may not be confirmed, or it may not match an existing LinkedIn account.
+            </p>
           </div>
         </div>
       )}
@@ -386,8 +392,8 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
                 disabled={loading}
                 className={`flex-1 text-white py-3 rounded disabled:opacity-50 ${
                   passwordAction.type === 'remove' 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-blue-500 hover:bg-blue-600'
+                    ? 'bg-black hover:bg-black' 
+                    : 'bg-black hover:bg-black'
                 }`}
               >
                 {loading ? 'Processing...' : 'Confirm'}

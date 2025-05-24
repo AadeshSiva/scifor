@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
 import { PasswordInput } from "@/components/ui/PasswordInput";
@@ -56,13 +56,41 @@ export function RegisterForm(): JSX.Element {
     website_name: ''
   });
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
-  const [otp, setOtp] = useState<string>('');
+  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+  const [timer, setTimer] = useState<number>(300); // 5 minutes in seconds
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Timer effect for OTP countdown
+  useEffect(() => {
+    let countdown: NodeJS.Timeout;
+    if (showOtpModal && timer > 0) {
+      countdown = setInterval(() => {
+        setTimer(prevTimer => {
+          if (prevTimer <= 1) {
+            clearInterval(countdown);
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (countdown) clearInterval(countdown);
+    };
+  }, [showOtpModal, timer]);
+
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -76,6 +104,31 @@ export function RegisterForm(): JSX.Element {
         ...prev,
         [name]: ''
       }));
+    }
+  };
+
+  const handleOtpChange = (index: number, value: string): void => {
+    if (value.length <= 1) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+      
+      // Auto-focus next input
+      if (value !== '' && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+
+      // Clear OTP error when user starts typing
+      if (errors.otp) {
+        setErrors(prev => ({ ...prev, otp: '' }));
+      }
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+    // If backspace is pressed and current field is empty, focus previous field
+    if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -146,7 +199,7 @@ export function RegisterForm(): JSX.Element {
     
     try {
       // First check if email already exists
-      const checkResponse = await fetch('https://intern-project-final.onrender.com/check_email_status/', {
+      const checkResponse = await fetch('http://127.0.0.1:8000/check_email_status/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +227,7 @@ export function RegisterForm(): JSX.Element {
         linkedin_token: ''
       };
       
-      const registerResponse = await fetch('https://intern-project-final.onrender.com/register/', {
+      const registerResponse = await fetch('http://127.0.0.1:8000/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -214,7 +267,7 @@ export function RegisterForm(): JSX.Element {
 
   const sendOtp = async (): Promise<void> => {
     try {
-      const otpResponse = await fetch('https://intern-project-final.onrender.com/send_email_otp/', {
+      const otpResponse = await fetch('http://127.0.0.1:8000/send_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -227,6 +280,8 @@ export function RegisterForm(): JSX.Element {
       
       if (otpData.status === 'success') {
         setShowOtpModal(true);
+        setTimer(300); // Reset timer to 5 minutes
+        setOtp(['', '', '', '', '', '']); // Reset OTP fields
       } else {
         setErrors({ general: otpData.message });
       }
@@ -239,8 +294,9 @@ export function RegisterForm(): JSX.Element {
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     
-    if (!otp.trim()) {
-      setErrors({ otp: 'Please enter the OTP' });
+    const otpCode = otp.join('');
+    if (!otpCode || otpCode.length !== 6) {
+      setErrors({ otp: 'Please enter the complete 6-digit OTP' });
       return;
     }
     
@@ -248,7 +304,7 @@ export function RegisterForm(): JSX.Element {
     setErrors({});
     
     try {
-      const verifyResponse = await fetch('https://intern-project-final.onrender.com/verify_email_otp/', {
+      const verifyResponse = await fetch('http://127.0.0.1:8000/verify_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -256,7 +312,7 @@ export function RegisterForm(): JSX.Element {
         },
         body: JSON.stringify({ 
           email: formData.email,
-          otp: otp 
+          otp: otpCode 
         })
       });
       
@@ -473,81 +529,84 @@ export function RegisterForm(): JSX.Element {
         </span>
       </div>
 
-      {/* OTP Modal */}
+      {/* Enhanced OTP Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
-            <h2 className="text-xl font-semibold mb-4">Verify Your Email</h2>
-            <p className="text-gray-600 mb-6">
-              We've sent a 6-digit OTP to {formData.email}. Please enter it below to verify your email.
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
+            <h2 className="text-center text-3xl font-bold mb-6">OTP Verification</h2>
+            
+            <p className="text-center mb-4 text-lg">
+              An OTP has been sent to your provided email address.
+            </p>
+            
+            <p className="text-center mb-8 text-gray-600">
+              Please check your inbox (and spam/junk folder just in case)
+              <br />and enter the code below to continue.
             </p>
             
             {errors.otp && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
                 {errors.otp}
               </div>
             )}
             
             <form onSubmit={handleOtpSubmit}>
-              <div className="flex flex-col gap-3 mb-6">
-                <label className="text-base text-black">
-                  Enter OTP <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
-                  placeholder="Enter 6-digit OTP"
-                  className="border text-sm w-full px-4 py-2.5 rounded-lg border-solid border-gray-300 focus:border-black focus:outline-none transition-colors"
-                  maxLength={6}
-                  disabled={otpLoading}
-                  required
-                />
+              <div className="flex justify-between mb-8 gap-2">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    maxLength={1}
+                    value={otp[index]}
+                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                    className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors disabled:opacity-50"
+                    disabled={otpLoading}
+                  />
+                ))}
               </div>
               
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="flex-1 bg-black text-white py-2.5 px-4 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  disabled={otpLoading}
-                >
-                  {otpLoading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Verifying...
-                    </>
-                  ) : (
-                    'Verify OTP'
-                  )}
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={resendOtp}
-                  className="flex-1 border border-black text-black py-2.5 px-4 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  disabled={otpLoading}
-                >
-                  {otpLoading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    'Resend OTP'
-                  )}
-                </button>
+              <div className="flex justify-between items-center mb-8 text-sm">
+                <div className="text-gray-600">
+                  Remaining Time: {formatTime(timer)}
+                </div>
+                <div className="flex items-center">
+                  <span className="text-gray-600 mr-2">Didn't receive code?</span>
+                  <button 
+                    type="button"
+                    onClick={resendOtp}
+                    className="text-black font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={otpLoading || timer > 0}
+                  >
+                    Resend code
+                  </button>
+                </div>
               </div>
+              
+              <button
+                type="submit"
+                className="w-full h-14 text-white text-base cursor-pointer bg-black rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                disabled={otpLoading}
+              >
+                {otpLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify Now'
+                )}
+              </button>
             </form>
             
             <button 
+              type="button"
               onClick={() => setShowOtpModal(false)}
-              className="mt-4 text-gray-500 hover:text-gray-700 text-sm transition-colors"
+              className="mt-4 text-gray-500 hover:text-gray-700 text-sm transition-colors w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={otpLoading}
             >
               Cancel

@@ -99,3 +99,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'Walbaum';
+  src: url('/assets/fonts/Walbaum60pt.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Walbaum';
+  src: url('/assets/fonts/Walbaum60ptBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Walbaum';
+  src: url('/assets/fonts/Walbaum60ptItalic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Walbaum';
+  src: url('/assets/fonts/Walbaum60ptBoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Add others like ExtraBold, Light, etc., similarly */
