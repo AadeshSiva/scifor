@@ -47,7 +47,7 @@ const ChangeUsernameForm: React.FC = () => {
   }>({});
 
   // API configuration
-  const API_BASE_URL = 'http://127.0.0.1:8000';
+  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
 
   const COLOR_OPTIONS = [
     'Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Black', 

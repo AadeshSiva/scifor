@@ -233,7 +233,7 @@ const Chat = () => {
       {/* Sidebar */}
       {showSidebar && (
         <nav className="w-[300px] flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 h-full border-r border-[rgba(158,158,158,0.3)]">
-          <div className="flex items-center gap-2.5 pl-6 pr-2.5 py-4 border-b border-[rgba(158,158,158,0.3)]">
+          <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[rgba(158,158,158,0.3)]">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
               {userName.charAt(0)}
             </div>
@@ -241,7 +241,7 @@ const Chat = () => {
               Welcome {userName} 👋
             </div>
           </div>
-          
+
           <div className="bg-white flex items-center gap-2 px-6 py-3.5 shadow-sm">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-5-7h2a3 3 0 0 0 6 0h2a5 5 0 0 1-10 0z" fill="#555"/>
@@ -251,16 +251,16 @@ const Chat = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto flex flex-col gap-0.5">
             {getMenuItems().map((item) => (
               <div 
                 key={item.id} 
-                className={`flex items-center gap-2.5 pl-6 pr-2.5 py-3.5 hover:bg-white cursor-pointer transition-colors ${item.id === 1 ? 'bg-neutral-200' : 'bg-neutral-100'}`}
+                className={`flex items-center gap-2.5 px-6 py-3 hover:bg-white cursor-pointer transition-colors ${item.id === 1 ? 'bg-neutral-200' : 'bg-neutral-100'}`}
               >
                 <svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm0 2c-4.07 0-7.36 2.13-7.36 4.76V22h14.72v-2.74c0-2.63-3.3-4.76-7.36-4.76z" fill="#555"/>
                 </svg>
-                <div className=" font-semibold">
+                <div className="font-semibold">
                   {item.title}
                 </div>
               </div>
@@ -268,14 +268,14 @@ const Chat = () => {
           </div>
 
           <div className="mt-auto border-t border-[rgba(158,158,158,0.3)]">
-            <div className="flex items-center gap-3 pl-6 py-3 hover:bg-white cursor-pointer transition-colors">
+            <div className="flex items-center gap-3 px-6 py-3 hover:bg-white cursor-pointer transition-colors">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21 20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.49a1 1 0 0 1 .386-.79l8-6.222a1 1 0 0 1 1.228 0l8 6.222a1 1 0 0 1 .386.79V20z" fill="#555"/>
               </svg>
               <div className="text-xl font-semibold">Home</div>
             </div>
-            
-            <div className="flex items-center gap-3 pl-6 py-3.5 hover:bg-white cursor-pointer transition-colors">
+
+            <div className="flex items-center gap-3 px-6 py-3.5 hover:bg-white cursor-pointer transition-colors">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm-6 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm12 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="#555"/>
               </svg>
@@ -284,7 +284,7 @@ const Chat = () => {
           </div>
         </nav>
       )}
-
+      
       {display==='chat'?
       <main className="flex-1 flex flex-col h-full">
         {/* Chat Header */}
@@ -379,20 +379,18 @@ const Chat = () => {
         
         {/* Pinned Messages */}
         <div className="bg-neutral-100 shadow-[0px_2px_6px_rgba(0,0,0,0.1)] flex items-center px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 text-[10px] font-medium">
-              <div className="bg-black w-1 h-5 rounded-full" />
-              <div className="text-black">
-                Pinned Messages ({pinnedMessages.length})
-              </div>
-            </div>
-            <div className="flex items-center gap-3 mt-1 text-xs text-[#555]">
-              <div className="bg-[rgba(217,217,217,1)] w-1 h-5 rounded-full" />
-              <div className="truncate pr-4">
-                {pinnedMessages[currentPinnedMessage]?.text}
-              </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 text-[10px] font-medium">
+            <div className="bg-black w-1 h-5 rounded-full" />
+            <div className="text-black">Pinned Messages ({pinnedMessages.length})</div>
+          </div>
+          <div className="flex items-center gap-3 mt-1 text-xs text-[#555]">
+            <div className="bg-[rgba(217,217,217,1)] w-1 h-5 rounded-full" />
+            <div className="truncate pr-4 max-w-full"> {/* Add max-w-full to avoid overflow */}
+              {pinnedMessages[currentPinnedMessage]?.text}
             </div>
           </div>
+        </div>
           <button 
             aria-label="Pin Message" 
             className="p-2 hover:bg-white rounded-full flex-shrink-0"

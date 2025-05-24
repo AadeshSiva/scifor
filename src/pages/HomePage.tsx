@@ -175,15 +175,14 @@ const Navbar: React.FC = () => {
 const HeroSection: React.FC = () => {
   return (
     <section className="flex flex-col items-center text-center py-12">
-      <aside className="absolute w-[150px] right-0 top-[137px] max-sm:hidden">
+      <aside className="absolute w-full right-0 top-[137px] max-sm:hidden">
       <img
         src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
         alt="Side Logo"
         className="w-[140px] h-[35px]"
       />
-      <div className="-rotate-90 text-black text-[21px] mt-12">
-        <span>Grow Smarter.</span>
-        <span className="font-bold">Exit Richer™</span>
+      <div className="-rotate-90 text-black text-[16px] mt-12">
+        <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
       </div>
     </aside>
       <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
@@ -390,7 +389,7 @@ const FormSection: React.FC = () => {
   const {login} = useAuth()
 
   // API Base URL - adjust this to your backend URL
-  const API_BASE_URL = 'http://127.0.0.1:8000';
+  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
 
   // Load form data from localStorage on component mount
   useEffect(() => {

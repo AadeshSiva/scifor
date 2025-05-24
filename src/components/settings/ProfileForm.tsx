@@ -135,7 +135,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch('http://127.0.0.1:8000/extract-user-data/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/extract-user-data/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -205,7 +205,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         password: password // Include password for verification
       };
 
-      const response = await fetch('http://127.0.0.1:8000/profile/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/profile/', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

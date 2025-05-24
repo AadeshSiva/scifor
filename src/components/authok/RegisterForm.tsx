@@ -199,7 +199,7 @@ export function RegisterForm(): JSX.Element {
     
     try {
       // First check if email already exists
-      const checkResponse = await fetch('http://127.0.0.1:8000/check_email_status/', {
+      const checkResponse = await fetch('https://intern-project-final-1.onrender.com/check_email_status/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ export function RegisterForm(): JSX.Element {
         linkedin_token: ''
       };
       
-      const registerResponse = await fetch('http://127.0.0.1:8000/register/', {
+      const registerResponse = await fetch('https://intern-project-final-1.onrender.com/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ export function RegisterForm(): JSX.Element {
 
   const sendOtp = async (): Promise<void> => {
     try {
-      const otpResponse = await fetch('http://127.0.0.1:8000/send_email_otp/', {
+      const otpResponse = await fetch('https://intern-project-final-1.onrender.com/send_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -304,7 +304,7 @@ export function RegisterForm(): JSX.Element {
     setErrors({});
     
     try {
-      const verifyResponse = await fetch('http://127.0.0.1:8000/verify_email_otp/', {
+      const verifyResponse = await fetch('https://intern-project-final-1.onrender.com/verify_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

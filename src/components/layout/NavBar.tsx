@@ -68,24 +68,6 @@ const NavBar: React.FC = () => {
                                     <div className="text-gray-500">{user?.email}</div>
                                 </div>
                                 <button
-                                    onClick={() => {
-                                        setShowDropdown(false)
-                                        navigate('/profile')
-                                    }}
-                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                >
-                                    Profile
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setShowDropdown(false)
-                                        navigate('/settings')
-                                    }}
-                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                >
-                                    Settings
-                                </button>
-                                <button
                                     onClick={handleLogout}
                                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                 >

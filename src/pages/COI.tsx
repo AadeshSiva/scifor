@@ -361,7 +361,7 @@ const COI: React.FC = () => {
         no_linkedin: true
       };
 
-      const response = await fetch('http://127.0.0.1:8000/register/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -403,7 +403,7 @@ const COI: React.FC = () => {
     setError('');
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/send_email_otp/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/send_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -437,7 +437,7 @@ const COI: React.FC = () => {
     setError('');
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/verify_email_otp/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/verify_email_otp/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

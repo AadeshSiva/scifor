@@ -45,7 +45,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
   // API call helper
   const apiCall = async (url: string, method: string = 'GET', data?: any): Promise<any> => {
     const token = getAuthToken();
-    const response = await fetch('http://127.0.0.1:8000' + url, {
+    const response = await fetch('https://intern-project-final-1.onrender.com' + url, {
       method,
       headers: {
         'Content-Type': 'application/json',

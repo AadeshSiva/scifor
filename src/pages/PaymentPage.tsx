@@ -70,7 +70,7 @@ const Payment: React.FC = () => {
         throw new Error('Authentication required. Please log in.');
       }
 
-      const response = await fetch('http://127.0.0.1:8000/create-checkout-session/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/create-checkout-session/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

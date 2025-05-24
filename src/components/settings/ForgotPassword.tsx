@@ -15,7 +15,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = 'http://127.0.0.1:8000';
+  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
 
   const resetForm = () => {
     setStep(1);

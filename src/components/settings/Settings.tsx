@@ -164,7 +164,7 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
         throw new Error('No authentication token found. Please login again.');
       }
 
-      const response = await fetch('http://127.0.0.1:8000/extract-user-data/', {
+      const response = await fetch('https://intern-project-final-1.onrender.com/extract-user-data/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
