@@ -174,17 +174,20 @@ const Navbar: React.FC = () => {
 
 const HeroSection: React.FC = () => {
   return (
-    <section className="flex flex-col items-center text-center py-12">
-      <aside className="absolute w-full right-0 top-[137px] max-sm:hidden">
-      <img
-        src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-        alt="Side Logo"
-        className="w-[140px] h-[35px]"
-      />
-      <div className="-rotate-90 text-black text-[16px] mt-12">
-        <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-      </div>
-    </aside>
+    <section className="flex flex-col items-center text-center py-12 relative">
+      <aside className="fixed right-0 top-40 max-sm:hidden z-10 transform translate-x-0">
+        <div className="flex flex-col items-end">
+          <img
+            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+            alt="Side Logo"
+            className="w-[140px] h-[35px]"
+          />
+          <div className="-rotate-90 text-black text-[16px] mt-5 origin-center whitespace-nowrap pt-40">
+            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+          </div>
+        </div>
+      </aside>
+      
       <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
         You had a dream.
       </h1>
@@ -212,6 +215,137 @@ const HeroSection: React.FC = () => {
         Our Solution helped him defy these odds. You can too - for FREE !
       </p>
     </section>
+  );
+};
+
+const VideoPopup: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
+    const [isVisible, setIsVisible] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [scrollPosition, setScrollPosition] = useState(0);
+  
+    useEffect(() => {
+      const handleScroll = () => {
+        const position = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollPercentage = position / (documentHeight - windowHeight);
+        
+        setScrollPosition(scrollPercentage);
+        
+        // Expand when user scrolls halfway
+        if (scrollPercentage >= 0.5 && !isExpanded) {
+          setIsExpanded(true);
+        }
+      };
+  
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, [isExpanded]);
+  
+    const handleClose = () => {
+      setIsVisible(false);
+    };
+  
+    if (!isVisible) return null;
+
+  const currentVideo = videos.length > 0 ? videos[0] : null;
+
+  return (
+    <div
+      className={`fixed z-50 transition-all duration-700 ease-in-out ${
+        isExpanded
+          ? 'inset-0 bg-black bg-opacity-75 flex items-center justify-center'
+          : 'bottom-4 right-4'
+      }`}
+    >
+      <div
+        className={`relative transition-all duration-700 ease-in-out ${
+          isExpanded
+            ? 'w-full max-w-4xl h-full max-h-[80vh] mx-4'
+            : 'w-80 h-48'
+        }`}
+      >
+        {/* Close button */}
+        <button
+          onClick={handleClose}
+          className={`absolute z-10 bg-black bg-opacity-70 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-90 transition-colors ${
+            isExpanded ? 'top-4 right-4' : 'top-2 right-2'
+          }`}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Video container */}
+        <div className="w-full h-full bg-black rounded-lg overflow-hidden shadow-2xl">
+          {currentVideo ? (
+            <iframe
+              src={currentVideo.video_url}
+              className="w-full h-full"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              title={currentVideo.title || "Jeff Cullen Success Story Video"}
+            />
+          ) : (
+            <div className="relative w-full h-full">
+              <img
+                src="/api/placeholder/800/450"
+                alt="Jeff Cullen Success Story Video"
+                className="w-full h-full object-cover"
+              />
+              
+              {/* Play button overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                <button
+                  aria-label="Play video"
+                  className={`bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-white transition-colors ${
+                    isExpanded ? 'w-20 h-20' : 'w-12 h-12'
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className={`text-black ml-1 ${
+                      isExpanded ? 'w-10 h-10' : 'w-6 h-6'
+                    }`}
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Video title overlay */}
+              {!isExpanded && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3">
+                  <p className="text-white text-sm font-medium">
+                    Watch Jeff's Success Story
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Expanded video details */}
+        {isExpanded && !currentVideo && (
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-6">
+            <h3 className="text-white text-2xl font-bold mb-2">
+              Jeff Cullen's Double-Digit Multiple Exit Story
+            </h3>
+            <p className="text-gray-300 text-lg">
+              Learn how Jeff built and sold his company using the Unifying Philosophy: Prosperity For All
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -386,7 +520,50 @@ const FormSection: React.FC = () => {
   const [userEmail, setUserEmail] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [popupDismissed, setPopupDismissed] = useState(false);
+  const [videos, setVideos] = useState<any[]>([]);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const {login} = useAuth()
+
+  const fetchVideos = async () => {
+    try {
+      setIsLoadingVideos(true);
+      // Replace with your actual video IDs
+      const videoIds = ['123456789', '987654321']; // Add your Vimeo video IDs here
+      
+      const videoPromises = videoIds.map(async (videoId) => {
+        try {
+          // Try public video first
+          const publicResponse = await fetch(`${API_BASE_URL}/fetch_public_video/${videoId}/`);
+          if (publicResponse.ok) {
+            return await publicResponse.json();
+          }
+          
+          // If public fails, try unlisted
+          const unlistedResponse = await fetch(`${API_BASE_URL}/fetch_unlisted_video/${videoId}/`);
+          if (unlistedResponse.ok) {
+            return await unlistedResponse.json();
+          }
+          
+          return null;
+        } catch (error) {
+          console.error(`Error fetching video ${videoId}:`, error);
+          return null;
+        }
+      });
+
+      const videoResults = await Promise.all(videoPromises);
+      const validVideos = videoResults.filter(video => video !== null);
+      setVideos(validVideos);
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+    } finally {
+      setIsLoadingVideos(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
   // API Base URL - adjust this to your backend URL
   const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
@@ -579,36 +756,53 @@ const FormSection: React.FC = () => {
   return (
     <>
       <div className="flex justify-center items-start gap-8 -mb-20 mt-10">
-        <div className="bg-white rounded-xl border-2 border-gray-300 overflow-hidden w-full max-w-xl shadow-sm">
-          <div className="aspect-video relative w-full">
-            <div className="absolute inset-0 bg-black bg-opacity-10">
-              <img
-                src="/api/placeholder/600/400"
-                alt="Jeff Cullen Business Success Story"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-              <button
-                aria-label="Play video"
-                className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-white transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-8 h-8 text-black ml-1"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+  <div className="bg-white rounded-xl border-2 border-gray-300 overflow-hidden w-full max-w-xl shadow-sm">
+    {isLoadingVideos ? (
+      <div className="aspect-video relative w-full flex items-center justify-center bg-gray-100">
+        <div className="text-gray-500">Loading video...</div>
+      </div>
+    ) : videos.length > 0 ? (
+      <div className="aspect-video relative w-full">
+        <iframe
+          src={videos[0].video_url}
+          className="w-full h-full"
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={videos[0].title || "Jeff Cullen Business Success Story"}
+        />
+      </div>
+    ) : (
+      <div className="aspect-video relative w-full">
+        <div className="absolute inset-0 bg-black bg-opacity-10">
+          <img
+            src="/api/placeholder/600/400"
+            alt="Jeff Cullen Business Success Story"
+            className="w-full h-full object-cover"
+          />
         </div>
+        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+          <button
+            aria-label="Play video"
+            className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-8 h-8 text-black ml-1"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
         
         <div className="bg-white rounded-xl border-2 border-gray-300 p-6 w-full max-w-md shadow-sm">
           <h3 className="text-gray-800 text-xl font-semibold text-center mb-4">
@@ -802,15 +996,15 @@ const StorySection: React.FC = () => {
   );
 };
 
-const StepsSection: React.FC = () => {
-  const steps = [
-    { id: 1, name: "1. Endgame" },
-    { id: 2, name: "2. Valfucturing" },
-    { id: 3, name: "3. Scaling" },
-    { id: 4, name: "4. Staging" },
-    { id: 5, name: "5. Moment(s) of Truth" },
-    { id: 6, name: "6. Pride" }
-  ];
+const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
+    const steps = [
+        { id: 1, name: "1. Endgame" },
+        { id: 2, name: "2. Valfucturing" },
+        { id: 3, name: "3. Scaling" },
+        { id: 4, name: "4. Staging" },
+        { id: 5, name: "5. Moment(s) of Truth" },
+        { id: 6, name: "6. Pride" }
+      ];
 
   return (
     <section className="w-full flex flex-col items-center">
@@ -872,23 +1066,53 @@ const StepsSection: React.FC = () => {
       {/* Steps display */}
       <div className="w-full max-w-6xl mx-auto py-10">
         <div className="grid grid-cols-3 gap-5 mb-6">
-          {steps.slice(0, 3).map(step => (
+          {steps.slice(0, 3).map((step, index) => (
             <div key={step.id} className="flex flex-col gap-4">
               <div className="bg-gray-200 py-4 px-6 text-gray-700 text-2xl font-medium text-center">
                 {step.name}
               </div>
-              <div className="bg-gray-700 aspect-video rounded-lg"></div>
+              {videos[index] ? (
+                <div className="aspect-video rounded-lg overflow-hidden">
+                  <iframe
+                    src={videos[index].video_url}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={videos[index].title || step.name}
+                  />
+                </div>
+              ) : (
+                <div className="bg-gray-700 aspect-video rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm">Video Loading...</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
         
         <div className="grid grid-cols-3 gap-5 mb-16">
-          {steps.slice(3, 6).map(step => (
+          {steps.slice(3, 6).map((step, index) => (
             <div key={step.id} className="flex flex-col gap-4">
               <div className="bg-gray-200 py-4 px-6 text-gray-700 text-2xl font-medium text-center">
                 {step.name}
               </div>
-              <div className="bg-gray-700 aspect-video rounded-lg"></div>
+              {videos[index + 3] ? (
+                <div className="aspect-video rounded-lg overflow-hidden">
+                  <iframe
+                    src={videos[index + 3].video_url}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={videos[index + 3].title || step.name}
+                  />
+                </div>
+              ) : (
+                <div className="bg-gray-700 aspect-video rounded-lg flex items-center justify-center">
+                  <span className="text-white text-sm">Video Loading...</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -957,19 +1181,22 @@ const CtaSection: React.FC = () => {
 };
 
 const Index: React.FC = () => {
-  return (
-    <div className="">
-      <div className="max-w-7xl w-full px-4 mx-auto">
-        <HeroSection />
-        <div className="relative">
-          <FormSection />
-          <StorySection />
+    const [videos, setVideos] = useState<unknown[]>([]);
+  
+    return (
+      <div className="">
+        <div className="max-w-7xl w-full px-4 mx-auto">
+          <HeroSection />
+          <div className="relative">
+            <FormSection onVideosLoaded={setVideos} />
+            <StorySection />
+          </div>
+          <StepsSection videos={videos} />
+          <CtaSection />
         </div>
-        <StepsSection />
-        <CtaSection />
+        <VideoPopup videos={videos} />
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default Index;
