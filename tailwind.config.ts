@@ -19,7 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				walbaum: ['Walbaum', 'serif'], // your custom font
+				walbaum: ['"Walbaum"', 'serif'], // your custom font
+				linear: ['"Linear Grotesk"', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

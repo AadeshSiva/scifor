@@ -369,7 +369,7 @@ interface RegisterFormProps {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {errors.general && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           {errors.general}
@@ -476,7 +476,7 @@ interface RegisterFormProps {
         )}
       </div>
       
-      <div className="flex flex-col gap-3">
+      <div className="flex gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Do you have a LinkedIn account</span>
           <span className="text-black ml-1">*</span>

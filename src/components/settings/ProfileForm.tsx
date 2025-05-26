@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 interface ProfileFormProps {
   onSubmit?: (data: ProfileFormData) => void;
   onCancel?: () => void;
+  setDisplay?: (display: string) => void; // Add this line
 }
 
 interface ProfileFormData {
@@ -96,7 +97,8 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ 
   onSubmit,
-  onCancel
+  onCancel,
+  setDisplay // Add this parameter
 }) => {
   const [formData, setFormData] = useState<ProfileFormData>({
     fullName: "",
@@ -268,8 +270,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   const handleBackClick = () => {
-    // Handle back navigation
-    window.history.back();
+      setDisplay('setting'); // Go back to settings
   };
 
   if (isLoading) {

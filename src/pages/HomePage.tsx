@@ -1,133 +1,207 @@
 import { useAuth } from "@/utils/AuthContext";
+import { Check } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const countries = [
-    { code: "+1", flag: "🇺🇸", name: "United States" },
-    { code: "+1", flag: "🇨🇦", name: "Canada" },
-    { code: "+44", flag: "🇬🇧", name: "United Kingdom" },
-    { code: "+33", flag: "🇫🇷", name: "France" },
-    { code: "+49", flag: "🇩🇪", name: "Germany" },
-    { code: "+39", flag: "🇮🇹", name: "Italy" },
-    { code: "+34", flag: "🇪🇸", name: "Spain" },
-    { code: "+31", flag: "🇳🇱", name: "Netherlands" },
-    { code: "+46", flag: "🇸🇪", name: "Sweden" },
-    { code: "+47", flag: "🇳🇴", name: "Norway" },
-    { code: "+45", flag: "🇩🇰", name: "Denmark" },
-    { code: "+41", flag: "🇨🇭", name: "Switzerland" },
-    { code: "+43", flag: "🇦🇹", name: "Austria" },
-    { code: "+32", flag: "🇧🇪", name: "Belgium" },
-    { code: "+351", flag: "🇵🇹", name: "Portugal" },
-    { code: "+91", flag: "🇮🇳", name: "India" },
-    { code: "+86", flag: "🇨🇳", name: "China" },
-    { code: "+81", flag: "🇯🇵", name: "Japan" },
-    { code: "+82", flag: "🇰🇷", name: "South Korea" },
-    { code: "+61", flag: "🇦🇺", name: "Australia" },
-    { code: "+64", flag: "🇳🇿", name: "New Zealand" },
-    { code: "+55", flag: "🇧🇷", name: "Brazil" },
-    { code: "+52", flag: "🇲🇽", name: "Mexico" },
-    { code: "+54", flag: "🇦🇷", name: "Argentina" },
-    { code: "+56", flag: "🇨🇱", name: "Chile" },
-    { code: "+57", flag: "🇨🇴", name: "Colombia" },
-    { code: "+51", flag: "🇵🇪", name: "Peru" },
-    { code: "+27", flag: "🇿🇦", name: "South Africa" },
-    { code: "+234", flag: "🇳🇬", name: "Nigeria" },
-    { code: "+20", flag: "🇪🇬", name: "Egypt" }
+    { code: "+1", flag: "🇺🇸", name: "United States", phoneLength: 10 },
+    { code: "+1", flag: "🇨🇦", name: "Canada", phoneLength: 10 },
+    { code: "+44", flag: "🇬🇧", name: "United Kingdom", phoneLength: 10 },
+    { code: "+33", flag: "🇫🇷", name: "France", phoneLength: 10 },
+    { code: "+49", flag: "🇩🇪", name: "Germany", phoneLength: 11 },
+    { code: "+39", flag: "🇮🇹", name: "Italy", phoneLength: 10 },
+    { code: "+34", flag: "🇪🇸", name: "Spain", phoneLength: 9 },
+    { code: "+31", flag: "🇳🇱", name: "Netherlands", phoneLength: 9 },
+    { code: "+46", flag: "🇸🇪", name: "Sweden", phoneLength: 9 },
+    { code: "+47", flag: "🇳🇴", name: "Norway", phoneLength: 8 },
+    { code: "+45", flag: "🇩🇰", name: "Denmark", phoneLength: 8 },
+    { code: "+41", flag: "🇨🇭", name: "Switzerland", phoneLength: 9 },
+    { code: "+43", flag: "🇦🇹", name: "Austria", phoneLength: 10 },
+    { code: "+32", flag: "🇧🇪", name: "Belgium", phoneLength: 9 },
+    { code: "+351", flag: "🇵🇹", name: "Portugal", phoneLength: 9 },
+    { code: "+91", flag: "🇮🇳", name: "India", phoneLength: 10 },
+    { code: "+86", flag: "🇨🇳", name: "China", phoneLength: 11 },
+    { code: "+81", flag: "🇯🇵", name: "Japan", phoneLength: 10 },
+    { code: "+82", flag: "🇰🇷", name: "South Korea", phoneLength: 10 },
+    { code: "+61", flag: "🇦🇺", name: "Australia", phoneLength: 9 },
+    { code: "+64", flag: "🇳🇿", name: "New Zealand", phoneLength: 9 },
+    { code: "+55", flag: "🇧🇷", name: "Brazil", phoneLength: 11 },
+    { code: "+52", flag: "🇲🇽", name: "Mexico", phoneLength: 10 },
+    { code: "+54", flag: "🇦🇷", name: "Argentina", phoneLength: 10 },
+    { code: "+56", flag: "🇨🇱", name: "Chile", phoneLength: 9 },
+    { code: "+57", flag: "🇨🇴", name: "Colombia", phoneLength: 10 },
+    { code: "+51", flag: "🇵🇪", name: "Peru", phoneLength: 9 },
+    { code: "+27", flag: "🇿🇦", name: "South Africa", phoneLength: 9 },
+    { code: "+234", flag: "🇳🇬", name: "Nigeria", phoneLength: 10 },
+    { code: "+20", flag: "🇪🇬", name: "Egypt", phoneLength: 10 },
+    // Additional countries
+    { code: "+7", flag: "🇷🇺", name: "Russia", phoneLength: 10 },
+    { code: "+90", flag: "🇹🇷", name: "Turkey", phoneLength: 10 },
+    { code: "+966", flag: "🇸🇦", name: "Saudi Arabia", phoneLength: 9 },
+    { code: "+971", flag: "🇦🇪", name: "UAE", phoneLength: 9 },
+    { code: "+65", flag: "🇸🇬", name: "Singapore", phoneLength: 8 },
+    { code: "+60", flag: "🇲🇾", name: "Malaysia", phoneLength: 10 },
+    { code: "+66", flag: "🇹🇭", name: "Thailand", phoneLength: 9 },
+    { code: "+84", flag: "🇻🇳", name: "Vietnam", phoneLength: 9 },
+    { code: "+63", flag: "🇵🇭", name: "Philippines", phoneLength: 10 },
+    { code: "+62", flag: "🇮🇩", name: "Indonesia", phoneLength: 10 },
+    { code: "+880", flag: "🇧🇩", name: "Bangladesh", phoneLength: 10 },
+    { code: "+92", flag: "🇵🇰", name: "Pakistan", phoneLength: 10 },
+    { code: "+94", flag: "🇱🇰", name: "Sri Lanka", phoneLength: 9 },
+    { code: "+977", flag: "🇳🇵", name: "Nepal", phoneLength: 10 },
+    { code: "+98", flag: "🇮🇷", name: "Iran", phoneLength: 10 },
+    { code: "+972", flag: "🇮🇱", name: "Israel", phoneLength: 9 },
+    { code: "+354", flag: "🇮🇸", name: "Iceland", phoneLength: 7 },
+    { code: "+358", flag: "🇫🇮", name: "Finland", phoneLength: 9 },
+    { code: "+372", flag: "🇪🇪", name: "Estonia", phoneLength: 8 },
+    { code: "+371", flag: "🇱🇻", name: "Latvia", phoneLength: 8 },
+    { code: "+370", flag: "🇱🇹", name: "Lithuania", phoneLength: 8 },
+    { code: "+48", flag: "🇵🇱", name: "Poland", phoneLength: 9 },
+    { code: "+420", flag: "🇨🇿", name: "Czech Republic", phoneLength: 9 },
+    { code: "+421", flag: "🇸🇰", name: "Slovakia", phoneLength: 9 },
+    { code: "+36", flag: "🇭🇺", name: "Hungary", phoneLength: 9 },
+    { code: "+40", flag: "🇷🇴", name: "Romania", phoneLength: 10 },
+    { code: "+359", flag: "🇧🇬", name: "Bulgaria", phoneLength: 9 },
+    { code: "+385", flag: "🇭🇷", name: "Croatia", phoneLength: 8 },
+    { code: "+381", flag: "🇷🇸", name: "Serbia", phoneLength: 8 },
+    { code: "+387", flag: "🇧🇦", name: "Bosnia and Herzegovina", phoneLength: 8 },
+    { code: "+386", flag: "🇸🇮", name: "Slovenia", phoneLength: 8 },
+    { code: "+30", flag: "🇬🇷", name: "Greece", phoneLength: 10 },
+    { code: "+90", flag: "🇨🇾", name: "Cyprus", phoneLength: 8 },
+    { code: "+356", flag: "🇲🇹", name: "Malta", phoneLength: 8 },
+    { code: "+353", flag: "🇮🇪", name: "Ireland", phoneLength: 9 },
+    { code: "+250", flag: "🇷🇼", name: "Rwanda", phoneLength: 9 },
+    { code: "+254", flag: "🇰🇪", name: "Kenya", phoneLength: 10 },
+    { code: "+256", flag: "🇺🇬", name: "Uganda", phoneLength: 9 },
+    { code: "+255", flag: "🇹🇿", name: "Tanzania", phoneLength: 9 },
+    { code: "+233", flag: "🇬🇭", name: "Ghana", phoneLength: 9 },
+    { code: "+225", flag: "🇨🇮", name: "Ivory Coast", phoneLength: 8 },
+    { code: "+221", flag: "🇸🇳", name: "Senegal", phoneLength: 9 },
+    { code: "+212", flag: "🇲🇦", name: "Morocco", phoneLength: 9 },
+    { code: "+216", flag: "🇹🇳", name: "Tunisia", phoneLength: 8 },
+    { code: "+213", flag: "🇩🇿", name: "Algeria", phoneLength: 9 },
   ];
 
   const PhoneInputDropdown = ({ onPhoneChange, error }) => {
-  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    country.code.includes(searchTerm)
-  );
-
-  const handleCountrySelect = (country) => {
-    setSelectedCountry(country);
-    setIsDropdownOpen(false);
-    setSearchTerm("");
-    // Notify parent component of the change
-    onPhoneChange(country.code + phoneNumber);
-  };
-
-  const handlePhoneNumberChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    setPhoneNumber(value);
-    // Notify parent component of the change
-    onPhoneChange(selectedCountry.code + value);
-  };
-
-  return (
-    <div className="mb-3">
-      <label className="text-black text-xs font-medium block mb-1">
-        Phone Number
-      </label>
-      <div className="flex items-center gap-2">
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-20 h-9 border border-gray-400 rounded-lg flex items-center justify-center bg-white text-xs hover:bg-gray-50 transition-colors"
-          >
-            <span className="mr-1">{selectedCountry.flag}</span>
-            <span className="text-xs">{selectedCountry.code}</span>
-            <svg
-              className="w-3 h-3 ml-1 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+    const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [phoneError, setPhoneError] = useState("");
+  
+    const filteredCountries = countries.filter(country =>
+      country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      country.code.includes(searchTerm)
+    );
+  
+    const validatePhoneNumber = (number, country) => {
+      if (!number) {
+        setPhoneError("Phone number is required");
+        return false;
+      }
+      
+      const expectedLength = country.phoneLength;
+      if (number.length !== expectedLength) {
+        setPhoneError(`Phone number should be ${expectedLength} digits for ${country.name}`);
+        return false;
+      }
+      
+      setPhoneError("");
+      return true;
+    };
+  
+    const handleCountrySelect = (country) => {
+      setSelectedCountry(country);
+      setIsDropdownOpen(false);
+      setSearchTerm("");
+      
+      // Revalidate current phone number with new country
+      if (phoneNumber) {
+        validatePhoneNumber(phoneNumber, country);
+      }
+      
+      onPhoneChange(country.code + phoneNumber);
+    };
+  
+    const handlePhoneNumberChange = (e) => {
+      const value = e.target.value.replace(/\D/g, '');
+      setPhoneNumber(value);
+      
+      // Validate phone number length
+      validatePhoneNumber(value, selectedCountry);
+      
+      onPhoneChange(selectedCountry.code + value);
+    };
+  
+    return (
+      <div className="mb-3">
+        <label className="text-black text-xs font-medium block mb-1">
+          Phone Number
+        </label>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-20 h-9 border border-gray-400 rounded-lg flex items-center justify-center bg-white text-xs hover:bg-gray-50 transition-colors"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {isDropdownOpen && (
-            <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-hidden">
-              <div className="p-2 border-b border-gray-200">
-                <input
-                  type="text"
-                  placeholder="Search countries..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+              <span className="mr-1">{selectedCountry.flag}</span>
+              <span className="text-xs">{selectedCountry.code}</span>
+              <svg
+                className="w-3 h-3 ml-1 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+  
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-hidden">
+                <div className="p-2 border-b border-gray-200">
+                  <input
+                    type="text"
+                    placeholder="Search countries..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="max-h-48 overflow-y-auto">
+                  {filteredCountries.map((country, index) => (
+                    <button
+                      key={`${country.code}-${country.name}-${index}`}
+                      type="button"
+                      onClick={() => handleCountrySelect(country)}
+                      className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                    >
+                      <span className="text-lg">{country.flag}</span>
+                      <span className="font-medium">{country.code}</span>
+                      <span className="text-gray-600">{country.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="max-h-48 overflow-y-auto">
-                {filteredCountries.map((country, index) => (
-                  <button
-                    key={`${country.code}-${country.name}-${index}`}
-                    type="button"
-                    onClick={() => handleCountrySelect(country)}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 transition-colors"
-                  >
-                    <span className="text-lg">{country.flag}</span>
-                    <span className="font-medium">{country.code}</span>
-                    <span className="text-gray-600">{country.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
+          
+          <input
+            type="tel"
+            placeholder={`Enter ${selectedCountry.phoneLength}-digit phone number`}
+            value={phoneNumber}
+            onChange={handlePhoneNumberChange}
+            className={`text-gray-600 border text-xs flex-1 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              phoneError ? 'border-red-500' : 'border-gray-400'
+            }`}
+          />
         </div>
-        
-        <input
-          type="tel"
-          placeholder="Enter phone number"
-          value={phoneNumber}
-          onChange={handlePhoneNumberChange}
-          className="text-gray-600 border text-xs flex-1 p-2 rounded-lg border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        {(phoneError || error) && (
+          <p className="text-red-500 text-xs mt-1">{phoneError || "Phone number is required"}</p>
+        )}
       </div>
-      {error && (
-        <p className="text-red-500 text-xs mt-1">Phone number is required</p>
-      )}
-    </div>
-  );
-};
+    );
+  };
 
 // Form Data Type
 type FormData = {
@@ -175,18 +249,18 @@ const Navbar: React.FC = () => {
 const HeroSection: React.FC = () => {
   return (
     <section className="flex flex-col items-center text-center py-12 relative">
-      <aside className="fixed right-0 top-40 max-sm:hidden z-10 transform translate-x-0">
-        <div className="flex flex-col items-end">
-          <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[16px] mt-5 origin-center whitespace-nowrap pt-40">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-          </div>
-        </div>
-      </aside>
+      <aside className="absolute right-0 top-0 max-sm:hidden z-10 transform translate-x-0">
+  <div className="flex flex-col items-end">
+    <img
+      src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+      alt="Side Logo"
+      className="w-[140px] h-[35px]"
+    />
+    <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+      <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+    </div>
+  </div>
+</aside>
       
       <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
         You had a dream.
@@ -523,6 +597,33 @@ const FormSection: React.FC = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const {login} = useAuth()
+  const [websiteError, setWebsiteError] = useState("");
+
+  const validateWebsiteUrl = (url) => {
+    if (!url) return true; // Optional field
+    
+    // Check if URL has a proper domain extension
+    const domainRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    const hasExtension = /\.[a-z]{2,}$/i.test(url.replace(/^https?:\/\//, ''));
+    
+    if (!hasExtension) {
+      return "Please enter a valid website URL with domain extension (e.g., .com, .org)";
+    }
+    
+    return true;
+  };
+
+  const handleWebsiteChange = (e) => {
+    const value = e.target.value;
+    setValue('businessWebsite', value);
+    
+    const validation = validateWebsiteUrl(value);
+    if (validation !== true) {
+      setWebsiteError(validation);
+    } else {
+      setWebsiteError("");
+    }
+  };
 
   const fetchVideos = async () => {
     try {
@@ -805,30 +906,13 @@ const FormSection: React.FC = () => {
   </div>
         
         <div className="bg-white rounded-xl border-2 border-gray-300 p-6 w-full max-w-md shadow-sm">
-          <h3 className="text-gray-800 text-xl font-semibold text-center mb-4">
-            WIN a Private Webinar and Q&A with Jeff
-          </h3>
+        <h3 className="text-gray-800 text-[17px] font-semibold text-center mb-4 font-walbaum"> WIN a Private Webinar and Q&A with Jeff </h3> <div className="flex w-full justify-center"><div className="flex flex-col items-start space-y-2 mb-4 text-left font-linear "> <div className="text-gray-800 text-xs font-medium flex items-start gap-2"> <Check size={16} strokeWidth={4} /> <span className="font-light">Exited with Double-Digit Multiples</span> </div> <div className="text-gray-800 text-xs font-medium flex items-start gap-2"> <Check size={16} strokeWidth={4} /> <span className="font-light">Achieved 25%+ Profit Margins</span> </div> <div className="text-gray-800 text-xs font-medium flex items-start gap-2"> <Check size={16} strokeWidth={4} /> <span className="font-light">Tax Smart Generational Wealth</span> </div> <div className="text-gray-800 text-xs font-medium flex items-start gap-2"> <Check size={16} strokeWidth={4} /> <span className="font-light">And more...</span> </div> </div></div>
           
-          <div className="flex flex-col items-center space-y-2 mb-4">
-            <div className="text-gray-800 text-xs font-medium">
-              Exited with Double-Digit Multiples
-            </div>
-            <div className="text-gray-800 text-xs font-medium">
-              Achieved 25%+ Profit Margins
-            </div>
-            <div className="text-gray-800 text-xs font-medium">
-              Tax Smart Generational Wealth
-            </div>
-            <div className="text-gray-800 text-xs font-medium">
-              And more...
-            </div>
-          </div>
-          
-          <div className="text-gray-800 text-sm font-semibold text-center mb-6">
+          <div className="text-gray-800 text-xs font-semibold text-center mb-6 font-walbaum">
             *11am EST, May 22/25 - Only 33 Spots Available
           </div>
 
-          <form onSubmit={handleSubmit(onFormSubmit)}>
+          <form onSubmit={handleSubmit(onFormSubmit)} className="font-linear">
             <div className="mb-3">
               <label className="text-black text-xs font-medium block mb-1">
                 Full Name
@@ -856,17 +940,25 @@ const FormSection: React.FC = () => {
                 />
               </div>
               
-              <div className="flex flex-col w-1/2">
-                <label className="text-black text-xs font-medium mb-1">
-                  Business Website
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter business website URL"
-                  className="text-gray-600 border text-xs w-full p-2 rounded-lg border-gray-400"
-                  {...register("businessWebsite")}
-                />
-              </div>
+                    <div className="flex flex-col w-1/2">
+            <label className="text-black text-xs font-medium mb-1">
+                Business Website
+            </label>
+            <input
+                type="text"
+                placeholder="Enter business website URL"
+                className={`text-gray-600 border text-xs w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                websiteError ? 'border-red-500' : 'border-gray-400'
+                }`}
+                {...register("businessWebsite", { 
+                validate: validateWebsiteUrl 
+                })}
+                onChange={handleWebsiteChange}
+            />
+            {websiteError && (
+                <p className="text-red-500 text-xs mt-1">{websiteError}</p>
+            )}
+            </div>
             </div>
 
             <PhoneInputDropdown 
@@ -883,7 +975,7 @@ const FormSection: React.FC = () => {
                 {...register("agreeToTerms", { required: true })}
                 aria-invalid={errors.agreeToTerms ? "true" : "false"}
               />
-              <label htmlFor="agreeToTerms" className="text-gray-700 text-xs">
+              <label htmlFor="agreeToTerms" className="text-gray-500 text-xs">
                 I agree to opt-in and accept the privacy policy.
               </label>
             </div>

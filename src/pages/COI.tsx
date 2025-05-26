@@ -1,5 +1,7 @@
 
+import { FilterBar } from '@/components/coi/FilterBar';
 import { useAuth } from '@/utils/AuthContext';
+import { Dot } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
 interface FormData {
@@ -25,6 +27,82 @@ interface PasswordPopupProps {
   loading: boolean;
   error: string;
 }
+
+interface CountryCode {
+    code: string;
+    country: string;
+    flag: string;
+    digits: number;
+    format?: string;
+  }
+
+  const countryCodes: CountryCode[] = [
+    { code: '+1', country: 'United States', flag: '🇺🇸', digits: 10 },
+    { code: '+1', country: 'Canada', flag: '🇨🇦', digits: 10 },
+    { code: '+44', country: 'United Kingdom', flag: '🇬🇧', digits: 10 },
+    { code: '+33', country: 'France', flag: '🇫🇷', digits: 10 },
+    { code: '+49', country: 'Germany', flag: '🇩🇪', digits: 11 },
+    { code: '+39', country: 'Italy', flag: '🇮🇹', digits: 10 },
+    { code: '+34', country: 'Spain', flag: '🇪🇸', digits: 9 },
+    { code: '+31', country: 'Netherlands', flag: '🇳🇱', digits: 9 },
+    { code: '+46', country: 'Sweden', flag: '🇸🇪', digits: 9 },
+    { code: '+47', country: 'Norway', flag: '🇳🇴', digits: 8 },
+    { code: '+45', country: 'Denmark', flag: '🇩🇰', digits: 8 },
+    { code: '+41', country: 'Switzerland', flag: '🇨🇭', digits: 9 },
+    { code: '+43', country: 'Austria', flag: '🇦🇹', digits: 10 },
+    { code: '+32', country: 'Belgium', flag: '🇧🇪', digits: 9 },
+    { code: '+351', country: 'Portugal', flag: '🇵🇹', digits: 9 },
+    { code: '+353', country: 'Ireland', flag: '🇮🇪', digits: 9 },
+    { code: '+358', country: 'Finland', flag: '🇫🇮', digits: 9 },
+    { code: '+91', country: 'India', flag: '🇮🇳', digits: 10 },
+    { code: '+86', country: 'China', flag: '🇨🇳', digits: 11 },
+    { code: '+81', country: 'Japan', flag: '🇯🇵', digits: 10 },
+    { code: '+82', country: 'South Korea', flag: '🇰🇷', digits: 10 },
+    { code: '+65', country: 'Singapore', flag: '🇸🇬', digits: 8 },
+    { code: '+60', country: 'Malaysia', flag: '🇲🇾', digits: 10 },
+    { code: '+66', country: 'Thailand', flag: '🇹🇭', digits: 9 },
+    { code: '+84', country: 'Vietnam', flag: '🇻🇳', digits: 9 },
+    { code: '+63', country: 'Philippines', flag: '🇵🇭', digits: 10 },
+    { code: '+62', country: 'Indonesia', flag: '🇮🇩', digits: 11 },
+    { code: '+61', country: 'Australia', flag: '🇦🇺', digits: 9 },
+    { code: '+64', country: 'New Zealand', flag: '🇳🇿', digits: 9 },
+    { code: '+7', country: 'Russia', flag: '🇷🇺', digits: 10 },
+    { code: '+380', country: 'Ukraine', flag: '🇺🇦', digits: 9 },
+    { code: '+48', country: 'Poland', flag: '🇵🇱', digits: 9 },
+    { code: '+420', country: 'Czech Republic', flag: '🇨🇿', digits: 9 },
+    { code: '+36', country: 'Hungary', flag: '🇭🇺', digits: 9 },
+    { code: '+40', country: 'Romania', flag: '🇷🇴', digits: 10 },
+    { code: '+359', country: 'Bulgaria', flag: '🇧🇬', digits: 9 },
+    { code: '+385', country: 'Croatia', flag: '🇭🇷', digits: 9 },
+    { code: '+381', country: 'Serbia', flag: '🇷🇸', digits: 9 },
+    { code: '+55', country: 'Brazil', flag: '🇧🇷', digits: 11 },
+    { code: '+52', country: 'Mexico', flag: '🇲🇽', digits: 10 },
+    { code: '+54', country: 'Argentina', flag: '🇦🇷', digits: 10 },
+    { code: '+56', country: 'Chile', flag: '🇨🇱', digits: 9 },
+    { code: '+57', country: 'Colombia', flag: '🇨🇴', digits: 10 },
+    { code: '+51', country: 'Peru', flag: '🇵🇪', digits: 9 },
+    { code: '+58', country: 'Venezuela', flag: '🇻🇪', digits: 10 },
+    { code: '+27', country: 'South Africa', flag: '🇿🇦', digits: 9 },
+    { code: '+234', country: 'Nigeria', flag: '🇳🇬', digits: 10 },
+    { code: '+254', country: 'Kenya', flag: '🇰🇪', digits: 9 },
+    { code: '+20', country: 'Egypt', flag: '🇪🇬', digits: 10 },
+    { code: '+212', country: 'Morocco', flag: '🇲🇦', digits: 9 },
+    { code: '+213', country: 'Algeria', flag: '🇩🇿', digits: 9 },
+    { code: '+216', country: 'Tunisia', flag: '🇹🇳', digits: 8 },
+    { code: '+218', country: 'Libya', flag: '🇱🇾', digits: 9 },
+    { code: '+971', country: 'UAE', flag: '🇦🇪', digits: 9 },
+    { code: '+966', country: 'Saudi Arabia', flag: '🇸🇦', digits: 9 },
+    { code: '+974', country: 'Qatar', flag: '🇶🇦', digits: 8 },
+    { code: '+973', country: 'Bahrain', flag: '🇧🇭', digits: 8 },
+    { code: '+965', country: 'Kuwait', flag: '🇰🇼', digits: 8 },
+    { code: '+968', country: 'Oman', flag: '🇴🇲', digits: 8 },
+    { code: '+961', country: 'Lebanon', flag: '🇱🇧', digits: 8 },
+    { code: '+962', country: 'Jordan', flag: '🇯🇴', digits: 9 },
+    { code: '+98', country: 'Iran', flag: '🇮🇷', digits: 10 },
+    { code: '+90', country: 'Turkey', flag: '🇹🇷', digits: 10 },
+    { code: '+972', country: 'Israel', flag: '🇮🇱', digits: 9 }
+  ];
+  
 
 // Updated PasswordPopup component with cross icon and validation
 const PasswordPopup: React.FC<PasswordPopupProps> = ({
@@ -282,6 +360,9 @@ const COI: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [popupInterval, setPopupInterval] = useState<NodeJS.Timeout | null>(null);
   const {login} = useAuth()
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+1');
+const [websiteError, setWebsiteError] = useState('');
+const [phoneError, setPhoneError] = useState('');
 
   // Check for stored form data on component mount
   useEffect(() => {
@@ -312,12 +393,57 @@ const COI: React.FC = () => {
     };
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
+    if (name === 'website') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
+      // Website validation
+      if (value && !value.includes('.com') && !value.includes('.org') && !value.includes('.net') && 
+          !value.includes('.edu') && !value.includes('.gov') && !value.includes('.co.')) {
+        setWebsiteError('Website should include a valid domain extension (e.g., .com)');
+      } else {
+        setWebsiteError('');
+      }
+    } else if (name === 'phone') {
+      // Remove non-digit characters and apply length limit based on selected country
+      const digitsOnly = value.replace(/\D/g, '');
+      const selectedCountry = countryCodes.find(country => country.code === selectedCountryCode);
+      const maxDigits = selectedCountry?.digits || 10;
+      
+      const limitedValue = digitsOnly.slice(0, maxDigits);
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: limitedValue
+      }));
+      
+      // Phone validation
+      if (limitedValue && limitedValue.length !== maxDigits) {
+        setPhoneError(`Phone number should be exactly ${maxDigits} digits for ${selectedCountry?.country || 'selected country'}`);
+      } else {
+        setPhoneError('');
+      }
+    } else if (name === 'countryCode') {
+      setSelectedCountryCode(value);
+      // Reset phone error when country changes
+      setPhoneError('');
+      // Clear phone number when country changes to avoid confusion
+      setFormData(prev => ({
+        ...prev,
+        phone: ''
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -339,6 +465,18 @@ const COI: React.FC = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
+      return;
+    }
+    
+    // Website validation
+    if (formData.website && websiteError) {
+      setError('Please enter a valid website URL');
+      return;
+    }
+    
+    // Phone validation
+    if (phoneError) {
+      setError('Please enter a valid phone number');
       return;
     }
     
@@ -577,9 +715,11 @@ const COI: React.FC = () => {
       content: (
         <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
           <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
-            <p>75% of business owners want to exit their businesses within the next ten years.</p>
-            <p>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
-            <p>79% of business owners plan to exit their businesses in the next 10 years or less.</p>
+            <p className='flex'><Dot size={30}/>75% of business owners want to exit their businesses within the next ten years.</p>
+            <p className='flex'><Dot size={40}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
+            <p className='flex'><Dot size={30}/>79% of business owners plan to exit their businesses in the next 10 years or less.</p>
+            <p className='flex'><Dot size={30}/>48% of business owners who want to sell have no formal exit strategy.</p>
+            <p className='flex'><Dot size={30}/>74% to 57% of business owners, depending on the deal size, did no exit planning.</p>
           </div>
           <div className="flex flex-col items-center gap-2 flex-shrink-0">
             <div className="w-24 h-20 bg-gray-600 rounded-lg flex items-center justify-center">
@@ -599,8 +739,7 @@ const COI: React.FC = () => {
       content: (
         <div className="bg-neutral-100 px-8 py-6 max-sm:p-4">
           <div className="text-gray-600 text-base leading-relaxed space-y-3">
-            <p>Many business owners fail to plan their exit strategy early enough, leading to missed opportunities and reduced valuations.</p>
-            <p>Without proper planning, owners often accept lower offers or face unexpected challenges during the transition process.</p>
+            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
           </div>
         </div>
       )
@@ -610,10 +749,17 @@ const COI: React.FC = () => {
       number: '03', 
       title: 'Importance of early planning',
       content: (
-        <div className="bg-neutral-100 px-8 py-6 max-sm:p-4">
-          <div className="text-gray-600 text-base leading-relaxed space-y-3">
-            <p>Early planning allows business owners to maximize their company's value and ensure a smooth transition.</p>
-            <p>Strategic planning 3-5 years before exit can significantly increase valuation multiples and reduce tax burdens.</p>
+        <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
+          <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
+            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+            <div className="w-24 h-20 bg-gray-600 rounded-lg flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
+              </svg>
+            </div>
+            <div className="text-blue-600 text-xs font-medium">report.pdf</div>
           </div>
         </div>
       )
@@ -649,10 +795,19 @@ const COI: React.FC = () => {
       number: '06', 
       title: 'Family Involvement',
       content: (
-        <div className="bg-neutral-100 px-8 py-6 max-sm:p-4">
-          <div className="text-gray-600 text-base leading-relaxed space-y-3">
-            <p>Family businesses face unique challenges in succession planning and maintaining harmony during transitions.</p>
-            <p>Clear communication and professional guidance are essential for successful family business transfers.</p>
+        <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
+          <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
+            <p className='flex'><Dot size={30}/>75% of business owners want to exit their businesses within the next ten years.</p>
+            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>  
+            <p className='flex'><Dot size={30}/>79% of business owners plan to exit their businesses in the next 10 years or less.</p>
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+            <div className="w-24 h-20 bg-gray-600 rounded-lg flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
+              </svg>
+            </div>
+            <div className="text-blue-600 text-xs font-medium">report.pdf</div>
           </div>
         </div>
       )
@@ -662,10 +817,18 @@ const COI: React.FC = () => {
       number: '07', 
       title: 'Market and timing',
       content: (
-        <div className="bg-neutral-100 px-8 py-6 max-sm:p-4">
-          <div className="text-gray-600 text-base leading-relaxed space-y-3">
-            <p>Market conditions significantly impact business valuations and the availability of qualified buyers.</p>
-            <p>Timing the exit to align with favorable market conditions can increase sale proceeds by 20-40%.</p>
+        <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
+          <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
+            <p className='flex'><Dot size={30}/>75% of business owners want to exit their businesses within the next ten years.</p>
+            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+            <div className="w-24 h-20 bg-gray-600 rounded-lg flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
+              </svg>
+            </div>
+            <div className="text-blue-600 text-xs font-medium">report.pdf</div>
           </div>
         </div>
       )
@@ -689,14 +852,14 @@ const COI: React.FC = () => {
     <div className="min-h-screen relative">
       <main className="container mx-auto px-6 py-8 max-w-7xl">
       <section className="w-full flex justify-center items-center px-0 py-20">
-  <div className="w-full max-w-[957px] px-5 text-center">
-    <h1 className="text-[#D02C31] text-6xl max-md:text-5xl max-sm:text-[32px] font-walbaum font-thin mb-5">
+  <div className="w-full max-w-[1000px] px-5 text-center">
+    <h1 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-walbaum font-light mb-5">
       Your value and wealth is at risk,
     </h1>
-    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-walbaum font-light mb-5">
+    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-walbaum mb-5">
       more and more each day
     </h2>
-    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px] font-light">
+    <h2 className="text-[#D02C31] text-7xl max-md:text-5xl max-sm:text-[32px]">
       as your exit nears.
     </h2>
   </div>
@@ -704,25 +867,25 @@ const COI: React.FC = () => {
 
         
        {/* Value Proposition */}
-<section className="flex flex-col justify-center items-center gap-6 max-w-[1036px] w-full mx-auto px-0 py-10 max-sm:p-5">
-  <h3 className="text-black text-2xl font-semibold text-center max-w-[726px] w-full max-sm:text-lg">
+<section className="flex flex-col justify-center items-center gap-6 max-w-[1036px] w-full mx-auto px-0 py-10 max-sm:p-5 font-linear">
+  <h3 className="text-black text-2xl text-center max-w-[800px] w-full max-sm:text-lg">
     When 84% of your business value is locked inside your intangible assets
   </h3>
-  <p className="text-[#595959] text-center text-2xl font-normal max-w-[1036px] w-full max-sm:text-lg">
+  <p className="text-[#6f6f6f] text-center text-2xl font-normal max-w-[1036px] w-full max-sm:text-lg">
     (your brand, goodwill, strategic advantage, growth potential, intellectual property, human capital etc)
   </p>
-  <div className="text-black text-center text-2xl font-semibold max-w-[857px] w-full max-sm:text-lg">
+  <div className="text-black text-center text-2xl max-w-[900px] w-full max-sm:text-lg">
     <p>your business value and generational wealth is at risk – unless you unlock that value. ..</p>
     <p>maximize it, and monetize it tax effectively, and</p>
     <p>have ALL YOUR PEOPLE help you do that</p>
   </div>
-  <p className="text-black text-2xl font-semibold text-center max-w-[228px] w-full max-sm:text-lg">
+  <p className="text-black text-2xl text-center max-w-[300px] w-full max-sm:text-lg">
     (you will see why here)
   </p>
 </section>
 
 <section className="w-full flex flex-col justify-center items-center px-0 py-20">
-  <div className="w-full max-w-[843px] text-center">
+  <div className="w-full max-w-[900px] text-center">
     <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
       You didn't get into business
     </h2>
@@ -733,12 +896,12 @@ const COI: React.FC = () => {
 </section>
 
 <section className="w-full flex flex-col justify-center items-center px-0 py-20">
-  <div className="w-full max-w-[828px] text-center">
+  <div className="w-full max-w-[900px] text-center">
     <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
       But here's why it's easier to
     </h2>
     <h2 className="text-[#777] text-7xl font-normal mt-5 max-w-[736px] mx-auto max-md:text-5xl max-sm:text-[32px] font-walbaum">
-      LOSE than it is to WIN.
+      <span className='text-[#D02C31]'>LOSE</span> than it is to <span className='text-[#007C7A]'>WIN.</span>
     </h2>
   </div>
 </section>
@@ -768,13 +931,13 @@ const COI: React.FC = () => {
         {/* Main Content Layout */}
         <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center py-20">
           {/* Registration Form */}
-          <div className="w-full max-w-sm bg-white p-8 px-4 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0">
-            <h2 className="text-gray-700 text-center text-lg font-thin mb-6">
+          <div className="w-full max-w-sm bg-white p-8 px-3 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0">
+            <h2 className="text-[#2B2B2B] text-center tracking-wide mb-6 font-walbaum fill-white">
               WIN a Private Webinar and Q&A with Jeff
             </h2>
             
             {/* Features List */}
-            <div className="space-y-3 mb-6">
+            <div className="space-y-3 mb-6 pl-2">
               {[
                 'Exited with Double-Digit Multiples',
                 'Achieved 25%+ Profit Margins',
@@ -785,12 +948,12 @@ const COI: React.FC = () => {
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
                     <path d="M4.07573 11.8036L0.175729 7.44535C-0.0585762 7.18351 -0.0585762 6.75898 0.175729 6.49711L1.02424 5.54888C1.25854 5.28702 1.63846 5.28702 1.87277 5.54888L4.5 8.48478L10.1272 2.19638C10.3615 1.93454 10.7415 1.93454 10.9758 2.19638L11.8243 3.14461C12.0586 3.40645 12.0586 3.83098 11.8243 4.09285L4.92426 11.8036C4.68994 12.0655 4.31004 12.0655 4.07573 11.8036Z" fill="black"/>
                   </svg>
-                  <span>{feature}</span>
+                  <span className='font-linear text-xs text-[#2B2B2B]'>{feature}</span>
                 </div>
               ))}
             </div>
             
-            <div className="text-gray-800 text-center text-sm font-semibold mb-6 rounded-lg">
+            <div className="text-gray-800 text-center text-sm font-semibold mb-6 rounded-lg font-walbaum">
               *11am EST, May 22/25 - Only 33 Spots Available
             </div>
             
@@ -800,107 +963,123 @@ const COI: React.FC = () => {
               </div>
             )}
             
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div>
-                <label className="block text-black text-sm font-medium mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="Enter your full name"
-                  className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-black text-sm font-medium mb-2">Business Email *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter your business email"
-                  className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-black text-sm font-medium mb-2">Business Website</label>
-                <input
-                  type="text"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleInputChange}
-                  placeholder="Enter your website URL"
-                  className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-black text-sm font-medium mb-2">Phone Number *</label>
-                <div className="flex gap-2">
-                  <select className="w-20 h-10 border border-gray-400 rounded-lg text-sm px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+33">🇫🇷 +33</option>
-                    <option value="+49">🇩🇪 +49</option>
-                    <option value="+81">🇯🇵 +81</option>
-                    <option value="+86">🇨🇳 +86</option>
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+7">🇷🇺 +7</option>
-                    <option value="+55">🇧🇷 +55</option>
-                  </select>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter phone number"
-                    className="flex-1 h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3 py-4">
-                <input
-                  type="checkbox"
-                  id="privacy"
-                  name="privacy"
-                  checked={formData.privacy}
-                  onChange={handleInputChange}
-                  className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  required
-                />
-                <label htmlFor="privacy" className="text-sm text-gray-600 leading-relaxed">
-                  I agree to opt-in and accept the privacy policy. *
-                </label>
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full text-white text-base font-semibold bg-black py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none"
-              >
-                I want a chance to WIN !!
-              </button>
-            </form>
+            <form onSubmit={handleFormSubmit} className="space-y-4 font-linear">
+  <div>
+    <label className="block text-black text-sm font-medium mb-2">Full Name</label>
+    <input
+      type="text"
+      name="fullName"
+      value={formData.fullName}
+      onChange={handleInputChange}
+      placeholder="Enter your full name"
+      className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      required
+    />
+  </div>
+  
+  <div>
+    <label className="block text-black text-sm font-medium mb-2">Business Email</label>
+    <input
+      type="email"
+      name="email"
+      value={formData.email}
+      onChange={handleInputChange}
+      placeholder="Enter your business email"
+      className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      required
+    />
+  </div>
+  
+  <div>
+    <label className="block text-black text-sm font-medium mb-2">Business Website</label>
+    <input
+      type="text"
+      name="website"
+      value={formData.website}
+      onChange={handleInputChange}
+      placeholder="Enter your website URL (e.g., example.com)"
+      className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+        websiteError ? 'border-red-400' : 'border-gray-400'
+      }`}
+    />
+    {websiteError && (
+      <p className="text-red-500 text-xs mt-1">{websiteError}</p>
+    )}
+  </div>
+  
+  <div>
+    <label className="block text-black text-sm font-medium mb-2">Phone Number</label>
+    <div className="flex gap-2">
+      <select 
+        name="countryCode"
+        value={selectedCountryCode}
+        onChange={handleInputChange}
+        className="w-24 h-10 border border-gray-400 rounded-lg text-xs px-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      >
+        {countryCodes.map((country, index) => (
+          <option key={`${country.code}-${index}`} value={country.code}>
+            {country.flag} {country.code}
+          </option>
+        ))}
+      </select>
+      <div className="flex-1">
+        <input
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleInputChange}
+          placeholder={`Enter ${countryCodes.find(c => c.code === selectedCountryCode)?.digits || 10} digit number`}
+          className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+            phoneError ? 'border-red-400' : 'border-gray-400'
+          }`}
+          required
+        />
+        {phoneError && (
+          <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+        )}
+      </div>
+    </div>
+  </div>
+  
+  <div className="flex items-start gap-3 py-4 items-center">
+    <input
+      type="checkbox"
+      id="privacy"
+      name="privacy"
+      checked={formData.privacy}
+      onChange={handleInputChange}
+      className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-black border"
+      required
+    />
+    <label htmlFor="privacy" className="text-xs text-gray-500 leading-relaxed">
+      I agree to opt-in and accept the privacy policy.
+    </label>
+  </div>
+  
+  <button
+    type="submit"
+    disabled={websiteError !== '' || phoneError !== ''}
+    className="w-full text-white text-base font-semibold bg-black py-4 px-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none font-linear disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    I want a chance to WIN !!
+  </button>
+</form>
           </div>
           
           {/* Accordion Sections */}
           <div className="w-full max-w-4xl">
-            <div className="space-y-1 border border-gray-400 rounded-lg overflow-hidden shadow-lg">
+            <div className="space-y-1 border border-gray-400 rounded-2xl overflow-hidden shadow-lg">
+            <FilterBar activeFilter={''} onFilterChange={function (filterId: string): void {
+                          throw new Error('Function not implemented.');
+                      } } />
               {sections.map((section) => (
-                <div key={section.id} className="bg-white">
+                <div key={section.id} className="bg-white font-linear">
                   <button
-                    className="flex items-center gap-6 w-full px-8 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50"
+                    className="flex items-center gap-2 w-full px-8 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50 border-b-[.8px] border-black"
                     onClick={() => setOpenSection(openSection === section.id ? '' : section.id)}
                   >
-                    <span className="text-black text-lg font-semibold min-w-8">{section.number}</span>
-                    <span className="text-gray-900 text-xl font-medium flex-1">{section.title}</span>
+                    <span className="text-black text-xl min-w-8">{section.number}</span>
+                    <span className="text-black text-xl flex-1">{section.title}</span>
                     <svg
                       className={`transform transition-transform duration-200 flex-shrink-0 ${
                         openSection === section.id ? 'rotate-180' : ''
