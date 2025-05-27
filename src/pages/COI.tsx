@@ -364,8 +364,20 @@ const COI: React.FC = () => {
 const [websiteError, setWebsiteError] = useState('');
 const [phoneError, setPhoneError] = useState('');
 
+const ok = async ()=>{
+    const response = await fetch('https://intern-project-final-1.onrender.com' + '/category-statistics/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+    const data = await response.json()
+    console.log(data)
+}
+
   // Check for stored form data on component mount
   useEffect(() => {
+    ok()
     const storedFormData = localStorage.getItem('coiFormData');
     if (storedFormData) {
       try {
@@ -1108,18 +1120,18 @@ const [phoneError, setPhoneError] = useState('');
           </div>
         </div>
       </main>
-      <aside className="fixed right-0 top-40 max-sm:hidden z-10 transform translate-x-0">
-        <div className="flex flex-col items-end">
-          <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[16px] mt-5 origin-center whitespace-nowrap pt-40">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-          </div>
+      <aside className="absolute right-4 top-4 z-10">
+      <div className="flex flex-col items-end">
+        <img
+          src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+          alt="Side Logo"
+          className="w-[140px] h-[35px]"
+        />
+        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+          <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
         </div>
-      </aside>
+      </div>
+    </aside>
 
       {/* Password Popup */}
       <PasswordPopup

@@ -1200,18 +1200,18 @@ const Hero = () => {
 // SideBar Component
 const SideBar = ({ logoUrl }) => {
   return (
-    <aside className="fixed right-0 top-40 max-sm:hidden z-10 transform translate-x-0">
-        <div className="flex flex-col items-end">
-          <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[16px] mt-5 origin-center whitespace-nowrap pt-40">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-          </div>
+    <aside className="absolute right-4 top-4 z-10">
+      <div className="flex flex-col items-end">
+        <img
+          src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+          alt="Side Logo"
+          className="w-[140px] h-[35px]"
+        />
+        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+          <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
         </div>
-      </aside>
+      </div>
+    </aside>
   );
 };
 

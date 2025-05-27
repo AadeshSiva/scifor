@@ -96,6 +96,22 @@ interface RegisterFormProps {
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  const isValidWebsiteUrl = (url: string): boolean => {
+    try {
+      // Add protocol if missing
+      const urlToTest = url.startsWith('http://') || url.startsWith('https://') 
+        ? url 
+        : `https://${url}`;
+      
+      const urlObj = new URL(urlToTest);
+      
+      // Check if hostname ends with .com
+      return urlObj.hostname.toLowerCase().endsWith('.com');
+    } catch {
+      return false;
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -168,8 +184,10 @@ interface RegisterFormProps {
     }
     
     if (!formData.website_name.trim()) {
-      newErrors.website_name = 'Company website is required';
-    }
+        newErrors.website_name = 'Company website is required';
+      } else if (!isValidWebsiteUrl(formData.website_name.trim())) {
+        newErrors.website_name = 'Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)';
+      }
     
     if (hasLinkedIn === null) {
       newErrors.linkedin = 'Please specify if you have a LinkedIn account';
@@ -462,15 +480,15 @@ interface RegisterFormProps {
           <span className="text-black ml-1">*</span>
         </div>
         <input
-          type="text"
-          name="website_name"
-          placeholder="Enter your Company website URL"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.website_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'}`}
-          value={formData.website_name}
-          onChange={handleInputChange}
-          disabled={loading}
-          required
-        />
+            type="text"
+            name="website_name"
+            placeholder="Enter your Company website URL (e.g., example.com)"
+            className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.website_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'}`}
+            value={formData.website_name}
+            onChange={handleInputChange}
+            disabled={loading}
+            required
+            />
         {errors.website_name && (
           <span className="text-red-500 text-sm">{errors.website_name}</span>
         )}

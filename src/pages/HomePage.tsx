@@ -249,46 +249,46 @@ const Navbar: React.FC = () => {
 const HeroSection: React.FC = () => {
   return (
     <section className="flex flex-col items-center text-center py-12 relative">
-      <aside className="absolute right-0 top-0 max-sm:hidden z-10 transform translate-x-0">
-  <div className="flex flex-col items-end">
-    <img
-      src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-      alt="Side Logo"
-      className="w-[140px] h-[35px]"
-    />
-    <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-      <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+    <aside className="absolute right-4 top-4 z-10">
+      <div className="flex flex-col items-end">
+        <img
+          src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+          alt="Side Logo"
+          className="w-[140px] h-[35px]"
+        />
+        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+          <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+        </div>
+      </div>
+    </aside>
+    
+    <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
+      You had a dream.
+    </h1>
+    
+    <h2 className="text-gray-600 text-6xl font-normal mb-10 w-full max-w-4xl mx-auto font-walbaum font-thin">
+      His came true. What about yours?
+    </h2>
+    
+    <div className="mb-3 text-xl">
+      <span className="font-semibold text-red-600">80%</span>{" "}
+      <span className="font-normal">businesses don't sell</span>
     </div>
-  </div>
-</aside>
-      
-      <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
-        You had a dream.
-      </h1>
-      
-      <h2 className="text-gray-600 text-6xl font-normal mb-10 w-full max-w-4xl mx-auto font-walbaum font-thin">
-        His came true. What about yours?
-      </h2>
-      
-      <div className="mb-3 text-xl">
-        <span className="font-semibold text-red-600">80%</span>{" "}
-        <span className="font-normal">businesses don't sell</span>
-      </div>
-      
-      <div className="mb-3 text-xl">
-        <span className="font-semibold text-red-600">6%</span>{" "}
-        <span className="font-normal">only got fair market value</span>
-      </div>
-      
-      <div className="mb-6 text-xl">
-        <span className="font-semibold text-red-600">78%</span>{" "}
-        <span className="font-normal">don't have the right advisors</span>
-      </div>
-      
-      <p className="text-black font-bold text-xl max-w-2xl mx-auto">
-        Our Solution helped him defy these odds. You can too - for FREE !
-      </p>
-    </section>
+    
+    <div className="mb-3 text-xl">
+      <span className="font-semibold text-red-600">6%</span>{" "}
+      <span className="font-normal">only got fair market value</span>
+    </div>
+    
+    <div className="mb-6 text-xl">
+      <span className="font-semibold text-red-600">78%</span>{" "}
+      <span className="font-normal">don't have the right advisors</span>
+    </div>
+    
+    <p className="text-black font-bold text-xl max-w-2xl mx-auto">
+      Our Solution helped him defy these odds. You can too - for FREE !
+    </p>
+  </section>
   );
 };
 
@@ -1277,8 +1277,8 @@ const Index: React.FC = () => {
   
     return (
       <div className="">
-        <div className="max-w-7xl w-full px-4 mx-auto">
-          <HeroSection />
+         <HeroSection />
+        <div className="max-w-7xl w-full mx-auto">
           <div className="relative">
             <FormSection onVideosLoaded={setVideos} />
             <StorySection />

@@ -5,6 +5,9 @@ import { PasswordChangeForm } from '@/components/settings/PasswordChangeForm';
 import EmailSettings from '@/components/settings/EmailSettings';
 import ChangeUsernameForm from '@/components/settings/ChangeUsernameForm';
 import { AlertCircle, Calendar, CalendarHeart, ChartNoAxesColumn, House, MessageSquare, NotepadText, Search, SendHorizonal, Settings, Sticker } from 'lucide-react';
+import { useAuth } from '@/utils/AuthContext';
+import { HeroSection } from '@/components/chat/LivePage';
+import PinnedMessages from '@/components/chat/PinnedMessage';
 
 const filterAbusiveContent = async (text) => {
   try {
@@ -60,9 +63,10 @@ interface PollData {
 }
 
 const Chat = () => {
-  const userName = "John";
   const [message, setMessage] = useState('');
   const [display,setDisplay] = useState('chat')
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const [userName,setUsername] = useState('')
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -110,12 +114,16 @@ const Chat = () => {
   const [pinnedMessages, setpinnedMessages] = useState([
     {
       id: 1,
+      messageId: 1, // Add this field to link to original message
       text: "Friendly reminder: Keep it respectful and on-topic. Everyone's voice matters here — even behind a mask.",
+      date: "Today",
       isPinned: true
     },
     {
       id: 2,
+      messageId: 2, // Add this field to link to original message
       text: "Team meeting scheduled for Friday at 2 PM EST.",
+      date: "Today",
       isPinned: true
     }
   ]);
@@ -135,6 +143,83 @@ const Chat = () => {
     ],
     allowMultipleAnswers: false,
   });
+  const [showPinnedMessagesPage, setShowPinnedMessagesPage] = useState(false);
+  useEffect(() => {
+    if (user && user.full_name) {
+      setUsername(user.full_name);
+      
+      // Initialize messages with the correct username
+      setMessages([
+        {
+          id: 1,
+          sender: "Alen McCraw",
+          text: "Hello! I'm your AI assistant. How can I help you today?",
+          time: "10:30 AM",
+          isUser: false
+        },
+        {
+          id: 2,
+          sender: user.full_name, // Use the actual username here
+          text: "Making good progress! I'll share with you",
+          time: "10:32 AM",
+          isUser: true
+        },
+        {
+          id: 3,
+          sender: "Alen McCraw",
+          text: "Sure! Let me share the details now",
+          time: "10:33 AM",
+          isUser: false
+        },
+        {
+          id: 4,
+          sender: user.full_name, // Use the actual username here
+          text: "I've been working on the project all day. What do you think about adding more features to the dashboard?",
+          time: "10:35 AM",
+          isUser: true
+        },
+        {
+          id: 5,
+          sender: "Sarah Johnson",
+          text: "That sounds like a great idea! We could include analytics and reporting features.",
+          time: "10:36 AM",
+          isUser: false
+        },
+        {
+          id: 6,
+          sender: "Michael Chen",
+          text: "I agree with Sarah. Let's discuss this in our next meeting.",
+          time: "10:37 AM",
+          isUser: false
+        }
+      ]);
+    }
+  }, [user]);
+
+  const jumpToMessage = (messageId) => {
+    setDisplay('chat'); // Switch back to chat first
+    setTimeout(() => {
+      const messageElement = document.getElementById(`message-${messageId}`);
+      if (messageElement) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        messageElement.classList.add('highlight-message');
+        setTimeout(() => {
+          messageElement.classList.remove('highlight-message');
+        }, 2000);
+      }
+    }, 100); // Small delay to ensure chat is rendered
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   
   const messagesEndRef = useRef(null);
 
@@ -362,10 +447,12 @@ const Chat = () => {
   
   const handlePinMessage = (messageId) => {
     const messageToPin = messages.find(msg => msg.id === messageId);
-    if (messageToPin) {
+    if (messageToPin && !pinnedMessages.some(pm => pm.messageId === messageId)) {
       setpinnedMessages([...pinnedMessages, {
         id: pinnedMessages.length + 1,
+        messageId: messageId, // Link to original message
         text: messageToPin.text,
+        date: "Today", // You can make this dynamic based on message date
         isPinned: true
       }]);
     }
@@ -384,16 +471,16 @@ const Chat = () => {
   };
 
   return (
-    <div className="bg-white h-screen flex overflow-hidden">
+    <div className="bg-white h-[calc(100vh-86px)] flex overflow-hidden">
       {/* Sidebar */}
       {showSidebar && (
-        <nav className="w-[300px] flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 h-full border-r">
-          <div className="flex items-center gap-2.5 px-6 py-6">
+  <nav className="w-[300px] flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 h-full border-r">
+          <div className="flex items-center gap-2.5 px-6 py-4">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
-              {userName.charAt(0)}
+              {(userName || user?.full_name || 'U').charAt(0)}
             </div>
             <div className=" text-black font-normal font-linear">
-              Welcome {userName} 👋
+              Welcome {userName || user?.full_name || 'User'} 👋
             </div>
           </div>
 
@@ -404,11 +491,11 @@ const Chat = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto flex flex-col gap-0.5">
+          <div className="flex-1 overflow-y-auto flex flex-col">
             {getMenuItems().map((item) => (
               <div 
                 key={item.id} 
-                className={`flex items-center gap-2.5 px-6 py-3 hover:bg-white cursor-pointer transition-colors ${item.id === 1 ? 'bg-neutral-200' : 'bg-neutral-100'}`}
+                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${item.id === 1 ? 'bg-neutral-200' : 'bg-neutral-100'}`}
               >
                 <NotepadText />
                 <div className="font-linear">
@@ -433,8 +520,13 @@ const Chat = () => {
       )}
       
       {display==='chat'?
-      <main className="flex-1 flex flex-col h-full">
+      <main className="flex-1 flex flex-col h-full max-h-[calc(100vh-86px)]">
         {/* Chat Header */}
+        {!isAuthenticated ? (
+      <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
+      <HeroSection />
+    </div>
+    ) :(<>
         <header className="flex items-center justify-between px-6 py-4 border-b border-[rgba(158,158,158,0.3)] bg-white pb-6">
           <div className="flex items-center gap-4">
             {!showSidebar && (
@@ -504,41 +596,60 @@ const Chat = () => {
         </div>)}
         
         {/* Pinned Messages */}
-        {showPin&&(<div className="bg-neutral-100 shadow-[0px_2px_6px_rgba(0,0,0,0.1)] flex items-center px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 text-[10px] font-medium">
-            <div className="bg-black w-1 h-5 rounded-full" />
-            <div className="text-black">Pinned Messages ({pinnedMessages.length})</div>
-          </div>
-          <div className="flex items-center gap-3 mt-1 text-xs text-[#555]">
-            <div className="bg-[rgba(217,217,217,1)] w-1 h-5 rounded-full" />
-            <div className="truncate pr-4 max-w-full"> {/* Add max-w-full to avoid overflow */}
-              {pinnedMessages[currentPinnedMessage]?.text}
-            </div>
-          </div>
-        </div>
-          <button 
-            aria-label="Pin Message" 
-            className="p-2 hover:bg-white rounded-full flex-shrink-0"
-            onClick={() => setCurrentPinnedMessage((currentPinnedMessage + 1) % pinnedMessages.length)}
-          >
-            <svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14 11V3h.5C15.33 3 16 2.33 16 1.5S15.33 0 14.5 0h-9C4.67 0 4 .67 4 1.5S4.67 3 5.5 3H6v8c0 2.97-2.16 5-5 5v2h7v7l1 1 1-1v-7h7v-2c-2.84 0-5-2.03-5-5z" fill="#555"/>
-            </svg>
-          </button>
-        </div>)}
+        {showPin && (
+  <div className="bg-neutral-100 shadow-[0px_2px_6px_rgba(0,0,0,0.1)] flex items-center px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
+    <div className="flex-1">
+      <div className="flex items-center gap-3 text-[10px] font-medium">
+        <div className="bg-black w-1 h-5 rounded-full" />
+        <div className="text-black">Pinned Messages ({pinnedMessages.length})</div>
+      </div>
+      <div className="flex items-center gap-3 mt-1 text-xs text-[#555]">
+        <div className="bg-[rgba(217,217,217,1)] w-1 h-5 rounded-full" />
+        <button 
+          className="truncate pr-4 max-w-full hover:underline cursor-pointer text-left"
+          onClick={() => jumpToMessage(pinnedMessages[currentPinnedMessage]?.messageId)}
+        >
+          {pinnedMessages[currentPinnedMessage]?.text}
+        </button>
+      </div>
+    </div>
+    <div className="flex items-center gap-2">
+      {/* View All Pinned Messages Button */}
+      <button 
+        aria-label="View All Pinned Messages" 
+        className="p-2 hover:bg-white rounded-full flex-shrink-0"
+        onClick={() => setDisplay('pinnedMessages')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" fill="#555"/>
+        </svg>
+      </button>
+      
+      {/* Next Pinned Message Button */}
+      <button 
+        aria-label="Next Pinned Message" 
+        className="p-2 hover:bg-white rounded-full flex-shrink-0"
+        onClick={() => setCurrentPinnedMessage((currentPinnedMessage + 1) % pinnedMessages.length)}
+      >
+        <svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 11V3h.5C15.33 3 16 2.33 16 1.5S15.33 0 14.5 0h-9C4.67 0 4 .67 4 1.5S4.67 3 5.5 3H6v8c0 2.97-2.16 5-5 5v2h7v7l1 1 1-1v-7h7v-2c-2.84 0-5-2.03-5-5z" fill="#555"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
         
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4" style={{ scrollBehavior: 'smooth' }}>
+        <div className="flex-1 overflow-y-auto p-4 min-h-0" style={{ scrollBehavior: 'smooth' }}>
           <div className="text-[#555] self-center border border-[#9E9E9E] min-h-8 w-auto gap-2.5 text-sm font-normal mt-4 mx-auto px-3 py-1 rounded-[40px] border-solid flex justify-center items-center max-w-24">
             Today
           </div>
 
           <div className="flex flex-col space-y-6 mt-6 px-4">
-            {messages.filter(msg => 
-              searchQuery ? msg.text.toLowerCase().includes(searchQuery.toLowerCase()) : true
-            ).map((msg) => (
-              <div key={msg.id} className="flex flex-col">
+          {messages.filter(msg => 
+  searchQuery ? msg.text.toLowerCase().includes(searchQuery.toLowerCase()) : true
+).map((msg) => (
+  <div key={msg.id} id={`message-${msg.id}`} className="flex flex-col message-item">
                 {msg.isPoll ? (
   // Poll Message
   <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
@@ -887,8 +998,24 @@ const Chat = () => {
       </div>
     </div>
   </div>
+        )}
+  </>
 )}
       </main>:null}
+      {display === "pinnedMessages" ? (
+  <main className="flex-1 flex flex-col h-full max-h-[calc(100vh-86px)]">
+    <PinnedMessages 
+      messages={pinnedMessages.map(pm => ({
+        date: pm.date,
+        content: pm.text,
+        messageId: pm.messageId
+      }))}
+      totalMessages={pinnedMessages.length}
+      onClose={() => setDisplay('chat')}
+      onJumpToMessage={jumpToMessage}
+    />
+  </main>
+) : null}
       {display==="setting"?<Setting setDisplay={setDisplay}/>:null}
       {display==="profile"?<ProfileForm setDisplay={setDisplay}/>:null}
       {display==="password"?<PasswordChangeForm/>:null}
