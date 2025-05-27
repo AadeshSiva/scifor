@@ -173,3 +173,11 @@
   .message-item {
     transition: background-color 0.3s ease, border 0.3s ease;
   }
+
+  @media (max-width: 1024px) {
+    .fixed.top-5.right-5 {
+      position: relative !important;
+      top: 0 !important;
+      right: 0 !important;
+    }
+  }

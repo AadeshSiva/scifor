@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (response.ok) {
         const userData = await response.json();
         console.log(userData)
-        return userData;
+        return userData.user_data;
       } else {
         throw new Error('Failed to fetch user details');
       }

@@ -1,5 +1,7 @@
 
+import Accordion from '@/components/coi/Accordion';
 import { FilterBar } from '@/components/coi/FilterBar';
+import VideoPopup from '@/components/video/VideoPopup';
 import { useAuth } from '@/utils/AuthContext';
 import { Dot } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
@@ -371,8 +373,16 @@ const ok = async ()=>{
           'Content-Type': 'application/json',
         }
       });
+      const response2 = await fetch('https://intern-project-final-1.onrender.com' + '/category-list/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
     const data = await response.json()
+    const data2 = await response2.json()
     console.log(data)
+    console.log(data2)
 }
 
   // Check for stored form data on component mount
@@ -458,44 +468,73 @@ const ok = async ()=>{
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const handleFormSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  
+  // Validate required fields
+  if (!formData.fullName || !formData.email || !formData.phone) {
+    setError('Please fill in all required fields');
+    return;
+  }
+  
+  if (!formData.privacy) {
+    setError('Please accept the privacy policy');
+    return;
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    setError('Please enter a valid email address');
+    return;
+  }
+  
+  // Website validation
+  if (formData.website && websiteError) {
+    setError('Please enter a valid website URL');
+    return;
+  }
+  
+  // Phone validation
+  if (phoneError) {
+    setError('Please enter a valid phone number');
+    return;
+  }
+  
+  // Save form data to database first
+  try {
+    setLoading(true);
+    const response = await fetch('https://intern-project-final-1.onrender.com/save-coi-form/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        full_name: formData.fullName,
+        phone_number: formData.phone,
+        website_name: formData.website
+      })
+    });
+
+    const result = await response.json();
     
-    // Validate required fields
-    if (!formData.fullName || !formData.email || !formData.phone) {
-      setError('Please fill in all required fields');
-      return;
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to save form data');
     }
     
-    if (!formData.privacy) {
-      setError('Please accept the privacy policy');
-      return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
-    
-    // Website validation
-    if (formData.website && websiteError) {
-      setError('Please enter a valid website URL');
-      return;
-    }
-    
-    // Phone validation
-    if (phoneError) {
-      setError('Please enter a valid phone number');
-      return;
-    }
-    
-    // Store form data in localStorage
+    // Store form data in localStorage for popup flow
     localStorage.setItem('coiFormData', JSON.stringify(formData));
     setShowPasswordPopup(true);
-  };
+    
+  } catch (err) {
+    console.error('Error saving form data:', err);
+    setError(err.message || 'Failed to save form data');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const registerUser = async (password?: string) => {
     setLoading(true);
@@ -942,184 +981,150 @@ const ok = async ()=>{
 
         {/* Main Content Layout */}
         <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center py-20">
-          {/* Registration Form */}
-          <div className="w-full max-w-sm bg-white p-8 px-3 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0">
-            <h2 className="text-[#2B2B2B] text-center tracking-wide mb-6 font-walbaum fill-white">
-              WIN a Private Webinar and Q&A with Jeff
-            </h2>
-            
-            {/* Features List */}
-            <div className="space-y-3 mb-6 pl-2">
-              {[
-                'Exited with Double-Digit Multiples',
-                'Achieved 25%+ Profit Margins',
-                'Tax Smart Generational Wealth',
-                'And more...'
-              ].map((feature, index) => (
-                <div key={index} className="flex items-center gap-3 text-gray-800 text-sm">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
-                    <path d="M4.07573 11.8036L0.175729 7.44535C-0.0585762 7.18351 -0.0585762 6.75898 0.175729 6.49711L1.02424 5.54888C1.25854 5.28702 1.63846 5.28702 1.87277 5.54888L4.5 8.48478L10.1272 2.19638C10.3615 1.93454 10.7415 1.93454 10.9758 2.19638L11.8243 3.14461C12.0586 3.40645 12.0586 3.83098 11.8243 4.09285L4.92426 11.8036C4.68994 12.0655 4.31004 12.0655 4.07573 11.8036Z" fill="black"/>
-                  </svg>
-                  <span className='font-linear text-xs text-[#2B2B2B]'>{feature}</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="text-gray-800 text-center text-sm font-semibold mb-6 rounded-lg font-walbaum">
-              *11am EST, May 22/25 - Only 33 Spots Available
-            </div>
-            
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
-                {error}
-              </div>
-            )}
-            
-            <form onSubmit={handleFormSubmit} className="space-y-4 font-linear">
-  <div>
-    <label className="block text-black text-sm font-medium mb-2">Full Name</label>
-    <input
-      type="text"
-      name="fullName"
-      value={formData.fullName}
-      onChange={handleInputChange}
-      placeholder="Enter your full name"
-      className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      required
-    />
-  </div>
-  
-  <div>
-    <label className="block text-black text-sm font-medium mb-2">Business Email</label>
-    <input
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleInputChange}
-      placeholder="Enter your business email"
-      className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      required
-    />
-  </div>
-  
-  <div>
-    <label className="block text-black text-sm font-medium mb-2">Business Website</label>
-    <input
-      type="text"
-      name="website"
-      value={formData.website}
-      onChange={handleInputChange}
-      placeholder="Enter your website URL (e.g., example.com)"
-      className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
-        websiteError ? 'border-red-400' : 'border-gray-400'
-      }`}
-    />
-    {websiteError && (
-      <p className="text-red-500 text-xs mt-1">{websiteError}</p>
+  {/* Registration Form - Now Sticky */}
+  <div className="sticky top-[86px] w-full max-w-sm bg-white p-8 px-3 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0 self-start">
+    <h2 className="text-[#2B2B2B] text-center tracking-wide mb-6 font-walbaum fill-white">
+      WIN a Private Webinar and Q&A with Jeff
+    </h2>
+    
+    {/* Features List */}
+    <div className="space-y-3 mb-6 pl-2">
+      {[
+        'Exited with Double-Digit Multiples',
+        'Achieved 25%+ Profit Margins',
+        'Tax Smart Generational Wealth',
+        'And more...'
+      ].map((feature, index) => (
+        <div key={index} className="flex items-center gap-3 text-gray-800 text-sm">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
+            <path d="M4.07573 11.8036L0.175729 7.44535C-0.0585762 7.18351 -0.0585762 6.75898 0.175729 6.49711L1.02424 5.54888C1.25854 5.28702 1.63846 5.28702 1.87277 5.54888L4.5 8.48478L10.1272 2.19638C10.3615 1.93454 10.7415 1.93454 10.9758 2.19638L11.8243 3.14461C12.0586 3.40645 12.0586 3.83098 11.8243 4.09285L4.92426 11.8036C4.68994 12.0655 4.31004 12.0655 4.07573 11.8036Z" fill="black"/>
+          </svg>
+          <span className='font-linear text-xs text-[#2B2B2B]'>{feature}</span>
+        </div>
+      ))}
+    </div>
+    
+    <div className="text-gray-800 text-center text-sm font-semibold mb-6 rounded-lg font-walbaum">
+      *11am EST, May 22/25 - Only 33 Spots Available
+    </div>
+    
+    {error && (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+        {error}
+      </div>
     )}
-  </div>
-  
-  <div>
-    <label className="block text-black text-sm font-medium mb-2">Phone Number</label>
-    <div className="flex gap-2">
-      <select 
-        name="countryCode"
-        value={selectedCountryCode}
-        onChange={handleInputChange}
-        className="w-24 h-10 border border-gray-400 rounded-lg text-xs px-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      >
-        {countryCodes.map((country, index) => (
-          <option key={`${country.code}-${index}`} value={country.code}>
-            {country.flag} {country.code}
-          </option>
-        ))}
-      </select>
-      <div className="flex-1">
+    
+    <form onSubmit={handleFormSubmit} className="space-y-4 font-linear">
+      <div>
+        <label className="block text-black text-sm font-medium mb-2">Full Name</label>
         <input
-          type="tel"
-          name="phone"
-          value={formData.phone}
+          type="text"
+          name="fullName"
+          value={formData.fullName}
           onChange={handleInputChange}
-          placeholder={`Enter ${countryCodes.find(c => c.code === selectedCountryCode)?.digits || 10} digit number`}
-          className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
-            phoneError ? 'border-red-400' : 'border-gray-400'
-          }`}
+          placeholder="Enter your full name"
+          className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           required
         />
-        {phoneError && (
-          <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+      </div>
+      
+      <div>
+        <label className="block text-black text-sm font-medium mb-2">Business Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          placeholder="Enter your business email"
+          className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          required
+        />
+      </div>
+      
+      <div>
+        <label className="block text-black text-sm font-medium mb-2">Business Website</label>
+        <input
+          type="text"
+          name="website"
+          value={formData.website}
+          onChange={handleInputChange}
+          placeholder="Enter your website URL (e.g., example.com)"
+          className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+            websiteError ? 'border-red-400' : 'border-gray-400'
+          }`}
+        />
+        {websiteError && (
+          <p className="text-red-500 text-xs mt-1">{websiteError}</p>
         )}
       </div>
-    </div>
-  </div>
-  
-  <div className="flex items-start gap-3 py-4 items-center">
-    <input
-      type="checkbox"
-      id="privacy"
-      name="privacy"
-      checked={formData.privacy}
-      onChange={handleInputChange}
-      className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-black border"
-      required
-    />
-    <label htmlFor="privacy" className="text-xs text-gray-500 leading-relaxed">
-      I agree to opt-in and accept the privacy policy.
-    </label>
-  </div>
-  
-  <button
-    type="submit"
-    disabled={websiteError !== '' || phoneError !== ''}
-    className="w-full text-white text-base font-semibold bg-black py-4 px-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none font-linear disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    I want a chance to WIN !!
-  </button>
-</form>
-          </div>
-          
-          {/* Accordion Sections */}
-          <div className="w-full max-w-4xl">
-            <div className="space-y-1 border border-gray-400 rounded-2xl overflow-hidden shadow-lg">
-            <FilterBar activeFilter={''} onFilterChange={function (filterId: string): void {
-                          throw new Error('Function not implemented.');
-                      } } />
-              {sections.map((section) => (
-                <div key={section.id} className="bg-white font-linear">
-                  <button
-                    className="flex items-center gap-2 w-full px-8 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50 border-b-[.8px] border-black"
-                    onClick={() => setOpenSection(openSection === section.id ? '' : section.id)}
-                  >
-                    <span className="text-black text-xl min-w-8">{section.number}</span>
-                    <span className="text-black text-xl flex-1">{section.title}</span>
-                    <svg
-                      className={`transform transition-transform duration-200 flex-shrink-0 ${
-                        openSection === section.id ? 'rotate-180' : ''
-                      }`}
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M7.29289 9.29289C7.68342 8.90237 8.31658 8.90237 8.70711 9.29289L12 12.5858L15.2929 9.29289C15.6834 8.90237 16.3166 8.90237 16.7071 9.29289C17.0976 9.68342 17.0976 10.3166 16.7071 10.7071L12.7071 14.7071C12.5196 14.8946 12.2652 15 12 15C11.7348 15 11.4804 14.8946 11.2929 14.7071L7.29289 10.7071C6.90237 10.3166 6.90237 9.68342 7.29289 9.29289Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                  {openSection === section.id && section.content && (
-                    <div className="border-t border-gray-200">
-                      {section.content}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+      
+      <div>
+        <label className="block text-black text-sm font-medium mb-2">Phone Number</label>
+        <div className="flex gap-2">
+          <select 
+            name="countryCode"
+            value={selectedCountryCode}
+            onChange={handleInputChange}
+            className="w-24 h-10 border border-gray-400 rounded-lg text-xs px-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          >
+            {countryCodes.map((country, index) => (
+              <option key={`${country.code}-${index}`} value={country.code}>
+                {country.flag} {country.code}
+              </option>
+            ))}
+          </select>
+          <div className="flex-1">
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder={`Enter ${countryCodes.find(c => c.code === selectedCountryCode)?.digits || 10} digit number`}
+              className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+                phoneError ? 'border-red-400' : 'border-gray-400'
+              }`}
+              required
+            />
+            {phoneError && (
+              <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+            )}
           </div>
         </div>
+      </div>
+      
+      <div className="flex items-start gap-3 py-4 items-center">
+        <input
+          type="checkbox"
+          id="privacy"
+          name="privacy"
+          checked={formData.privacy}
+          onChange={handleInputChange}
+          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-black border"
+          required
+        />
+        <label htmlFor="privacy" className="text-xs text-gray-500 leading-relaxed">
+          I agree to opt-in and accept the privacy policy.
+        </label>
+      </div>
+      
+      <button
+        type="submit"
+        disabled={websiteError !== '' || phoneError !== ''}
+        className="w-full text-white text-base font-semibold bg-black py-4 px-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none font-linear disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        I want a chance to WIN !!
+      </button>
+    </form>
+  </div>
+  
+  {/* Accordion Sections */}
+  <div>
+    <Accordion/>  
+  </div>
+  
+</div>
       </main>
+      <VideoPopup />
       <aside className="absolute right-4 top-4 z-10">
       <div className="flex flex-col items-end">
         <img

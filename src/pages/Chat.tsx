@@ -8,6 +8,7 @@ import { AlertCircle, Calendar, CalendarHeart, ChartNoAxesColumn, House, Message
 import { useAuth } from '@/utils/AuthContext';
 import { HeroSection } from '@/components/chat/LivePage';
 import PinnedMessages from '@/components/chat/PinnedMessage';
+import VideoPopup from '@/components/video/VideoPopup';
 
 const filterAbusiveContent = async (text) => {
   try {
@@ -144,57 +145,13 @@ const Chat = () => {
     allowMultipleAnswers: false,
   });
   const [showPinnedMessagesPage, setShowPinnedMessagesPage] = useState(false);
+  const [isAiChatMode, setIsAiChatMode] = useState(false);
+
   useEffect(() => {
-    if (user && user.full_name) {
-      setUsername(user.full_name);
-      
-      // Initialize messages with the correct username
-      setMessages([
-        {
-          id: 1,
-          sender: "Alen McCraw",
-          text: "Hello! I'm your AI assistant. How can I help you today?",
-          time: "10:30 AM",
-          isUser: false
-        },
-        {
-          id: 2,
-          sender: user.full_name, // Use the actual username here
-          text: "Making good progress! I'll share with you",
-          time: "10:32 AM",
-          isUser: true
-        },
-        {
-          id: 3,
-          sender: "Alen McCraw",
-          text: "Sure! Let me share the details now",
-          time: "10:33 AM",
-          isUser: false
-        },
-        {
-          id: 4,
-          sender: user.full_name, // Use the actual username here
-          text: "I've been working on the project all day. What do you think about adding more features to the dashboard?",
-          time: "10:35 AM",
-          isUser: true
-        },
-        {
-          id: 5,
-          sender: "Sarah Johnson",
-          text: "That sounds like a great idea! We could include analytics and reporting features.",
-          time: "10:36 AM",
-          isUser: false
-        },
-        {
-          id: 6,
-          sender: "Michael Chen",
-          text: "I agree with Sarah. Let's discuss this in our next meeting.",
-          time: "10:37 AM",
-          isUser: false
-        }
-      ]);
-    }
-  }, [user]);
+  if (user && user.full_name) {
+    setUsername(user.full_name);
+  }
+}, [user]);
 
   const jumpToMessage = (messageId) => {
     setDisplay('chat'); // Switch back to chat first
@@ -208,6 +165,36 @@ const Chat = () => {
         }, 2000);
       }
     }, 100); // Small delay to ensure chat is rendered
+  };
+
+  const handleMenuItemClick = (item) => {
+    if (item.isAiBot) {
+      setIsAiChatMode(true);
+      // Reset messages for AI chat
+      setMessages([
+        {
+          id: 1,
+          sender: "AI Assistant",
+          text: "Hello! I'm your AI assistant. I'm currently in development and will be live in 45 days. How can I help you today?",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isUser: false,
+          isAi: true
+        }
+      ]);
+    } else {
+      setIsAiChatMode(false);
+      // Reset to group chat messages
+      setMessages([
+        {
+          id: 1,
+          sender: "Alen McCraw",
+          text: "Hello! I'm your AI assistant. How can I help you today?",
+          time: "10:30 AM",
+          isUser: false
+        },
+        // ... rest of original messages
+      ]);
+    }
   };
 
   if (isLoading) {
@@ -404,6 +391,21 @@ const Chat = () => {
     
     setMessages([...messages, newMessage]);
     setReplyingTo(null);
+
+    if (isAiChatMode) {
+      setTimeout(() => {
+        const aiResponse = {
+          id: messages.length + 2,
+          sender: "AI Assistant",
+          text: "Thank you for your message! I'm currently in development and will be fully operational in 45 days. Once live, I'll be able to provide comprehensive assistance with your queries.",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isUser: false,
+          isAi: true
+        };
+        
+        setMessages(prevMessages => [...prevMessages, aiResponse]);
+      }, 1500);
+    } else {
     
     // Simulate received message
     if (messages.length % 2 === 0) {
@@ -429,7 +431,7 @@ const Chat = () => {
         setMessages(prevMessages => [...prevMessages, botResponse]);
       }, 1000);
     }
-  };
+  };}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -461,7 +463,7 @@ const Chat = () => {
   const getMenuItems = () => {
     return [
       { id: 1, title: 'Group Chat', icon: 'menu-item-icon' },
-      { id: 2, title: 'Ai Chat Bot (coming soon)', icon: 'menu-item-icon' },
+      { id: 2, title: 'Ai Chat Bot (coming soon)', icon: 'menu-item-icon', isAiBot: true },
       ...Array(8).fill(null).map((_, index) => ({ 
         id: index + 3, 
         title: 'Item Title', 
@@ -477,10 +479,10 @@ const Chat = () => {
   <nav className="w-[300px] flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 h-full border-r">
           <div className="flex items-center gap-2.5 px-6 py-4">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
-              {(userName || user?.full_name || 'U').charAt(0)}
+              {userName.charAt(0)}
             </div>
             <div className=" text-black font-normal font-linear">
-              Welcome {userName || user?.full_name || 'User'} 👋
+              Welcome {userName} 👋
             </div>
           </div>
 
@@ -492,17 +494,20 @@ const Chat = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto flex flex-col">
-            {getMenuItems().map((item) => (
-              <div 
-                key={item.id} 
-                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${item.id === 1 ? 'bg-neutral-200' : 'bg-neutral-100'}`}
-              >
-                <NotepadText />
-                <div className="font-linear">
-                  {item.title}
-                </div>
-              </div>
-            ))}
+          {getMenuItems().map((item) => (
+  <div 
+    key={item.id} 
+    className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${
+      (item.id === 1 && !isAiChatMode) || (item.id === 2 && isAiChatMode) ? 'bg-neutral-200' : 'bg-neutral-100'
+    }`}
+    onClick={() => handleMenuItemClick(item)}
+  >
+    <NotepadText />
+    <div className="font-linear">
+      {item.title}
+    </div>
+  </div>
+))}
           </div>
 
           <div className="mt-auto">
@@ -518,6 +523,7 @@ const Chat = () => {
           </div>
         </nav>
       )}
+      <VideoPopup videos={[]} />
       
       {display==='chat'?
       <main className="flex-1 flex flex-col h-full max-h-[calc(100vh-86px)]">
@@ -542,7 +548,7 @@ const Chat = () => {
             <div className="w-12 h-12 bg-[#555] rounded-full flex items-center justify-center text-white">
             </div>
             <div className="text-lg text-black font-linear">
-              Anonymous Group Chat
+              {isAiChatMode ? 'AI Chat Bot' : 'Anonymous Group Chat'}
             </div>
           </div>
           <div className="flex items-center gap-6">
@@ -650,148 +656,157 @@ const Chat = () => {
   searchQuery ? msg.text.toLowerCase().includes(searchQuery.toLowerCase()) : true
 ).map((msg) => (
   <div key={msg.id} id={`message-${msg.id}`} className="flex flex-col message-item">
-                {msg.isPoll ? (
-  // Poll Message
-  <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
-    {msg.replyTo && (
-      <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
-        <span>Replying to {msg.replyTo.sender}</span>
-        <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
-          "{msg.replyTo.text}"
+    {msg.isPoll ? (
+      // Poll Message
+      <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
+        {msg.replyTo && (
+          <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
+            <span>Replying to {msg.replyTo.sender}</span>
+            <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+              "{msg.replyTo.text}"
+            </div>
+          </div>
+        )}
+        <div className="bg-neutral-100 ml-auto border w-auto max-w-[70%] text-sm font-normal p-4 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
+          <div className="flex items-center gap-2 mb-3">
+            <ChartNoAxesColumn className='rotate-90' size={16} stroke="#555"/>
+            <span className="text-[#555] font-medium">Poll</span>
+          </div>
+          <h3 className="text-black font-medium mb-3">{msg.pollData.question}</h3>
+          <div className="space-y-2">
+            {msg.pollData.options.map((option) => {
+              const totalVotes = msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0);
+              const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
+              const isVoted = option.voters.includes(userName);
+              
+              return (
+                <button
+                  key={option.id}
+                  onClick={() => handlePollVote(msg.id, option.id)}
+                  className={`w-full text-left p-2 rounded border transition-colors ${
+                    isVoted ? 'bg-black text-white border-black' : 'bg-white text-[#555] border-[rgba(158,158,158,0.5)] hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs">{option.text}</span>
+                    <span className="text-xs font-medium">{option.votes} ({percentage.toFixed(0)}%)</span>
+                  </div>
+                  {totalVotes > 0 && (
+                    <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
+                      <div 
+                        className={`h-1 rounded-full transition-all ${isVoted ? 'bg-white' : 'bg-black'}`}
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-3 text-xs text-[#9E9E9E]">
+            {msg.pollData.allowMultipleAnswers ? 'Multiple answers allowed' : 'Single answer only'} • 
+            Total votes: {msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0)}
+          </div>
+        </div>
+        <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
+          <button 
+            onClick={() => handlePinMessage(msg.id)}
+            className="hover:bg-neutral-100 rounded-full p-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
+            </svg>
+          </button>
+          <button 
+            onClick={() => handleReply(msg)}
+            className="hover:bg-neutral-100 rounded-full p-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="#9E9E9E"/>
+            </svg>
+          </button>
+          <div>{msg.time}</div>
         </div>
       </div>
-    )}
-    <div className="bg-neutral-100 ml-auto border w-auto max-w-[70%] text-sm font-normal p-4 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
-      <div className="flex items-center gap-2 mb-3">
-        <ChartNoAxesColumn className='rotate-90' size={16} stroke="#555"/>
-        <span className="text-[#555] font-medium">Poll</span>
+    ) : msg.isUser ? (
+      // User's own message (right side)
+      <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
+        {msg.replyTo && (
+          <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
+            <span>Replying to {msg.replyTo.sender}</span>
+            <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+              "{msg.replyTo.text}"
+            </div>
+          </div>
+        )}
+        <div className="bg-[#9E9E9E80] ml-auto text-[#555555] border w-auto max-w-[70%] overflow-hidden text-sm font-normal px-4 py-3.5 rounded-[15px]">
+          {msg.text}
+        </div>
+        <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
+          <div>{msg.time}</div>
+          <button 
+            onClick={() => handlePinMessage(msg.id)}
+            className="hover:bg-neutral-100 rounded-full p-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
+            </svg>
+          </button>
+          <button 
+            onClick={() => handleReply(msg)}
+            className="hover:bg-neutral-100 rounded-full p-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="#9E9E9E"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <h3 className="text-black font-medium mb-3">{msg.pollData.question}</h3>
-      <div className="space-y-2">
-        {msg.pollData.options.map((option) => {
-          const totalVotes = msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0);
-          const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-          const isVoted = option.voters.includes(userName);
-          
-          return (
-            <button
-              key={option.id}
-              onClick={() => handlePollVote(msg.id, option.id)}
-              className={`w-full text-left p-2 rounded border transition-colors ${
-                isVoted ? 'bg-black text-white border-black' : 'bg-white text-[#555] border-[rgba(158,158,158,0.5)] hover:bg-gray-50'
-              }`}
+    ) : (
+      // Other users' messages (left side)
+      <>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
+            {msg.sender.split(' ').map(name => name[0]).join('')}
+          </div>
+          <div className="font-medium text-black">{msg.sender}</div>
+        </div>
+        <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
+          {msg.replyTo && (
+            <div className="flex items-center gap-2 ml-12 mb-1 text-xs text-[#9E9E9E]">
+              <span>Replying to {msg.replyTo.sender}</span>
+              <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+                "{msg.replyTo.text}"
+              </div>
+            </div>
+          )}
+          <div className="bg-white ml-12 text-[#555] border w-auto max-w-[70%] overflow-hidden text-sm font-normal px-4 py-3.5 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
+            {msg.text}
+          </div>
+          <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 ml-12">
+            <div>{msg.time}</div>
+            <button 
+              onClick={() => handlePinMessage(msg.id)}
+              className="hover:bg-neutral-100 rounded-full p-1"
             >
-              <div className="flex justify-between items-center">
-                <span className="text-xs">{option.text}</span>
-                <span className="text-xs font-medium">{option.votes} ({percentage.toFixed(0)}%)</span>
-              </div>
-              {totalVotes > 0 && (
-                <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
-                  <div 
-                    className={`h-1 rounded-full transition-all ${isVoted ? 'bg-white' : 'bg-black'}`}
-                    style={{ width: `${percentage}%` }}
-                  ></div>
-                </div>
-              )}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
+              </svg>
             </button>
-          );
-        })}
-      </div>
-      <div className="mt-3 text-xs text-[#9E9E9E]">
-        {msg.pollData.allowMultipleAnswers ? 'Multiple answers allowed' : 'Single answer only'} • 
-        Total votes: {msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0)}
-      </div>
-    </div>
-    <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
-      <button 
-        onClick={() => handlePinMessage(msg.id)}
-        className="hover:bg-neutral-100 rounded-full p-1"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
-        </svg>
-      </button>
-      <button 
-        onClick={() => handleReply(msg)}
-        className="hover:bg-neutral-100 rounded-full p-1"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="#9E9E9E"/>
-        </svg>
-      </button>
-      <div>{msg.time}</div>
-    </div>
-  </div>
-)  : (
-                  <>
-                    {/* Received Message */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
-                        {msg.sender.split(' ').map(name => name[0]).join('')}
-                      </div>
-                      <div className="font-medium text-black">{msg.sender}</div>
-                    </div>
-                    <div className={`flex flex-col ${msg.replyTo ? 'mt-2' : 'mt-0'}`}>
-                      {msg.replyTo && (
-                        <div className="flex items-center gap-2 ml-12 mb-1 text-xs text-[#9E9E9E]">
-                          <span>Replying to {msg.replyTo.sender}</span>
-                          <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
-                            "{msg.replyTo.text}"
-                          </div>
-                        </div>
-                      )}
-                      <div className="bg-white ml-12 text-[#555] border w-auto max-w-[70%] overflow-hidden text-sm font-normal px-4 py-3.5 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
-                        {msg.text}
-                      </div>
-                      <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 ml-12">
-                        <div>{msg.time}</div>
-                        <button 
-                          onClick={() => handlePinMessage(msg.id)}
-                          className="hover:bg-neutral-100 rounded-full p-1"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
-                          </svg>
-                        </button>
-                        <button 
-                          onClick={() => handleReply(msg)}
-                          className="hover:bg-neutral-100 rounded-full p-1"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="#9E9E9E"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-            {inappropriateMessageAlert && (
-  <div className="flex justify-center my-4">
-    <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 max-w-md">
-      <div className="flex items-center gap-2">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z" fill="#DC2626"/>
-        </svg>
-        <div>
-          <div className="text-red-800 font-medium text-sm">Message Blocked</div>
-          <div className="text-red-600 text-xs mt-1">{inappropriateMessageAlert.text}</div>
-          <div className="text-red-500 text-xs mt-1">{inappropriateMessageAlert.time}</div>
+            <button 
+              onClick={() => handleReply(msg)}
+              className="hover:bg-neutral-100 rounded-full p-1"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="#9E9E9E"/>
+              </svg>
+            </button>
+          </div>
         </div>
-        <button 
-          onClick={() => setInappropriateMessageAlert(null)}
-          className="ml-2 p-1 hover:bg-red-100 rounded-full"
-          aria-label="Dismiss alert"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 10.586l4.95-4.95 1.415 1.415-4.95 4.95 4.95 4.95-1.415 1.415-4.95-4.95-4.95 4.95-1.415-1.415 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" fill="#DC2626"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+      </>
+    )}
   </div>
-)}
+))}
             <div ref={messagesEndRef} />
           </div>
         </div>

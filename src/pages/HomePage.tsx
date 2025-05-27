@@ -2,6 +2,8 @@ import { useAuth } from "@/utils/AuthContext";
 import { Check } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import video2 from "../../public/assets/vidoes/63Qa3wVBkJ-DAQdRn7B60-240p.mp4"
+import video3 from "../../public/assets/vidoes/63Qa3wVBkJ-MVK80k4KdY-240p.mp4"
 
 const countries = [
     { code: "+1", flag: "🇺🇸", name: "United States", phoneLength: 10 },
@@ -81,6 +83,17 @@ const countries = [
     { code: "+216", flag: "🇹🇳", name: "Tunisia", phoneLength: 8 },
     { code: "+213", flag: "🇩🇿", name: "Algeria", phoneLength: 9 },
   ];
+
+  const videos = [
+    '/src/assets/vidoes/63Qa3wVBkJ-7WKbYn1BXV-240p.mp4',
+    '/src/assets/videos/63Qa3wVBkJ-DAQdRn7B60-240p.mp4', 
+    '/src/assets/videos/63Qa3wVBkJ-MVK80k4KdY-240p.mp4',
+    '/src/assets/videos/63Qa3wVBkJ-r5QoRy7KVM-240p.mp4',
+    // Add placeholder for steps 5 and 6 if you have more videos
+    null,
+    null
+  ];
+  
 
   const PhoneInputDropdown = ({ onPhoneChange, error }) => {
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
@@ -246,52 +259,6 @@ const Navbar: React.FC = () => {
   );
 };
 
-const HeroSection: React.FC = () => {
-  return (
-    <section className="flex flex-col items-center text-center py-12 relative">
-    <aside className="absolute right-4 top-4 z-10">
-      <div className="flex flex-col items-end">
-        <img
-          src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-          alt="Side Logo"
-          className="w-[140px] h-[35px]"
-        />
-        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-          <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-        </div>
-      </div>
-    </aside>
-    
-    <h1 className="text-gray-500 text-6xl font-thin mb-1 w-full max-w-4xl mx-auto font-walbaum ">
-      You had a dream.
-    </h1>
-    
-    <h2 className="text-gray-600 text-6xl font-normal mb-10 w-full max-w-4xl mx-auto font-walbaum font-thin">
-      His came true. What about yours?
-    </h2>
-    
-    <div className="mb-3 text-xl">
-      <span className="font-semibold text-red-600">80%</span>{" "}
-      <span className="font-normal">businesses don't sell</span>
-    </div>
-    
-    <div className="mb-3 text-xl">
-      <span className="font-semibold text-red-600">6%</span>{" "}
-      <span className="font-normal">only got fair market value</span>
-    </div>
-    
-    <div className="mb-6 text-xl">
-      <span className="font-semibold text-red-600">78%</span>{" "}
-      <span className="font-normal">don't have the right advisors</span>
-    </div>
-    
-    <p className="text-black font-bold text-xl max-w-2xl mx-auto">
-      Our Solution helped him defy these odds. You can too - for FREE !
-    </p>
-  </section>
-  );
-};
-
 const VideoPopup: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -355,7 +322,7 @@ const VideoPopup: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
         <div className="w-full h-full bg-black rounded-lg overflow-hidden shadow-2xl">
           {currentVideo ? (
             <iframe
-              src={currentVideo.video_url}
+              src={video2}
               className="w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
@@ -865,7 +832,7 @@ const FormSection: React.FC = () => {
     ) : videos.length > 0 ? (
       <div className="aspect-video relative w-full">
         <iframe
-          src={videos[0].video_url}
+          src={video2}
           className="w-full h-full"
           frameBorder="0"
           allow="autoplay; fullscreen; picture-in-picture"
@@ -1012,83 +979,185 @@ const FormSection: React.FC = () => {
   );
 };
 
-const StorySection: React.FC = () => {
-  return (
-    <section className="flex flex-col items-center pt-36 pb-10">
-      <div className="bg-gray-100 w-full py-12 px-4 text-center mb-12">
-        <h2 className="text-gray-500 text-6xl font-light mb-1 font-walbaum">
-          From Dreams to Done
-        </h2>
-        <h3 className="text-gray-600 text-6xl font-normal mb-8 font-walbaum ">
-          in 6 Steps.
-        </h3>
-        
-        <p className="text-2xl font-bold mb-3">
-          Jeff Cullen achieved a double-digit multiple exit
-        </p>
-        
-        <p className="text-xl mb-6">
-          He built a valuable company<br />
-          with his business DNA:
-        </p>
-        
-        <p className="text-3xl font-semibold mb-8">
-          Unifying Philosophy (UP™): Prosperity For All.
-        </p>
+const HeroSection: React.FC = () => {
+    return (
+      <section className="flex flex-col items-center text-center py-12 relative">
+      <aside className="absolute right-4 top-4 z-10">
+        <div className="flex flex-col items-end">
+          <img
+            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+            alt="Side Logo"
+            className="w-[140px] h-[35px]"
+          />
+          <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+          </div>
+        </div>
+      </aside>
+      
+      <h1 className="text-[#818181] font-walbaum text-7xl font-normal text-center mb-14 max-md:text-5xl max-md:mb-5 max-sm:text-4xl max-sm:mb-4">
+        Many grow, only a few WIN.
+      </h1>
+      
+      <div className="text-[#D02C31] text-center text-[26px] font-light max-w-[982px] mb-8 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4">
+        <span>When </span>
+        <span className="font-bold">80%</span>
+        <span> businesses don't sell and only </span>
+        <span className="font-bold">6%</span>
+        <span> only got fair market value when sold, most entrepreneurs, no matter how successful, LOSE on exit.</span>
       </div>
       
-      <h2 className="text-gray-700 text-center mb-10">
-        <div className="text-6xl font-light">The story that</div>
-        <div className="text-6xl font-normal">made it come true.</div>
-      </h2>
+      <p className="text-black text-center text-[26px] max-w-[1500px] mb-8 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4 flex-col">
+        <p>Like you, they didn't start and grow a business to LOSE - but LOSE they did.</p>
+        <p>What did they do wrong? They didn't grow value where 84% of their business value exists - intangibles.</p>
+      </p>
       
-      <div className="flex justify-center gap-5 flex-wrap mb-16">
-        {[
-          "Canadian entrepreneur, founder and former CEO of Rodair DreamBig, Do Good (Foundation)",
-          "He and his team operationalized the DNA of their business a Unifying Philosophy: Prosperity For All",
-          "Prosperity For All helped him build a valuable, and Best Managed award-winning company.",
-          "Prosperity For All results: 25% high profit margins superb company culture double-digit multiple exit.",
-          "Prosperity For All A world's first: maximized vale across intangible assets, monetizing them, tax effectively."
-        ].map((text, index) => (
-          <div key={index} className="bg-gray-400 bg-opacity-50 rounded-full border-2 border-gray-500 border-opacity-40 p-6 w-48 h-48 flex items-center justify-center text-center text-sm">
-            {text}
+      <p className="text-[#6f6f6f] text-center text-[28px]  font-normal leading-9 max-w-[597px] mb-8 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4">
+        If you want to WIN, Grow Smart so you Exit Richer.​
+      </p>
+      
+      <p className="text-black text-center text-[28px] font-medium leading-9 max-w-[800px] mb-8 mx-auto max-md:text-2xl max-md:mb-8 max-sm:text-xl max-sm:mb-6 flex-col">
+        <p>You Grow Smart by building a marketable company: maximizing, monetizable value (via intangibles), tax effectively,</p>
+        <p>using a UPhTM (Unifying Philosophy) asset.</p>
+      </p>
+    </section>
+    );
+  };
+
+const StorySection: React.FC = () => {
+  const circles = [
+    `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
+      <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
+        <tspan x="120" y="100">Canadian entrepreneur,</tspan>
+        <tspan x="120" y="120">founder and former</tspan>
+        <tspan x="120" y="140">CEO of Rodair</tspan>
+      </text>
+    </svg>`,
+    `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
+      <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
+        <tspan x="120" y="90">He and his team</tspan>
+        <tspan x="120" y="110">operationalized the DNA</tspan>
+        <tspan x="120" y="130">of their business a</tspan>
+        <tspan x="120" y="150">Unifying Philosophy:</tspan>
+        <tspan x="120" y="170">Prosperity For All</tspan>
+      </text>
+    </svg>`,
+    `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
+      <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
+        <tspan x="120" y="90">Prosperity For All</tspan>
+        <tspan x="120" y="110">helped him build a</tspan>
+        <tspan x="120" y="130">valuable, and Best</tspan>
+        <tspan x="120" y="150">Managed award-</tspan>
+        <tspan x="120" y="170">winning company.</tspan>
+      </text>
+    </svg>`,
+    `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
+      <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
+        <tspan x="120" y="80">Prosperity For All</tspan>
+        <tspan x="120" y="100">results: 25% high</tspan>
+        <tspan x="120" y="120">profit margins superb</tspan>
+        <tspan x="120" y="140">company culture</tspan>
+        <tspan x="120" y="160">double-digit</tspan>
+        <tspan x="120" y="180">multiple exit.</tspan>
+      </text>
+    </svg>`,
+    `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
+      <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
+        <tspan x="120" y="80">Prosperity For All A</tspan>
+        <tspan x="120" y="100">world's first:</tspan>
+        <tspan x="120" y="120">maximized vale</tspan>
+        <tspan x="120" y="140">across intangible</tspan>
+        <tspan x="120" y="160">assets, monetizing</tspan>
+        <tspan x="120" y="180">them, tax effectively.</tspan>
+      </text>
+    </svg>`
+  ];
+  
+  return (
+    <section className="flex flex-col items-center pt-36 pb-10">
+  <div className="w-screen relative py-20">
+
+    {/* ✅ Background layer: covers top part only */}
+    <div className="absolute top-0 left-0 w-full h-[600px] bg-[#F4F4F4] -z-10" />
+
+    {/* Content starts */}
+    <div className="text-center mb-12">
+      <h2 className="text-[#777] text-7xl font-light mb-6 max-md:text-5xl max-sm:text-[32px]">
+        You had a dream.
+      </h2>
+      <h3 className="text-[#818181] text-7xl font-normal mb-16 max-md:text-5xl max-sm:text-[32px]">
+        His came true. What about yours?
+      </h3>
+      <p className="text-[#555] text-center text-[28px] font-light leading-8 max-w-[650px] mx-auto my-0 max-sm:text-xl">
+        Jeff grew and exited his freight services company with double digit multiples, all tax effectively
+      </p>
+    </div>
+
+    <div className="w-[689px] h-[690px] bg-white mt-0 mb-20 mx-auto rounded-3xl border-[3px] border-solid border-[rgba(158,158,158,0.50)] max-w-full" />
+
+    <div className="text-center mb-20">
+      <h2 className="text-[#777] text-7xl font-light mb-6 max-md:text-5xl max-sm:text-[32px]">
+        From Dreams to Done
+      </h2>
+      <h3 className="text-[#818181] text-7xl font-normal mb-10 max-md:text-5xl max-sm:text-[32px]">
+        in 6 Steps.
+      </h3>
+
+      <div className="max-w-[570px] mt-0 mb-20 mx-auto max-md:max-w-full max-md:px-4">
+        <p className="text-black text-justify text-[28px] font-semibold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
+          Jeff Cullen built a valuable, marketable company
+        </p>
+        <div className="text-black text-center text-[28px] font-bold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
+          <p>By creating and operationalizing</p>
+          <p>"Prosperity For All" -</p>
+          <p>his (Unifying Philosophy) UPh™</p>
+        </div>
+        <p className="text-black text-justify text-[28px] font-bold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
+          A UPh is your business DNA in 6 words or less.
+        </p>
+        <p className="text-black text-justify text-[28px] font-bold leading-8 max-md:text-2xl max-sm:text-xl">
+          It's the one asset that rules all intangible assets.
+        </p>
+      </div>
+
+      <div className="flex w-full h-60 justify-center items-start mt-0 mb-20 max-md:w-full max-md:flex-wrap max-md:gap-4 max-sm:flex-col max-sm:items-center overflow-x-auto">
+        {circles.map((circle, index) => (
+          <div
+            key={index}
+            className="w-30 h-30 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 mx-1"
+          >
+            <div dangerouslySetInnerHTML={{ __html: circle }} />
           </div>
         ))}
       </div>
 
-      <article className="max-w-3xl text-left px-4">
-        <p className="text-xl mb-6 leading-7">
-          Jeff Cullen, a Canadian entrepreneur and logistics executive is best
-          known as the founder and former CEO of Rodair, a Toronto-based
-          third-party logistics provider.
+      <div className="max-w-[870px] flex flex-col gap-10 mx-auto my-0 max-md:px-4 max-sm:px-2 font-thin">
+        <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
+          Jeff Cullen, a Canadian entrepreneur and logistics executive is best known as the founder and former CEO of Rodair, a Toronto-based third-party logistics provider.
         </p>
-        
-        <p className="text-xl mb-6 leading-7">
-          He launched Rodair in 1996 with just three employees, and by 2012, the
-          company had expanded to 27 offices across 17 countries, generating CAD
-          170 million in sales.
+        <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
+          He launched Rodair in 1996 with just three employees, and by 2012, the company had expanded to 27 offices across 17 countries, generating CAD 170 million in sales.
         </p>
-        
-        <p className="text-xl mb-6 leading-7">
-          Under his leadership, Rodair became a full-service supply chain provider
-          with 155 employees across Canada, serving industries such as fashion,
-          retail, automotive, and mining.
+        <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
+          Under his leadership, Rodair became a full-service supply chain provider with 155 employees across Canada, serving industries such as fashion, retail, automotive, and mining.
         </p>
-        
-        <p className="text-xl mb-6 leading-7">
-          In 2019, Rodair was acquired by Rhenus Logistics, a German global
-          logistics firm. Cullen continued to lead the Canadian operations under
-          the new name, Rhenus Canada. He emphasized a unifying business
-          philosophy centered on shared prosperity, transparency, and long-term
-          sustainability. His leadership style focused on creating value for all
-          stakeholders—clients, employees, vendors, and shareholders alike.
+        <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
+          In 2019, Rodair was acquired by Rhenus Logistics, a German global logistics firm. Cullen continued to lead the Canadian operations under the new name, Rhenus Canada. He emphasized a unifying business philosophy centered on shared prosperity, transparency, and long-term sustainability. His leadership style focused on creating value for all stakeholders—clients, employees, vendors, and shareholders alike.
         </p>
-      </article>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
+
   );
 };
 
-const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
+const StepsSection: React.FC = () => {
     const steps = [
         { id: 1, name: "1. Endgame" },
         { id: 2, name: "2. Valfucturing" },
@@ -1100,39 +1169,39 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
 
   return (
     <section className="w-full flex flex-col items-center">
-      <div className="bg-gray-100 w-full py-12 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-gray-600 text-center mb-16">
-            <div className="text-6xl font-light">How his dream came true</div>
-            <div className="text-6xl font-normal">a UPh™ + 6 steps.</div>
+      <div className="bg-[#F4F4F4] w-screen py-12 ">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-[#818181] text-center mb-16 font-walbaum">
+            <div className="text-7xl font-light">How his dream came true</div>
+            <div className="text-7xl font-normal">a UPh™ + 6 steps.</div>
           </h2>
           
-          <p className="text-xl font-light mb-6">
+          <p className="text-2xl font-light mb-6">
             Jeff didn't just build a profitable company.​
           </p>
           
-          <div className="text-teal-600 text-2xl mb-6">
+          <div className="text-teal-600 text-2xl mb-6 ">
             He built a valuable company. ​<br />
             He made it valuable for the buyer - from day one.​<br />
             He was growing it for the richer exit.
           </div>
           
-          <p className="text-xl mb-4">
+          <p className="text-2xl mb-4">
             He maximized value where value matters: ​
             <span className="underline">intangibles</span>.
           </p>
           
-          <p className="text-teal-600 mb-4">
-            ​He made sure that this value was bankable: ​
+          <p className="text-teal-600 mb-4 text-2xl">
+            He made sure that this value was bankable: 
             <span className="underline">monetizing the intangibles.</span>
           </p>
           
-          <p className="text-xl mb-6">
+          <p className="text-2xl mb-6">
             He had it all set up for:{" "}
-            <span className="underline">​maximum after tax value</span>.
+            <span className="underline">maximum after tax value</span>.
           </p>
           
-          <div className="text-xl leading-8 mb-10">
+          <div className="text-2xl leading-8 mb-10">
             <p className="text-teal-600 mb-2">
               Jeff made his dream come true... ​
             </p>
@@ -1156,26 +1225,34 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
       </div>
 
       {/* Steps display */}
-      <div className="w-full max-w-6xl mx-auto py-10">
+      <div className="w-full max-w-6xl mx-auto py-10 pt-20">
         <div className="grid grid-cols-3 gap-5 mb-6">
           {steps.slice(0, 3).map((step, index) => (
             <div key={step.id} className="flex flex-col gap-4">
-              <div className="bg-gray-200 py-4 px-6 text-gray-700 text-2xl font-medium text-center">
+              <div className="bg-[#EDEAEA] py-4 px-6 text-[#555555] text-2xl font-medium text-center">
                 {step.name}
               </div>
               {videos[index] ? (
                 <div className="aspect-video rounded-lg overflow-hidden">
-                  <iframe
-                    src={videos[index].video_url}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    title={videos[index].title || step.name}
-                  />
+                  {videos[index] ? (
+  <div className="aspect-video rounded-lg overflow-hidden">
+    <video
+      src={videos[index]}
+      className="w-full h-full object-cover"
+      controls
+      preload="metadata"
+    >
+      Your browser does not support the video tag.
+    </video>
+  </div>
+) : (
+  <div className="bg-[#555555] aspect-video rounded-lg flex items-center justify-center">
+    <span className="text-white text-sm">Video Loading...</span>
+  </div>
+)}
                 </div>
               ) : (
-                <div className="bg-gray-700 aspect-video rounded-lg flex items-center justify-center">
+                <div className="bg-[#555555] aspect-video rounded-lg flex items-center justify-center">
                   <span className="text-white text-sm">Video Loading...</span>
                 </div>
               )}
@@ -1186,22 +1263,30 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
         <div className="grid grid-cols-3 gap-5 mb-16">
           {steps.slice(3, 6).map((step, index) => (
             <div key={step.id} className="flex flex-col gap-4">
-              <div className="bg-gray-200 py-4 px-6 text-gray-700 text-2xl font-medium text-center">
+              <div className="bg-[#EDEAEA] py-4 px-6 text-[#555555] text-2xl font-medium text-center">
                 {step.name}
               </div>
               {videos[index + 3] ? (
                 <div className="aspect-video rounded-lg overflow-hidden">
-                  <iframe
-                    src={videos[index + 3].video_url}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    title={videos[index + 3].title || step.name}
-                  />
+                 {videos[index + 3] ? (
+  <div className="aspect-video rounded-lg overflow-hidden">
+    <video
+      src={videos[index + 3]}
+      className="w-full h-full object-cover"
+      controls
+      preload="metadata"
+    >
+      Your browser does not support the video tag.
+    </video>
+  </div>
+) : (
+  <div className="bg-[#555555] aspect-video rounded-lg flex items-center justify-center">
+    <span className="text-white text-sm">Video Loading...</span>
+  </div>
+)}
                 </div>
               ) : (
-                <div className="bg-gray-700 aspect-video rounded-lg flex items-center justify-center">
+                <div className="bg-[#555555] aspect-video rounded-lg flex items-center justify-center">
                   <span className="text-white text-sm">Video Loading...</span>
                 </div>
               )}
@@ -1209,9 +1294,9 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
           ))}
         </div>
         
-        <div className="flex justify-center">
-          <button className="bg-black text-white text-xl font-medium py-6 px-12 rounded max-w-xl w-full text-center hover:bg-gray-800 transition-colors">
-            It's now or never.​ I refuse to risk anything more​
+        <div className="flex justify-center py-10">
+          <button className="bg-black text-white text-xl font-medium py-6 px-20 rounded max-w-2xl w-full text-center hover:bg-gray-800 transition-colors">
+            It's now or never. I refuse to risk anything more
           </button>
         </div>
       </div>
@@ -1221,54 +1306,54 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
 
 const CtaSection: React.FC = () => {
   return (
-    <section className="bg-gray-100 w-full py-12 px-4 mt-16">
-      <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-gray-600 text-center mb-4">
-          <div className="text-6xl font-light">Save your dream now...</div>
-        </h2>
-        <h3 className="text-red-600 text-6xl mb-12">
-          Or lose it.....forever.
-        </h3>
-        
-        <p className="text-gray-700 text-xl mb-8">
-          Congratulations, you have a profitable company. ​<br />
-          Sadly, that's not enough.
-        </p>
-        
-        <p className="text-red-600 text-xl mb-4">
-          Is your company valuable – to you or your buyer?​
-        </p>
-        
-        <p className="text-red-600 text-xl mb-6">
-          You will exit for how much?​
-        </p>
-        
-        <p className="text-red-600 text-xl font-semibold mb-8">
-          Will the wealth you keep on exit equal ​<br />
-          everything you sacrificed for all those years building your
-          business?​
-        </p>
-        
-        <p className="text-gray-700 text-xl mb-12">
-          NOT growing to exit richer? ​<br />
-          Why else are you growing your business ?​
-        </p>
-        
-        <p className="text-black text-3xl font-semibold mb-10">
-          Cullen achieved a double-digit multiple exit, monetizing intangible
-          assets, tax effectively via their <br />
-          Unifying Philosophy (UP™): Prosperity For All.
-        </p>
-        
-        <p className="text-black text-xl mb-6">
-          His Rodair exit to Rhenus has now set forth his next mission: a foundation
-        </p>
-        
-        <p className="text-black text-3xl font-semibold">
-          Dream Big Do Good
-        </p>
-      </div>
-    </section>
+          <section className="bg-[#F4F4F4] w-full mt-16 overflow-hidden">
+            <div className="max-w-3xl mx-auto text-center px-4 py-12">
+              <h2 className="text-[#818181] text-center mb-4 font-serif">
+                <div className="text-6xl">Save your dream now...</div>
+              </h2>
+              <h3 className="text-[#A71F23] text-6xl mb-12 font-serif">
+                Or lose it.....forever.
+              </h3>
+              
+              <p className="text-gray-700 mb-8 text-2xl font-light">
+                Congratulations, you have a profitable company. <br />
+                Sadly, that's not enough.
+              </p>
+              
+              <p className="text-[#A71F23] mb-4 text-2xl font-light">
+                Is your company valuable – to you or your buyer?
+              </p>
+              
+              <p className="text-[#A71F23] mb-6 text-2xl font-light">
+                You will exit for how much?​
+              </p>
+              
+              <p className="text-[#A71F23] font-semibold mb-8 text-2xl">
+                Will the wealth you keep on exit equal ​<br />
+                everything you sacrificed for all those years building your
+                business?​
+              </p>
+              
+              <p className="text-gray-700 mb-12 text-2xl font-light">
+                NOT growing to exit richer? ​<br />
+                Why else are you growing your business ?​
+              </p>
+              
+              <p className="text-black text-3xl font-semibold mb-10">
+                Cullen achieved a double-digit multiple exit, monetizing intangible
+                assets, tax effectively via their <br />
+                Unifying Philosophy (UP™): Prosperity For All.
+              </p>
+              
+              <p className="text-black mb-6 text-xl font-light">
+                His Rodair exit to Rhenus has now set forth his next mission: a foundation
+              </p>
+              
+              <p className="text-black text-3xl font-semibold">
+                Dream Big Do Good
+              </p>
+            </div>
+          </section>
   );
 };
 
@@ -1278,13 +1363,14 @@ const Index: React.FC = () => {
     return (
       <div className="">
          <HeroSection />
-        <div className="max-w-7xl w-full mx-auto">
+        <div className=" w-full mx-auto">
           <div className="relative">
             <FormSection onVideosLoaded={setVideos} />
             <StorySection />
+            <StepsSection videos={videos} />
+            <CtaSection />
           </div>
-          <StepsSection videos={videos} />
-          <CtaSection />
+          
         </div>
         <VideoPopup videos={videos} />
       </div>

@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import VideoPopup from '../video/VideoPopup';
 
 const StartForm: React.FC = () => {
   const [businessName, setBusinessName] = useState('');
@@ -58,6 +59,7 @@ export const HeroSection: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-2">
       <article className="text-center max-w-2xl w-full">
+      <VideoPopup videos={[]} />
       <aside className="absolute right-4 top-4 z-10">
       <div className="flex flex-col items-end">
         <img

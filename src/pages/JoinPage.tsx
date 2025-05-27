@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PhoneInput from '@/components/ui/PhoneInput';
 import { Check, CheckCheckIcon, CheckCircle2Icon,X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import VideoPopup from '@/components/video/VideoPopup';
 
 // New Password Popup Component
 const PasswordPopup = ({ isOpen, onClose, formData, onRegister, onVerifyLater }) => {
@@ -1353,6 +1354,7 @@ export default function JoinPage() {
       <main className="relative px-20 py-10">
         <Hero />
         <PricingSection onModalOpen={handleModalOpen} />
+        <VideoPopup videos={[]} />
         <SideBar logoUrl="https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc" />
       </main>
       
