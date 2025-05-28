@@ -8,6 +8,7 @@ interface User {
   website_name?: string;
   linkedin_url?: string;
   email_verified: boolean;
+  paid: boolean
 }
 
 interface AuthContextType {

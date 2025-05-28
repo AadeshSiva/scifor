@@ -565,11 +565,11 @@ const Chat = () => {
       {display==='chat'?
       <main className="flex-1 flex flex-col h-full max-h-[calc(100vh-86px)]">
         {/* Chat Header */}
-        {!isAuthenticated ? (
-      <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
-      <HeroSection />
-    </div>
-    ) :(<>
+        {!isAuthenticated || (isAuthenticated && user && user.paid === false) ? (
+  <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
+    <HeroSection />
+  </div>
+) :(<>
         <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[rgba(158,158,158,0.3)] bg-white pb-6">
         <div className="flex items-center gap-2 sm:gap-4">
   <button 
