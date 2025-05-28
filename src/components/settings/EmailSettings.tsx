@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BackIcon } from "../ui/icons";
 
 interface EmailSettingsProps {
-  onBack?: () => void;
+  setDisplay?: (display: string) => void;
 }
 
 interface EmailData {
@@ -22,7 +22,7 @@ interface PasswordAction {
 }
 
 const EmailSettings: React.FC<EmailSettingsProps> = ({
-  onBack = () => {},
+  setDisplay
 }) => {
   const [emails, setEmails] = useState<EmailData[]>([]);
   const [primaryEmail, setPrimaryEmail] = useState<string>("");
@@ -41,6 +41,10 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
   const getAuthToken = (): string => {
     return localStorage.getItem('access_token') || '';
   };
+
+  const onBack = ()=>{
+    setDisplay('setting')
+  }
 
   // API call helper
   const apiCall = async (url: string, method: string = 'GET', data?: any): Promise<any> => {

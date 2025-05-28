@@ -14,7 +14,11 @@ interface ApiResponse {
   error?: string;
 }
 
-export const PasswordChangeForm: React.FC = () => {
+interface PasswordProps {
+  setDisplay?: (display: string) => void;
+}
+
+export const PasswordChangeForm: React.FC<PasswordProps> = ({setDisplay}) => {
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -143,7 +147,7 @@ export const PasswordChangeForm: React.FC = () => {
 
   // Handle back navigation
   const handleBack = (): void => {
-    window.location.href = "/settings";
+    setDisplay("setting")
   };
 
   // Eye icon components for better readability

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 interface BillingFormData {
   fullName: string;
@@ -11,6 +11,15 @@ interface BankAccountData {
   routingNumber: string;
   accountType: 'checking' | 'savings';
   accountHolderName: string;
+}
+
+interface ValidationErrors {
+  fullName?: string;
+  email?: string;
+  accountNumber?: string;
+  routingNumber?: string;
+  accountHolderName?: string;
+  payment?: string;
 }
 
 const Payment: React.FC = () => {
@@ -28,11 +37,12 @@ const Payment: React.FC = () => {
     accountHolderName: ''
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [success, setSuccess] = useState(false);
   const [stripe, setStripe] = useState<any>(null);
   const [elements, setElements] = useState<any>(null);
   const [cardElement, setCardElement] = useState<any>(null);
+  const [stripeLoading, setStripeLoading] = useState(true);
 
   const features = [
     "50 bids per month",
@@ -48,137 +58,261 @@ const Payment: React.FC = () => {
     description: "seats available for 50 members"
   };
 
+  // Initialize Stripe with better error handling
   useEffect(() => {
     const initializeStripe = async () => {
-      if (!window.Stripe) {
+      try {
+        setStripeLoading(true);
+        
+        // Check if Stripe is already loaded
+        if (window.Stripe) {
+          const stripeInstance = window.Stripe('pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv');
+          await setupStripeElements(stripeInstance);
+          return;
+        }
+  
+        // Load Stripe script
         const script = document.createElement('script');
         script.src = 'https://js.stripe.com/v3/';
         script.async = true;
-        script.onload = () => {
-          const stripeInstance = window.Stripe('pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv');
-          setStripe(stripeInstance);
-          
-          const elementsInstance = stripeInstance.elements({
-            appearance: {
-              theme: 'stripe',
-              variables: {
-                colorPrimary: '#000000',
-                colorBackground: '#ffffff',
-                colorText: '#4b5563',
-                colorDanger: '#ef4444',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                spacingUnit: '6px',
-                borderRadius: '12px',
-              }
-            }
-          });
-          setElements(elementsInstance);
-          
-          const cardElementInstance = elementsInstance.create('card', {
-            style: {
-              base: {
-                fontSize: '18px',
-                color: '#4b5563',
-                '::placeholder': {
-                  color: '#9ca3af',
-                },
-                padding: '24px',
-              },
-              invalid: {
-                color: '#ef4444',
-                iconColor: '#ef4444'
-              }
-            },
-            hidePostalCode: true
-          });
-          
-          cardElementInstance.mount('#card-element');
-          setCardElement(cardElementInstance);
-          
-          cardElementInstance.on('change', (event: any) => {
-            if (event.error) {
-              setError(event.error.message);
-            } else {
-              setError(null);
-            }
-          });
+        
+        script.onload = async () => {
+          try {
+            const stripeInstance = window.Stripe('pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv');
+            await setupStripeElements(stripeInstance);
+          } catch (error) {
+            console.error('Failed to initialize Stripe:', error);
+            setErrors({ payment: 'Failed to load payment system. Please refresh the page.' });
+          }
         };
+        
+        script.onerror = () => {
+          setErrors({ payment: 'Failed to load payment system. Please check your internet connection.' });
+          setStripeLoading(false);
+        };
+        
         document.head.appendChild(script);
+      } catch (error) {
+        console.error('Error initializing Stripe:', error);
+        setErrors({ payment: 'Payment system initialization failed.' });
+        setStripeLoading(false);
       }
     };
-
+  
+    const setupStripeElements = async (stripeInstance) => {
+      try {
+        setStripe(stripeInstance);
+        
+        const elementsInstance = stripeInstance.elements({
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#000000',
+              colorBackground: '#ffffff',
+              colorText: '#4b5563',
+              colorDanger: '#ef4444',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              spacingUnit: '6px',
+              borderRadius: '12px',
+            }
+          }
+        });
+        setElements(elementsInstance);
+        
+        const cardElementInstance = elementsInstance.create('card', {
+          style: {
+            base: {
+              fontSize: '18px',
+              color: '#4b5563',
+              '::placeholder': {
+                color: '#9ca3af',
+              },
+              padding: '24px',
+            },
+            invalid: {
+              color: '#ef4444',
+              iconColor: '#ef4444'
+            }
+          },
+          hidePostalCode: true
+        });
+        
+        setCardElement(cardElementInstance);
+        
+        cardElementInstance.on('change', (event) => {
+          if (event.error) {
+            setErrors(prev => ({ ...prev, payment: event.error.message }));
+          } else {
+            setErrors(prev => ({ ...prev, payment: undefined }));
+          }
+        });
+        
+        setStripeLoading(false);
+      } catch (error) {
+        console.error('Error setting up Stripe Elements:', error);
+        setErrors({ payment: 'Failed to setup payment form.' });
+        setStripeLoading(false);
+      }
+    };
+  
     initializeStripe();
+  
+    return () => {
+      if (cardElement) {
+        try {
+          cardElement.unmount();
+        } catch (error) {
+          // Ignore unmount errors
+        }
+      }
+    };
   }, []);
 
-  const handleBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setBillingInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError(null);
+  useEffect(() => {
+    if (selectedMethod === 'credit' && cardElement && !stripeLoading) {
+      const mountCardElement = () => {
+        const cardContainer = document.getElementById('card-element');
+        if (cardContainer) {
+          // Check if already mounted
+          if (cardContainer.children.length === 0) {
+            try {
+              cardElement.mount('#card-element');
+            } catch (error) {
+              console.error('Error mounting card element:', error);
+            }
+          }
+        }
+      };
+  
+      // Small delay to ensure DOM is ready
+      const timeoutId = setTimeout(mountCardElement, 100);
+      
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [selectedMethod, cardElement, stripeLoading]);
+
+  // Validation functions
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  const handleBankChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setBankInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError(null);
+  const validateRoutingNumber = (routing: string): boolean => {
+    // Basic routing number validation (9 digits)
+    return /^\d{9}$/.test(routing);
   };
 
   const validateBillingInfo = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    let isValid = true;
+
     if (!billingInfo.fullName.trim()) {
-      setError('Full name is required');
-      return false;
+      newErrors.fullName = 'Full name is required';
+      isValid = false;
     }
+
     if (!billingInfo.email.trim()) {
-      setError('Email is required');
-      return false;
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!validateEmail(billingInfo.email)) {
+      newErrors.email = 'Please enter a valid email address';
+      isValid = false;
     }
-    if (!/\S+@\S+\.\S+/.test(billingInfo.email)) {
-      setError('Please enter a valid email address');
-      return false;
-    }
-    return true;
+
+    setErrors(prev => ({ ...prev, ...newErrors }));
+    return isValid;
   };
 
   const validateBankAccount = (): boolean => {
-    if (!bankInfo.accountNumber.trim()) {
-      setError('Account number is required');
-      return false;
-    }
-    if (!bankInfo.routingNumber.trim() || bankInfo.routingNumber.length !== 9) {
-      setError('Please enter a valid 9-digit routing number');
-      return false;
-    }
+    const newErrors: ValidationErrors = {};
+    let isValid = true;
+
     if (!bankInfo.accountHolderName.trim()) {
-      setError('Account holder name is required');
-      return false;
+      newErrors.accountHolderName = 'Account holder name is required';
+      isValid = false;
     }
-    return true;
+
+    if (!bankInfo.accountNumber.trim()) {
+      newErrors.accountNumber = 'Account number is required';
+      isValid = false;
+    }
+
+    if (!bankInfo.routingNumber.trim()) {
+      newErrors.routingNumber = 'Routing number is required';
+      isValid = false;
+    } else if (!validateRoutingNumber(bankInfo.routingNumber)) {
+      newErrors.routingNumber = 'Please enter a valid 9-digit routing number';
+      isValid = false;
+    }
+
+    setErrors(prev => ({ ...prev, ...newErrors }));
+    return isValid;
+  };
+
+  const handleBillingChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setBillingInfo(prev => ({ ...prev, [name]: value }));
+    
+    // Clear specific field error when user starts typing
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  }, [errors]);
+
+  const handleBankChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setBankInfo(prev => ({ ...prev, [name]: value }));
+    
+    // Clear specific field error when user starts typing
+    if (errors[name as keyof ValidationErrors]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  }, [errors]);
+
+  const getAuthToken = (): string | null => {
+    // Try multiple storage methods as fallback
+    return localStorage.getItem("access_token") || 
+           sessionStorage.getItem("access_token") || 
+           null;
   };
 
   const processPayment = async () => {
-    if (!validateBillingInfo()) return;
-    
-    if (selectedMethod === 'bank' && !validateBankAccount()) return;
-    
-    if (selectedMethod === 'credit' && (!stripe || !cardElement)) {
-      setError('Payment system is still loading. Please try again.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const token = localStorage.getItem("access_token"); // Replace with actual token logic
+      // Clear previous errors
+      setErrors({});
       
-      if (!token) {
-        throw new Error('Authentication required. Please log in.');
+      // Validate billing info first
+      if (!validateBillingInfo()) {
+        return;
       }
+
+      // Validate payment method specific requirements
+      if (selectedMethod === 'bank' && !validateBankAccount()) {
+        return;
+      }
+
+      if (selectedMethod === 'credit') {
+        if (stripeLoading) {
+          setErrors({ payment: 'Payment system is still loading. Please wait a moment.' });
+          return;
+        }
+        
+        if (!stripe || !cardElement) {
+          setErrors({ payment: 'Payment system not ready. Please refresh the page.' });
+          return;
+        }
+      }
+
+      // Get authentication token
+      const token = getAuthToken();
+      if (!token) {
+        setErrors({ payment: 'Authentication required. Please log in again.' });
+        return;
+      }
+
+      setIsLoading(true);
 
       let paymentMethodData = {};
 
@@ -216,9 +350,11 @@ const Payment: React.FC = () => {
             email: billingInfo.email
           }
         };
+      } else {
+        throw new Error('Please select a valid payment method');
       }
 
-      // Send payment data to your backend
+      // Send payment data to backend
       const response = await fetch('https://intern-project-final-1.onrender.com/process-tokenized-payment/', {
         method: 'POST',
         headers: {
@@ -237,7 +373,7 @@ const Payment: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Payment processing failed');
+        throw new Error(data.error || `Server error: ${response.status}`);
       }
 
       // Handle 3D Secure authentication if required
@@ -253,11 +389,13 @@ const Payment: React.FC = () => {
       } else if (data.status === 'succeeded') {
         setSuccess(true);
       } else {
-        throw new Error(data.error || 'Payment failed');
+        throw new Error(data.error || 'Payment processing failed');
       }
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      console.error('Payment processing error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setErrors({ payment: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -293,6 +431,13 @@ const Payment: React.FC = () => {
     </div>
   );
 
+  const ErrorMessage: React.FC<{ message?: string }> = ({ message }) => {
+    if (!message) return null;
+    return (
+      <p className="text-red-600 text-sm mt-1">{message}</p>
+    );
+  };
+
   const creditCardIcon = `<svg width="20" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.00423 2.5H18.0042C18.4645 2.5 18.8376 2.87309 18.8376 3.33333V16.6667C18.8376 17.1269 18.4645 17.5 18.0042 17.5H3.00423C2.544 17.5 2.1709 17.1269 2.1709 16.6667V3.33333C2.1709 2.87309 2.544 2.5 3.00423 2.5ZM17.1709 9.16667H3.83757V15.8333H17.1709V9.16667ZM17.1709 7.5V4.16667H3.83757V7.5H17.1709ZM12.1709 12.5H15.5042V14.1667H12.1709V12.5Z" fill="currentColor"></path></svg>`;
   
   const bankIcon = `<svg width="20" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16699 16.6665H18.8337V18.3332H2.16699V16.6665ZM3.83366 9.99984H5.50033V15.8332H3.83366V9.99984ZM8.00033 9.99984H9.66699V15.8332H8.00033V9.99984ZM11.3337 9.99984H13.0003V15.8332H11.3337V9.99984ZM15.5003 9.99984H17.167V15.8332H15.5003V9.99984ZM2.16699 5.83317L10.5003 1.6665L18.8337 5.83317V9.1665H2.16699V5.83317ZM3.83366 6.86323V7.49984H17.167V6.86323L10.5003 3.5299L3.83366 6.86323ZM10.5003 6.6665C10.0401 6.6665 9.66699 6.2934 9.66699 5.83317C9.66699 5.37294 10.0401 4.99984 10.5003 4.99984C10.9606 4.99984 11.3337 5.37294 11.3337 5.83317C11.3337 6.2934 10.9606 6.6665 10.5003 6.6665Z" fill="currentColor"></path></svg>`;
@@ -308,7 +453,7 @@ const Payment: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-black mb-2">Payment Successful!</h2>
           <p className="text-gray-600 mb-4">Your subscription has been activated.</p>
-          <p className="text-sm text-gray-500">Redirecting you to your dashboard...</p>
+          <p className="text-sm text-gray-500">Thank you for your purchase!</p>
         </div>
       </div>
     );
@@ -320,10 +465,16 @@ const Payment: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           {/* Left Section */}
           <div className="space-y-12">
-            {/* Error Display */}
-            {error && (
+            {/* Global Error Display */}
+            {errors.payment && (
               <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
-                <p>{error}</p>
+                <p>{errors.payment}</p>
+              </div>
+            )}
+
+            {stripeLoading && selectedMethod === 'credit' && (
+              <div className="p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700 rounded">
+                <p>Loading payment system...</p>
               </div>
             )}
 
@@ -336,22 +487,34 @@ const Payment: React.FC = () => {
                 Used for invoices and billing communication
               </p>
               <div className="space-y-6">
-                <input
-                  type="text"
-                  name="fullName"
-                  placeholder="Enter full name"
-                  value={billingInfo.fullName}
-                  onChange={handleBillingChange}
-                  className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter billing email"
-                  value={billingInfo.email}
-                  onChange={handleBillingChange}
-                  className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors"
-                />
+                <div>
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Enter full name"
+                    value={billingInfo.fullName}
+                    onChange={handleBillingChange}
+                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+                      errors.fullName ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+                    }`}
+                  />
+                  <ErrorMessage message={errors.fullName} />
+                </div>
+                
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter billing email"
+                    value={billingInfo.email}
+                    onChange={handleBillingChange}
+                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+                      errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+                    }`}
+                  />
+                  <ErrorMessage message={errors.email} />
+                </div>
+                
                 <input
                   type="text"
                   name="companyName"
@@ -392,51 +555,72 @@ const Payment: React.FC = () => {
 
               {/* Stripe Elements Card Form */}
               {selectedMethod === 'credit' && (
-                <div className="space-y-6">
-                  <div className="border border-gray-400 rounded-xl p-6 focus-within:border-black transition-colors">
-                    <div id="card-element" className="min-h-[60px]">
-                      {/* Stripe Elements will mount here */}
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-500 flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="currentColor"/>
-                    </svg>
-                    Your card details are secure and encrypted by Stripe
-                  </p>
-                </div>
-              )}
+  <div className="space-y-6">
+    <div className={`border rounded-xl p-6 transition-colors ${
+      stripeLoading ? 'border-gray-300 bg-gray-50' : 'border-gray-400 focus-within:border-black'
+    }`}>
+      <div id="card-element" className="min-h-[60px]" key={`stripe-card-element-${selectedMethod}`}>
+        {stripeLoading && (
+          <div className="flex items-center justify-center h-[60px] text-gray-500">
+            Loading card form...
+          </div>
+        )}
+      </div>
+    </div>
+    <p className="text-sm text-gray-500 flex items-center gap-2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="currentColor"/>
+      </svg>
+      Your card details are secure and encrypted by Stripe
+    </p>
+  </div>
+)}
 
               {/* Bank Account Form */}
               {selectedMethod === 'bank' && (
                 <div className="space-y-6">
-                  <input
-                    type="text"
-                    name="accountHolderName"
-                    placeholder="Account holder name"
-                    value={bankInfo.accountHolderName}
-                    onChange={handleBankChange}
-                    className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors"
-                  />
+                  <div>
+                    <input
+                      type="text"
+                      name="accountHolderName"
+                      placeholder="Account holder name"
+                      value={bankInfo.accountHolderName}
+                      onChange={handleBankChange}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+                        errors.accountHolderName ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+                      }`}
+                    />
+                    <ErrorMessage message={errors.accountHolderName} />
+                  </div>
                   
-                  <input
-                    type="text"
-                    name="routingNumber"
-                    placeholder="Routing number (9 digits)"
-                    value={bankInfo.routingNumber}
-                    onChange={handleBankChange}
-                    maxLength={9}
-                    className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors"
-                  />
+                  <div>
+                    <input
+                      type="text"
+                      name="routingNumber"
+                      placeholder="Routing number (9 digits)"
+                      value={bankInfo.routingNumber}
+                      onChange={handleBankChange}
+                      maxLength={9}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+                        errors.routingNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+                      }`}
+                    />
+                    <ErrorMessage message={errors.routingNumber} />
+                  </div>
                   
-                  <input
-                    type="text"
-                    name="accountNumber"
-                    placeholder="Account number"
-                    value={bankInfo.accountNumber}
-                    onChange={handleBankChange}
-                    className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors"
-                  />
+                  <div>
+                    <input
+                      type="text"
+                      name="accountNumber"
+                      placeholder="Account number"
+                      value={bankInfo.accountNumber}
+                      onChange={handleBankChange}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+                        errors.accountNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+                      }`}
+                    />
+                    <ErrorMessage message={errors.accountNumber} />
+                  </div>
                   
                   <select
                     name="accountType"
@@ -480,6 +664,10 @@ const Payment: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                  
+                  <div className="text-center text-gray-500 text-sm">
+                    Additional payment methods coming soon
+                  </div>
                 </div>
               )}
             </section>
@@ -516,31 +704,45 @@ const Payment: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex justify-between items-center pt-6 border-t border-gray-300">
-                  <span className="text-lg text-gray-600">Total Price (USD)</span>
-                  <span className="text-xl font-bold text-black">${planDetails.price}.00</span>
+                <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                  <span className="text-lg font-medium text-gray-600">Total</span>
+                  <span className="text-2xl font-bold text-black">${planDetails.price}</span>
+                </div>
+                
+                <button
+                  onClick={processPayment}
+                  disabled={isLoading || (selectedMethod === 'credit' && stripeLoading)}
+                  className="w-full bg-black text-white text-lg font-medium py-4 px-6 rounded-xl hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-6"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    `Pay $${planDetails.price}`
+                  )}
+                </button>
+                
+                <div className="text-center text-sm text-gray-500 mt-4">
+                  <p>By completing this purchase, you agree to our</p>
+                  <p>
+                    <a href="#" className="underline hover:text-gray-700">Terms of Service</a> and{' '}
+                    <a href="#" className="underline hover:text-gray-700">Privacy Policy</a>
+                  </p>
                 </div>
               </div>
               
-              <div className="space-y-4">
-                <button 
-                  className={`w-full h-16 text-white text-base font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 ${
-                    isLoading 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-black hover:bg-gray-800'
-                  }`}
-                  onClick={processPayment}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Processing Payment...' : 'Complete Payment'}
-                </button>
-                
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <div className="text-center text-sm text-gray-500">
+                <p className="flex items-center justify-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="currentColor"/>
                   </svg>
-                  <span>Secure 256-bit SSL encryption</span>
-                </div>
+                  Secure payment powered by industry-leading encryption
+                </p>
               </div>
             </section>
           </div>

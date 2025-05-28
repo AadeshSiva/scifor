@@ -26,11 +26,8 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   className = ''
 }) => {
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
-  const [activeCategory, setActiveCategory] = useState<string>('');
-  const [activeResearchPoint, setActiveResearchPoint] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   
-  const categoryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const researchRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const navbarRef = useRef<HTMLDivElement>(null);
 
   // Toggle section open/close
@@ -44,49 +41,70 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
     setOpenSections(newOpenSections);
   };
 
-  // Scroll to category
-  const scrollToCategory = (categoryName: string) => {
-    const element = categoryRefs.current[categoryName];
-    if (element) {
-      const navbarHeight = navbarRef.current?.offsetHeight || 0;
-      const elementPosition = element.offsetTop - navbarHeight - 20;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+  // Handle category selection
+  const handleCategorySelect = (categoryName: string) => {
+    setSelectedCategory(categoryName);
+    // Close all open sections when switching categories
+    setOpenSections(new Set());
+  };
+
+  // Convert Google Drive URL to direct download URL
+  const convertGoogleDriveUrl = (url: string) => {
+    // Check if it's a Google Drive URL
+    const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
+    if (driveMatch) {
+      const fileId = driveMatch[1];
+      return `https://drive.google.com/uc?export=download&id=${fileId}`;
+    }
+    return url;
+  };
+
+  // Handle PDF download
+  const handleDownload = async (url: string, categoryName: string) => {
+    try {
+      // Convert Google Drive URL if needed
+      const downloadUrl = convertGoogleDriveUrl(url);
+      
+      // For Google Drive files, we'll use a different approach
+      if (url.includes('drive.google.com')) {
+        // Create a temporary anchor element for Google Drive download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${categoryName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // For other URLs, use fetch method
+        const response = await fetch(downloadUrl);
+        const blob = await response.blob();
+        
+        // Create a temporary URL for the blob
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element and trigger download
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${categoryName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      // Fallback: open the original URL in new tab
+      window.open(url, '_blank');
     }
   };
 
-  // Handle scroll events for active section highlighting
-  useEffect(() => {
-    const handleScroll = () => {
-      const navbarHeight = navbarRef.current?.offsetHeight || 0;
-      const scrollPosition = window.scrollY + navbarHeight + 100;
-
-      // Find active category
-      let currentCategory = '';
-      Object.entries(categoryRefs.current).forEach(([categoryName, element]) => {
-        if (element && element.offsetTop <= scrollPosition) {
-          currentCategory = categoryName;
-        }
-      });
-      setActiveCategory(currentCategory);
-
-      // Find active research point
-      let currentResearchPoint = '';
-      Object.entries(researchRefs.current).forEach(([researchName, element]) => {
-        if (element && element.offsetTop <= scrollPosition) {
-          currentResearchPoint = researchName;
-        }
-      });
-      setActiveResearchPoint(currentResearchPoint);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call initially
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [data]);
+  // Filter data based on selected category
+  const filteredData = selectedCategory === 'All' 
+    ? data 
+    : data.filter(category => category.category === selectedCategory);
 
   // Generate unique ID for sections
   const generateId = (categoryIndex: number, researchIndex: number) => {
@@ -96,35 +114,44 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {/* Sticky Category Navigation */}
-            <div 
+      <div 
         ref={navbarRef}
         className="sticky top-[86px] z-10 bg-white px-8 py-4 border border-gray-500 shadow-lg rounded-lg"
-        >
+      >
         <div className="flex flex-wrap gap-2 max-w-6xl">
-            {data.map((category, index) => (
+          {/* All button */}
+          <button
+            onClick={() => handleCategorySelect('All')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedCategory === 'All'
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-white border border-gray-500'
+            }`}
+          >
+            All
+          </button>
+          
+          {/* Category buttons */}
+          {data.map((category, index) => (
             <button
-                key={index}
-                onClick={() => scrollToCategory(category.category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === category.category
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black hover:bg-white border border-gray-500'
-                }`}
+              key={index}
+              onClick={() => handleCategorySelect(category.category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                selectedCategory === category.category
+                  ? 'bg-black text-white'
+                  : 'bg-white text-black hover:bg-white border border-gray-500'
+              }`}
             >
-                {category.category}
+              {category.category}
             </button>
-            ))}
+          ))}
         </div>
-        </div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto border-b border-gray-400 border-l border-r">
-        {data.map((category, categoryIndex) => (
-          <div 
-            key={categoryIndex}
-            ref={el => categoryRefs.current[category.category] = el}
-          >
-
+        {filteredData.map((category, categoryIndex) => (
+          <div key={categoryIndex}>
             {/* Research Points */}
             <div className="overflow-hidden shadow-lg">
               {category.research_points.map((researchPoint, researchIndex) => {
@@ -135,12 +162,9 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                   <div 
                     key={researchIndex} 
                     className="bg-white"
-                    ref={el => researchRefs.current[researchPoint.name] = el}
                   >
                     <button
-                      className={`flex items-center gap-2 w-full px-8 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50 border-b-[.8px] border-gray-300 ${
-                        activeResearchPoint === researchPoint.name ? 'bg-blue-50 border-blue-200' : ''
-                      }`}
+                      className="flex items-center gap-2 w-full px-8 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50 border-b-[.8px] border-gray-300"
                       onClick={() => handleSectionToggle(sectionId)}
                     >
                       <span className="text-black text-lg min-w-8">
@@ -184,14 +208,13 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                                 <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
                               </svg>
                             </div>
-                            <a 
-                              href={category.category_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors"
+                            <button
+                              onClick={() => handleDownload(category.category_url, category.category)}
+                              className="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors cursor-pointer underline"
                             >
+                                <p>{category.category_url}</p>
                               report.pdf
-                            </a>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -258,7 +281,7 @@ const AccordionWithApi: React.FC = () => {
       setData([
         {
           category: "Business Exit Strategies for 2024",
-          category_url: "https://example.com/report1.pdf",
+          category_url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view",
           research_points: [
             {
               name: "Exit Planning",
@@ -279,7 +302,7 @@ const AccordionWithApi: React.FC = () => {
         },
         {
           category: "Family Business Succession",  
-          category_url: "https://example.com/report2.pdf",
+          category_url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view",
           research_points: [
             {
               name: "Survival Rates",

@@ -181,3 +181,19 @@
       right: 0 !important;
     }
   }
+
+  .sidebar-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 45;
+  }
+
+  @media (min-width: 1024px) {
+    .sidebar-desktop {
+      position: relative !important;
+      transform: none !important;
+      z-index: auto !important;
+    }
+  }

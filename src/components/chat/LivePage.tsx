@@ -4,23 +4,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import VideoPopup from '../video/VideoPopup';
+import { useNavigate } from 'react-router-dom';
 
 const StartForm: React.FC = () => {
   const [businessName, setBusinessName] = useState('');
   const [industry, setIndustry] = useState('');
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Start process:', { businessName, industry });
+    navigate("/join")
   };
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button className="w-[400px] gap-2.5 text-white text-2xl font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors mx-auto my-0 py-3 px-2.5 max-md:w-[280px] max-md:text-xl max-sm:w-full max-sm:text-lg">
+      <>
+        <button className="w-[400px] gap-2.5 text-white text-2xl font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors mx-auto my-0 py-3 px-2.5 max-md:w-[280px] max-md:text-xl max-sm:w-full max-sm:text-lg" onClick={handleSubmit}>
           Start
         </button>
-      </DialogTrigger>
+      </>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Start Your Journey</DialogTitle>
@@ -60,18 +61,18 @@ export const HeroSection: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center px-2">
       <article className="text-center max-w-2xl w-full">
       <VideoPopup videos={[]} />
-      <aside className="absolute right-4 top-4 z-10">
-      <div className="flex flex-col items-end">
-        <img
-          src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-          alt="Side Logo"
-          className="w-[140px] h-[35px]"
-        />
-        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-          <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+      <aside className="absolute right-4 top-24 z-10">
+        <div className="flex flex-col items-end">
+          <img
+            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+            alt="Side Logo"
+            className="w-[140px] h-[35px]"
+          />
+          <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
         <section className="mb-8">
           <h1 className="text-[#7F7F7F] text-5xl font-normal mb-3 max-md:text-3xl max-sm:text-2xl leading-tight font-walbaum">
             Your ONE and ONLY place to:

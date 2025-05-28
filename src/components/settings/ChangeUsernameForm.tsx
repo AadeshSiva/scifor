@@ -25,7 +25,15 @@ interface UserProfile {
   };
 }
 
-const ChangeUsernameForm: React.FC = () => {
+interface ChangeUsernameFormProps {
+  onCancel?: () => void;
+  setDisplay?: (display: string) => void;
+}
+
+const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ 
+  onCancel,
+  setDisplay 
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -289,29 +297,37 @@ const ChangeUsernameForm: React.FC = () => {
     setFormErrors({});
     setErrorMessage(null);
     setSuccessMessage(null);
+    
+    // Call the onCancel prop if provided
+    if (onCancel) {
+      onCancel();
+    }
   };
 
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      // Fallback navigation
-      window.location.href = '/settings';
-    }
+  const handleBackClick = () => {
+      setDisplay('setting'); // Go back to settings (same as ProfileForm)
   };
 
   return (
     <div className="flex flex-col w-full h-full bg-white overflow-y-auto p-6 md:p-10 md:px-16">
       {/* Header with Back Button */}
-      <div className="flex items-center gap-4 text-2xl text-gray-600 mb-8">
-        <button 
-          onClick={handleBack}
-          className="flex items-center gap-2 hover:text-gray-800 transition-colors duration-200"
-          type="button"
-        >
-          <ArrowLeft size={24} />
-          <span>Back</span>
-        </button>
+      <div 
+        className="flex items-center gap-4 text-gray-600 text-2xl cursor-pointer mb-8"
+        onClick={handleBackClick}
+      >
+        <div>
+          <svg 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+            className="back-icon"
+          >
+            <path d="M10.3636 12.4999L18 20.4999L15.8182 22.7856L6 12.4999L15.8182 2.21421L18 4.49991L10.3636 12.4999Z" fill="currentColor"></path>
+          </svg>
+        </div>
+        <span>Back</span>
       </div>
       
       <div className="max-w-md">

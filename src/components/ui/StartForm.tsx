@@ -15,42 +15,58 @@ export const StartForm: React.FC = () => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button className="w-[477px] gap-2.5 text-white text-[28px] font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors mx-auto my-0 pt-[11px] pb-2.5 px-2.5 max-md:w-[300px] max-md:text-2xl max-sm:w-full max-sm:text-xl">
-          Start
-        </button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Start Your Journey</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="businessName">Business Name</Label>
-            <Input
-              id="businessName"
-              placeholder="Enter your business name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
-            <Input
-              id="industry"
-              placeholder="Enter your industry"
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            Begin Assessment
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <div className="pt-24 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg">
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="w-full max-w-[477px] mx-auto block text-white font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors py-3 px-6 rounded-none
+              text-2xl sm:text-3xl lg:text-[28px]
+              min-h-[60px] sm:min-h-[70px] lg:min-h-[80px]
+              focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+              Start
+            </button>
+          </DialogTrigger>
+          <DialogContent className="w-[95vw] max-w-[425px] mx-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl sm:text-2xl">Start Your Journey</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="businessName" className="text-sm sm:text-base">
+                  Business Name
+                </Label>
+                <Input
+                  id="businessName"
+                  placeholder="Enter your business name"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  required
+                  className="w-full text-sm sm:text-base py-2 sm:py-3"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="industry" className="text-sm sm:text-base">
+                  Industry
+                </Label>
+                <Input
+                  id="industry"
+                  placeholder="Enter your industry"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  required
+                  className="w-full text-sm sm:text-base py-2 sm:py-3"
+                />
+              </div>
+              <Button 
+                onClick={handleSubmit}
+                className="w-full py-3 sm:py-4 text-sm sm:text-base font-semibold mt-6"
+              >
+                Begin Assessment
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
   );
 };

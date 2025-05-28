@@ -959,20 +959,21 @@ const ok = async ()=>{
 
 {/* Video Player */}
 <div className="w-full flex justify-center items-center px-0 py-10">
-  <div dangerouslySetInnerHTML={{
-    __html: `<svg class="video-player" width="1078" height="513" viewBox="0 0 1078 513" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 1078px; height: auto; background: #007C7A">
-      <rect width="1078" height="513" fill="#007C7A"></rect>
-      <circle cx="539" cy="257" r="70" fill="url(#paint0_linear_42_1796)" fill-opacity="0.4"></circle>
-      <path d="M570 257L523.5 283.847V230.153L570 257Z" fill="white"></path>
-      <defs>
-        <linearGradient id="paint0_linear_42_1796" x1="539" y1="187" x2="539" y2="327" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#D9D9D9" stop-opacity="0.5"></stop>
-          <stop offset="1" stop-color="#737373"></stop>
-        </linearGradient>
-      </defs>
-    </svg>`
-  }} />
-</div>
+      <iframe 
+        width="1078" 
+        height="513" 
+        src="https://imagekit.io/player/embed/je0rl3nnt/63Qa3wVBkJ-qVzDq5dBmY-360p.mp4/ik-video.mp4?updatedAt=1748407955162&thumbnail=https%3A%2F%2Fik.imagekit.io%2Fje0rl3nnt%2F63Qa3wVBkJ-qVzDq5dBmY-360p.mp4%2Fik-video.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1748407955162&updatedAt=1748407955162" 
+        title="ImageKit video player" 
+        frameBorder="0" 
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+        style={{
+          width: '100%', 
+          maxWidth: '1078px', 
+          height: 'auto',
+          aspectRatio: '1078/513'
+        }}
+      />
+    </div>
 
 <h2 className="text-[#777] text-7xl font-normal text-center px-0 py-20 max-md:text-5xl max-sm:text-[32px] font-walbaum">
   The truth is in the data.

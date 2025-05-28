@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import video from "../../../public/assets/vidoes/63Qa3wVBkJ-7WKbYn1BXV-240p.mp4"
 
 const VideoPopup = ({ videos = [] }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -62,58 +61,7 @@ const VideoPopup = ({ videos = [] }) => {
 
         {/* Video container */}
         <div className="w-full h-full bg-black rounded-lg overflow-hidden shadow-2xl">
-          {currentVideo ? (
-            <iframe
-              src={video}
-              className="w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              title={currentVideo.title || "Jeff Cullen Success Story Video"}
-            />
-          ) : (
-            <div className="relative w-full h-full">
-              <img
-                src="/api/placeholder/800/450"
-                alt="Jeff Cullen Success Story Video"
-                className="w-full h-full object-cover"
-              />
-              
-              {/* Play button overlay */}
-              <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                <button
-                  aria-label="Play video"
-                  className={`bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-white transition-colors ${
-                    isExpanded ? 'w-20 h-20' : 'w-12 h-12'
-                  }`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className={`text-black ml-1 ${
-                      isExpanded ? 'w-10 h-10' : 'w-6 h-6'
-                    }`}
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Video title overlay */}
-              {!isExpanded && (
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3">
-                  <p className="text-white text-sm font-medium">
-                    Watch Jeff's Success Story
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            <iframe className='w-full h-full' src="https://imagekit.io/player/embed/je0rl3nnt/63Qa3wVBkJ-r5QoRy7KVM-240p.mp4/ik-video.mp4?updatedAt=1748406554368&thumbnail=https%3A%2F%2Fik.imagekit.io%2Fje0rl3nnt%2F63Qa3wVBkJ-r5QoRy7KVM-240p.mp4%2Fik-video.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1748406554368&updatedAt=1748406554368" title="ImageKit video player" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"> </iframe>
         </div>
 
         {/* Expanded video details */}

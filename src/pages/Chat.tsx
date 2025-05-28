@@ -168,6 +168,9 @@ const Chat = () => {
   };
 
   const handleMenuItemClick = (item) => {
+    // Always switch to chat display first
+    setDisplay('chat');
+    
     if (item.isAiBot) {
       setIsAiChatMode(true);
       // Reset messages for AI chat
@@ -192,7 +195,41 @@ const Chat = () => {
           time: "10:30 AM",
           isUser: false
         },
-        // ... rest of original messages
+        {
+          id: 2,
+          sender: userName,
+          text: "Making good progress! I'll share with you",
+          time: "10:32 AM",
+          isUser: true
+        },
+        {
+          id: 3,
+          sender: "Alen McCraw",
+          text: "Sure! Let me share the details now",
+          time: "10:33 AM",
+          isUser: false
+        },
+        {
+          id: 4,
+          sender: userName,
+          text: "I've been working on the project all day. What do you think about adding more features to the dashboard?",
+          time: "10:35 AM",
+          isUser: true
+        },
+        {
+          id: 5,
+          sender: "Sarah Johnson",
+          text: "That sounds like a great idea! We could include analytics and reporting features.",
+          time: "10:36 AM",
+          isUser: false
+        },
+        {
+          id: 6,
+          sender: "Michael Chen",
+          text: "I agree with Sarah. Let's discuss this in our next meeting.",
+          time: "10:37 AM",
+          isUser: false
+        }
       ]);
     }
   };
@@ -462,7 +499,7 @@ const Chat = () => {
   
   const getMenuItems = () => {
     return [
-      { id: 1, title: 'Group Chat', icon: 'menu-item-icon' },
+      { id: 1, title: 'Anonymous Group Chat', icon: 'message-square' },
       { id: 2, title: 'Ai Chat Bot (coming soon)', icon: 'menu-item-icon', isAiBot: true },
       ...Array(8).fill(null).map((_, index) => ({ 
         id: index + 3, 
@@ -473,24 +510,24 @@ const Chat = () => {
   };
 
   return (
-    <div className="bg-white h-[calc(100vh-86px)] flex overflow-hidden">
+    <div className="bg-white min-h-[calc(100vh-86px)] flex overflow-hidden">
       {/* Sidebar */}
       {showSidebar && (
-  <nav className="w-[300px] flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 h-full border-r">
+  <nav className={`${
+    showSidebar 
+      ? 'w-[400px] translate-x-0' 
+      : 'w-[300px] -translate-x-full lg:translate-x-0'
+  } lg:w-[300px] lg:relative fixed lg:static top-0 left-0 h-full lg:h-auto z-45 flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 border-r transition-transform duration-300 ease-in-out sidebar-mobile lg:sidebar-desktop`}>
           <div className="flex items-center gap-2.5 px-6 py-4">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
               {userName.charAt(0)}
             </div>
-            <div className=" text-black font-normal font-linear">
+            <div className=" text-black font-normal font-linear py-5">
               Welcome {userName} 👋
             </div>
           </div>
 
-          <div className=" flex items-center gap-2 px-6 py-3.5">
-            <MessageSquare />
-            <div className=" font-normal font-linear">
-              Anonymous Group Chat
-            </div>
+          <div className=" flex items-center gap-2 px-6">
           </div>
 
           <div className="flex-1 overflow-y-auto flex flex-col">
@@ -502,7 +539,7 @@ const Chat = () => {
     }`}
     onClick={() => handleMenuItemClick(item)}
   >
-    <NotepadText />
+    {item.icon==="message-square"?<MessageSquare/>:<NotepadText/>}
     <div className="font-linear">
       {item.title}
     </div>
@@ -533,13 +570,21 @@ const Chat = () => {
       <HeroSection />
     </div>
     ) :(<>
-        <header className="flex items-center justify-between px-6 py-4 border-b border-[rgba(158,158,158,0.3)] bg-white pb-6">
-          <div className="flex items-center gap-4">
-            {!showSidebar && (
-              <button 
-                onClick={() => setShowSidebar(true)}
-                className="p-1 hover:bg-neutral-100 rounded-full"
-              >
+        <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[rgba(158,158,158,0.3)] bg-white pb-6">
+        <div className="flex items-center gap-2 sm:gap-4">
+  <button 
+    onClick={() => setShowSidebar(!showSidebar)}
+    className="lg:hidden p-1 hover:bg-neutral-100 rounded-full z-50 relative"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6h16M4 12h16M4 18h16" stroke="#555" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  </button>
+  {!showSidebar && (
+    <button 
+      onClick={() => setShowSidebar(true)}
+      className="hidden lg:block p-1 hover:bg-neutral-100 rounded-full"
+    >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M4 6h16M4 12h16M4 18h16" stroke="#555" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
@@ -547,11 +592,11 @@ const Chat = () => {
             )}
             <div className="w-12 h-12 bg-[#555] rounded-full flex items-center justify-center text-white">
             </div>
-            <div className="text-lg text-black font-linear">
+            <div className="text-sm sm:text-lg text-black font-linear truncate">
               {isAiChatMode ? 'AI Chat Bot' : 'Anonymous Group Chat'}
             </div>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 sm:gap-6">
             <button aria-label="Notifications" className="p-2 hover:bg-neutral-100 rounded-full" onClick={()=>setShowSearch((value)=>!value)}>
               <Search stroke='#555' size={22}/>
             </button>
@@ -562,7 +607,7 @@ const Chat = () => {
         </header>
 
         {/* Search bar */}
-        {showSearch&&(<div className="w-full flex items-center justify-center bg-neutral-100 px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
+        {showSearch&&(<div className="w-full flex items-center justify-center bg-neutral-100 px-2 sm:px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
           <div className="flex items-center gap-4">
             <button aria-label="Toggle down" className="p-1 hover:bg-white rounded-full">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -576,7 +621,7 @@ const Chat = () => {
             </button>
           </div>
           
-          <div className="mx-4 flex-1 max-w-5xl">
+          <div className="mx-2 sm:mx-4 flex-1 max-w-5xl">
           <div className="w-full h-10 border flex items-center justify-center px-4 bg-white rounded-xl border-[rgba(158,158,158,0.4)]">
             <Search stroke='#555555' size={22}/>
             <input 
@@ -598,6 +643,13 @@ const Chat = () => {
                 <path d="M10.0101 9.00037L15.5765 14.5668L14.5663 15.5769L8.99996 10.0106L3.4336 15.5769L2.42346 14.5668L7.98981 9.00037L2.42346 3.43408L3.4336 2.42387L8.99996 7.99023L14.5663 2.42387L15.5765 3.43408L10.0101 9.00037Z" fill="#555555"/>
               </svg>
             </button>
+            {showSidebar && (
+  <button 
+    onClick={() => setShowSidebar(false)}
+    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+    aria-label="Close sidebar"
+  />
+)}
           </div>
         </div>)}
         
@@ -646,12 +698,12 @@ const Chat = () => {
 )}
         
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 min-h-0" style={{ scrollBehavior: 'smooth' }}>
+        <div className="flex-1 overflow-y-auto p-2 sm:p-4 min-h-0" style={{ scrollBehavior: 'smooth' }}>
           <div className="text-[#555] self-center border border-[#9E9E9E] min-h-8 w-auto gap-2.5 text-sm font-normal mt-4 mx-auto px-3 py-1 rounded-[40px] border-solid flex justify-center items-center max-w-24">
             Today
           </div>
 
-          <div className="flex flex-col space-y-6 mt-6 px-4">
+          <div className="flex flex-col space-y-4 sm:space-y-6 mt-4 sm:mt-6 px-1 sm:px-4">
           {messages.filter(msg => 
   searchQuery ? msg.text.toLowerCase().includes(searchQuery.toLowerCase()) : true
 ).map((msg) => (
@@ -667,7 +719,7 @@ const Chat = () => {
             </div>
           </div>
         )}
-        <div className="bg-neutral-100 ml-auto border w-auto max-w-[70%] text-sm font-normal p-4 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
+        <div className="bg-neutral-100 ml-auto border w-auto max-w-[90%] sm:max-w-[70%] text-sm font-normal p-3 sm:p-4 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
           <div className="flex items-center gap-2 mb-3">
             <ChartNoAxesColumn className='rotate-90' size={16} stroke="#555"/>
             <span className="text-[#555] font-medium">Poll</span>
@@ -739,7 +791,7 @@ const Chat = () => {
             </div>
           </div>
         )}
-        <div className="bg-[#9E9E9E80] ml-auto text-[#555555] border w-auto max-w-[70%] overflow-hidden text-sm font-normal px-4 py-3.5 rounded-[15px]">
+        <div className="bg-[#9E9E9E80] ml-auto text-[#555555] border w-auto max-w-[85%] sm:max-w-[70%] overflow-hidden text-sm font-normal px-3 sm:px-4 py-3.5 rounded-[15px]">
           {msg.text}
         </div>
         <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
@@ -780,7 +832,7 @@ const Chat = () => {
               </div>
             </div>
           )}
-          <div className="bg-white ml-12 text-[#555] border w-auto max-w-[70%] overflow-hidden text-sm font-normal px-4 py-3.5 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
+          <div className="bg-white ml-8 sm:ml-12 text-[#555] border w-auto max-w-[85%] sm:max-w-[70%] overflow-hidden text-sm font-normal px-3 sm:px-4 py-3.5 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
             {msg.text}
           </div>
           <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 ml-12">
@@ -838,18 +890,18 @@ const Chat = () => {
         )}
 
         {/* Chat Input */}
-        <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-4 p-4 px-6 border-t border-[rgba(158,158,158,0.5)]">
+        <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-2 sm:gap-4 p-3 sm:p-4 px-4 sm:px-6 border-t border-[rgba(158,158,158,0.5)]">
         <button
           type="button"
           onClick={() => setShowPollCreator(true)}
-          className="flex items-center justify-center w-20 h-10 rounded-full gap-2 text-[#555]"
+          className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555]"
           aria-label="Create poll"
         >
-          <ChartNoAxesColumn className='rotate-90' size={22} strokeWidth={3}/>
-          <p className='text-sm'>Poll</p>
+          <ChartNoAxesColumn className='rotate-90' size={18} strokeWidth={3}/>
+          <p className='text-xs sm:text-sm hidden sm:block'>Poll</p>
         </button>
 
-          <div className="bg-white border flex items-center gap-3 flex-1 px-5 mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
+        <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
             <Sticker stroke='#555' size={22}/>
             <input
               type="text"
@@ -871,7 +923,7 @@ const Chat = () => {
         </form>
         {showPollCreator && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div className="relative w-full max-w-sm">
+  <div className="relative w-full max-w-sm mx-auto">
       <div
         onSubmit={handlePollSubmit}
         className="bg-white rounded-xl shadow-2xl overflow-hidden"
@@ -1033,9 +1085,9 @@ const Chat = () => {
 ) : null}
       {display==="setting"?<Setting setDisplay={setDisplay}/>:null}
       {display==="profile"?<ProfileForm setDisplay={setDisplay}/>:null}
-      {display==="password"?<PasswordChangeForm/>:null}
-      {display==="email"?<EmailSettings/>:null}
-      {display==="username"?<ChangeUsernameForm/>:null}
+      {display==="password"?<PasswordChangeForm setDisplay={setDisplay}/>:null}
+      {display==="email"?<EmailSettings setDisplay={setDisplay}/>:null}
+      {display==="username"?<ChangeUsernameForm setDisplay={setDisplay}/>:null}
     </div>
   );
 };
