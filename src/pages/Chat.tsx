@@ -9,6 +9,7 @@ import { useAuth } from '@/utils/AuthContext';
 import { HeroSection } from '@/components/chat/LivePage';
 import PinnedMessages from '@/components/chat/PinnedMessage';
 import VideoPopup from '@/components/video/VideoPopup';
+import PurchaseHistory from '@/components/settings/PaymentHistory';
 
 const filterAbusiveContent = async (text) => {
   try {
@@ -68,6 +69,7 @@ const Chat = () => {
   const [display,setDisplay] = useState('chat')
   const { isAuthenticated, isLoading, user } = useAuth();
   const [userName,setUsername] = useState('')
+  const isAdmin = user?.is_staff === true; 
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -563,7 +565,7 @@ const Chat = () => {
       <VideoPopup videos={[]} />
       
       {display==='chat'?
-      <main className="flex-1 flex flex-col h-full max-h-[calc(100vh-86px)]">
+      <main className="flex-1 flex flex-col h-screen max-h-[calc(100vh-86px)]">
         {/* Chat Header */}
         {!isAuthenticated || (isAuthenticated && user && user.paid === false) ? (
   <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
@@ -761,14 +763,16 @@ const Chat = () => {
           </div>
         </div>
         <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
-          <button 
-            onClick={() => handlePinMessage(msg.id)}
-            className="hover:bg-neutral-100 rounded-full p-1"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
-            </svg>
-          </button>
+        {isAdmin && (
+  <button 
+    onClick={() => handlePinMessage(msg.id)}
+    className="hover:bg-neutral-100 rounded-full p-1"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
+    </svg>
+  </button>
+)}
           <button 
             onClick={() => handleReply(msg)}
             className="hover:bg-neutral-100 rounded-full p-1"
@@ -890,11 +894,11 @@ const Chat = () => {
         )}
 
         {/* Chat Input */}
-        <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-2 sm:gap-4 p-3 sm:p-4 px-4 sm:px-6 border-t border-[rgba(158,158,158,0.5)]">
+        <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-2 sm:gap-4 p-3 sm:p-4 px-4 sm:px-6 border-t border-[rgba(158,158,158,0.5)] flex-shrink-0">
         <button
           type="button"
           onClick={() => setShowPollCreator(true)}
-          className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555]"
+          className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555] flex-shrink-0"
           aria-label="Create poll"
         >
           <ChartNoAxesColumn className='rotate-90' size={18} strokeWidth={3}/>
@@ -902,20 +906,20 @@ const Chat = () => {
         </button>
 
         <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
-            <Sticker stroke='#555' size={22}/>
+            <Sticker stroke='#555' size={22} className="flex-shrink-0"/>
             <input
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type a message..."
-              className="text-[#555] text-sm w-full bg-transparent outline-none"
+              className="text-[#555] text-sm w-full bg-transparent outline-none flex-1"
             />
           </div>
 
           <button
             type="submit"
             disabled={!message.trim()}
-            className={`flex items-center justify-center w-10 h-10 rounded-full ${!message.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${!message.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
             aria-label="Send message"
           >
             <SendHorizonal/>
@@ -1088,6 +1092,7 @@ const Chat = () => {
       {display==="password"?<PasswordChangeForm setDisplay={setDisplay}/>:null}
       {display==="email"?<EmailSettings setDisplay={setDisplay}/>:null}
       {display==="username"?<ChangeUsernameForm setDisplay={setDisplay}/>:null}
+      {display==="history"?<PurchaseHistory/>:null}
     </div>
   );
 };

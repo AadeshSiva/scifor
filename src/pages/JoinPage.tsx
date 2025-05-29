@@ -1156,22 +1156,37 @@ const PricingCard = ({
 const Hero = () => {
   return (
     <section className="text-center mb-10">
-  <h1 className="text-[#D22F27] text-7xl font-normal max-w-[627px] mt-10 mx-auto max-sm:text-5xl font-walbaum">
+  <h1 className="text-[#D22F27] text-7xl font-normal max-w-[800px] mt-10 mx-auto max-sm:text-5xl font-walbaum">
     <span className="text-[#818181] font-thin">How you grow today </span>
-    <span className="text-[#818181]">decides how you </span>
-    <span className="text-[#007C7A]">win </span>
-    <span className="text-[#818181]">or a </span>
-    <span className="text-[#D22F27]">lose </span>
-    <span className="text-[#818181]">tomorrow.</span>
+    
   </h1>
-
+    <h1 className="text-[#D22F27] text-7xl font-normal max-w-[800px] mt-2 mx-auto max-sm:text-5xl font-walbaum flex-col flex">
+        <span className="text-[#818181]">decides how you</span>
+        <p><span className="text-[#007C7A]">win </span>
+        <span className="text-[#818181]">or a </span>
+        <span className="text-[#D22F27]">lose </span></p>
+        <span className="text-[#818181]">tomorrow.</span>
+    </h1>
   <div className="max-w-[800px] mx-auto mt-8 flex flex-col gap-3 py-10">
     <p className="text-[#626262] text-[28px] font-thin leading-8 max-sm:text-xl">
-      Join the world's ONLY SYSTEM to maximize, monetize your most lucrative
+      Join the world's ONLY SYSTEM
+    </p>
+    <p className="text-[#626262] text-[28px] font-thin leading-8 max-sm:text-xl">
+      to maximize, monetize your most lucrative
+      business assets –
+    </p>
+    <p className="text-[#626262] text-[28px] font-thin leading-8 max-sm:text-xl">
+     your most lucrative
       business assets –
     </p>
     <p className="text-[#626262] text-[28px] font-thin leading-8 mt-4 max-sm:text-xl">
-      now you can grow and exit like you have always dreamed of. Or lose it
+      now you can grow and exit 
+    </p>
+    <p className="text-[#626262] text-[28px] font-thin leading-8 max-sm:text-xl">
+      exit like you have always dreamed of.
+    </p>
+    <p className="text-[#626262] text-[28px] font-thin leading-8 max-sm:text-xl">
+      Or lose it
       all…forever.
     </p>
   </div>
@@ -1180,17 +1195,21 @@ const Hero = () => {
     4 options. 1 decision.
   </h2>
 
-  <div className="max-w-[900px] mx-auto mt-10 text-[#626262] text-[28px] font-thin leading-8 max-sm:text-x flex flex-col gap-3 py-10">
-    <p>Whatever you decide we will not sell you or do follow ups.</p>
+  <div className="max-w-[1300px] mx-auto mt-10 text-[#626262] text-[28px] font-thin leading-8 max-sm:text-x flex flex-col gap-3 py-10">
+    <p>Whatever you decide</p>
+    <p>we will not sell you or do follow ups.</p>
     <p className="my-6 font-thin">WE HAVE A NO SELLING PHILOSOPHY:</p>
     <p>
-      We all love to buy, hate being sold to. Rather we will educate with
-      FREE tools, webinars etc.
+      We all love to buy, hate being sold to.
     </p>
-    <p className="mt-4">
-      We trust that you know your business best and what's best for you –
-      only when you are adequately informed. Our job is to ensure you are
-      fully informed by those who are goal congruent with you.
+    <p>
+    Rather we will educate with
+    FREE tools, webinars etc.
+    </p>
+    <p className="mt-4 flex-col flex w-8xl">
+      <span>We trust that you know your business best and what's best for you –<br/></span>
+      <span>only when you are adequately informed<br/></span>
+      <span>. Our job is to ensure you are fully informed by those who are goal congruent with you.</span>
     </p>
   </div>
 </section>

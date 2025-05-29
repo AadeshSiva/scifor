@@ -121,6 +121,12 @@ const BasicInfoCard = ({
           onClick={() => setDisplay("password")} 
           isLoading={isLoading}
         />
+        <InfoRow 
+          title="Purchase History" 
+          value={''} 
+          onClick={() => setDisplay("history")} 
+          isLoading={isLoading}
+        />
       </div>
     </section>
   );

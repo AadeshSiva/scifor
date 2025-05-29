@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PaymentSuccess from './PymentSuccess';
 
 interface BillingFormData {
   fullName: string;
@@ -200,8 +201,18 @@ const Payment: React.FC = () => {
   };
 
   const validateRoutingNumber = (routing: string): boolean => {
-    // Basic routing number validation (9 digits)
-    return /^\d{9}$/.test(routing);
+    // Enhanced routing number validation
+    if (!/^\d{9}$/.test(routing)) {
+      return false;
+    }
+    
+    // Basic checksum validation for US routing numbers
+    const digits = routing.split('').map(Number);
+    const checksum = (3 * (digits[0] + digits[3] + digits[6]) + 
+                     7 * (digits[1] + digits[4] + digits[7]) + 
+                     (digits[2] + digits[5] + digits[8])) % 10;
+    
+    return checksum === 0;
   };
 
   const validateBillingInfo = (): boolean => {
@@ -228,25 +239,51 @@ const Payment: React.FC = () => {
   const validateBankAccount = (): boolean => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
-
+  
     if (!bankInfo.accountHolderName.trim()) {
-      newErrors.accountHolderName = 'Account holder name is required';
+      newErrors.accountHolderName = 'Account holder name is required and must match your bank records';
       isValid = false;
     }
-
+  
     if (!bankInfo.accountNumber.trim()) {
       newErrors.accountNumber = 'Account number is required';
       isValid = false;
+    } else if (bankInfo.accountNumber.length < 8 || bankInfo.accountNumber.length > 17) {
+      newErrors.accountNumber = 'Account number must be between 8-17 digits';
+      isValid = false;
+    } else if (!/^\d+$/.test(bankInfo.accountNumber)) {
+      newErrors.accountNumber = 'Account number must contain only digits';
+      isValid = false;
     }
-
+  
     if (!bankInfo.routingNumber.trim()) {
       newErrors.routingNumber = 'Routing number is required';
       isValid = false;
     } else if (!validateRoutingNumber(bankInfo.routingNumber)) {
-      newErrors.routingNumber = 'Please enter a valid 9-digit routing number';
+      newErrors.routingNumber = 'Please enter a valid 9-digit US routing number';
       isValid = false;
     }
-
+  
+    setErrors(prev => ({ ...prev, ...newErrors }));
+    return isValid;
+  };
+  
+  const validateUpiPayment = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    let isValid = true;
+  
+    if (!bankInfo.upiId?.trim()) {
+      newErrors.upiId = 'UPI ID is required';
+      isValid = false;
+    } else {
+      // Basic UPI ID validation (user@provider format)
+      const upiRegex = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+$/;
+      if (!upiRegex.test(bankInfo.upiId)) {
+        newErrors.upiId = 'Please enter a valid UPI ID (e.g., user@paytm)';
+        isValid = false;
+      }
+    }
+  
     setErrors(prev => ({ ...prev, ...newErrors }));
     return isValid;
   };
@@ -444,18 +481,10 @@ const Payment: React.FC = () => {
 
   const dropdownIcon = `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13.3335L5 8.3335H15L10 13.3335Z" fill="currentColor"></path></svg>`;
 
+  const upiIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/></svg>`;
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center p-8 max-w-md mx-auto">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckIcon />
-          </div>
-          <h2 className="text-2xl font-bold text-black mb-2">Payment Successful!</h2>
-          <p className="text-gray-600 mb-4">Your subscription has been activated.</p>
-          <p className="text-sm text-gray-500">Thank you for your purchase!</p>
-        </div>
-      </div>
+        <PaymentSuccess/>
     );
   }
 
@@ -532,26 +561,32 @@ const Payment: React.FC = () => {
                 Pay with
               </h2>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                <PaymentMethodButton
-                  icon={creditCardIcon}
-                  label="Credit Card"
-                  selected={selectedMethod === 'credit'}
-                  onClick={() => setSelectedMethod('credit')}
-                />
-                <PaymentMethodButton
-                  icon={bankIcon}
-                  label="Bank Account"
-                  selected={selectedMethod === 'bank'}
-                  onClick={() => setSelectedMethod('bank')}
-                />
-                <PaymentMethodButton
-                  label="Others"
-                  icon={dropdownIcon}
-                  selected={selectedMethod === 'others'}
-                  onClick={() => setSelectedMethod('others')}
-                />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+  <PaymentMethodButton
+    icon={creditCardIcon}
+    label="Credit Card"
+    selected={selectedMethod === 'credit'}
+    onClick={() => setSelectedMethod('credit')}
+  />
+  <PaymentMethodButton
+    icon={bankIcon}
+    label="Bank Account"
+    selected={selectedMethod === 'bank'}
+    onClick={() => setSelectedMethod('bank')}
+  />
+  <PaymentMethodButton
+    icon={upiIcon}
+    label="UPI"
+    selected={selectedMethod === 'upi'}
+    onClick={() => setSelectedMethod('upi')}
+  />
+  <PaymentMethodButton
+    label="Others"
+    icon={dropdownIcon}
+    selected={selectedMethod === 'others'}
+    onClick={() => setSelectedMethod('others')}
+  />
+</div>
 
               {/* Stripe Elements Card Form */}
               {selectedMethod === 'credit' && (
@@ -578,61 +613,128 @@ const Payment: React.FC = () => {
 
               {/* Bank Account Form */}
               {selectedMethod === 'bank' && (
-                <div className="space-y-6">
-                  <div>
-                    <input
-                      type="text"
-                      name="accountHolderName"
-                      placeholder="Account holder name"
-                      value={bankInfo.accountHolderName}
-                      onChange={handleBankChange}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.accountHolderName ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
-                      }`}
-                    />
-                    <ErrorMessage message={errors.accountHolderName} />
-                  </div>
-                  
-                  <div>
-                    <input
-                      type="text"
-                      name="routingNumber"
-                      placeholder="Routing number (9 digits)"
-                      value={bankInfo.routingNumber}
-                      onChange={handleBankChange}
-                      maxLength={9}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.routingNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
-                      }`}
-                    />
-                    <ErrorMessage message={errors.routingNumber} />
-                  </div>
-                  
-                  <div>
-                    <input
-                      type="text"
-                      name="accountNumber"
-                      placeholder="Account number"
-                      value={bankInfo.accountNumber}
-                      onChange={handleBankChange}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.accountNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
-                      }`}
-                    />
-                    <ErrorMessage message={errors.accountNumber} />
-                  </div>
-                  
-                  <select
-                    name="accountType"
-                    value={bankInfo.accountType}
-                    onChange={handleBankChange}
-                    className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors bg-white"
-                  >
-                    <option value="checking">Checking Account</option>
-                    <option value="savings">Savings Account</option>
-                  </select>
-                </div>
-              )}
+  <div className="space-y-6">
+    <div className="p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700 rounded">
+      <p className="text-sm font-medium mb-1">ACH Bank Transfer Notice</p>
+      <p className="text-xs">Bank account payments may take 3-5 business days to process and will require micro-deposit verification.</p>
+    </div>
+    
+    <div>
+      <input
+        type="text"
+        name="accountHolderName"
+        placeholder="Account holder name (must match bank records)"
+        value={bankInfo.accountHolderName}
+        onChange={handleBankChange}
+        className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+          errors.accountHolderName ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+        }`}
+      />
+      <ErrorMessage message={errors.accountHolderName} />
+    </div>
+    
+    <div>
+      <input
+        type="text"
+        name="routingNumber"
+        placeholder="9-digit routing number (e.g., 021000021)"
+        value={bankInfo.routingNumber}
+        onChange={handleBankChange}
+        maxLength={9}
+        pattern="[0-9]{9}"
+        className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+          errors.routingNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+        }`}
+      />
+      <ErrorMessage message={errors.routingNumber} />
+      <p className="text-xs text-gray-500 mt-1">Find this on your check or bank statement</p>
+    </div>
+    
+    <div>
+      <input
+        type="text"
+        name="accountNumber"
+        placeholder="Account number (8-17 digits)"
+        value={bankInfo.accountNumber}
+        onChange={handleBankChange}
+        minLength={8}
+        maxLength={17}
+        className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+          errors.accountNumber ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+        }`}
+      />
+      <ErrorMessage message={errors.accountNumber} />
+    </div>
+    
+    <div>
+      <select
+        name="accountType"
+        value={bankInfo.accountType}
+        onChange={handleBankChange}
+        className="w-full h-16 px-6 text-lg text-gray-600 border border-gray-400 rounded-xl focus:border-black focus:outline-none transition-colors bg-white"
+      >
+        <option value="checking">Checking Account</option>
+        <option value="savings">Savings Account</option>
+      </select>
+    </div>
+    
+    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <div className="ml-3">
+          <p className="text-sm text-yellow-700">
+            <strong>Important:</strong> By providing your bank account details, you authorize us to debit your account for this payment and agree to the ACH authorization terms.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{selectedMethod === 'upi' && (
+  <div className="space-y-6">
+    <div className="p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded">
+      <p className="text-sm font-medium mb-1">UPI Payment</p>
+      <p className="text-xs">Instant payment via UPI. You'll be redirected to complete the payment.</p>
+    </div>
+    
+    <div>
+      <input
+        type="text"
+        name="upiId"
+        placeholder="Enter your UPI ID (e.g., user@paytm)"
+        value={bankInfo.upiId || ''}
+        onChange={(e) => setBankInfo(prev => ({ ...prev, upiId: e.target.value }))}
+        className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
+          errors.upiId ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+        }`}
+      />
+      <ErrorMessage message={errors.upiId} />
+      <p className="text-xs text-gray-500 mt-1">Your UPI ID from any UPI app like PhonePe, Google Pay, Paytm, etc.</p>
+    </div>
+    
+    <div className="grid grid-cols-2 gap-4">
+      <div className="border border-gray-300 rounded-xl p-4 text-center">
+        <div className="text-2xl mb-2">📱</div>
+        <div className="text-sm font-medium text-gray-700">PhonePe</div>
+      </div>
+      <div className="border border-gray-300 rounded-xl p-4 text-center">
+        <div className="text-2xl mb-2">💳</div>
+        <div className="text-sm font-medium text-gray-700">Google Pay</div>
+      </div>
+    </div>
+    
+    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+      <p className="text-sm text-blue-700">
+        <strong>How it works:</strong> You'll be redirected to your UPI app to authorize the payment of ₹{Math.round(planDetails.price * 83)}.
+      </p>
+    </div>
+  </div>
+)}
 
               {/* Other Payment Methods */}
               {selectedMethod === 'others' && (

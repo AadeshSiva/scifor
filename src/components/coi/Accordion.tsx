@@ -3,6 +3,7 @@ import { Dot } from 'lucide-react';
 
 interface Statistic {
   context: string;
+  url: string;
 }
 
 interface ResearchPoint {
@@ -12,7 +13,7 @@ interface ResearchPoint {
 
 interface Category {
   category: string;
-  category_url: string;
+  category_url?: string;
   research_points: ResearchPoint[];
 }
 
@@ -44,13 +45,11 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   // Handle category selection
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
-    // Close all open sections when switching categories
     setOpenSections(new Set());
   };
 
   // Convert Google Drive URL to direct download URL
   const convertGoogleDriveUrl = (url: string) => {
-    // Check if it's a Google Drive URL
     const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
     if (driveMatch) {
       const fileId = driveMatch[1];
@@ -60,43 +59,32 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   };
 
   // Handle PDF download
-  const handleDownload = async (url: string, categoryName: string) => {
+  const handleDownload = async (url: string, fileName: string) => {
     try {
-      // Convert Google Drive URL if needed
       const downloadUrl = convertGoogleDriveUrl(url);
       
-      // For Google Drive files, we'll use a different approach
       if (url.includes('drive.google.com')) {
-        // Create a temporary anchor element for Google Drive download
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = `${categoryName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
+        link.download = `${fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       } else {
-        // For other URLs, use fetch method
         const response = await fetch(downloadUrl);
         const blob = await response.blob();
-        
-        // Create a temporary URL for the blob
         const blobUrl = window.URL.createObjectURL(blob);
-        
-        // Create a temporary anchor element and trigger download
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = `${categoryName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
+        link.download = `${fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
         document.body.appendChild(link);
         link.click();
-        
-        // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
       }
     } catch (error) {
       console.error('Error downloading file:', error);
-      // Fallback: open the original URL in new tab
       window.open(url, '_blank');
     }
   };
@@ -113,38 +101,40 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Sticky Category Navigation */}
+      {/* Sticky Category Navigation - Fixed to single line with horizontal scroll */}
       <div 
         ref={navbarRef}
-        className="sticky top-[86px] z-10 bg-white px-8 py-4 border border-gray-500 shadow-lg rounded-lg"
+        className="sticky top-[86px] z-10 bg-white px-8 py-4 border border-gray-500 shadow-lg rounded-lg max-w-4xl overscroll-none"
       >
-        <div className="flex flex-wrap gap-2 max-w-6xl">
-          {/* All button */}
-          <button
-            onClick={() => handleCategorySelect('All')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              selectedCategory === 'All'
-                ? 'bg-black text-white'
-                : 'bg-white text-black hover:bg-white border border-gray-500'
-            }`}
-          >
-            All
-          </button>
-          
-          {/* Category buttons */}
-          {data.map((category, index) => (
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 min-w-max">
+            {/* All button */}
             <button
-              key={index}
-              onClick={() => handleCategorySelect(category.category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                selectedCategory === category.category
+              onClick={() => handleCategorySelect('All')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                selectedCategory === 'All'
                   ? 'bg-black text-white'
-                  : 'bg-white text-black hover:bg-white border border-gray-500'
+                  : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
               }`}
             >
-              {category.category}
+              All
             </button>
-          ))}
+            
+            {/* Category buttons */}
+            {data.map((category, index) => (
+              <button
+                key={index}
+                onClick={() => handleCategorySelect(category.category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                  selectedCategory === category.category
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
+                }`}
+              >
+                {category.category}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -193,28 +183,31 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                     
                     {isOpen && (
                       <div className="border-t border-gray-200">
-                        <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
-                          <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
+                        <div className="bg-neutral-100 px-8 py-6 max-sm:p-4">
+                          <div className="text-gray-600 text-base leading-relaxed space-y-4">
                             {researchPoint.statistics.map((stat, statIndex) => (
-                              <p key={statIndex} className='flex items-start'>
-                                <Dot size={30} className="flex-shrink-0 mt-1"/>
-                                <span>{stat.context}</span>
-                              </p>
+                              <div key={statIndex} className='flex items-start justify-between gap-4'>
+                                <div className="flex items-start flex-1">
+                                  <Dot size={30} className="flex-shrink-0 mt-1"/>
+                                  <span>{stat.context}</span>
+                                </div>
+                                {stat.url && (
+                                  <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                                    <div className="w-20 h-16 bg-gray-600 rounded-lg flex items-center justify-center">
+                                      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                                        <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
+                                      </svg>
+                                    </div>
+                                    <button
+                                      onClick={() => handleDownload(stat.url, `${category.category}_${researchPoint.name}_${statIndex + 1}`)}
+                                      className="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors cursor-pointer underline text-center"
+                                    >
+                                      Download PDF
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             ))}
-                          </div>
-                          <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                            <div className="w-24 h-20 bg-gray-600 rounded-lg flex items-center justify-center">
-                              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <path d="M6 8h20v16H6V8zm2 2v12h16V10H8zm6 4h8v2h-8v-2zm0 4h6v2h-6v-2z" fill="white"/>
-                              </svg>
-                            </div>
-                            <button
-                              onClick={() => handleDownload(category.category_url, category.category)}
-                              className="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors cursor-pointer underline"
-                            >
-                                <p>{category.category_url}</p>
-                              report.pdf
-                            </button>
                           </div>
                         </div>
                       </div>
@@ -227,7 +220,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
         ))}
       </div>
 
-      {/* Sample Data Display (remove this when connecting to backend) */}
+      {/* Sample Data Display */}
       {data.length === 0 && (
         <div className="max-w-6xl mx-auto p-8 text-center text-gray-500">
           <p className="text-lg mb-4">No data available. Connect to your backend API at <code>/category-list</code></p>
@@ -236,13 +229,13 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
 {`[
   {
     "category": "Category Name",
-    "category_url": "https://...",
     "research_points": [
       {
         "name": "Research Point Name",
         "statistics": [
           {
-            "context": "Statistic context text"
+            "context": "Statistic context text",
+            "url": "https://drive.google.com/file/d/..."
           }
         ]
       }
@@ -252,6 +245,16 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
           </pre>
         </div>
       )}
+
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;  /* Internet Explorer 10+ */
+          scrollbar-width: none;  /* Firefox */
+        }
+        .scrollbar-hide::-webkit-scrollbar { 
+          display: none;  /* Safari and Chrome */
+        }
+      `}</style>
     </div>
   );
 };
@@ -270,7 +273,6 @@ const AccordionWithApi: React.FC = () => {
         setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Fallback to sample data for demonstration
         setSampleData();
       } finally {
         setLoading(false);
@@ -281,35 +283,77 @@ const AccordionWithApi: React.FC = () => {
       setData([
         {
           category: "Business Exit Strategies for 2024",
-          category_url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view",
           research_points: [
             {
               name: "Exit Planning",
               statistics: [
-                { context: "75% of business owners want to exit their businesses within the next ten years." },
-                { context: "73% of privately held companies in the U.S. plan to transition within the next 10 years, representing a $14 trillion opportunity." },
-                { context: "48% of business owners who want to sell have no formal exit strategy." }
+                { 
+                  context: "75% of business owners want to exit their businesses within the next ten years.",
+                  url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view"
+                },
+                { 
+                  context: "73% of privately held companies in the U.S. plan to transition within the next 10 years, representing a $14 trillion opportunity.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing"
+                },
+                { 
+                  context: "48% of business owners who want to sell have no formal exit strategy.",
+                  url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view"
+                }
               ]
             },
             {
               name: "Lack of Planning",
               statistics: [
-                { context: "Only 17% of business owners actually have a formal exit plan." },
-                { context: "58% of owners have never had their business formally appraised." }
+                { 
+                  context: "Only 17% of business owners actually have a formal exit plan.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing"
+                },
+                { 
+                  context: "58% of owners have never had their business formally appraised.",
+                  url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view"
+                }
               ]
             }
           ]
         },
         {
-          category: "Family Business Succession",  
-          category_url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view",
+          category: "Choosing the Right Exit Path",  
           research_points: [
             {
-              name: "Survival Rates",
+              name: "Attitudes Toward Exit Strategies",
               statistics: [
-                { context: "Only 30% of all family-owned businesses survive into the second generation." },
-                { context: "Only 12% survive into the third generation." },
-                { context: "Only 3% operate at the fourth generation and beyond." }
+                { 
+                  context: "14% of business owners think they don't need an exit strategy.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          category: "Market Valuation Trends",  
+          research_points: [
+            {
+              name: "Business Valuation",
+              statistics: [
+                { 
+                  context: "Average business sale multiples have increased by 15% in 2024.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          category: "Succession Planning",  
+          research_points: [
+            {
+              name: "Family Succession",
+              statistics: [
+                { 
+                  context: "30% of family businesses survive into the second generation.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing"
+                }
               ]
             }
           ]
