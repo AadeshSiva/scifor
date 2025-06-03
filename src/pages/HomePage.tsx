@@ -502,29 +502,74 @@ const FormSection: React.FC = () => {
   const {login} = useAuth()
   const [websiteError, setWebsiteError] = useState("");
 
-  const validateWebsiteUrl = (url) => {
+  const validateWebsiteUrl = async (url) => {
     if (!url) return true; // Optional field
     
-    // Check if URL has a proper domain extension
-    const domainRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    const hasExtension = /\.[a-z]{2,}$/i.test(url.replace(/^https?:\/\//, ''));
+    // Clean and format URL
+    let cleanUrl = url.trim().toLowerCase();
     
-    if (!hasExtension) {
-      return "Please enter a valid website URL with domain extension (e.g., .com, .org)";
+    // Add protocol if missing
+    if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      cleanUrl = 'https://' + cleanUrl;
     }
     
-    return true;
+    // Basic URL format validation
+    const urlPattern = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+    
+    if (!urlPattern.test(cleanUrl)) {
+      return "Please enter a valid website URL (e.g., example.com)";
+    }
+    
+    try {
+      // Extract domain from URL
+      const urlObj = new URL(cleanUrl);
+      const domain = urlObj.hostname.replace(/^www\./, '');
+      
+      // Check if domain exists by making a DNS lookup simulation
+      // Using a public DNS API to check domain existence
+      const response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        return "Unable to verify domain. Please check the URL.";
+      }
+      
+      const dnsData = await response.json();
+      
+      // Check if DNS resolution was successful
+      if (dnsData.Status !== 0 || !dnsData.Answer || dnsData.Answer.length === 0) {
+        return "This domain does not exist. Please enter a valid website URL.";
+      }
+      
+      return true;
+    } catch (error) {
+      return "Please enter a valid website URL format.";
+    }
   };
-
-  const handleWebsiteChange = (e) => {
+  
+  const handleWebsiteChange = async (e) => {
     const value = e.target.value;
     setValue('businessWebsite', value);
     
-    const validation = validateWebsiteUrl(value);
-    if (validation !== true) {
-      setWebsiteError(validation);
-    } else {
-      setWebsiteError("");
+    // Clear previous error
+    setWebsiteError("");
+    
+    // Only validate if there's a value and it looks like a complete domain
+    if (value && value.includes('.')) {
+      // Debounce validation to avoid too many API calls
+      clearTimeout(window.websiteValidationTimeout);
+      window.websiteValidationTimeout = setTimeout(async () => {
+        const validation = await validateWebsiteUrl(value);
+        if (validation !== true) {
+          setWebsiteError(validation);
+        } else {
+          setWebsiteError("");
+        }
+      }, 1000); // Wait 1 second after user stops typing
     }
   };
 

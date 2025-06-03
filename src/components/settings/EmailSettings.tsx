@@ -37,7 +37,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
   const [success, setSuccess] = useState<string>("");
   const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(null);
 
-  // Get auth token from localStorage or wherever you store it
   const getAuthToken = (): string => {
     return localStorage.getItem('access_token') || '';
   };
@@ -194,6 +193,23 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
     setPasswordAction(null);
   };
 
+  const handleResendCode = async (): Promise<void> => {
+    if (!newEmail) return;
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      await apiCall('/send-email-otp/', 'POST', { email: newEmail });
+      setSuccess('OTP resent to your email');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="p-10 px-16">
       <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={onBack}>
@@ -333,11 +349,15 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
               disabled={loading}
             />
             
-            <button 
-              className="text-blue-500 text-sm mb-6 block mx-auto hover:underline"
-            >
-              Resend Code
-            </button>
+            <div className="flex justify-center mb-6">
+              <button 
+                onClick={handleResendCode}
+                disabled={loading}
+                className="text-blue-500 text-sm hover:underline disabled:opacity-50"
+              >
+                {loading ? 'Resending...' : 'Resend Code'}
+              </button>
+            </div>
             
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -345,16 +365,25 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
               </div>
             )}
             
-            <button
-              onClick={handleVerifyOtp}
-              disabled={loading}
-              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50 mb-4"
-            >
-              {loading ? 'Verifying...' : 'Submit'}
-            </button>
+            <div className="flex gap-4 mb-4">
+              <button
+                onClick={handleVerifyOtp}
+                disabled={loading}
+                className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              >
+                {loading ? 'Verifying...' : 'Submit'}
+              </button>
+              <button
+                onClick={closeAllModals}
+                disabled={loading}
+                className="flex-1 border border-gray-300 py-3 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            </div>
             
             <p className="text-xs text-gray-500 text-center">
-              If you didn't see the email in your inbox, check your spam folder. If it's not there, the email address may not be confirmed, or it may not match an existing LinkedIn account.
+              Didn't receive the code? Check your spam folder or try resending the verification code.
             </p>
           </div>
         </div>

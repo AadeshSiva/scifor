@@ -262,6 +262,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     if (onCancel) {
       onCancel();
     }
+    setDisplay('setting')
   };
 
   const handleConnectLinkedIn = () => {

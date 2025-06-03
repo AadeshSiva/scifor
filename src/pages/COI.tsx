@@ -1,6 +1,5 @@
 
 import Accordion from '@/components/coi/Accordion';
-import { FilterBar } from '@/components/coi/FilterBar';
 import VideoPopup from '@/components/video/VideoPopup';
 import { useAuth } from '@/utils/AuthContext';
 import { Dot } from 'lucide-react';
@@ -425,13 +424,21 @@ const ok = async ()=>{
         [name]: value
       }));
       
-      // Website validation
-      if (value && !value.includes('.com') && !value.includes('.org') && !value.includes('.net') && 
-          !value.includes('.edu') && !value.includes('.gov') && !value.includes('.co.')) {
-        setWebsiteError('Website should include a valid domain extension (e.g., .com)');
+      // Enhanced website validation for all common domains
+      if (value) {
+        // Check if it contains a valid domain pattern
+        const domainPattern = /\.[a-zA-Z]{2,}$/;
+        const hasValidDomain = domainPattern.test(value);
+        
+        if (!hasValidDomain) {
+          setWebsiteError('Website should include a valid domain extension (e.g., .com, .org, .net, etc.)');
+        } else {
+          setWebsiteError('');
+        }
       } else {
         setWebsiteError('');
       }
+
     } else if (name === 'phone') {
       // Remove non-digit characters and apply length limit based on selected country
       const digitsOnly = value.replace(/\D/g, '');
@@ -469,72 +476,85 @@ const ok = async ()=>{
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  
-  // Validate required fields
-  if (!formData.fullName || !formData.email || !formData.phone) {
-    setError('Please fill in all required fields');
-    return;
-  }
-  
-  if (!formData.privacy) {
-    setError('Please accept the privacy policy');
-    return;
-  }
-  
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.email)) {
-    setError('Please enter a valid email address');
-    return;
-  }
-  
-  // Website validation
-  if (formData.website && websiteError) {
-    setError('Please enter a valid website URL');
-    return;
-  }
-  
-  // Phone validation
-  if (phoneError) {
-    setError('Please enter a valid phone number');
-    return;
-  }
-  
-  // Save form data to database first
-  try {
-    setLoading(true);
-    const response = await fetch('https://intern-project-final-1.onrender.com/save-coi-form/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        full_name: formData.fullName,
-        phone_number: formData.phone,
-        website_name: formData.website
-      })
-    });
-
-    const result = await response.json();
+    e.preventDefault();
+    setError('');
     
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to save form data');
+    // Validate required fields
+    if (!formData.fullName || !formData.email || !formData.phone) {
+      setError('Please fill in all required fields');
+      return;
     }
     
-    // Store form data in localStorage for popup flow
-    localStorage.setItem('coiFormData', JSON.stringify(formData));
-    setShowPasswordPopup(true);
+    if (!formData.privacy) {
+      setError('Please accept the privacy policy');
+      return;
+    }
     
-  } catch (err) {
-    console.error('Error saving form data:', err);
-    setError(err.message || 'Failed to save form data');
-  } finally {
-    setLoading(false);
-  }
-};
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
+    // Website validation
+    if (formData.website && websiteError) {
+      setError('Please enter a valid website URL');
+      return;
+    }
+    
+    // Phone validation
+    if (phoneError) {
+      setError('Please enter a valid phone number');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      // Save form data to database first
+      const saveResponse = await fetch('https://intern-project-final-1.onrender.com/save-coi-form/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          full_name: formData.fullName,
+          phone_number: formData.phone,
+          website_name: formData.website
+        })
+      });
+  
+      const saveResult = await saveResponse.json();
+      
+      if (!saveResponse.ok) {
+        throw new Error(saveResult.message || 'Failed to save form data');
+      }
+      
+      // Register user with temporary password and log them in immediately
+      await registerUser('temp_password_' + Date.now()); // Use timestamp to make it unique
+      
+      // Store form data in localStorage for popup flow
+      localStorage.setItem('coiFormData', JSON.stringify(formData));
+      
+      // Show password popup after successful login
+      setShowPasswordPopup(true);
+      
+      // Start interval to show popup every 30 seconds if closed
+      const interval = setInterval(() => {
+        setShowPasswordPopup(true);
+      }, 30000); // 30 seconds
+      
+      setPopupInterval(interval);
+      
+    } catch (err) {
+      console.error('Error during form submission:', err);
+      setError(err.message || 'Failed to process form submission');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const registerUser = async (password?: string) => {
     setLoading(true);
@@ -655,8 +675,23 @@ const ok = async ()=>{
   // Updated handleVerifyNow to clear interval
   const handleVerifyNow = async (password: string, confirmPassword: string) => {
     try {
-      // Register user with password
-      await registerUser(password);
+      // Update user password (you'll need to create this endpoint)
+      const response = await fetch('https://intern-project-final-1.onrender.com/reset-password/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}` // Use stored token
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          new_password: password
+        })
+      });
+  
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to update password');
+      }
       
       // Send OTP for email verification
       await sendEmailOTP();
@@ -670,7 +705,7 @@ const ok = async ()=>{
       setShowPasswordPopup(false);
       setShowOTPPopup(true);
     } catch (err) {
-      setError(err.message || 'An error occurred during registration');
+      setError(err.message || 'An error occurred during password update');
     }
   };
 
@@ -849,7 +884,7 @@ const ok = async ()=>{
         <div className="flex justify-between items-start gap-8 bg-neutral-100 px-8 py-6 max-sm:flex-col max-sm:gap-4 max-sm:p-4">
           <div className="text-gray-600 text-base leading-relaxed flex-1 space-y-3">
             <p className='flex'><Dot size={30}/>75% of business owners want to exit their businesses within the next ten years.</p>
-            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>  
+            <p className='flex'><Dot size={30}/>73% of privately held companies in the U.S. plan to transition within the next 10 years, which will be representing a $14 trillion opportunity.</p>
             <p className='flex'><Dot size={30}/>79% of business owners plan to exit their businesses in the next 10 years or less.</p>
           </div>
           <div className="flex flex-col items-center gap-2 flex-shrink-0">

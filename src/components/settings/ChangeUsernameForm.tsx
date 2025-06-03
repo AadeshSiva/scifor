@@ -134,7 +134,6 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
         if (!username) {
           throw new Error('Username not found in profile data');
         }
-
         setCurrentUsername(username);
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -180,11 +179,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
     if (!formData.usernameNum) {
       errors.usernameNum = "Number is required";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.usernameNum)) {
-      errors.usernameNum = "Must be a valid number";
+    } else if (!/^\d{1,3}$/.test(formData.usernameNum)) {
+      errors.usernameNum = "Must be a valid number (0-999)";
       isValid = false;
-    } else if (parseInt(formData.usernameNum) < 1 || parseInt(formData.usernameNum) > 9999) {
-      errors.usernameNum = "Number must be between 1 and 9999";
+    } else if (parseInt(formData.usernameNum) < 0 || parseInt(formData.usernameNum) > 999) {
+      errors.usernameNum = "Number must be between 000 and 999";
       isValid = false;
     }
     
@@ -236,14 +235,14 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
     setIsLoading(true);
     setErrorMessage(null);
     setSuccessMessage(null);
-  
+    const formattedNum = formData.usernameNum.padStart(3, '0');
     try {
       const response = await makeAuthenticatedRequest('/change-username/', {
         method: 'POST',
         body: JSON.stringify({
           username_color: formData.usernameColor,
           username_object: formData.usernameObject,
-          username_num: formData.usernameNum,
+          username_num: formattedNum,  // Use formatted number
           password: formData.password
         })
       });
@@ -302,6 +301,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
     if (onCancel) {
       onCancel();
     }
+    setDisplay('setting');
   };
 
   const handleBackClick = () => {
@@ -446,19 +446,20 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
                     Number
                   </label>
                   <input
-                    type="text"
-                    id="usernameNum"
-                    name="usernameNum"
-                    value={formData.usernameNum}
-                    onChange={handleInputChange}
-                    disabled={isLoading || isProfileLoading}
-                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
-                      formErrors.usernameNum 
-                        ? 'border-red-300 focus:ring-red-500' 
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    placeholder="Enter number"
-                  />
+  type="text"  // Keep as text to allow leading zeros
+  id="usernameNum"
+  name="usernameNum"
+  value={formData.usernameNum}
+  onChange={handleInputChange}
+  disabled={isLoading || isProfileLoading}
+  maxLength="3"  // Add this to limit input to 3 characters
+  className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+    formErrors.usernameNum 
+      ? 'border-red-300 focus:ring-red-500' 
+      : 'border-gray-300 hover:border-gray-400'
+  }`}
+  placeholder="000-999"  // Update placeholder
+/>
                   {formErrors.usernameNum && (
                     <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
                       <AlertCircle size={14} />
