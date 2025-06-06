@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, Loader2, Check, X } from "lucide-react";
 import ForgotPasswordPopups from "./ForgotPassword";
 
 interface FormData {
@@ -38,9 +38,14 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUsername, setCurrentUsername] = useState<string>("");
+  const [usernameAvailability, setUsernameAvailability] = useState<{
+    isAvailable: boolean | null;
+    message: string;
+  }>({ isAvailable: null, message: "" });
   const [formData, setFormData] = useState<FormData>({
     usernameColor: "",
     usernameObject: "",
@@ -96,6 +101,54 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
 
     return response.json();
   };
+
+  // Check username availability
+  const checkUsernameAvailability = useCallback(async (username: string) => {
+    if (!username || username === currentUsername) {
+      setUsernameAvailability({ isAvailable: null, message: "" });
+      return;
+    }
+
+    setIsCheckingUsername(true);
+    
+    try {
+      const response = await makeAuthenticatedRequest('/check-username/', {
+        method: 'POST',
+        body: JSON.stringify({ username })
+      });
+
+      setUsernameAvailability({
+        isAvailable: !response.exists,
+        message: response.message || (response.exists ? "Username already taken" : "Username is available")
+      });
+    } catch (error) {
+      console.error('Error checking username availability:', error);
+      setUsernameAvailability({
+        isAvailable: null,
+        message: "Unable to check username availability"
+      });
+    } finally {
+      setIsCheckingUsername(false);
+    }
+  }, [currentUsername]);
+
+  // Debounced username check
+  useEffect(() => {
+    const { usernameColor, usernameObject, usernameNum } = formData;
+    
+    if (usernameColor && usernameObject && usernameNum) {
+      const formattedNum = usernameNum.padStart(3, '0');
+      const newUsername = `${usernameColor}${usernameObject}${formattedNum}`;
+      
+      const timeoutId = setTimeout(() => {
+        checkUsernameAvailability(newUsername);
+      }, 500); // 500ms debounce
+
+      return () => clearTimeout(timeoutId);
+    } else {
+      setUsernameAvailability({ isAvailable: null, message: "" });
+    }
+  }, [formData.usernameColor, formData.usernameObject, formData.usernameNum, checkUsernameAvailability]);
 
   // Fetch current username when component mounts
   useEffect(() => {
@@ -188,9 +241,16 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
     }
     
     // Check if new username is different from current
-    const newUsername = `${formData.usernameColor}${formData.usernameObject}${formData.usernameNum}`;
+    const formattedNum = formData.usernameNum.padStart(3, '0');
+    const newUsername = `${formData.usernameColor}${formData.usernameObject}${formattedNum}`;
     if (newUsername === currentUsername) {
       errors.usernameColor = "New username must be different from current username";
+      isValid = false;
+    }
+    
+    // Check username availability
+    if (usernameAvailability.isAvailable === false) {
+      errors.usernameColor = "Username is already taken. Please choose a different combination.";
       isValid = false;
     }
     
@@ -228,6 +288,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Wait for username check to complete if it's in progress
+    if (isCheckingUsername) {
+      return;
+    }
+    
     if (!validateForm()) {
       return;
     }
@@ -248,7 +313,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
       });
   
       setSuccessMessage(response.message || "Username updated successfully!");
-      const newUsername = `${formData.usernameColor}${formData.usernameObject}${formData.usernameNum}`;
+      const newUsername = `${formData.usernameColor}${formData.usernameObject}${formattedNum}`;
       setCurrentUsername(newUsername);
       
       // Clear the form
@@ -259,6 +324,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
         password: ""
       });
       setFormErrors({});
+      setUsernameAvailability({ isAvailable: null, message: "" });
       
       // Optionally update the token if a new one is provided
       if (response.access_token) {
@@ -296,6 +362,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
     setFormErrors({});
     setErrorMessage(null);
     setSuccessMessage(null);
+    setUsernameAvailability({ isAvailable: null, message: "" });
     
     // Call the onCancel prop if provided
     if (onCancel) {
@@ -306,6 +373,64 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
 
   const handleBackClick = () => {
       setDisplay('setting'); // Go back to settings (same as ProfileForm)
+  };
+
+  const getPreviewUsername = () => {
+    const { usernameColor, usernameObject, usernameNum } = formData;
+    if (usernameColor && usernameObject && usernameNum) {
+      const formattedNum = usernameNum.padStart(3, '0');
+      return `${usernameColor}${usernameObject}${formattedNum}`;
+    }
+    return `${usernameColor || ""}${usernameObject || ""}${usernameNum || "___"}`;
+  };
+
+  const renderAvailabilityIndicator = () => {
+    const { usernameColor, usernameObject, usernameNum } = formData;
+    
+    if (!usernameColor || !usernameObject || !usernameNum) {
+      return null;
+    }
+
+    const formattedNum = usernameNum.padStart(3, '0');
+    const newUsername = `${usernameColor}${usernameObject}${formattedNum}`;
+    
+    if (newUsername === currentUsername) {
+      return (
+        <div className="flex items-center gap-2 text-orange-600 text-sm mt-2">
+          <AlertCircle size={16} />
+          <span>This is your current username</span>
+        </div>
+      );
+    }
+
+    if (isCheckingUsername) {
+      return (
+        <div className="flex items-center gap-2 text-gray-600 text-sm mt-2">
+          <Loader2 size={16} className="animate-spin" />
+          <span>Checking availability...</span>
+        </div>
+      );
+    }
+
+    if (usernameAvailability.isAvailable === true) {
+      return (
+        <div className="flex items-center gap-2 text-green-600 text-sm mt-2">
+          <Check size={16} />
+          <span>{usernameAvailability.message}</span>
+        </div>
+      );
+    }
+
+    if (usernameAvailability.isAvailable === false) {
+      return (
+        <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+          <X size={16} />
+          <span>{usernameAvailability.message}</span>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -446,20 +571,20 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
                     Number
                   </label>
                   <input
-  type="text"  // Keep as text to allow leading zeros
-  id="usernameNum"
-  name="usernameNum"
-  value={formData.usernameNum}
-  onChange={handleInputChange}
-  disabled={isLoading || isProfileLoading}
-  maxLength="3"  // Add this to limit input to 3 characters
-  className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
-    formErrors.usernameNum 
-      ? 'border-red-300 focus:ring-red-500' 
-      : 'border-gray-300 hover:border-gray-400'
-  }`}
-  placeholder="000-999"  // Update placeholder
-/>
+                    type="text"  // Keep as text to allow leading zeros
+                    id="usernameNum"
+                    name="usernameNum"
+                    value={formData.usernameNum}
+                    onChange={handleInputChange}
+                    disabled={isLoading || isProfileLoading}
+                    maxLength={3}  // Add this to limit input to 3 characters
+                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      formErrors.usernameNum 
+                        ? 'border-red-300 focus:ring-red-500' 
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    placeholder="000-999"  // Update placeholder
+                  />
                   {formErrors.usernameNum && (
                     <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
                       <AlertCircle size={14} />
@@ -471,9 +596,12 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
 
               {/* Username Preview (placed to the side) */}
               <div className="bg-white rounded-lg px-4 py-4 text-black text-sm font-mono font-bold flex items-center pt-12 ">
-                @{formData.usernameColor}{formData.usernameObject}{formData.usernameNum || "___"}
+                @{getPreviewUsername()}
               </div>
             </div>
+
+            {/* Username Availability Indicator */}
+            {renderAvailabilityIndicator()}
           </div>
           
           {/* Password Input */}
@@ -526,7 +654,13 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isLoading || isProfileLoading || !currentUsername}
+              disabled={
+                isLoading || 
+                isProfileLoading || 
+                !currentUsername || 
+                isCheckingUsername ||
+                usernameAvailability.isAvailable === false
+              }
               className="flex items-center justify-center gap-2 bg-black text-white px-8 py-3 rounded-xl font-medium hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed min-w-28"
             >
               {isLoading ? (

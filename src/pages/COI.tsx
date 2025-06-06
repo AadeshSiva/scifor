@@ -362,9 +362,28 @@ const COI: React.FC = () => {
   const [popupInterval, setPopupInterval] = useState<NodeJS.Timeout | null>(null);
   const {login} = useAuth()
   const [selectedCountryCode, setSelectedCountryCode] = useState('+1');
-const [websiteError, setWebsiteError] = useState('');
-const [phoneError, setPhoneError] = useState('');
+  const [websiteError, setWebsiteError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [countrySearchTerm, setCountrySearchTerm] = useState('');
+  const filteredCountries = countryCodes.filter(country => 
+    country.country.toLowerCase().includes(countrySearchTerm.toLowerCase()) ||
+    country.code.includes(countrySearchTerm)
+  );
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isCountryDropdownOpen && !event.target.closest('.relative')) {
+        setIsCountryDropdownOpen(false);
+        setCountrySearchTerm('');
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCountryDropdownOpen]);
 const ok = async ()=>{
     const response = await fetch('https://intern-project-final-1.onrender.com' + '/category-statistics/', {
         method: 'GET',
@@ -424,21 +443,11 @@ const ok = async ()=>{
         [name]: value
       }));
       
-      // Enhanced website validation for all common domains
-      if (value) {
-        // Check if it contains a valid domain pattern
-        const domainPattern = /\.[a-zA-Z]{2,}$/;
-        const hasValidDomain = domainPattern.test(value);
-        
-        if (!hasValidDomain) {
-          setWebsiteError('Website should include a valid domain extension (e.g., .com, .org, .net, etc.)');
-        } else {
-          setWebsiteError('');
-        }
-      } else {
+      // Clear error when user starts typing
+      if (websiteError) {
         setWebsiteError('');
       }
-
+  
     } else if (name === 'phone') {
       // Remove non-digit characters and apply length limit based on selected country
       const digitsOnly = value.replace(/\D/g, '');
@@ -452,10 +461,8 @@ const ok = async ()=>{
         [name]: limitedValue
       }));
       
-      // Phone validation
-      if (limitedValue && limitedValue.length !== maxDigits) {
-        setPhoneError(`Phone number should be exactly ${maxDigits} digits for ${selectedCountry?.country || 'selected country'}`);
-      } else {
+      // Clear error when user starts typing
+      if (phoneError) {
         setPhoneError('');
       }
     } else if (name === 'countryCode') {
@@ -474,6 +481,34 @@ const ok = async ()=>{
       }));
     }
   };
+
+  const handleWebsiteBlur = () => {
+    if (formData.website) {
+      // Enhanced website validation for all common domains
+      const domainPattern = /\.[a-zA-Z]{2,}$/;
+      const hasValidDomain = domainPattern.test(formData.website);
+      
+      if (!hasValidDomain) {
+        setWebsiteError('Website should include a valid domain extension (e.g., .com, .org, .net, etc.)');
+      } else {
+        setWebsiteError('');
+      }
+    } else {
+      setWebsiteError('');
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const selectedCountry = countryCodes.find(country => country.code === selectedCountryCode);
+    const maxDigits = selectedCountry?.digits || 10;
+    
+    if (formData.phone && formData.phone.length !== maxDigits) {
+      setPhoneError(`Phone number should be exactly ${maxDigits} digits for ${selectedCountry?.country || 'selected country'}`);
+    } else {
+      setPhoneError('');
+    }
+  };
+  
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1050,7 +1085,7 @@ const ok = async ()=>{
       </div>
     )}
     
-    <form onSubmit={handleFormSubmit} className="space-y-4 font-linear">
+    <form onSubmit={handleFormSubmit} className="space-y-1 font-linear">
       <div>
         <label className="block text-black text-sm font-medium mb-2">Full Name</label>
         <input
@@ -1080,15 +1115,16 @@ const ok = async ()=>{
       <div>
         <label className="block text-black text-sm font-medium mb-2">Business Website</label>
         <input
-          type="text"
-          name="website"
-          value={formData.website}
-          onChange={handleInputChange}
-          placeholder="Enter your website URL (e.g., example.com)"
-          className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
-            websiteError ? 'border-red-400' : 'border-gray-400'
-          }`}
-        />
+  type="text"
+  name="website"
+  value={formData.website}
+  onChange={handleInputChange}
+  onBlur={handleWebsiteBlur}  // Add this line
+  placeholder="Enter your website URL (e.g., example.com)"
+  className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+    websiteError ? 'border-red-400' : 'border-gray-400'
+  }`}
+/>
         {websiteError && (
           <p className="text-red-500 text-xs mt-1">{websiteError}</p>
         )}
@@ -1097,30 +1133,76 @@ const ok = async ()=>{
       <div>
         <label className="block text-black text-sm font-medium mb-2">Phone Number</label>
         <div className="flex gap-2">
-          <select 
-            name="countryCode"
-            value={selectedCountryCode}
-            onChange={handleInputChange}
-            className="w-24 h-10 border border-gray-400 rounded-lg text-xs px-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          >
-            {countryCodes.map((country, index) => (
-              <option key={`${country.code}-${index}`} value={country.code}>
-                {country.flag} {country.code}
-              </option>
-            ))}
-          </select>
+        <div className="relative">
+  <button
+    type="button"
+    onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+    className="w-24 h-10 border border-gray-400 rounded-lg text-xs px-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white flex items-center justify-between"
+  >
+    <span>
+      {countryCodes.find(c => c.code === selectedCountryCode)?.flag} {selectedCountryCode}
+    </span>
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+  
+  {isCountryDropdownOpen && (
+    <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-60 overflow-hidden w-52">
+      <div className="p-2 border-b">
+        <input
+          type="text"
+          placeholder="Search countries..."
+          value={countrySearchTerm}
+          onChange={(e) => setCountrySearchTerm(e.target.value)}
+          className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div className="max-h-40 overflow-y-auto">
+        {filteredCountries.length > 0 ? (
+          filteredCountries.map((country, index) => (
+            <button
+              key={`${country.code}-${index}`}
+              type="button"
+              onClick={() => {
+                setSelectedCountryCode(country.code);
+                setIsCountryDropdownOpen(false);
+                setCountrySearchTerm('');
+                // Reset phone error when country changes
+                setPhoneError('');
+                // Clear phone number when country changes to avoid confusion
+                setFormData(prev => ({
+                  ...prev,
+                  phone: ''
+                }));
+              }}
+              className="w-full px-3 py-2 text-left text-xs hover:bg-gray-100 flex items-center gap-2"
+            >
+              <span>{country.flag}</span>
+              <span>{country.code}</span>
+              <span className="text-gray-600">{country.country}</span>
+            </button>
+          ))
+        ) : (
+          <div className="px-3 py-2 text-xs text-gray-500">No countries found</div>
+        )}
+      </div>
+    </div>
+  )}
+</div>
           <div className="flex-1">
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder={`Enter ${countryCodes.find(c => c.code === selectedCountryCode)?.digits || 10} digit number`}
-              className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
-                phoneError ? 'border-red-400' : 'border-gray-400'
-              }`}
-              required
-            />
+          <input
+  type="tel"
+  name="phone"
+  value={formData.phone}
+  onChange={handleInputChange}
+  onBlur={handlePhoneBlur}  // Add this line
+  placeholder={`Enter ${countryCodes.find(c => c.code === selectedCountryCode)?.digits || 10} digit number`}
+  className={`w-full h-10 border text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+    phoneError ? 'border-red-400' : 'border-gray-400'
+  }`}
+  required
+/>
             {phoneError && (
               <p className="text-red-500 text-xs mt-1">{phoneError}</p>
             )}

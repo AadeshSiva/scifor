@@ -3,116 +3,84 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import VideoPopup from '../video/VideoPopup';
-import { useNavigate } from 'react-router-dom';
 
-const StartForm: React.FC = () => {
-  const [businessName, setBusinessName] = useState('');
-  const [industry, setIndustry] = useState('');
-  const navigate = useNavigate()
+const StartForm = ({ setDisplay,showHero }) => {
 
-  const handleSubmit = (e: React.FormEvent) => {
-    navigate("/join")
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setDisplay("chat");
+    showHero(false)
   };
 
   return (
-    <Dialog>
-      <>
-        <button className="w-[400px] gap-2.5 text-white text-2xl font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors mx-auto my-0 py-3 px-2.5 max-md:w-[280px] max-md:text-xl max-sm:w-full max-sm:text-lg" onClick={handleSubmit}>
+    <>
+        <button className="w-full max-w-[400px] gap-2.5 text-white text-xl md:text-2xl font-bold cursor-pointer bg-black hover:bg-gray-800 transition-colors mx-auto my-0 py-3 px-4 sm:px-6" onClick={handleSubmit}>
           Start
         </button>
-      </>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Start Your Journey</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="businessName">Business Name</Label>
-            <Input
-              id="businessName"
-              placeholder="Enter your business name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
-            <Input
-              id="industry"
-              placeholder="Enter your industry"
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              required
-            />
-          </div>
-          <Button onClick={handleSubmit} className="w-full">
-            Begin Assessment
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    </>
   );
 };
 
-export const HeroSection: React.FC = () => {
+export const HeroSection = ({ setDisplay,showHero }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center px-2">
-      <article className="text-center max-w-2xl w-full">
-      <VideoPopup videos={[]} />
-      <aside className="absolute right-4 top-24 z-10">
-        <div className="flex flex-col items-end">
-          <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
+      <article className="text-center max-w-4xl w-full">
+        {/* Side Logo - Hidden on small screens to prevent overlap */}
+        <aside className="absolute right-4 top-24 z-10 hidden lg:block">
+          <div className="flex flex-col items-end">
+            <img
+              src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+              alt="Side Logo"
+              className="w-[140px] h-[35px]"
+            />
+            <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+              <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+
         <section className="mb-8">
-          <h1 className="text-[#7F7F7F] text-5xl font-normal mb-3 max-md:text-3xl max-sm:text-2xl leading-tight font-walbaum">
+          <h1 className="text-[#7F7F7F] text-3xl sm:text-4xl lg:text-5xl font-normal mb-3 leading-tight font-walbaum">
             Your ONE and ONLY place to:
             <span className="block text-black">grow to exit richer.</span>
           </h1>
           
-          <h2 className="text-black text-xl font-bold mb-4 max-md:text-lg max-sm:text-base">
+          <h2 className="text-black text-base sm:text-lg lg:text-xl font-bold mb-4">
             84%+ of your business value (PWC) is hidden inside your intangibles.
           </h2>
           
-          <p className="text-[#595959] text-center text-lg font-normal mb-6 max-md:text-base max-sm:text-sm">
+          <p className="text-[#595959] text-center text-sm sm:text-base lg:text-lg font-normal mb-6 px-2">
             Warren Buffet doesn't have a solution for maximizing and monetizing
             intangibles because we have yet to tell him about ​the that we invented
             in 1996.​
           </p>
           
-          <div className="text-black text-center text-lg font-bold mb-6 max-md:text-base max-sm:text-sm">
+          <div className="text-black text-center text-sm sm:text-base lg:text-lg font-bold mb-6 px-2">
             <p>While we have other client successes, ​</p>
             <p>Jeff was the only one that sold a UPh-based company.​</p>
           </div>
         </section>
 
-        <section className="text-[#9D0D19] mb-8 mx-20">
-          <p className="text-lg font-normal mb-2 max-md:text-base max-sm:text-sm ">
+        <section className="text-[#9D0D19] mb-8 px-4 sm:px-8 lg:px-20">
+          <p className="text-sm sm:text-base lg:text-lg font-normal mb-2">
             If you haven't found a way to ​unlock 84% of YOUR business value
           </p>
-          <p className="text-lg font-normal mb-6 max-md:text-base max-sm:text-sm font-semibold">
+          <p className="text-sm sm:text-base lg:text-lg font-normal mb-6 font-semibold">
             you may not get paid for <span className="underline">all</span> or{' '}
             <span className="underline">any of it</span>.
           </p>
         </section>
 
-        <section className="text-center">
-          <h2 className="text-[#7F7F7F] text-5xl font-normal mb-4 max-md:text-3xl max-sm:text-2xl leading-tight font-walbaum">
+        <section className="text-center px-4">
+          <h2 className="text-[#7F7F7F] text-3xl sm:text-4xl lg:text-5xl font-normal mb-4 leading-tight font-walbaum">
             Your business dream​
             <span className="block">comes true</span>
             <span className="text-black">here and now</span>.
           </h2>
           
-          <StartForm />
+          <div className="flex justify-center">
+            <StartForm setDisplay={setDisplay} showHero = {showHero}/>
+          </div>
         </section>
       </article>
     </div>

@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/otpverify" element={<ProtectedRoute><OTPVerification/></ProtectedRoute>}/>
           <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
           <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
-          <Route path="/chat" element={<ProtectedRoute requireAuth={false}><Chat/></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><Chat/></ProtectedRoute>} />
           <Route path="/" element={<ProtectedRoute requireAuth={false}><HomePage/></ProtectedRoute>}/>
           <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI/></ProtectedRoute>} />
           <Route path="/join" element={<ProtectedRoute requireAuth={false}><JoinPage/></ProtectedRoute>} />

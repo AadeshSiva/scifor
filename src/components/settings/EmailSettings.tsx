@@ -37,6 +37,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
   const [success, setSuccess] = useState<string>("");
   const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(null);
 
+  // Get auth token from localStorage or wherever you store it
   const getAuthToken = (): string => {
     return localStorage.getItem('access_token') || '';
   };
@@ -210,6 +211,13 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
     }
   };
 
+  const handleChangeEmail = (): void => {
+    setShowOtpModal(false);
+    setShowAddEmailModal(true);
+    setOtp('');
+    setError('');
+  };
+
   return (
     <section className="p-10 px-16">
       <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={onBack}>
@@ -331,17 +339,19 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-2xl w-96 mx-4">
             <h3 className="text-xl font-medium mb-2 text-center">Enter the 6-digit code</h3>
-            <p className="text-sm text-gray-600 mb-1 text-center">Check {newEmail.replace(/(.{3}).*(@.*)/, '$1*****$2')} for a verification code.</p>
+            <p className="text-sm text-gray-600 mb-1 text-center">
+              We've sent a verification code to {newEmail.replace(/(.{3}).*(@.*)/, '$1*****$2')}
+            </p>
             <button 
-              onClick={() => setShowAddEmailModal(true) & setShowOtpModal(false)}
+              onClick={handleChangeEmail}
               className="text-blue-500 text-sm mb-6 block mx-auto hover:underline"
             >
-              Change
+              Change Email
             </button>
             
             <input
               type="text"
-              placeholder=""
+              placeholder="Enter 6-digit code"
               value={otp}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-blue-500 text-center text-2xl tracking-widest"
@@ -349,7 +359,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
               disabled={loading}
             />
             
-            <div className="flex justify-center mb-6">
+            <div className="text-center mb-6">
               <button 
                 onClick={handleResendCode}
                 disabled={loading}
@@ -371,7 +381,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
                 disabled={loading}
                 className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
-                {loading ? 'Verifying...' : 'Submit'}
+                {loading ? 'Verifying...' : 'Verify Code'}
               </button>
               <button
                 onClick={closeAllModals}
@@ -383,7 +393,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({
             </div>
             
             <p className="text-xs text-gray-500 text-center">
-              Didn't receive the code? Check your spam folder or try resending the verification code.
+              Didn't receive the code? Check your spam folder or try resending.
             </p>
           </div>
         </div>

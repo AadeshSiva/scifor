@@ -64,12 +64,95 @@ interface PollData {
   createdAt: string;
 }
 
+interface PremiumMembershipPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  const handleGetPremium = () => {
+    // Replace with your actual premium upgrade logic
+    window.location.href = '/join';
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-3xl border-4 border-gray-300 shadow-lg p-8 w-full max-w-md mx-4 relative">
+        {/* Close button matching COI style */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-gray-900 hover:text-gray-700 transition-colors"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        
+        {/* Header matching COI typography */}
+        <div className="text-center mb-6">
+          <h2 className="text-[#2B2B2B] text-2xl font-walbaum mb-2">
+            Upgrade to Premium
+          </h2>
+          <p className="text-[#6f6f6f] text-sm font-linear leading-relaxed">
+            You need a premium membership to send messages in the chat. Unlock unlimited messaging and exclusive features!
+          </p>
+        </div>
+
+        {/* Features list matching COI checkmark style */}
+        <div className="space-y-4 mb-8">
+          {[
+            'Unlimited messaging',
+            'AI Chat Bot access', 
+            'Create polls and pin messages',
+            'Exclusive premium content'
+          ].map((feature, index) => (
+            <div key={index} className="flex items-center gap-3 text-[#2B2B2B]">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
+                <path d="M4.07573 11.8036L0.175729 7.44535C-0.0585762 7.18351 -0.0585762 6.75898 0.175729 6.49711L1.02424 5.54888C1.25854 5.28702 1.63846 5.28702 1.87277 5.54888L4.5 8.48478L10.1272 2.19638C10.3615 1.93454 10.7415 1.93454 10.9758 2.19638L11.8243 3.14461C12.0586 3.40645 12.0586 3.83098 11.8243 4.09285L4.92426 11.8036C4.68994 12.0655 4.31004 12.0655 4.07573 11.8036Z" fill="black"/>
+              </svg>
+              <span className="font-linear text-sm text-[#2B2B2B]">{feature}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Action buttons matching COI button styles */}
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-linear text-sm font-medium"
+          >
+            Maybe Later
+          </button>
+          <button
+            onClick={handleGetPremium}
+            className="flex-1 bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-linear text-sm font-semibold"
+          >
+            Get Premium
+          </button>
+        </div>
+
+        {/* Optional branding element matching COI style */}
+        <div className="text-center mt-6 pt-4 border-t border-gray-200">
+          <p className="text-xs text-[#6f6f6f] font-linear">
+            Grow Smarter. <span className="font-bold">Exit Richer™</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const Chat = () => {
   const [message, setMessage] = useState('');
   const [display,setDisplay] = useState('chat')
   const { isAuthenticated, isLoading, user } = useAuth();
   const [userName,setUsername] = useState('')
   const isAdmin = user?.is_staff === true; 
+  const [showPremiumPopup, setShowPremiumPopup] = useState(false);
+  const [showHero, setShowHero] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -170,6 +253,9 @@ const Chat = () => {
   };
 
   const handleMenuItemClick = (item) => {
+    // Hide hero when any menu item is clicked
+    setShowHero(false);
+    
     // Always switch to chat display first
     setDisplay('chat');
     
@@ -397,6 +483,11 @@ const Chat = () => {
   
   const handleSendMessage = async (messageText) => {
     if (!messageText.trim()) return;
+
+    if (user && user.paid === false) {
+      setShowPremiumPopup(true);
+      return;
+    }
     
     // Check for abusive content
     const isAbusive = await filterAbusiveContent(messageText);
@@ -474,6 +565,13 @@ const Chat = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if user has paid subscription before sending
+    if (user && user.paid === false) {
+      setShowPremiumPopup(true);
+      return;
+    }
+    
     await handleSendMessage(message);
     setMessage('');
   };
@@ -510,6 +608,11 @@ const Chat = () => {
       }))
     ];
   };
+
+  const handleHomeClick =()=>{
+    setShowHero(true)
+    setDisplay('chat')
+  }
 
   return (
     <div className="bg-white min-h-[calc(100vh-86px)] flex overflow-hidden">
@@ -550,14 +653,14 @@ const Chat = () => {
           </div>
 
           <div className="mt-auto">
-            <div className="flex items-center gap-3 px-6 py-3 hover:bg-white cursor-pointer transition-colors">
+            <div className="flex items-center gap-3 px-6 py-3 hover:bg-white cursor-pointer transition-colors" onClick={()=>handleHomeClick()}>
               <House/>
               <div className=" font-linear">Home</div>
             </div>
 
-            <div className="flex items-center gap-3 px-6 py-3.5 pb-8 hover:bg-white cursor-pointer transition-colors">
+            <div className="flex items-center gap-3 px-6 py-3.5 pb-8 hover:bg-white cursor-pointer transition-colors" onClick={()=>{setDisplay('setting')}}>
               <Settings/>
-              <div className="font-linear" onClick={()=>{setDisplay('setting')}}>Settings</div>
+              <div className="font-linear">Settings</div>
             </div>
           </div>
         </nav>
@@ -565,13 +668,15 @@ const Chat = () => {
       <VideoPopup videos={[]} />
       
       {display==='chat'?
-      <main className="flex-1 flex flex-col h-screen max-h-[calc(100vh-86px)]">
+  <main className="flex-1 flex flex-col h-screen max-h-[calc(100vh-86px)]">
+    {/* Show hero section when showHero is true, regardless of authentication */}
+    {showHero ? (
+      <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
+        <HeroSection setDisplay={setDisplay} showHero={setShowHero}/>
+      </div>
+    ) : (
+      <>
         {/* Chat Header */}
-        {!isAuthenticated || (isAuthenticated && user && user.paid === false) ? (
-  <div className="flex-1 flex items-center justify-center h-[calc(100vh-86px)]">
-    <HeroSection />
-  </div>
-) :(<>
         <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[rgba(158,158,158,0.3)] bg-white pb-6">
         <div className="flex items-center gap-2 sm:gap-4">
   <button 
@@ -896,11 +1001,17 @@ const Chat = () => {
         {/* Chat Input */}
         <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-2 sm:gap-4 p-3 sm:p-4 px-4 sm:px-6 border-t border-[rgba(158,158,158,0.5)] flex-shrink-0">
         <button
-          type="button"
-          onClick={() => setShowPollCreator(true)}
-          className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555] flex-shrink-0"
-          aria-label="Create poll"
-        >
+  type="button"
+  onClick={() => {
+    if (user && user.paid === false) {
+      setShowPremiumPopup(true);
+      return;
+    }
+    setShowPollCreator(true);
+  }}
+  className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555] flex-shrink-0"
+  aria-label="Create poll"
+>
           <ChartNoAxesColumn className='rotate-90' size={18} strokeWidth={3}/>
           <p className='text-xs sm:text-sm hidden sm:block'>Poll</p>
         </button>
@@ -1093,6 +1204,11 @@ const Chat = () => {
       {display==="email"?<EmailSettings setDisplay={setDisplay}/>:null}
       {display==="username"?<ChangeUsernameForm setDisplay={setDisplay}/>:null}
       {display==="history"?<PurchaseHistory/>:null}
+      {/* Premium Membership Popup */}
+      <PremiumMembershipPopup 
+        isOpen={showPremiumPopup} 
+        onClose={() => setShowPremiumPopup(false)} 
+      />
     </div>
   );
 };

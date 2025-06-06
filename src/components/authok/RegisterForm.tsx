@@ -26,6 +26,16 @@ interface FormErrors {
   otp?: string;
 }
 
+interface FieldTouched {
+  full_name: boolean;
+  email: boolean;
+  password: boolean;
+  confirmPassword: boolean;
+  phone_number: boolean;
+  website_name: boolean;
+  linkedin: boolean;
+}
+
 interface CheckEmailResponse {
   user_exists: boolean;
   message: string;
@@ -47,9 +57,9 @@ interface OtpResponse {
 
 interface RegisterFormProps {
     onSwitchToLogin: () => void;
-  }
+}
 
-  export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
+export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
   const [hasLinkedIn, setHasLinkedIn] = useState<boolean | null>(null);
   const [formData, setFormData] = useState<FormData>({
     full_name: '',
@@ -59,6 +69,18 @@ interface RegisterFormProps {
     phone_number: '',
     website_name: ''
   });
+  
+  // Track which fields have been touched/interacted with
+  const [fieldTouched, setFieldTouched] = useState<FieldTouched>({
+    full_name: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+    phone_number: false,
+    website_name: false,
+    linkedin: false
+  });
+  
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
   const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
   const [timer, setTimer] = useState<number>(300); // 5 minutes in seconds
@@ -112,19 +134,117 @@ interface RegisterFormProps {
     }
   };
 
+  // Validate individual field
+  const validateField = (name: keyof FormData, value: string): string | undefined => {
+    switch (name) {
+      case 'full_name':
+        return !value.trim() ? 'Full name is required' : undefined;
+      
+      case 'email':
+        if (!value.trim()) return 'Email is required';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Please enter a valid email address';
+        return undefined;
+      
+      case 'password':
+        if (!value) return 'Password is required';
+        if (value.length < 6) return 'Password must be at least 6 characters';
+        if (!/(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)) {
+          return 'Password must contain at least 1 letter, 1 number, and 1 special character';
+        }
+        return undefined;
+      
+        case 'confirmPassword':
+          if (!value) return 'Please confirm your password';
+          if (formData.password !== value) return 'Passwords do not match';
+          return undefined;
+      
+      case 'phone_number':
+        return !value ? 'Phone number is required' : undefined;
+      
+      case 'website_name':
+        if (!value.trim()) return 'Company website is required';
+        if (!isValidWebsiteUrl(value.trim())) {
+          return 'Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)';
+        }
+        return undefined;
+      
+      default:
+        return undefined;
+    }
+  };
+
+  // Handle field blur (when user leaves the field)
+  // In handleFieldBlur function, replace the existing logic with:
+  const handleFieldBlur = (fieldName: keyof FormData): void => {
+    // Mark field as touched
+    setFieldTouched(prev => ({
+      ...prev,
+      [fieldName]: true
+    }));
+  
+    // Get the current field value
+    const fieldValue = formData[fieldName];
+    
+    // For password confirmation, we need special handling
+    let error;
+    if (fieldName === 'confirmPassword') {
+      if (!fieldValue) {
+        error = 'Please confirm your password';
+      } else if (formData.password !== fieldValue) {
+        error = 'Passwords do not match';
+      }
+    } else {
+      error = validateField(fieldName, fieldValue);
+    }
+    
+    setErrors(prev => ({
+      ...prev,
+      [fieldName]: error
+    }));
+  
+    // When password field is blurred, also validate confirm password if it's been touched
+    if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
+      const confirmPasswordError = formData.password !== formData.confirmPassword ? 'Passwords do not match' : undefined;
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: confirmPasswordError
+      }));
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
+    const fieldName = name as keyof FormData;
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    // Clear specific error when user starts typing
-    if (errors[name as keyof FormErrors]) {
+
+    // Clear error when user starts typing
+    if (errors[fieldName]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: undefined
       }));
     }
+
+    // Handle password matching validation during typing
+if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
+  const confirmPasswordError = value !== formData.confirmPassword ? 'Passwords do not match' : undefined;
+  setErrors(prev => ({
+    ...prev,
+    confirmPassword: confirmPasswordError
+  }));
+}
+
+if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
+  const confirmPasswordError = formData.password !== value ? 'Passwords do not match' : undefined;
+  setErrors(prev => ({
+    ...prev,
+    confirmPassword: confirmPasswordError
+  }));
+}
   };
 
   const handleOtpChange = (index: number, value: string): void => {
@@ -140,7 +260,7 @@ interface RegisterFormProps {
 
       // Clear OTP error when user starts typing
       if (errors.otp) {
-        setErrors(prev => ({ ...prev, otp: '' }));
+        setErrors(prev => ({ ...prev, otp: undefined }));
       }
     }
   };
@@ -155,40 +275,16 @@ interface RegisterFormProps {
   const validateForm = (): FormErrors => {
     const newErrors: FormErrors = {};
     
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = 'Full name is required';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    } else if (!/(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least 1 letter, 1 number, and 1 special character';
-    }
-    
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    if (!formData.phone_number) {
-      newErrors.phone_number = 'Phone number is required';
-    }
-    
-    if (!formData.website_name.trim()) {
-        newErrors.website_name = 'Company website is required';
-      } else if (!isValidWebsiteUrl(formData.website_name.trim())) {
-        newErrors.website_name = 'Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)';
+    // Validate all fields
+    Object.keys(formData).forEach(key => {
+      const fieldName = key as keyof FormData;
+      const error = validateField(fieldName, formData[fieldName]);
+      if (error) {
+        newErrors[fieldName] = error;
       }
+    });
     
+    // Validate LinkedIn choice
     if (hasLinkedIn === null) {
       newErrors.linkedin = 'Please specify if you have a LinkedIn account';
     }
@@ -209,6 +305,17 @@ interface RegisterFormProps {
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    
+    // Mark all fields as touched
+    setFieldTouched({
+      full_name: true,
+      email: true,
+      password: true,
+      confirmPassword: true,
+      phone_number: true,
+      website_name: true,
+      linkedin: true
+    });
     
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -373,16 +480,29 @@ interface RegisterFormProps {
 
   const handlePhoneChange = (value: string): void => {
     setFormData(prev => ({ ...prev, phone_number: value }));
+    
     // Clear phone number error when user starts typing
     if (errors.phone_number) {
-      setErrors(prev => ({ ...prev, phone_number: '' }));
+      setErrors(prev => ({ ...prev, phone_number: undefined }));
     }
+  };
+
+  const handlePhoneBlur = (): void => {
+    setFieldTouched(prev => ({ ...prev, phone_number: true }));
+    
+    const error = validateField('phone_number', formData.phone_number);
+    setErrors(prev => ({
+      ...prev,
+      phone_number: error
+    }));
   };
 
   const handleLinkedInChoice = (choice: boolean): void => {
     setHasLinkedIn(choice);
+    setFieldTouched(prev => ({ ...prev, linkedin: true }));
+    
     if (errors.linkedin) {
-      setErrors(prev => ({ ...prev, linkedin: '' }));
+      setErrors(prev => ({ ...prev, linkedin: undefined }));
     }
   };
 
@@ -403,13 +523,16 @@ interface RegisterFormProps {
           type="text"
           name="full_name"
           placeholder="Enter your full name"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.full_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'}`}
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+            errors.full_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+          }`}
           value={formData.full_name}
           onChange={handleInputChange}
+          onBlur={() => handleFieldBlur('full_name')}
           disabled={loading}
           required
         />
-        {errors.full_name && (
+        {errors.full_name && fieldTouched.full_name && (
           <span className="text-red-500 text-sm">{errors.full_name}</span>
         )}
       </div>
@@ -423,13 +546,16 @@ interface RegisterFormProps {
           type="email"
           name="email"
           placeholder="Enter your company email ID"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'}`}
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+            errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+          }`}
           value={formData.email}
           onChange={handleInputChange}
+          onBlur={() => handleFieldBlur('email')}
           disabled={loading}
           required
         />
-        {errors.email && (
+        {errors.email && fieldTouched.email && (
           <span className="text-red-500 text-sm">{errors.email}</span>
         )}
       </div>
@@ -443,7 +569,8 @@ interface RegisterFormProps {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            error={errors.password}
+            onBlur={() => handleFieldBlur('password')}
+            error={fieldTouched.password && errors.password ? errors.password : undefined}
             disabled={loading}
           />
         </div>
@@ -455,7 +582,8 @@ interface RegisterFormProps {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            error={errors.confirmPassword}
+            onBlur={() => handleFieldBlur('confirmPassword')}
+            error={fieldTouched.confirmPassword && errors.confirmPassword ? errors.confirmPassword : undefined}
             disabled={loading}
           />
         </div>
@@ -469,7 +597,8 @@ interface RegisterFormProps {
         <PhoneInput 
           value={formData.phone_number} 
           onChange={handlePhoneChange}
-          error={errors.phone_number}
+          onBlur={handlePhoneBlur}
+          error={fieldTouched.phone_number ? errors.phone_number : undefined}
           disabled={loading}
         />
       </div>
@@ -480,16 +609,19 @@ interface RegisterFormProps {
           <span className="text-black ml-1">*</span>
         </div>
         <input
-            type="text"
-            name="website_name"
-            placeholder="Enter your Company website URL (e.g., example.com)"
-            className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.website_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'}`}
-            value={formData.website_name}
-            onChange={handleInputChange}
-            disabled={loading}
-            required
-            />
-        {errors.website_name && (
+          type="text"
+          name="website_name"
+          placeholder="Enter your Company website URL (e.g., example.com)"
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+            errors.website_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+          }`}
+          value={formData.website_name}
+          onChange={handleInputChange}
+          onBlur={() => handleFieldBlur('website_name')}
+          disabled={loading}
+          required
+        />
+        {errors.website_name && fieldTouched.website_name && (
           <span className="text-red-500 text-sm">{errors.website_name}</span>
         )}
       </div>
@@ -517,7 +649,7 @@ interface RegisterFormProps {
             No
           </button>
         </div>
-        {errors.linkedin && (
+        {errors.linkedin && fieldTouched.linkedin && (
           <span className="text-red-500 text-sm">{errors.linkedin}</span>
         )}
       </div>

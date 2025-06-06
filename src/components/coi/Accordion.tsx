@@ -26,67 +26,40 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   data = [],
   className = ''
 }) => {
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+  const [openSection, setOpenSection] = useState<string>('0-0'); // Only one section open at a time
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   
   const navbarRef = useRef<HTMLDivElement>(null);
 
-  // Toggle section open/close
+  // Toggle section open/close - only one can be open at a time
   const handleSectionToggle = (sectionId: string) => {
-    const newOpenSections = new Set(openSections);
-    if (newOpenSections.has(sectionId)) {
-      newOpenSections.delete(sectionId);
-    } else {
-      newOpenSections.add(sectionId);
-    }
-    setOpenSections(newOpenSections);
+    setOpenSection(openSection === sectionId ? '' : sectionId);
   };
 
   // Handle category selection
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
-    setOpenSections(new Set());
-  };
-
-  // Convert Google Drive URL to direct download URL
-  const convertGoogleDriveUrl = (url: string) => {
-    const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
-    if (driveMatch) {
-      const fileId = driveMatch[1];
-      return `https://drive.google.com/uc?export=download&id=${fileId}`;
-    }
-    return url;
-  };
-
-  // Handle PDF download
-  const handleDownload = async (url: string, fileName: string) => {
-    try {
-      const downloadUrl = convertGoogleDriveUrl(url);
-      
-      if (url.includes('drive.google.com')) {
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        const response = await fetch(downloadUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = `${fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_report.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
+    // Set first item as open when category changes
+    if (categoryName === 'All' && data.length > 0) {
+      setOpenSection('0-0');
+    } else {
+      const filteredData = data.filter(category => category.category === categoryName);
+      if (filteredData.length > 0) {
+        setOpenSection('0-0');
       }
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      window.open(url, '_blank');
     }
+  };
+
+  // Handle PDF opening in new tab
+  const handleOpenPdf = (url: string) => {
+    // Convert Google Drive URL to preview URL if needed
+    let viewUrl = url;
+    const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
+    if (driveMatch && !url.includes('/view')) {
+      const fileId = driveMatch[1];
+      viewUrl = `https://drive.google.com/file/d/${fileId}/view`;
+    }
+    window.open(viewUrl, '_blank');
   };
 
   // Filter data based on selected category
@@ -99,42 +72,63 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
     return `${categoryIndex}-${researchIndex}`;
   };
 
+  // Calculate continuous serial numbers
+  const getSerialNumber = (categoryIndex: number, researchIndex: number) => {
+    let serialNumber = 1;
+    
+    for (let i = 0; i < filteredData.length; i++) {
+      if (i < categoryIndex) {
+        serialNumber += filteredData[i].research_points.length;
+      } else if (i === categoryIndex) {
+        serialNumber += researchIndex;
+        break;
+      }
+    }
+    
+    return serialNumber;
+  };
+
+  // Set first item as open when data changes
+  useEffect(() => {
+    if (filteredData.length > 0 && filteredData[0].research_points.length > 0) {
+      setOpenSection('0-0');
+    }
+  }, [filteredData]);
+
   return (
     <div className={`w-full ${className}`}>
-      {/* Sticky Category Navigation - Fixed to single line with horizontal scroll */}
+      {/* Sticky Category Navigation - Multiple lines with flex wrap */}
       <div 
         ref={navbarRef}
-        className="sticky top-[86px] z-10 bg-white px-8 py-4 border border-gray-500 shadow-lg rounded-lg max-w-4xl overscroll-none"
+        className="sticky top-[86px] z-10 bg-[#F5F5F5] px-8 py-4 border border-gray-500 shadow-lg rounded-lg max-w-4xl"
       >
-        <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 min-w-max">
-            {/* All button */}
+        <div className="flex flex-wrap gap-2">
+          {/* All button */}
+          <button
+            onClick={() => handleCategorySelect('All')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+              selectedCategory === 'All'
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
+            }`}
+          >
+            All
+          </button>
+          
+          {/* Category buttons */}
+          {data.map((category, index) => (
             <button
-              onClick={() => handleCategorySelect('All')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
-                selectedCategory === 'All'
+              key={index}
+              onClick={() => handleCategorySelect(category.category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+                selectedCategory === category.category
                   ? 'bg-black text-white'
                   : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
               }`}
             >
-              All
+              {category.category}
             </button>
-            
-            {/* Category buttons */}
-            {data.map((category, index) => (
-              <button
-                key={index}
-                onClick={() => handleCategorySelect(category.category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
-                  selectedCategory === category.category
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
-                }`}
-              >
-                {category.category}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 
@@ -146,7 +140,8 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
             <div className="overflow-hidden shadow-lg">
               {category.research_points.map((researchPoint, researchIndex) => {
                 const sectionId = generateId(categoryIndex, researchIndex);
-                const isOpen = openSections.has(sectionId);
+                const isOpen = openSection === sectionId;
+                const serialNumber = getSerialNumber(categoryIndex, researchIndex);
                 
                 return (
                   <div 
@@ -158,7 +153,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                       onClick={() => handleSectionToggle(sectionId)}
                     >
                       <span className="text-black text-lg min-w-8">
-                        {String(researchIndex + 1).padStart(2, '0')}
+                        {String(serialNumber).padStart(2, '0')}
                       </span>
                       <span className="text-black text-lg flex-1 font-medium">
                         {researchPoint.name}
@@ -199,10 +194,10 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                                       </svg>
                                     </div>
                                     <button
-                                      onClick={() => handleDownload(stat.url, `${category.category}_${researchPoint.name}_${statIndex + 1}`)}
+                                      onClick={() => handleOpenPdf(stat.url)}
                                       className="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors cursor-pointer underline text-center"
                                     >
-                                      Download PDF
+                                      View PDF
                                     </button>
                                   </div>
                                 )}
@@ -245,16 +240,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
           </pre>
         </div>
       )}
-
-      <style jsx>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;  /* Internet Explorer 10+ */
-          scrollbar-width: none;  /* Firefox */
-        }
-        .scrollbar-hide::-webkit-scrollbar { 
-          display: none;  /* Safari and Chrome */
-        }
-      `}</style>
     </div>
   );
 };

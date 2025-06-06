@@ -4,12 +4,14 @@ interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement>
   label: string;
   required?: boolean;
   placeholder?: string;
+  error?: string;
 }
 
 export function PasswordInput({
   label,
   required = false,
   placeholder = "Enter password",
+  error,
   ...props
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,23 +30,28 @@ export function PasswordInput({
         <input
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
-          className="border text-sm w-full px-4 py-2.5 rounded-lg border-solid border-[#555]"
+          className={`border text-sm w-full px-4 py-2.5 pr-12 rounded-lg border-solid transition-colors focus:outline-none ${
+            error ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+          }`}
           required={required}
           {...props}
         />
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute -translate-y-2/4 text-[#555] cursor-pointer right-4 top-2/4"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           {showPassword ? (
-            <i className="ti ti-eye absolute -translate-y-2/4 text-[#555] cursor-pointer right-0 top-2/4" />
+            <i className="ti ti-eye" />
           ) : (
-            <i className="ti ti-eye-off absolute -translate-y-2/4 text-[#555] cursor-pointer right-0 top-2/4" />
+            <i className="ti ti-eye-off" />
           )}
         </button>
       </div>
+      {error && (
+        <span className="text-red-500 text-sm">{error}</span>
+      )}
     </div>
   );
 }
