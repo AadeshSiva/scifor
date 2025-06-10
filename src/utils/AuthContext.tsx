@@ -9,6 +9,7 @@ interface User {
   linkedin_url?: string;
   email_verified: boolean;
   paid: boolean
+  iswebinarformfilled: boolean
   is_staff: boolean
 }
 

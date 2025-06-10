@@ -10,6 +10,7 @@ import { HeroSection } from '@/components/chat/LivePage';
 import PinnedMessages from '@/components/chat/PinnedMessage';
 import VideoPopup from '@/components/video/VideoPopup';
 import PurchaseHistory from '@/components/settings/PaymentHistory';
+import { useLocation } from 'react-router-dom';
 
 const filterAbusiveContent = async (text) => {
   try {
@@ -220,6 +221,7 @@ const Chat = () => {
   const [inappropriateMessageAlert, setInappropriateMessageAlert] = useState(null);
   const [showSearch,setShowSearch] = useState(false)
   const [showPin,setShowPin] = useState(false)
+  const location = useLocation();
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [pollFormData, setPollFormData] = useState({
     question: '',
@@ -237,6 +239,12 @@ const Chat = () => {
     setUsername(user.full_name);
   }
 }, [user]);
+
+useEffect(() => {
+  if (location.state?.display) {
+    setDisplay(location.state.display);
+  }
+}, [location.state]);
 
   const jumpToMessage = (messageId) => {
     setDisplay('chat'); // Switch back to chat first
@@ -1204,7 +1212,6 @@ const Chat = () => {
       {display==="email"?<EmailSettings setDisplay={setDisplay}/>:null}
       {display==="username"?<ChangeUsernameForm setDisplay={setDisplay}/>:null}
       {display==="history"?<PurchaseHistory/>:null}
-      {/* Premium Membership Popup */}
       <PremiumMembershipPopup 
         isOpen={showPremiumPopup} 
         onClose={() => setShowPremiumPopup(false)} 

@@ -24,6 +24,11 @@ const NavBar: React.FC = () => {
         navigate('/')
     }
 
+    const handleSettings = () => {
+        setShowDropdown(false)
+        navigate('/chat', { state: { display: 'setting' } })
+    }
+
     const getInitials = (fullName: string) => {
         return fullName.split(' ').map(name => name.charAt(0).toUpperCase()).join('')
     }
@@ -38,6 +43,12 @@ const NavBar: React.FC = () => {
         const baseClasses = "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light"
         const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : ""
         return `${baseClasses} ${activeClasses}`
+    }
+
+    // Helper function to truncate email if too long
+    const truncateEmail = (email: string, maxLength: number = 25) => {
+        if (email.length <= maxLength) return email
+        return email.substring(0, maxLength) + '...'
     }
 
     if (isLoading) {
@@ -88,15 +99,55 @@ const NavBar: React.FC = () => {
                             </button>
                             
                             {showDropdown && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
+                                <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
                                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                                        <div className="font-medium">{user?.full_name}</div>
-                                        <div className="text-gray-500">{user?.email}</div>
+                                        <div className="font-medium truncate">{user?.full_name}</div>
+                                        <div className="text-gray-500 truncate" title={user?.email}>
+                                            {user?.email ? truncateEmail(user.email) : ''}
+                                        </div>
                                     </div>
                                     <button
-                                        onClick={handleLogout}
-                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        onClick={handleSettings}
+                                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                                     >
+                                        <svg 
+                                            className="w-4 h-4 mr-3" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" 
+                                            />
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
+                                            />
+                                        </svg>
+                                        Settings
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                                    >
+                                        <svg 
+                                            className="w-4 h-4 mr-3" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                                            />
+                                        </svg>
                                         Logout
                                     </button>
                                 </div>

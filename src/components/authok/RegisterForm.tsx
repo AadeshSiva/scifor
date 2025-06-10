@@ -88,6 +88,120 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [linkedinToken, setLinkedinToken] = useState<string>('');
+  const [linkedinVerified, setLinkedinVerified] = useState<boolean>(false);
+  const [linkedinLoading, setLinkedinLoading] = useState<boolean>(false);
+  const [linkedinData, setLinkedinData] = useState<any>(null);
+
+  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
+
+  // Restore form data from sessionStorage on component mount
+  useEffect(() => {
+    const savedFormData = sessionStorage.getItem('registrationFormData');
+    const savedHasLinkedIn = sessionStorage.getItem('hasLinkedIn');
+    
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+        sessionStorage.removeItem('registrationFormData');
+      } catch (error) {
+        console.error('Error parsing saved form data:', error);
+      }
+    }
+    
+    if (savedHasLinkedIn) {
+      try {
+        const parsedHasLinkedIn = JSON.parse(savedHasLinkedIn);
+        setHasLinkedIn(parsedHasLinkedIn);
+        sessionStorage.removeItem('hasLinkedIn');
+      } catch (error) {
+        console.error('Error parsing saved LinkedIn choice:', error);
+      }
+    }
+  }, []);
+
+  const handleLinkedInAuth = async () => {
+    if (hasLinkedIn === true && !linkedinVerified) {
+      try {
+        setLinkedinLoading(true);
+        setErrors(prev => ({ ...prev, linkedin: undefined }));
+        const currentUrl = window.location.origin + window.location.pathname;
+        const state = Math.random().toString(36).substring(2, 15);
+        const linkedinAuthUrl = `${API_BASE_URL}/auth/linkedin/?redirect_url=${encodeURIComponent(currentUrl)}&state=${state}`;
+        sessionStorage.setItem('registrationFormData', JSON.stringify(formData));
+        sessionStorage.setItem('hasLinkedIn', JSON.stringify(hasLinkedIn));
+        sessionStorage.setItem('linkedin_state', state);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        window.location.href = linkedinAuthUrl;
+      } catch (error) {
+        console.error('LinkedIn auth error:', error);
+        setErrors({ 
+          linkedin: `LinkedIn authentication failed. Please try again or choose "No" to continue without LinkedIn.` 
+        });
+        setLinkedinLoading(false);
+      }
+    }
+  };
+
+  // Enhanced URL parameter handling
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const linkedinToken = urlParams.get('linkedin_token');
+    const linkedinError = urlParams.get('linkedin_error');
+    
+    if (linkedinToken) {
+      console.log('LinkedIn token received:', linkedinToken);
+      verifyLinkedInToken(linkedinToken);
+      
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    if (linkedinError) {
+      console.error('LinkedIn error:', linkedinError);
+      setErrors({ linkedin: `LinkedIn verification failed: ${decodeURIComponent(linkedinError)}` });
+      setLinkedinLoading(false);
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
+  const verifyLinkedInToken = async (token: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/linkedin/verify/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ linkedin_token: token })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.status === 'success') {
+        setLinkedinToken(token);
+        setLinkedinVerified(true);
+        setLinkedinData(data.data);
+        setLinkedinLoading(false);
+        setErrors(prev => ({ ...prev, linkedin: undefined }));
+        
+        // Optionally pre-fill form with LinkedIn data
+        if (data.data.full_name && !formData.full_name) {
+          setFormData(prev => ({
+            ...prev,
+            full_name: data.data.full_name
+          }));
+        }
+      } else {
+        throw new Error(data.message || 'LinkedIn verification failed');
+      }
+    } catch (error) {
+      console.error('LinkedIn token verification error:', error);
+      setErrors({ linkedin: error instanceof Error ? error.message : 'LinkedIn verification failed' });
+      setLinkedinLoading(false);
+    }
+  };
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -174,7 +288,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   };
 
   // Handle field blur (when user leaves the field)
-  // In handleFieldBlur function, replace the existing logic with:
   const handleFieldBlur = (fieldName: keyof FormData): void => {
     // Mark field as touched
     setFieldTouched(prev => ({
@@ -230,21 +343,21 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     }
 
     // Handle password matching validation during typing
-if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
-  const confirmPasswordError = value !== formData.confirmPassword ? 'Passwords do not match' : undefined;
-  setErrors(prev => ({
-    ...prev,
-    confirmPassword: confirmPasswordError
-  }));
-}
+    if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
+      const confirmPasswordError = value !== formData.confirmPassword ? 'Passwords do not match' : undefined;
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: confirmPasswordError
+      }));
+    }
 
-if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
-  const confirmPasswordError = formData.password !== value ? 'Passwords do not match' : undefined;
-  setErrors(prev => ({
-    ...prev,
-    confirmPassword: confirmPasswordError
-  }));
-}
+    if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
+      const confirmPasswordError = formData.password !== value ? 'Passwords do not match' : undefined;
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: confirmPasswordError
+      }));
+    }
   };
 
   const handleOtpChange = (index: number, value: string): void => {
@@ -303,6 +416,39 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
     return '';
   };
 
+  // Enhanced API call with better error handling
+  const makeApiCall = async (endpoint: string, payload: any): Promise<any> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken(),
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timed out. Please check your connection and try again.');
+      }
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     
@@ -323,21 +469,20 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
       return;
     }
     
+    // Check if LinkedIn authentication is required but not completed
+    if (hasLinkedIn === true && !linkedinVerified) {
+      await handleLinkedInAuth();
+      return;
+    }
+    
     setLoading(true);
     setErrors({});
     
     try {
       // First check if email already exists
-      const checkResponse = await fetch('https://intern-project-final-1.onrender.com/check_email_status/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
-        },
-        body: JSON.stringify({ email: formData.email })
+      const checkData: CheckEmailResponse = await makeApiCall('/check_email_status/', {
+        email: formData.email
       });
-      
-      const checkData: CheckEmailResponse = await checkResponse.json();
       
       if (checkData.user_exists) {
         setErrors({ email: checkData.message });
@@ -353,31 +498,18 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
         phone_number: formData.phone_number,
         website_name: formData.website_name,
         no_linkedin: hasLinkedIn === false,
-        linkedin_token: ''
+        linkedin_token: linkedinToken || null
       };
       
-      const registerResponse = await fetch('https://intern-project-final-1.onrender.com/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
-        },
-        body: JSON.stringify(registerPayload)
-      });
+      console.log('Sending registration payload:', { ...registerPayload, password: '[REDACTED]' });
       
-      const registerData: RegisterResponse = await registerResponse.json();
+      const registerData: RegisterResponse = await makeApiCall('/register/', registerPayload);
       
       if (registerData.status === 'success') {
         // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
           console.log('Registration successful with tokens:', registerData.message);
-        } else {
-          // Fallback to localStorage if auth context is not available
-          if (registerData.tokens) {
-            localStorage.setItem('access_token', registerData.tokens.access);
-            localStorage.setItem('refresh_token', registerData.tokens.refresh);
-          }
         }
         
         // Send OTP for email verification
@@ -388,7 +520,8 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
       
     } catch (error) {
       console.error('Registration error:', error);
-      setErrors({ general: 'Network error. Please try again.' });
+      const errorMessage = error instanceof Error ? error.message : 'Network error. Please try again.';
+      setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -396,16 +529,9 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
 
   const sendOtp = async (): Promise<void> => {
     try {
-      const otpResponse = await fetch('https://intern-project-final-1.onrender.com/send_email_otp/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
-        },
-        body: JSON.stringify({ email: formData.email })
+      const otpData: OtpResponse = await makeApiCall('/send_email_otp/', {
+        email: formData.email
       });
-      
-      const otpData: OtpResponse = await otpResponse.json();
       
       if (otpData.status === 'success') {
         setShowOtpModal(true);
@@ -416,7 +542,8 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
       }
     } catch (error) {
       console.error('OTP send error:', error);
-      setErrors({ general: 'Failed to send OTP. Please try again.' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send OTP. Please try again.';
+      setErrors({ general: errorMessage });
     }
   };
 
@@ -433,19 +560,10 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
     setErrors({});
     
     try {
-      const verifyResponse = await fetch('https://intern-project-final-1.onrender.com/verify_email_otp/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
-        },
-        body: JSON.stringify({ 
-          email: formData.email,
-          otp: otpCode 
-        })
+      const verifyData: OtpResponse = await makeApiCall('/verify_email_otp/', {
+        email: formData.email,
+        otp: otpCode
       });
-      
-      const verifyData: OtpResponse = await verifyResponse.json();
       
       if (verifyData.status === 'success') {
         console.log('Registration and email verification successful!');
@@ -456,7 +574,8 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
       
     } catch (error) {
       console.error('OTP verification error:', error);
-      setErrors({ otp: 'Failed to verify OTP. Please try again.' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to verify OTP. Please try again.';
+      setErrors({ otp: errorMessage });
     } finally {
       setOtpLoading(false);
     }
@@ -501,10 +620,43 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
     setHasLinkedIn(choice);
     setFieldTouched(prev => ({ ...prev, linkedin: true }));
     
+    // Reset LinkedIn verification state when choice changes
+    if (choice !== hasLinkedIn) {
+      setLinkedinVerified(false);
+      setLinkedinToken('');
+      setLinkedinData(null);
+    }
+    
     if (errors.linkedin) {
       setErrors(prev => ({ ...prev, linkedin: undefined }));
     }
   };
+
+  // Restore form data from sessionStorage on component mount
+  useEffect(() => {
+    const savedFormData = sessionStorage.getItem('registrationFormData');
+    const savedHasLinkedIn = sessionStorage.getItem('hasLinkedIn');
+    
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+        sessionStorage.removeItem('registrationFormData');
+      } catch (error) {
+        console.error('Error parsing saved form data:', error);
+      }
+    }
+    
+    if (savedHasLinkedIn) {
+      try {
+        const parsedHasLinkedIn = JSON.parse(savedHasLinkedIn);
+        setHasLinkedIn(parsedHasLinkedIn);
+        sessionStorage.removeItem('hasLinkedIn');
+      } catch (error) {
+        console.error('Error parsing saved LinkedIn choice:', error);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -626,7 +778,7 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
         )}
       </div>
       
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Do you have a LinkedIn account</span>
           <span className="text-black ml-1">*</span>
@@ -636,7 +788,7 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
             type="button"
             className={`w-14 h-7 border text-xs cursor-pointer shadow-sm transition-colors ${hasLinkedIn === true ? 'bg-black text-white' : 'bg-white hover:bg-gray-50'} rounded border-solid border-black disabled:opacity-50 disabled:cursor-not-allowed`}
             onClick={() => handleLinkedInChoice(true)}
-            disabled={loading}
+            disabled={loading || linkedinLoading}
           >
             Yes
           </button>
@@ -644,11 +796,30 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
             type="button"
             className={`w-14 h-7 border text-xs cursor-pointer shadow-sm transition-colors ${hasLinkedIn === false ? 'bg-black text-white' : 'bg-white hover:bg-gray-50'} rounded border-solid border-black disabled:opacity-50 disabled:cursor-not-allowed`}
             onClick={() => handleLinkedInChoice(false)}
-            disabled={loading}
+            disabled={loading || linkedinLoading}
           >
             No
           </button>
         </div>
+        
+        {/* LinkedIn verification status */}
+        {hasLinkedIn === true && (
+          <div className="flex items-center gap-2 text-sm">
+            {linkedinVerified ? (
+              <span className="text-green-600 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                LinkedIn verified
+              </span>
+            ) : (
+              <span className="text-gray-600">
+                LinkedIn verification will be required before registration
+              </span>
+            )}
+          </div>
+        )}
+        
         {errors.linkedin && fieldTouched.linkedin && (
           <span className="text-red-500 text-sm">{errors.linkedin}</span>
         )}
@@ -658,7 +829,7 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
         type="button"
         onClick={handleSubmit}
         className="w-full text-white text-base cursor-pointer bg-black mt-4 p-4 rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-        disabled={loading}
+        disabled={loading || linkedinLoading}
       >
         {loading ? (
           <>
@@ -667,6 +838,14 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             Registering...
+          </>
+        ) : linkedinLoading ? (
+          <>
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Connecting to LinkedIn...
           </>
         ) : (
           'Register'
@@ -695,53 +874,42 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
             
             <p className="text-center mb-8 text-gray-600">
               Please check your inbox (and spam/junk folder just in case)
-              <br />and enter the code below to continue.
-            </p>
+              <br />and enter the code below to continue.</p>
             
             {errors.otp && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
                 {errors.otp}
               </div>
             )}
             
             <form onSubmit={handleOtpSubmit}>
-              <div className="flex justify-between mb-8 gap-2">
-                {[0, 1, 2, 3, 4, 5].map((index) => (
+              <div className="flex justify-center gap-2 mb-6">
+                {otp.map((digit, index) => (
                   <input
                     key={index}
-                    ref={(el) => (inputRefs.current[index] = el)}
+                    ref={el => inputRefs.current[index] = el}
                     type="text"
                     maxLength={1}
-                    value={otp[index]}
+                    value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors disabled:opacity-50"
+                    className="w-12 h-12 text-center border-2 border-gray-300 rounded-lg text-xl font-semibold focus:border-black focus:outline-none"
                     disabled={otpLoading}
                   />
                 ))}
               </div>
               
-              <div className="flex justify-between items-center mb-8 text-sm">
-                <div className="text-gray-600">
-                  Remaining Time: {formatTime(timer)}
-                </div>
-                <div className="flex items-center">
-                  <span className="text-gray-600 mr-2">Didn't receive code?</span>
-                  <button 
-                    type="button"
-                    onClick={resendOtp}
-                    className="text-black font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={otpLoading || timer > 0}
-                  >
-                    Resend code
-                  </button>
-                </div>
+              <div className="text-center mb-6">
+                <span className="text-gray-600">Time remaining: </span>
+                <span className={`font-semibold ${timer <= 60 ? 'text-red-500' : 'text-black'}`}>
+                  {formatTime(timer)}
+                </span>
               </div>
               
               <button
                 type="submit"
-                className="w-full h-14 text-white text-base cursor-pointer bg-black rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                disabled={otpLoading}
+                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                disabled={otpLoading || timer === 0}
               >
                 {otpLoading ? (
                   <>
@@ -752,19 +920,27 @@ if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
                     Verifying...
                   </>
                 ) : (
-                  'Verify Now'
+                  'Verify OTP'
                 )}
               </button>
+              
+              <div className="text-center mt-4">
+                {timer === 0 ? (
+                  <button
+                    type="button"
+                    onClick={resendOtp}
+                    className="text-black hover:underline font-semibold disabled:opacity-50"
+                    disabled={otpLoading}
+                  >
+                    Resend OTP
+                  </button>
+                ) : (
+                  <span className="text-gray-500">
+                    Didn't receive the code? Wait {formatTime(timer)} to resend
+                  </span>
+                )}
+              </div>
             </form>
-            
-            <button 
-              type="button"
-              onClick={() => setShowOtpModal(false)}
-              className="mt-4 text-gray-500 hover:text-gray-700 text-sm transition-colors w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={otpLoading}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}

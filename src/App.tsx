@@ -15,6 +15,8 @@ import NavBar from "./components/layout/NavBar";
 import { AuthProvider } from "./utils/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import PaymentSuccess from "./pages/PymentSuccess";
+import Index from "./components/join/meeting";
+import ArticlePage from "./pages/ArticlePage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/" element={<ProtectedRoute requireAuth={false}><HomePage/></ProtectedRoute>}/>
           <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI/></ProtectedRoute>} />
           <Route path="/join" element={<ProtectedRoute requireAuth={false}><JoinPage/></ProtectedRoute>} />
+          <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index/></ProtectedRoute>} />
+          <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage/></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><Payment/></ProtectedRoute>} />
           <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess/></ProtectedRoute>} />
         </Routes>
