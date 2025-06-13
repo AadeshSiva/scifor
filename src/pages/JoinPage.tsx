@@ -3,6 +3,7 @@ import PhoneInput from '@/components/ui/PhoneInput';
 import { Check, CheckCheckIcon, CheckCircle2Icon,X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import VideoPopup from '@/components/video/VideoPopup';
+import { PurchaseOptionsModal } from '@/components/join/PurchaseModal';
 
 // New Password Popup Component
 const PasswordPopup = ({ isOpen, onClose, formData, onRegister, onVerifyLater }) => {
@@ -336,71 +337,6 @@ const OTPVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
             >
               {resendLoading ? 'Sending...' : 'Resend OTP'}
             </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-const PurchaseOptionsModal = ({ isOpen, onClose }) => {
-    const navigate = useNavigate()
-    const handlePurchaseNow = () => {
-        navigate("/payment")
-        onClose();
-    };
-  
-    const handleBookSession = () => {
-      console.log("Book session clicked");
-      // Implement booking logic here
-      onClose();
-    };
-  
-    if (!isOpen) return null;
-  
-    return (
-      <div className="fixed w-screen h-screen flex items-center justify-center z-[1000] bg-[rgba(0,0,0,0.5)] left-0 top-0">
-        <div className="bg-white flex max-w-[613px] flex-col overflow-hidden items-stretch font-medium pt-6 pb-[30px] rounded-3xl mx-auto relative shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)]">
-          {/* Close icon in top right */}
-          <button 
-            onClick={onClose}
-            className="absolute top-6 right-6 text-gray-600 hover:text-gray-900"
-            aria-label="Close modal"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          
-          <div className="flex w-full flex-col items-stretch mt-1 px-6 max-md:max-w-full max-md:px-5">
-            <h2 className="text-black text-[28px] font-semibold">
-              Choose your Purchase Option
-            </h2>
-            
-            <div className="mt-[27px] space-y-6">
-              {/* Purchase Now Card */}
-              <div className="bg-white border flex flex-col overflow-hidden px-8 py-9 rounded-2xl border-[rgba(85,85,85,0.5)] border-solid max-md:max-w-full max-md:px-5">
-                <h3 className="text-black text-[22px]">Purchase Now</h3>
-                <p className="text-[#555] text-xl mt-3">Get Immediate access to all features.</p>
-                <button
-                  onClick={handlePurchaseNow}
-                  className="self-stretch overflow-hidden text-base font-normal mt-[26px] px-[70px] py-[17px] rounded-lg bg-black text-white max-md:max-w-full max-md:px-5"
-                >
-                  Purchase Now
-                </button>
-              </div>
-              
-              {/* Book Session Card */}
-              <div className="bg-white border flex flex-col overflow-hidden px-8 py-9 rounded-2xl border-[rgba(85,85,85,0.5)] border-solid max-md:max-w-full max-md:px-5">
-                <h3 className="text-black text-[22px]">Book 30 - Minute Session</h3>
-                <p className="text-[#555] text-xl mt-3">Schedule a consultation and purchase later</p>
-                <button
-                  onClick={handleBookSession}
-                  className="self-stretch overflow-hidden text-base font-normal mt-[26px] px-[70px] py-[17px] rounded-lg border border-black border-solid text-black max-md:max-w-full max-md:px-5"
-                >
-                  Book Session
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1090,6 +1026,9 @@ const PricingCard = ({
     onCardClick,
     onFeatureClick
   }) => {
+    const handleCardClick = () => {
+      onCardClick(price); // Pass the price when clicking upgrade
+  };
     return (
       <article className="w-[302px] rounded bg-white border-2 border-solid border-[rgba(158,158,158,0.5)] max-md:w-[45%] max-sm:w-full flex flex-col justify-between">
         
@@ -1114,7 +1053,7 @@ const PricingCard = ({
               One Time Payment
             </div>
             <button
-              onClick={onCardClick}
+              onClick={handleCardClick}
               className="w-full rounded text-white text-base cursor-pointer bg-black mt-5 p-4 border-none"
             >
               Upgrade Now
@@ -1312,13 +1251,13 @@ const PricingSection = ({ onModalOpen }) => {
       <section className="flex justify-center gap-6 mt-[60px] max-md:flex-wrap max-sm:flex-col">
         {pricingOptions.map((option, index) => (
           <PricingCard 
-            key={index} 
-            index={index}
-            {...option} 
-            onCardClick={() => onModalOpen(option.modalType)}
-            onFeatureClick={(featureIndex, feature) => handleFeatureClick(index, featureIndex, feature)}
-          />
-        ))}
+          key={index} 
+          index={index}
+          {...option} 
+          onCardClick={(price) => onModalOpen(option.modalType, price)} // Pass price here
+          onFeatureClick={(featureIndex, feature) => handleFeatureClick(index, featureIndex, feature)}
+        />
+      ))}
       </section>
     );
   };
@@ -1332,6 +1271,8 @@ export default function JoinPage() {
         purchaseOptions: false  // Add this line
       });
 
+    const [modalInfo, setModalInfo] = useState({ type: null, price: null });
+
   const openModal = (modalType) => {
     setModalState(prev => ({
       ...prev,
@@ -1344,9 +1285,10 @@ export default function JoinPage() {
       ...prev,
       [modalType]: false
     }));
+    setModalInfo({ type: null, price: null });
   };
 
-  const handleModalOpen = (type) => {
+  const handleModalOpen = (type,price = null) => {
     if (type === 'valueMultiplying') {
       openModal('valueMultiplying');
     } else if (type === 'pause') {
@@ -1354,7 +1296,8 @@ export default function JoinPage() {
     } else if (type === 'respectChoice') {
       openModal('respectChoice');
     } else if (type === 'upgrade') {
-      openModal('purchaseOptions');  // Change this line
+      openModal('purchaseOptions');
+      setModalInfo({ type, price });  // Change this line
     }
   };
 
@@ -1394,6 +1337,7 @@ export default function JoinPage() {
       <PurchaseOptionsModal 
         isOpen={modalState.purchaseOptions} 
         onClose={() => closeModal('purchaseOptions')}
+        price={modalInfo.price}
         />
     </>
   );

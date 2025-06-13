@@ -84,6 +84,18 @@ const countries = [
   { code: 'fj', name: 'Fiji', dial_code: '+679', flag: '🇫🇯', phone_length: 7 },
 ];
 
+const detectCountryByLocation = async () => {
+  try {
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
+    return data.country_code?.toLowerCase() || 'us';
+  } catch (error) {
+    console.error('Error detecting country:', error);
+    return 'us'; // fallback to US
+  }
+};
+
+
  const PhoneInput = ({ value, onChange, error }) => {
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -93,6 +105,21 @@ const countries = [
   const [phoneError, setPhoneError] = useState('');
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const autoDetectCountry = async () => {
+      const detectedCountryCode = await detectCountryByLocation();
+      const detectedCountry = countries.find(country => country.code === detectedCountryCode);
+      
+      if (detectedCountry && !value) { // Only set if no initial value is provided
+        setSelectedCountry(detectedCountry);
+        const fullNumber = `${detectedCountry.dial_code}${phoneNumber}`;
+        onChange(fullNumber);
+      }
+    };
+  
+    autoDetectCountry();
+  }, []);
 
   // Handle outside click to close dropdown
   useEffect(() => {

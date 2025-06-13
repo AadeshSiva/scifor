@@ -94,6 +94,118 @@ const countries = [
       country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       country.code.includes(searchTerm)
     );
+
+    useEffect(() => {
+      const detectCountry = async () => {
+        try {
+          // Try multiple IP geolocation services as fallback
+          const services = [
+            'https://ipapi.co/country_code/',
+            'https://api.ipify.org?format=json', // This will need additional processing
+            'https://ipinfo.io/country'
+          ];
+    
+          let countryCode = null;
+    
+          // Try the first service (ipapi.co)
+          try {
+            const response = await fetch(services[0]);
+            if (response.ok) {
+              countryCode = await response.text();
+              countryCode = countryCode.trim().toUpperCase();
+            }
+          } catch (error) {
+            console.log('Primary service failed, trying fallback...');
+          }
+    
+          // If first service fails, try ipinfo.io
+          if (!countryCode) {
+            try {
+              const response = await fetch(services[2]);
+              if (response.ok) {
+                countryCode = await response.text();
+                countryCode = countryCode.trim().toUpperCase();
+              }
+            } catch (error) {
+              console.log('Fallback service also failed');
+            }
+          }
+    
+          // Enhanced country matching logic
+          if (countryCode) {
+            const countryMap = {
+              'US': { code: '+1', name: 'United States' },
+              'CA': { code: '+1', name: 'Canada' },
+              'GB': { code: '+44', name: 'United Kingdom' },
+              'UK': { code: '+44', name: 'United Kingdom' },
+              'IN': { code: '+91', name: 'India' },
+              'DE': { code: '+49', name: 'Germany' },
+              'FR': { code: '+33', name: 'France' },
+              'AU': { code: '+61', name: 'Australia' },
+              'JP': { code: '+81', name: 'Japan' },
+              'BR': { code: '+55', name: 'Brazil' },
+              'MX': { code: '+52', name: 'Mexico' },
+              'IT': { code: '+39', name: 'Italy' },
+              'ES': { code: '+34', name: 'Spain' },
+              'NL': { code: '+31', name: 'Netherlands' },
+              'SE': { code: '+46', name: 'Sweden' },
+              'NO': { code: '+47', name: 'Norway' },
+              'DK': { code: '+45', name: 'Denmark' },
+              'CH': { code: '+41', name: 'Switzerland' },
+              'AT': { code: '+43', name: 'Austria' },
+              'BE': { code: '+32', name: 'Belgium' },
+              'PT': { code: '+351', name: 'Portugal' },
+              'CN': { code: '+86', name: 'China' },
+              'KR': { code: '+82', name: 'South Korea' },
+              'NZ': { code: '+64', name: 'New Zealand' },
+              'AR': { code: '+54', name: 'Argentina' },
+              'CL': { code: '+56', name: 'Chile' },
+              'CO': { code: '+57', name: 'Colombia' },
+              'PE': { code: '+51', name: 'Peru' },
+              'ZA': { code: '+27', name: 'South Africa' },
+              'NG': { code: '+234', name: 'Nigeria' },
+              'EG': { code: '+20', name: 'Egypt' },
+              'RU': { code: '+7', name: 'Russia' },
+              'TR': { code: '+90', name: 'Turkey' },
+              'SA': { code: '+966', name: 'Saudi Arabia' },
+              'AE': { code: '+971', name: 'UAE' },
+              'SG': { code: '+65', name: 'Singapore' },
+              'MY': { code: '+60', name: 'Malaysia' },
+              'TH': { code: '+66', name: 'Thailand' },
+              'VN': { code: '+84', name: 'Vietnam' },
+              'PH': { code: '+63', name: 'Philippines' },
+              'ID': { code: '+62', name: 'Indonesia' },
+              'BD': { code: '+880', name: 'Bangladesh' },
+              'PK': { code: '+92', name: 'Pakistan' },
+              'LK': { code: '+94', name: 'Sri Lanka' },
+              'NP': { code: '+977', name: 'Nepal' },
+              'IR': { code: '+98', name: 'Iran' },
+              'IL': { code: '+972', name: 'Israel' },
+            };
+    
+            const mappedCountry = countryMap[countryCode];
+            if (mappedCountry) {
+              // Find the exact country in the countries array
+              const detectedCountry = countries.find(country => 
+                country.code === mappedCountry.code && 
+                country.name === mappedCountry.name
+              );
+              
+              if (detectedCountry) {
+                console.log('Detected country:', detectedCountry.name);
+                setSelectedCountry(detectedCountry);
+                onPhoneChange(detectedCountry.code);
+              }
+            }
+          }
+        } catch (error) {
+          console.log('Country detection failed:', error);
+          // Silently fail and keep default country (United States)
+        }
+      };
+    
+      detectCountry();
+    }, [onPhoneChange]);
   
     const validatePhoneNumber = (number, country) => {
       if (!number) {

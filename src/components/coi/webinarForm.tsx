@@ -90,6 +90,106 @@ const countryCodes: CountryCode[] = [
   { code: '+972', country: 'Israel', flag: '🇮🇱', digits: 9 }
 ];
 
+const detectCountryCode = async (): Promise<string> => {
+  try {
+    // Try to get user's timezone first
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Map common timezones to country codes
+    const timezoneToCountryCode: { [key: string]: string } = {
+      'America/New_York': '+1',
+      'America/Chicago': '+1',
+      'America/Denver': '+1',
+      'America/Los_Angeles': '+1',
+      'America/Toronto': '+1',
+      'America/Vancouver': '+1',
+      'Europe/London': '+44',
+      'Europe/Paris': '+33',
+      'Europe/Berlin': '+49',
+      'Europe/Rome': '+39',
+      'Europe/Madrid': '+34',
+      'Europe/Amsterdam': '+31',
+      'Europe/Stockholm': '+46',
+      'Europe/Oslo': '+47',
+      'Europe/Copenhagen': '+45',
+      'Europe/Zurich': '+41',
+      'Europe/Vienna': '+43',
+      'Europe/Brussels': '+32',
+      'Europe/Lisbon': '+351',
+      'Europe/Dublin': '+353',
+      'Europe/Helsinki': '+358',
+      'Asia/Kolkata': '+91',
+      'Asia/Shanghai': '+86',
+      'Asia/Tokyo': '+81',
+      'Asia/Seoul': '+82',
+      'Asia/Singapore': '+65',
+      'Asia/Kuala_Lumpur': '+60',
+      'Asia/Bangkok': '+66',
+      'Asia/Ho_Chi_Minh': '+84',
+      'Asia/Manila': '+63',
+      'Asia/Jakarta': '+62',
+      'Australia/Sydney': '+61',
+      'Australia/Melbourne': '+61',
+      'Pacific/Auckland': '+64',
+      'Europe/Moscow': '+7',
+      'Europe/Kiev': '+380',
+      'Europe/Warsaw': '+48',
+      'Europe/Prague': '+420',
+      'Europe/Budapest': '+36',
+      'Europe/Bucharest': '+40',
+      'Europe/Sofia': '+359',
+      'Europe/Zagreb': '+385',
+      'Europe/Belgrade': '+381',
+      'America/Sao_Paulo': '+55',
+      'America/Mexico_City': '+52',
+      'America/Buenos_Aires': '+54',
+      'America/Santiago': '+56',
+      'America/Bogota': '+57',
+      'America/Lima': '+51',
+      'America/Caracas': '+58',
+      'Africa/Johannesburg': '+27',
+      'Africa/Lagos': '+234',
+      'Africa/Nairobi': '+254',
+      'Africa/Cairo': '+20',
+      'Africa/Casablanca': '+212',
+      'Africa/Algiers': '+213',
+      'Africa/Tunis': '+216',
+      'Africa/Tripoli': '+218',
+      'Asia/Dubai': '+971',
+      'Asia/Riyadh': '+966',
+      'Asia/Qatar': '+974',
+      'Asia/Bahrain': '+973',
+      'Asia/Kuwait': '+965',
+      'Asia/Muscat': '+968',
+      'Asia/Beirut': '+961',
+      'Asia/Amman': '+962',
+      'Asia/Tehran': '+98',
+      'Europe/Istanbul': '+90',
+      'Asia/Jerusalem': '+972'
+    };
+
+    // Check if timezone maps to a country code
+    if (timezoneToCountryCode[timezone]) {
+      return timezoneToCountryCode[timezone];
+    }
+
+    // Fallback: try to get location via IP (using a free service)
+    const response = await fetch('https://ipapi.co/json/');
+    if (response.ok) {
+      const data = await response.json();
+      const countryCode = data.country_calling_code;
+      if (countryCode) {
+        return countryCode;
+      }
+    }
+  } catch (error) {
+    console.log('Could not detect country code:', error);
+  }
+  
+  // Default fallback
+  return '+1';
+};
+
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit,
   loading,
@@ -117,9 +217,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
   // Initialize form data if provided
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    }
+    const initializeForm = async () => {
+      if (initialData) {
+        setFormData(initialData);
+      }
+      
+      // Auto-detect country code on component mount
+      const detectedCode = await detectCountryCode();
+      setSelectedCountryCode(detectedCode);
+    };
+    
+    initializeForm();
   }, [initialData]);
 
   useEffect(() => {

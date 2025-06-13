@@ -154,66 +154,8 @@ const Chat = () => {
   const isAdmin = user?.is_staff === true; 
   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
   const [showHero, setShowHero] = useState(true);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      sender: "Alen McCraw",
-      text: "Hello! I'm your AI assistant. How can I help you today?",
-      time: "10:30 AM",
-      isUser: false
-    },
-    {
-      id: 2,
-      sender: userName,
-      text: "Making good progress! I'll share with you",
-      time: "10:32 AM",
-      isUser: true
-    },
-    {
-      id: 3,
-      sender: "Alen McCraw",
-      text: "Sure! Let me share the details now",
-      time: "10:33 AM",
-      isUser: false
-    },
-    {
-      id: 4,
-      sender: userName,
-      text: "I've been working on the project all day. What do you think about adding more features to the dashboard?",
-      time: "10:35 AM",
-      isUser: true
-    },
-    {
-      id: 5,
-      sender: "Sarah Johnson",
-      text: "That sounds like a great idea! We could include analytics and reporting features.",
-      time: "10:36 AM",
-      isUser: false
-    },
-    {
-      id: 6,
-      sender: "Michael Chen",
-      text: "I agree with Sarah. Let's discuss this in our next meeting.",
-      time: "10:37 AM",
-      isUser: false
-    }
-  ]);
-  const [pinnedMessages, setpinnedMessages] = useState([
-    {
-      id: 1,
-      messageId: 1, // Add this field to link to original message
-      text: "Friendly reminder: Keep it respectful and on-topic. Everyone's voice matters here — even behind a mask.",
-      date: "Today",
-      isPinned: true
-    },
-    {
-      id: 2,
-      messageId: 2, // Add this field to link to original message
-      text: "Team meeting scheduled for Friday at 2 PM EST.",
-      date: "Today",
-      isPinned: true
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [pinnedMessages, setpinnedMessages] = useState([]);
   const [currentPinnedMessage, setCurrentPinnedMessage] = useState(0);
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
@@ -225,14 +167,294 @@ const Chat = () => {
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [pollFormData, setPollFormData] = useState({
     question: '',
-    options: [
-      { id: '1', text: 'Yes ! it will increase', votes: 0, voters: [] },
-      { id: '2', text: 'No ! There wont be no rise', votes: 0, voters: [] }
-    ],
+    options: [],
     allowMultipleAnswers: false,
   });
   const [showPinnedMessagesPage, setShowPinnedMessagesPage] = useState(false);
   const [isAiChatMode, setIsAiChatMode] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  const [maxReconnectAttempts] = useState(5);
+  const reconnectTimeoutRef = useRef(null);
+
+  const refreshTokenAndReconnect = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        console.log('No refresh token available');
+        return false;
+      }
+  
+      const response = await fetch('https://intern-project-final-1.onrender.com/api/token/refresh/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          refresh: refreshToken
+        })
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('access_token', data.access);
+        console.log('Token refreshed successfully');
+        return true;
+      } else {
+        console.log('Token refresh failed');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    let ws = null;
+    
+    const connectWebSocket = () => {
+      if (!isAuthenticated || !user || isLoading) {
+        console.log('User not authenticated or still loading, skipping WebSocket connection');
+        return;
+      }
+    
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          console.log('No access token found');
+          return;
+        }
+        
+        const wsUrl = `wss://intern-project-final-1.onrender.com/ws/chat/general/?token=${token}`;
+        console.log('Attempting to connect to:', wsUrl);
+        
+        ws = new WebSocket(wsUrl);
+        setConnectionStatus('connecting');
+        
+        ws.onopen = () => {
+          console.log('WebSocket connected successfully');
+          setConnectionStatus('connected');
+          setSocket(ws);
+          setReconnectAttempts(0);
+          
+          // Send a ping to keep connection alive
+          const keepAlive = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'ping' }));
+            }
+          }, 30000); // Send ping every 30 seconds
+          
+          ws.keepAliveInterval = keepAlive;
+        };
+        
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type !== 'pong') { // Ignore pong responses
+              handleWebSocketMessage(data);
+            }
+          } catch (error) {
+            console.error('Error parsing WebSocket message:', error);
+          }
+        };
+        
+        ws.onclose = (event) => {
+          console.log('WebSocket disconnected:', event.code, event.reason);
+          setConnectionStatus('disconnected');
+          setSocket(null);
+          
+          // Clear keep alive interval
+          if (ws.keepAliveInterval) {
+            clearInterval(ws.keepAliveInterval);
+          }
+          
+          // Don't auto-reconnect for authentication errors
+          if (event.code === 4001 || event.code === 4003 || event.code === 4004) {
+            console.log('Authentication failed, not attempting to reconnect');
+            return;
+          }
+          
+          // Auto-reconnect for other errors
+          if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
+            const timeout = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+            console.log(`Attempting to reconnect in ${timeout}ms (attempt ${reconnectAttempts + 1})`);
+            
+            reconnectTimeoutRef.current = setTimeout(() => {
+              setReconnectAttempts(prev => prev + 1);
+              connectWebSocket();
+            }, timeout);
+          }
+        };
+        
+        ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+          setConnectionStatus('error');
+        };
+        
+      } catch (error) {
+        console.error('Error creating WebSocket:', error);
+        setConnectionStatus('error');
+      }
+    };
+  
+    // Only connect when authentication is complete and user is authenticated
+    if (!isLoading && isAuthenticated && user) {
+      connectWebSocket();
+    }
+    
+    // Cleanup function
+    return () => {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close(1000, 'Component unmounting');
+      }
+    };
+  }, [isAuthenticated, isLoading, user, reconnectAttempts]);
+
+  const reconnectWebSocket = async () => {
+    if (socket) {
+      socket.close();
+    }
+    
+    // Try to refresh token before reconnecting
+    const tokenRefreshed = await refreshTokenAndReconnect();
+    if (!tokenRefreshed && !localStorage.getItem('access_token')) {
+      console.log('No valid token available for reconnection');
+      return;
+    }
+    
+    setReconnectAttempts(0);
+    setConnectionStatus('connecting');
+  };
+  
+
+  const handleWebSocketMessage = (data) => {
+    console.log('Received WebSocket message:', data);
+    
+    switch (data.type) {
+      case 'chat_message':
+        if (data.is_history) {
+          // Handle historical messages on connect - check if already exists
+          setMessages(prev => {
+            const exists = prev.some(msg => msg.id === data.message.id);
+            if (!exists) {
+              return [formatBackendMessage(data.message), ...prev];
+            }
+            return prev;
+          });
+        } else {
+          // Handle new messages - check if already exists
+          setMessages(prev => {
+            const exists = prev.some(msg => msg.id === data.message.id);
+            if (!exists) {
+              return [...prev, formatBackendMessage(data.message)];
+            }
+            return prev;
+          });
+        }
+        break;
+        
+      case 'poll_message':
+        setMessages(prev => {
+          const exists = prev.some(msg => msg.id === data.poll.message_id);
+          if (!exists) {
+            return [...prev, formatBackendPoll(data.poll)];
+          }
+          return prev;
+        });
+        break;
+        
+      case 'poll_update':
+        setMessages(prev => prev.map(msg => 
+          msg.isPoll && msg.pollData.id === data.poll.id 
+            ? { ...msg, pollData: formatPollData(data.poll) }
+            : msg
+        ));
+        break;
+        
+      case 'message_pinned':
+        // Update the message in the current messages array
+        setMessages(prev => prev.map(msg => 
+          msg.id === data.message.id 
+            ? { ...msg, isPinned: true }
+            : msg
+        ));
+        
+        // Add to pinned messages if not already there
+        const pinnedMsg = formatBackendMessage(data.message);
+        setpinnedMessages(prev => {
+          const exists = prev.some(p => p.messageId === pinnedMsg.id);
+          if (!exists) {
+            return [...prev, {
+              id: prev.length + 1,
+              messageId: pinnedMsg.id,
+              text: pinnedMsg.text,
+              date: "Today",
+              isPinned: true
+            }];
+          }
+          return prev;
+        });
+        break;
+      
+      case 'search_results':
+        console.log('Search results:', data.messages);
+        break;
+        
+      case 'error':
+        console.error('Server error:', data.message);
+        if (data.message.includes('Premium membership')) {
+          setShowPremiumPopup(true);
+        }
+        break;
+        
+      default:
+        console.log('Unknown message type:', data.type);
+    }
+  };
+
+  // Replace your formatBackendMessage function:
+const formatBackendMessage = (backendMsg) => ({
+  id: backendMsg.id,
+  sender: backendMsg.sender,
+  text: backendMsg.content,
+  time: new Date(backendMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  isUser: backendMsg.sender === userName,
+  isPinned: backendMsg.is_pinned || false,
+  replyTo: backendMsg.reply_to ? {
+    id: backendMsg.reply_to.id,
+    sender: backendMsg.reply_to.sender,
+    text: backendMsg.reply_to.content
+  } : null
+});
+
+  const formatBackendPoll = (backendPoll) => ({
+    id: backendPoll.message_id,
+    sender: backendPoll.created_by,
+    text: '',
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    isUser: backendPoll.created_by === userName,
+    isPoll: true,
+    pollData: formatPollData(backendPoll)
+  });
+
+  const formatPollData = (backendPoll) => ({
+    id: backendPoll.id,
+    question: backendPoll.question,
+    options: backendPoll.options.map(opt => ({
+      id: opt.id,
+      text: opt.text,
+      votes: opt.votes,
+      voters: opt.voters
+    })),
+    allowMultipleAnswers: backendPoll.allow_multiple_answers,
+    createdBy: backendPoll.created_by,
+    totalVotes: backendPoll.total_votes
+  });
 
   useEffect(() => {
   if (user && user.full_name) {
@@ -283,50 +505,7 @@ useEffect(() => {
     } else {
       setIsAiChatMode(false);
       // Reset to group chat messages
-      setMessages([
-        {
-          id: 1,
-          sender: "Alen McCraw",
-          text: "Hello! I'm your AI assistant. How can I help you today?",
-          time: "10:30 AM",
-          isUser: false
-        },
-        {
-          id: 2,
-          sender: userName,
-          text: "Making good progress! I'll share with you",
-          time: "10:32 AM",
-          isUser: true
-        },
-        {
-          id: 3,
-          sender: "Alen McCraw",
-          text: "Sure! Let me share the details now",
-          time: "10:33 AM",
-          isUser: false
-        },
-        {
-          id: 4,
-          sender: userName,
-          text: "I've been working on the project all day. What do you think about adding more features to the dashboard?",
-          time: "10:35 AM",
-          isUser: true
-        },
-        {
-          id: 5,
-          sender: "Sarah Johnson",
-          text: "That sounds like a great idea! We could include analytics and reporting features.",
-          time: "10:36 AM",
-          isUser: false
-        },
-        {
-          id: 6,
-          sender: "Michael Chen",
-          text: "I agree with Sarah. Let's discuss this in our next meeting.",
-          time: "10:37 AM",
-          isUser: false
-        }
-      ]);
+      setMessages([]);
     }
   };
 
@@ -366,8 +545,10 @@ useEffect(() => {
     }));
   };
 
-  const handlePollSubmit = (e: FormEvent) => {
+  const handlePollSubmit = (e) => {
     e.preventDefault();
+    if (!socket) return;
+    
     if (pollFormData.question.trim() === '') {
       alert('Please enter a question');
       return;
@@ -381,32 +562,18 @@ useEffect(() => {
       return;
     }
   
-    // Create poll message
-    const pollMessage = {
-      id: messages.length + 1,
-      sender: userName,
-      text: '', // Will be handled differently for polls
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isUser: true,
-      isPoll: true,
-      pollData: {
-        id: String(Date.now()),
-        question: pollFormData.question,
-        options: pollFormData.options,
-        allowMultipleAnswers: pollFormData.allowMultipleAnswers,
-        createdBy: userName,
-        createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
+    const pollData = {
+      type: 'poll_create',
+      question: pollFormData.question,
+      options: pollFormData.options.map(opt => ({ text: opt.text })),
+      allow_multiple_answers: pollFormData.allowMultipleAnswers
     };
   
-    setMessages([...messages, pollMessage]);
+    socket.send(JSON.stringify(pollData));
     setShowPollCreator(false);
     setPollFormData({
       question: '',
-      options: [
-        { id: '1', text: 'Yes ! it will increase', votes: 0, voters: [] },
-        { id: '2', text: 'No ! There wont be no rise', votes: 0, voters: [] }
-      ],
+      options: [],
       allowMultipleAnswers: false,
     });
   };
@@ -423,50 +590,19 @@ useEffect(() => {
     });
   };
   
-  const handlePollVote = (messageId: number, optionId: string) => {
-    setMessages(prevMessages => 
-      prevMessages.map(msg => {
-        if (msg.id === messageId && msg.isPoll) {
-          const updatedOptions = msg.pollData.options.map(option => {
-            if (option.id === optionId) {
-              // Check if user already voted
-              if (option.voters.includes(userName)) {
-                return {
-                  ...option,
-                  votes: option.votes - 1,
-                  voters: option.voters.filter(voter => voter !== userName)
-                };
-              } else {
-                // If not multiple answers allowed, remove vote from other options
-                if (!msg.pollData.allowMultipleAnswers) {
-                  msg.pollData.options.forEach(opt => {
-                    if (opt.id !== optionId && opt.voters.includes(userName)) {
-                      opt.votes = opt.votes - 1;
-                      opt.voters = opt.voters.filter(voter => voter !== userName);
-                    }
-                  });
-                }
-                return {
-                  ...option,
-                  votes: option.votes + 1,
-                  voters: [...option.voters, userName]
-                };
-              }
-            }
-            return option;
-          });
-          
-          return {
-            ...msg,
-            pollData: {
-              ...msg.pollData,
-              options: updatedOptions
-            }
-          };
-        }
-        return msg;
-      })
-    );
+  const handlePollVote = (messageId, optionId) => {
+    if (!socket) return;
+    
+    const message = messages.find(msg => msg.id === messageId);
+    if (message && message.isPoll) {
+      const voteData = {
+        type: 'poll_vote',
+        poll_id: message.pollData.id,
+        option_id: optionId
+      };
+      
+      socket.send(JSON.stringify(voteData));
+    }
   };
   
   // Auto scroll to bottom when new messages are added
@@ -490,86 +626,90 @@ useEffect(() => {
   };
   
   const handleSendMessage = async (messageText) => {
-    if (!messageText.trim()) return;
-
-    if (user && user.paid === false) {
-      setShowPremiumPopup(true);
+    // Check if message is empty
+    if (!messageText.trim()) {
+      console.log('Cannot send empty message');
       return;
     }
-    
-    // Check for abusive content
-    const isAbusive = await filterAbusiveContent(messageText);
-    
-    if (isAbusive) {
-      // Show inappropriate message alert in chat
-      const alertMessage = {
-        id: Date.now(), // Use timestamp as unique ID
-        type: 'inappropriate',
-        text: 'Your message contains inappropriate content and cannot be sent.',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setInappropriateMessageAlert(alertMessage);
-      
-      // Clear the alert after 5 seconds
-      setTimeout(() => {
-        setInappropriateMessageAlert(null);
-      }, 5000);
-      
+  
+    // Check authentication status
+    if (!isAuthenticated || !user || isLoading) {
+      console.log('User not authenticated');
+      alert('Please log in to send messages.');
       return;
     }
-    
-    const newMessage = {
-      id: messages.length + 1,
-      sender: userName,
-      text: messageText,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isUser: true,
-      replyTo: replyingTo
+  
+    // Check WebSocket connection
+    if (!socket) {
+      console.log('No WebSocket connection available');
+      alert('Connection lost. Please refresh the page or try again.');
+      return;
+    }
+  
+    if (socket.readyState !== WebSocket.OPEN) {
+      console.log('WebSocket not ready. Current state:', socket.readyState);
+      alert('Connection not ready. Please wait a moment and try again.');
+      return;
+    }
+  
+    console.log('Sending message:', messageText);
+  
+    const messageData = {
+      type: 'chat_message',
+      message: messageText,
+      reply_to_id: replyingTo?.id || null
     };
     
-    setMessages([...messages, newMessage]);
-    setReplyingTo(null);
-
-    if (isAiChatMode) {
-      setTimeout(() => {
-        const aiResponse = {
-          id: messages.length + 2,
-          sender: "AI Assistant",
-          text: "Thank you for your message! I'm currently in development and will be fully operational in 45 days. Once live, I'll be able to provide comprehensive assistance with your queries.",
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          isUser: false,
-          isAi: true
-        };
-        
-        setMessages(prevMessages => [...prevMessages, aiResponse]);
-      }, 1500);
-    } else {
+    console.log('Sending message data:', messageData);
     
-    // Simulate received message
-    if (messages.length % 2 === 0) {
-      setTimeout(() => {
-        const botNames = ["Alen McCraw", "Sarah Johnson", "Michael Chen"];
-        const randomResponses = [
-          "Thanks for the update!",
-          "That's fantastic progress.",
-          "Let's discuss this further in our next meeting.",
-          "I appreciate your input on this matter.",
-          "Could you provide more details?",
-          "I'll look into that and get back to you soon."
-        ];
-        
-        const botResponse = {
-          id: messages.length + 2,
-          sender: botNames[Math.floor(Math.random() * botNames.length)],
-          text: randomResponses[Math.floor(Math.random() * randomResponses.length)],
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          isUser: false
-        };
-        
-        setMessages(prevMessages => [...prevMessages, botResponse]);
-      }, 1000);
+    try {
+      socket.send(JSON.stringify(messageData));
+      setReplyingTo(null); // Clear reply state
+      console.log('Message sent successfully');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
     }
-  };}
+    
+    // REMOVED THE DUPLICATE CODE BLOCK HERE
+  };
+
+  const ConnectionStatusIndicator = () => {
+    const getStatusColor = () => {
+      switch (connectionStatus) {
+        case 'connected': return 'bg-green-500';
+        case 'connecting': return 'bg-yellow-500';
+        case 'disconnected': return 'bg-red-500';
+        case 'error': return 'bg-red-600';
+        default: return 'bg-gray-500';
+      }
+    };
+  
+    const getStatusText = () => {
+      switch (connectionStatus) {
+        case 'connected': return 'Connected';
+        case 'connecting': return 'Connecting...';
+        case 'disconnected': return 'Disconnected';
+        case 'error': return 'Connection Error';
+        default: return 'Unknown';
+      }
+    };
+  
+    return (
+      <div className="flex items-center space-x-2 text-sm">
+        <div className={`w-2 h-2 rounded-full ${getStatusColor()}`}></div>
+        <span className="text-gray-600">{getStatusText()}</span>
+        {(connectionStatus === 'disconnected' || connectionStatus === 'error') && (
+          <button 
+            onClick={reconnectWebSocket}
+            className="text-blue-600 hover:text-blue-800 underline ml-2"
+          >
+            Reconnect
+          </button>
+        )}
+      </div>
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -577,6 +717,12 @@ useEffect(() => {
     // Check if user has paid subscription before sending
     if (user && user.paid === false) {
       setShowPremiumPopup(true);
+      return;
+    }
+    
+    // Additional connection check
+    if (connectionStatus !== 'connected') {
+      alert('Please wait for connection to be established before sending messages.');
       return;
     }
     
@@ -593,16 +739,14 @@ useEffect(() => {
   };
   
   const handlePinMessage = (messageId) => {
-    const messageToPin = messages.find(msg => msg.id === messageId);
-    if (messageToPin && !pinnedMessages.some(pm => pm.messageId === messageId)) {
-      setpinnedMessages([...pinnedMessages, {
-        id: pinnedMessages.length + 1,
-        messageId: messageId, // Link to original message
-        text: messageToPin.text,
-        date: "Today", // You can make this dynamic based on message date
-        isPinned: true
-      }]);
-    }
+    if (!socket || !isAdmin) return;
+    
+    const pinData = {
+      type: 'pin_message',
+      message_id: messageId
+    };
+    
+    socket.send(JSON.stringify(pinData));
   };
   
   const getMenuItems = () => {
@@ -615,6 +759,17 @@ useEffect(() => {
         icon: 'menu-item-icon'
       }))
     ];
+  };
+
+  const handleSearch = (query) => {
+    if (!socket || !query.trim()) return;
+    
+    const searchData = {
+      type: 'search_messages',
+      query: query
+    };
+    
+    socket.send(JSON.stringify(searchData));
   };
 
   const handleHomeClick =()=>{
@@ -954,14 +1109,14 @@ useEffect(() => {
           </div>
           <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 ml-12">
             <div>{msg.time}</div>
-            <button 
+            {isAdmin?<button 
               onClick={() => handlePinMessage(msg.id)}
               className="hover:bg-neutral-100 rounded-full p-1"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
               </svg>
-            </button>
+            </button>:null}
             <button 
               onClick={() => handleReply(msg)}
               className="hover:bg-neutral-100 rounded-full p-1"
