@@ -39,15 +39,8 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   // Handle category selection
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
-    // Set first item as open when category changes
-    if (categoryName === 'All' && data.length > 0) {
-      setOpenSection('0-0');
-    } else {
-      const filteredData = data.filter(category => category.category === categoryName);
-      if (filteredData.length > 0) {
-        setOpenSection('0-0');
-      }
-    }
+    // Always reset to first item when category changes
+    setOpenSection('0-0');
   };
 
   // Handle PDF opening in new tab
@@ -67,33 +60,31 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
     ? data 
     : data.filter(category => category.category === selectedCategory);
 
-  // Generate unique ID for sections
-  const generateId = (categoryIndex: number, researchIndex: number) => {
-    return `${categoryIndex}-${researchIndex}`;
+  // Generate unique ID for sections - FIXED: Use filtered array indices
+  const generateId = (filteredCategoryIndex: number, researchIndex: number) => {
+    return `${filteredCategoryIndex}-${researchIndex}`;
   };
 
-  // Calculate continuous serial numbers
+  // Calculate continuous serial numbers - FIXED: Use filtered data for calculation
   const getSerialNumber = (categoryIndex: number, researchIndex: number) => {
     let serialNumber = 1;
     
-    for (let i = 0; i < filteredData.length; i++) {
-      if (i < categoryIndex) {
-        serialNumber += filteredData[i].research_points.length;
-      } else if (i === categoryIndex) {
-        serialNumber += researchIndex;
-        break;
-      }
+    for (let i = 0; i < categoryIndex; i++) {
+      serialNumber += filteredData[i].research_points.length;
     }
+    serialNumber += researchIndex;
     
     return serialNumber;
   };
 
-  // Set first item as open when data changes
+  // Set first item as open when filtered data changes
   useEffect(() => {
     if (filteredData.length > 0 && filteredData[0].research_points.length > 0) {
       setOpenSection('0-0');
+    } else {
+      setOpenSection('');
     }
-  }, [filteredData]);
+  }, [selectedCategory]); // Changed dependency to selectedCategory
 
   return (
     <div className={`w-full ${className}`}>

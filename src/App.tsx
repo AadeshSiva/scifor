@@ -17,6 +17,7 @@ import ProtectedRoute from "./utils/ProtectedRoutes";
 import PaymentSuccess from "./pages/PymentSuccess";
 import Index from "./components/join/meeting";
 import ArticlePage from "./pages/ArticlePage";
+import PaymentCancelled from "./pages/PaymentCancelled";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage/></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><Payment/></ProtectedRoute>} />
           <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess/></ProtectedRoute>} />
+          <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled/></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

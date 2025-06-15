@@ -276,10 +276,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     } else if (name === 'countryCode') {
       setSelectedCountryCode(value);
       setPhoneError('');
-      setFormData(prev => ({
-        ...prev,
-        phone: ''
-      }));
+      // Don't clear the phone field here - let it be handled separately
     } else {
       setFormData(prev => ({
         ...prev,
@@ -314,36 +311,56 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Form submit called', { formData, loading }); // Debug log
+    
+    // Prevent double submission
+    if (loading) {
+      console.log('Already loading, returning');
+      return;
+    }
+    
     // Validate required fields
-    if (!formData.fullName || !formData.email || !formData.phone) {
+    if (!formData.fullName?.trim() || !formData.email?.trim() || !formData.phone?.trim()) {
+      console.log('Required fields missing', {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone
+      });
       return;
     }
     
     if (!formData.privacy) {
+      console.log('Privacy not accepted');
       return;
     }
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(formData.email.trim())) {
+      console.log('Invalid email');
       return;
     }
     
     // Website validation
     if (formData.website && websiteError) {
+      console.log('Website error exists');
       return;
     }
     
     // Phone validation
     if (phoneError) {
+      console.log('Phone error exists');
       return;
     }
-
-    onSubmit(formData);
-  };
+  
+    console.log('All validations passed, submitting');
+    // Create a copy of formData to avoid mutations
+    const submitData = { ...formData };
+    onSubmit(submitData);
+  };;
 
   return (
     <div className="sticky top-[86px] w-full max-w-sm bg-white p-8 px-3 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0 self-start">
@@ -462,10 +479,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             setIsCountryDropdownOpen(false);
                             setCountrySearchTerm('');
                             setPhoneError('');
-                            setFormData(prev => ({
-                              ...prev,
-                              phone: ''
-                            }));
+                            // Remove the phone clearing from here too
                           }}
                           className="w-full px-3 py-2 text-left text-xs hover:bg-gray-100 flex items-center gap-2"
                         >
@@ -517,12 +531,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </div>
         
         <button
-          type="submit"
-          disabled={websiteError !== '' || phoneError !== '' || loading}
-          className="w-full text-white text-base font-semibold bg-black py-4 px-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none font-linear disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Processing...' : 'I want a chance to WIN !!'}
-        </button>
+  type="submit"
+  disabled={websiteError !== '' || phoneError !== '' || loading}
+  className="w-full text-white text-base font-semibold bg-black py-4 px-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 outline-none font-linear disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? 'Processing...' : 'I want a chance to WIN !!'}
+</button>
       </form>
     </div>
   );

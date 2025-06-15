@@ -11,7 +11,7 @@ export function AuthPage() {
   }
   
   export function AuthForm() {
-    const [activeTab, setActiveTab] = useState<"login" | "register">("register");
+    const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   
     return (
     <div className="flex w-full h-screen items-center justify-center">

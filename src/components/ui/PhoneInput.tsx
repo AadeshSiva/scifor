@@ -105,6 +105,7 @@ const detectCountryByLocation = async () => {
   const [phoneError, setPhoneError] = useState('');
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
+  const [showPhoneError, setShowPhoneError] = useState(false);
 
   useEffect(() => {
     const autoDetectCountry = async () => {
@@ -170,6 +171,14 @@ const detectCountryByLocation = async () => {
     }
   }, []);
 
+  const handlePhoneBlur = () => {
+    setShowPhoneError(true);
+  };
+
+  const handlePhoneFocus = () => {
+    setShowPhoneError(false);
+  };
+
   // Validate phone number length based on selected country
   const validatePhoneNumber = (number, country) => {
     const expectedLength = country.phone_length;
@@ -198,7 +207,7 @@ const detectCountryByLocation = async () => {
     const formattedNumber = formatPhoneNumber(e.target.value);
     setPhoneNumber(formattedNumber);
     
-    // Validate phone number length
+    // Validate phone number length but don't show error yet
     const validationError = validatePhoneNumber(formattedNumber, selectedCountry);
     setPhoneError(validationError);
     
@@ -206,6 +215,7 @@ const detectCountryByLocation = async () => {
     const fullNumber = `${selectedCountry.dial_code}${formattedNumber}`;
     onChange(fullNumber);
   };
+  
 
   // Handle country selection
   const selectCountry = (country) => {
@@ -215,6 +225,11 @@ const detectCountryByLocation = async () => {
     // Validate phone number with new country
     const validationError = validatePhoneNumber(phoneNumber, country);
     setPhoneError(validationError);
+    
+    // Show error if phone number exists and has validation error
+    if (phoneNumber && validationError) {
+      setShowPhoneError(true);
+    }
     
     // Update the full phone number with the new country code
     const fullNumber = `${country.dial_code}${phoneNumber}`;
@@ -228,7 +243,7 @@ const detectCountryByLocation = async () => {
     setFilteredCountries(countries);
   };
 
-  const hasError = error || phoneError;
+  const hasError = error || (showPhoneError && phoneError);
 
   return (
     <div className="relative">
@@ -302,23 +317,25 @@ const detectCountryByLocation = async () => {
 
         {/* Phone Number Input */}
         <input
-          type="tel"
-          value={phoneNumber}
-          onChange={handlePhoneChange}
-          placeholder={`Phone number (${selectedCountry.phone_length} digits)`}
-          className={`flex-1 border border-solid ${hasError ? 'border-red-500' : 'border-black'} text-sm px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black`}
-        />
+  type="tel"
+  value={phoneNumber}
+  onChange={handlePhoneChange}
+  onBlur={handlePhoneBlur}
+  onFocus={handlePhoneFocus}
+  placeholder={`Phone number (${selectedCountry.phone_length} digits)`}
+  className={`flex-1 border border-solid ${hasError ? 'border-red-500' : 'border-black'} text-sm px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-black`}
+/>
       </div>
       
       {/* Phone Error Message */}
-      {phoneError && (
-        <p className="mt-1 text-sm text-red-600 flex items-center">
-          <svg className="w-4 h-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-          {phoneError}
-        </p>
-      )}
+      {(showPhoneError && phoneError) && (
+  <p className="mt-1 text-sm text-red-600 flex items-center">
+    <svg className="w-4 h-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+    </svg>
+    {phoneError}
+  </p>
+)}
     </div>
   );
 };

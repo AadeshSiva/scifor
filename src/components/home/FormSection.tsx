@@ -228,10 +228,8 @@ const countries = [
       setIsDropdownOpen(false);
       setSearchTerm("");
       
-      // Revalidate current phone number with new country
-      if (phoneNumber) {
-        validatePhoneNumber(phoneNumber, country);
-      }
+      // Clear any existing errors when country changes
+      setPhoneError("");
       
       onPhoneChange(country.code + phoneNumber);
     };
@@ -240,10 +238,20 @@ const countries = [
       const value = e.target.value.replace(/\D/g, '');
       setPhoneNumber(value);
       
-      // Validate phone number length
-      validatePhoneNumber(value, selectedCountry);
+      // Clear error when user starts typing again
+      if (phoneError) {
+        setPhoneError("");
+      }
       
       onPhoneChange(selectedCountry.code + value);
+    };
+
+
+    const handlePhoneNumberBlur = () => {
+      // Only validate when user leaves the input field
+      if (phoneNumber) {
+        validatePhoneNumber(phoneNumber, selectedCountry);
+      }
     };
   
     return (
@@ -300,14 +308,15 @@ const countries = [
           </div>
           
           <input
-            type="tel"
-            placeholder={`Enter ${selectedCountry.phoneLength}-digit phone number`}
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-            className={`text-gray-600 border text-xs flex-1 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              phoneError ? 'border-red-500' : 'border-gray-400'
-            }`}
-          />
+  type="tel"
+  placeholder={`Enter ${selectedCountry.phoneLength}-digit phone number`}
+  value={phoneNumber}
+  onChange={handlePhoneNumberChange}
+  onBlur={handlePhoneNumberBlur}  // Add this line
+  className={`text-gray-600 border text-xs flex-1 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+    phoneError ? 'border-red-500' : 'border-gray-400'
+  }`}
+/>
         </div>
         {(phoneError || error) && (
           <p className="text-red-500 text-xs mt-1">{phoneError || "Phone number is required"}</p>

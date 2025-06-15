@@ -167,7 +167,10 @@ const Chat = () => {
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [pollFormData, setPollFormData] = useState({
     question: '',
-    options: [],
+    options: [
+      { id: '1', text: '', votes: 0, voters: [] },
+      { id: '2', text: '', votes: 0, voters: [] }
+    ],
     allowMultipleAnswers: false,
   });
   const [showPinnedMessagesPage, setShowPinnedMessagesPage] = useState(false);
@@ -418,26 +421,35 @@ const Chat = () => {
   };
 
   // Replace your formatBackendMessage function:
-const formatBackendMessage = (backendMsg) => ({
-  id: backendMsg.id,
-  sender: backendMsg.sender,
-  text: backendMsg.content,
-  time: new Date(backendMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-  isUser: backendMsg.sender === userName,
-  isPinned: backendMsg.is_pinned || false,
-  replyTo: backendMsg.reply_to ? {
-    id: backendMsg.reply_to.id,
-    sender: backendMsg.reply_to.sender,
-    text: backendMsg.reply_to.content
-  } : null
-});
+  const formatBackendMessage = (backendMsg) => {
+    console.log('Formatting message:', {
+      sender: backendMsg.sender,
+      userFullName: user?.full_name,
+      userName: userName,
+      isUser: backendMsg.sender === user?.full_name
+    });
+    
+    return {
+      id: backendMsg.id,
+      sender: backendMsg.sender,
+      text: backendMsg.content,
+      time: new Date(backendMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isUser: backendMsg.sender === user?.full_name,
+      isPinned: backendMsg.is_pinned || false,
+      replyTo: backendMsg.reply_to ? {
+        id: backendMsg.reply_to.id,
+        sender: backendMsg.reply_to.sender,
+        text: backendMsg.reply_to.content
+      } : null
+    };
+  };
 
   const formatBackendPoll = (backendPoll) => ({
     id: backendPoll.message_id,
     sender: backendPoll.created_by,
     text: '',
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    isUser: backendPoll.created_by === userName,
+    isUser: backendPoll.created_by === user?.full_name, // Use user.full_name instead of userName
     isPoll: true,
     pollData: formatPollData(backendPoll)
   });
@@ -569,11 +581,15 @@ useEffect(() => {
       allow_multiple_answers: pollFormData.allowMultipleAnswers
     };
   
+    console.log('Sending poll data:', pollData); // Debug log
     socket.send(JSON.stringify(pollData));
     setShowPollCreator(false);
     setPollFormData({
       question: '',
-      options: [],
+      options: [
+        { id: '1', text: '', votes: 0, voters: [] },
+        { id: '2', text: '', votes: 0, voters: [] }
+      ],
       allowMultipleAnswers: false,
     });
   };
@@ -776,6 +792,47 @@ useEffect(() => {
     setShowHero(true)
     setDisplay('chat')
   }
+
+  // Add this function to render poll messages
+const renderPollMessage = (message) => {
+  if (!message.isPoll || !message.pollData) return null;
+  
+  return (
+    <div className="bg-blue-50 p-4 rounded-lg border">
+      <div className="mb-3">
+        <h4 className="font-semibold text-gray-800">{message.pollData.question}</h4>
+        <p className="text-sm text-gray-600">by {message.pollData.createdBy}</p>
+      </div>
+      
+      <div className="space-y-2">
+        {message.pollData.options.map((option) => (
+          <div key={option.id} className="flex items-center justify-between p-2 bg-white rounded border">
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePollVote(message.id, option.id)}
+                className={`px-3 py-1 rounded text-sm ${
+                  option.user_voted 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-gray-200 hover:bg-gray-300'
+                }`}
+              >
+                {option.text}
+              </button>
+            </div>
+            <div className="text-sm text-gray-600">
+              {option.votes} votes
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-2 text-sm text-gray-500">
+        Total votes: {message.pollData.totalVotes}
+        {message.pollData.allowMultipleAnswers && " • Multiple answers allowed"}
+      </div>
+    </div>
+  );
+};
 
   return (
     <div className="bg-white min-h-[calc(100vh-86px)] flex overflow-hidden">
@@ -999,7 +1056,7 @@ useEffect(() => {
             {msg.pollData.options.map((option) => {
               const totalVotes = msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0);
               const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-              const isVoted = option.voters.includes(userName);
+              const isVoted = option.voters.includes(user?.full_name);
               
               return (
                 <button
