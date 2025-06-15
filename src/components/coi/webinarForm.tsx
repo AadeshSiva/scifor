@@ -357,8 +357,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
   
     console.log('All validations passed, submitting');
-    // Create a copy of formData to avoid mutations
     const submitData = { ...formData };
+    console.log(submitData)
     onSubmit(submitData);
   };;
 

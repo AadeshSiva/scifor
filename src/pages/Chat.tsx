@@ -379,30 +379,35 @@ const Chat = () => {
         ));
         break;
         
-      case 'message_pinned':
-        // Update the message in the current messages array
-        setMessages(prev => prev.map(msg => 
-          msg.id === data.message.id 
-            ? { ...msg, isPinned: true }
-            : msg
-        ));
-        
-        // Add to pinned messages if not already there
-        const pinnedMsg = formatBackendMessage(data.message);
-        setpinnedMessages(prev => {
-          const exists = prev.some(p => p.messageId === pinnedMsg.id);
-          if (!exists) {
-            return [...prev, {
-              id: prev.length + 1,
-              messageId: pinnedMsg.id,
-              text: pinnedMsg.text,
-              date: "Today",
-              isPinned: true
-            }];
-          }
-          return prev;
-        });
-        break;
+        case 'message_pinned':
+          // Update the message in the current messages array
+          setMessages(prev => prev.map(msg => 
+            msg.id === data.message.id 
+              ? { ...msg, isPinned: true }
+              : msg
+          ));
+          
+          // Add to pinned messages if not already there
+          const pinnedMsg = formatBackendMessage(data.message);
+          setpinnedMessages(prev => {
+            const exists = prev.some(p => p.messageId === pinnedMsg.id);
+            if (!exists) {
+              return [...prev, {
+                id: prev.length + 1,
+                messageId: pinnedMsg.id,
+                text: pinnedMsg.text,
+                content: pinnedMsg.text, // Add this line - PinnedMessages component expects 'content'
+                date: new Date().toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric' 
+                }),
+                isPinned: true
+              }];
+            }
+            return prev;
+          });
+          break;
       
       case 'search_results':
         console.log('Search results:', data.messages);
@@ -755,13 +760,22 @@ useEffect(() => {
   };
   
   const handlePinMessage = (messageId) => {
-    if (!socket || !isAdmin) return;
+    if (!socket || !isAdmin) {
+      console.log('Cannot pin message - no socket or not admin');
+      return;
+    }
+    
+    if (socket.readyState !== WebSocket.OPEN) {
+      console.log('WebSocket not ready');
+      return;
+    }
     
     const pinData = {
       type: 'pin_message',
       message_id: messageId
     };
     
+    console.log('Sending pin message:', pinData);
     socket.send(JSON.stringify(pinData));
   };
   
@@ -1220,7 +1234,7 @@ const renderPollMessage = (message) => {
 
         {/* Chat Input */}
         <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-2 sm:gap-4 p-3 sm:p-4 px-4 sm:px-6 border-t border-[rgba(158,158,158,0.5)] flex-shrink-0">
-        <button
+       {isAdmin? <button
   type="button"
   onClick={() => {
     if (user && user.paid === false) {
@@ -1234,7 +1248,7 @@ const renderPollMessage = (message) => {
 >
           <ChartNoAxesColumn className='rotate-90' size={18} strokeWidth={3}/>
           <p className='text-xs sm:text-sm hidden sm:block'>Poll</p>
-        </button>
+        </button>:null}
 
         <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
             <Sticker stroke='#555' size={22} className="flex-shrink-0"/>

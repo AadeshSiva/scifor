@@ -408,6 +408,7 @@ const ok = async ()=>{
 
   const handleFormSubmit = async (submittedFormData: FormData) => {
     setError('');
+    console.log(submittedFormData)
     setFormData(submittedFormData);
     
     // Validate required fields
@@ -471,8 +472,8 @@ const ok = async ()=>{
           throw new Error(saveResult.message || 'Failed to save form data');
         }
         
-        // Register user
-        const registrationResult = await registerUser('temp_password_' + Date.now());
+        // **FIXED: Pass submittedFormData to registerUser instead of relying on state**
+        const registrationResult = await registerUser('temp_password_' + Date.now(), submittedFormData);
         
         // After successful registration, update webinar form status
         await handleUpdateWebinarStatus(submittedFormData.email);
@@ -502,21 +503,26 @@ const ok = async ()=>{
     }
   };
   
-
-  const registerUser = async (password?: string) => {
+  // **FIXED: Accept formData as parameter instead of relying on state**
+  const registerUser = async (password?: string, currentFormData?: FormData) => {
     setLoading(true);
     setError('');
     
+    // Use passed formData or fall back to state (for backwards compatibility)
+    const dataToUse = currentFormData || formData;
+    
     try {
       const registrationData = {
-        email: formData.email,
+        email: dataToUse.email,
         password: password || 'temp_password', // Temporary password for "verify later"
-        full_name: formData.fullName,
-        phone_number: formData.phone,
-        website_name: formData.website,
+        full_name: dataToUse.fullName,
+        phone_number: dataToUse.phone,
+        website_name: dataToUse.website,
         no_linkedin: true
       };
-
+  
+      console.log(registrationData)
+  
       const response = await fetch('https://intern-project-final-1.onrender.com/register/', {
         method: 'POST',
         headers: {
@@ -524,9 +530,9 @@ const ok = async ()=>{
         },
         body: JSON.stringify(registrationData)
       });
-
+  
       const data = await response.json();
-
+  
       if (data.tokens) {
         await login(data.tokens);
         console.log('Registration successful with tokens:', data.message);
@@ -537,14 +543,14 @@ const ok = async ()=>{
           localStorage.setItem('refresh_token', data.tokens.refresh);
         }
       }
-
+  
       if (!response.ok) {
         if (data.user_exists) {
           throw new Error('User with this email already exists. Please try logging in.');
         }
         throw new Error(data.message || 'Registration failed');
       }
-
+  
       return data;
     } catch (err) {
       console.error('Registration error:', err);
