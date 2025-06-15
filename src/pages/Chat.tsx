@@ -4,7 +4,7 @@ import ProfileForm from '@/components/settings/ProfileForm';
 import { PasswordChangeForm } from '@/components/settings/PasswordChangeForm';
 import EmailSettings from '@/components/settings/EmailSettings';
 import ChangeUsernameForm from '@/components/settings/ChangeUsernameForm';
-import { AlertCircle, Calendar, CalendarHeart, ChartNoAxesColumn, House, MessageSquare, NotepadText, Search, SendHorizonal, Settings, Sticker } from 'lucide-react';
+import { AlertCircle, Calendar, CalendarHeart, ChartNoAxesColumn, House, MessageSquare, NotepadText, Search, SendHorizonal, Settings, Sticker, Trash } from 'lucide-react';
 import { useAuth } from '@/utils/AuthContext';
 import { HeroSection } from '@/components/chat/LivePage';
 import PinnedMessages from '@/components/chat/PinnedMessage';
@@ -360,6 +360,14 @@ const Chat = () => {
           });
         }
         break;
+
+      case 'message_deleted':
+          // Remove the message from the messages array
+          setMessages(prev => prev.filter(msg => msg.id !== data.message_id));
+          
+          // Also remove from pinned messages if it was pinned
+          setpinnedMessages(prev => prev.filter(p => p.messageId !== data.message_id));
+          break;
         
       case 'poll_message':
         setMessages(prev => {
@@ -750,6 +758,26 @@ useEffect(() => {
     await handleSendMessage(message);
     setMessage('');
   };
+
+  const handleDeleteMessage = (messageId) => {
+    if (!socket || !isAdmin) {
+      console.log('Cannot delete message - no socket or not admin');
+      return;
+    }
+    
+    if (socket.readyState !== WebSocket.OPEN) {
+      console.log('WebSocket not ready');
+      return;
+    }
+    
+    const deleteData = {
+      type: 'delete_message',
+      message_id: messageId
+    };
+    
+    console.log('Sending delete message:', deleteData);
+    socket.send(JSON.stringify(deleteData));
+  };
   
   const handleReply = (message) => {
     setReplyingTo(message);
@@ -1139,14 +1167,14 @@ const renderPollMessage = (message) => {
         </div>
         <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
           <div>{msg.time}</div>
-          <button 
+          {isAdmin?<button 
             onClick={() => handlePinMessage(msg.id)}
             className="hover:bg-neutral-100 rounded-full p-1"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
             </svg>
-          </button>
+          </button>:null}
           <button 
             onClick={() => handleReply(msg)}
             className="hover:bg-neutral-100 rounded-full p-1"
@@ -1188,6 +1216,14 @@ const renderPollMessage = (message) => {
                 <path d="M17 8V4h1.5c.8 0 1.5-.7 1.5-1.5S19.3 1 18.5 1h-13C4.7 1 4 1.7 4 2.5S4.7 4 5.5 4H7v4c0 3-2.2 5-5 5v2h8v7l1 1 1-1v-7h8v-2c-2.8 0-5-2-5-5z" fill="#9E9E9E"/>
               </svg>
             </button>:null}
+            {<button 
+              onClick={() => handleDeleteMessage(msg.id)}
+              className="hover:bg-neutral-100 rounded-full p-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 30 30" fill='none'>
+                  <path d="M 14.984375 2.4863281 A 1.0001 1.0001 0 0 0 14 3.5 L 14 4 L 8.5 4 A 1.0001 1.0001 0 0 0 7.4863281 5 L 6 5 A 1.0001 1.0001 0 1 0 6 7 L 24 7 A 1.0001 1.0001 0 1 0 24 5 L 22.513672 5 A 1.0001 1.0001 0 0 0 21.5 4 L 16 4 L 16 3.5 A 1.0001 1.0001 0 0 0 14.984375 2.4863281 z M 6 9 L 7.7929688 24.234375 C 7.9109687 25.241375 8.7633438 26 9.7773438 26 L 20.222656 26 C 21.236656 26 22.088031 25.241375 22.207031 24.234375 L 24 9 L 6 9 z"></path>
+              </svg>
+            </button>}
             <button 
               onClick={() => handleReply(msg)}
               className="hover:bg-neutral-100 rounded-full p-1"
