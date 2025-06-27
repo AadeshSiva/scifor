@@ -1,4 +1,4 @@
-# mlm-app: Ultra-Detailed Codebase Documentation
+# Codebase Documentation
 
 ---
 
@@ -216,9 +216,3 @@ mlm-app/
 - [React](https://react.dev/)
 
 ---
-
-## Final Notes
-
-This codebase is designed for rapid iteration and collaborative editing, leveraging Lovable’s cloud features and modern frontend tooling. Every component, style, and configuration is structured for clarity, scalability, and seamless user experience.
-
-If you need a mapping of any *specific* file or want detailed walkthroughs of particular flows, forms, or UI logic, just ask!
