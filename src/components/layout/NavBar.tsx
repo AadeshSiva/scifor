@@ -83,7 +83,7 @@ const NavBar: React.FC = () => {
                     />
                     <nav className="flex gap-20 max-md:gap-10 max-sm:hidden">
                         <a onClick={() => { navigate("/coi") }} className={getNavLinkClasses("/coi")}>COI</a>
-                        <a className="text-black text-xl font-linear font-light cursor-pointer hover:text-gray-600 transition-colors">WINNING</a>
+                        <a onClick={() => { navigate("/landing") }} className={getNavLinkClasses("/landing")}>WINNING</a>
                         <a className="text-black text-xl font-linear font-light cursor-pointer hover:text-gray-600 transition-colors">FREE</a>
                         <a onClick={() => { navigate("/join") }} className={getNavLinkClasses("/join")}>JOIN</a>
                         <a onClick={() => { navigate("/chat") }} className={getNavLinkClasses("/chat")}>LIVE</a>

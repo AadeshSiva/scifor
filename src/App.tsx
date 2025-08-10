@@ -32,12 +32,12 @@ const App = () => (
         <BrowserRouter>
           <NavBar />
           <Routes>
-            <Route path="/landing" index element={<Landing />} />
+            <Route path="/landing" element={<HomePage />} />
             <Route path="/otpverify" element={<ProtectedRoute><OTPVerification /></ProtectedRoute>} />
             <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
             <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
             <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-            <Route path="/" element={<ProtectedRoute requireAuth={false}><HomePage /></ProtectedRoute>} />
+            <Route path="/" element={<ProtectedRoute requireAuth={false}><Landing /></ProtectedRoute>} />
             <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI /></ProtectedRoute>} />
             <Route path="/join" element={<ProtectedRoute requireAuth={false}><JoinPage /></ProtectedRoute>} />
             <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index /></ProtectedRoute>} />
