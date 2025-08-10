@@ -32,7 +32,7 @@ const App = () => (
         <BrowserRouter>
           <NavBar />
           <Routes>
-            <Route path="/landing" element={<Landing />} />
+            <Route path="/landing" index element={<Landing />} />
             <Route path="/otpverify" element={<ProtectedRoute><OTPVerification /></ProtectedRoute>} />
             <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
             <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
