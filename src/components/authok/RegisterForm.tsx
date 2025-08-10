@@ -563,11 +563,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       const verifyData: OtpResponse = await makeApiCall('/verify_email_otp/', {
         email: formData.email,
         otp: otpCode
-      });
+      }); 
       
       if (verifyData.status === 'success') {
         console.log('Registration and email verification successful!');
-        navigate('/');
+        navigate('/successfullyregistered');
       } else {
         setErrors({ otp: verifyData.message });
       }

@@ -18,6 +18,7 @@ import PaymentSuccess from "./pages/PymentSuccess";
 import Index from "./components/join/meeting";
 import ArticlePage from "./pages/ArticlePage";
 import PaymentCancelled from "./pages/PaymentCancelled";
+import ConfirmationGuest from "./pages/confirmationGuestPage";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +42,8 @@ const App = () => (
           <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage/></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><Payment/></ProtectedRoute>} />
           <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess/></ProtectedRoute>} />
-          <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled/></ProtectedRoute>} />
+          <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled /></ProtectedRoute>} />
+            <Route path="/successfullyregistered" element={<ConfirmationGuest  />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
