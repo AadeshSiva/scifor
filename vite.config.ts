@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
-  base: './', // 👈 IMPORTANT for relative paths when deploying
+  base: '/', // 👈 IMPORTANT for relative paths when deploying
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
