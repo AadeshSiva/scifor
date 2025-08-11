@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AuthForm } from '@/components/authok/AuthForm';
 
 
-const PAYMENT_PAGE = '/payment'; 
+const PAYMENT_PAGE = '/payment';
 
 const getAccessToken = () =>
   sessionStorage.getItem('access_token') || localStorage.getItem('access_token');
@@ -57,7 +57,7 @@ const Pricing_Plan: React.FC = () => {
         if (selectedPlan === 'guest') {
           window.location.href = '/confirmation-guest';
         } else if (selectedPlan === 'member') {
-           window.location.href = '/payment';
+          window.location.href = '/payment';
         }
         return;
       }
@@ -283,13 +283,13 @@ const Pricing_Plan: React.FC = () => {
       {/* Video and Message */}
       <div className="lg:flex md:flex mt-14 lg:mx-32 md:mx-40 mx-4">
         <video
-          className="h-[300px] w-[500px] rounded-lg shadow-lg"
-          src="/videos/demo.mp4"
+          className="md:h-[300px] h-[250px] w-[500px] rounded-lg shadow-2xl"
+          src="/assets/HeroVideo.mp4"
           autoPlay
-          muted
           loop
           playsInline
         ></video>
+
 
         <div className="pl-7 pt-4 lg:pt-0 md:pt-0 space-y-4 text-gray-700 text-lg leading-relaxed font-walbaum">
           <p>“Most entrepreneurs fail not because their business wasn’t profitable enough. </p>
@@ -310,7 +310,7 @@ const Pricing_Plan: React.FC = () => {
           <h1 className="text-center text-3xl font-light pt-4">LIVE</h1>
 
           <div className="h-[400px] lg:w-[240px] md:w-[240px] border-2 border-black mx-5 mt-4">
-            {/* To be  Fill */}
+            <img className="h-[396px] w-[320px]" src="/assets/jeff-webinar.jpg" alt="Jeff Webinar" />
           </div>
 
           <p className="px-4 font-sans pt-4">
@@ -513,9 +513,8 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
-                activeItem === item ? 'bg-yellow-300 font-semibold' : ''
-              }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? 'bg-yellow-300 font-semibold' : ''
+                }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
