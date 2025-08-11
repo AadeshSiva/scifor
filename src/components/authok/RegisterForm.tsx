@@ -21,7 +21,6 @@ interface FormErrors {
   confirmPassword?: string;
   phone_number?: string;
   website_name?: string;
-  linkedin?: string;
   general?: string;
   otp?: string;
 }
@@ -33,7 +32,6 @@ interface FieldTouched {
   confirmPassword: boolean;
   phone_number: boolean;
   website_name: boolean;
-  linkedin: boolean;
 }
 
 interface CheckEmailResponse {
@@ -56,20 +54,21 @@ interface OtpResponse {
 }
 
 interface RegisterFormProps {
-    onSwitchToLogin: () => void;
+  onSwitchToLogin: () => void;
 }
 
-export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
-  const [hasLinkedIn, setHasLinkedIn] = useState<boolean | null>(null);
+export function RegisterForm({
+  onSwitchToLogin,
+}: RegisterFormProps): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone_number: '',
-    website_name: ''
+    full_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone_number: "",
+    website_name: "",
   });
-  
+
   // Track which fields have been touched/interacted with
   const [fieldTouched, setFieldTouched] = useState<FieldTouched>({
     full_name: false,
@@ -78,130 +77,32 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     confirmPassword: false,
     phone_number: false,
     website_name: false,
-    linkedin: false
   });
-  
+
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
-  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState<number>(300); // 5 minutes in seconds
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [linkedinToken, setLinkedinToken] = useState<string>('');
-  const [linkedinVerified, setLinkedinVerified] = useState<boolean>(false);
-  const [linkedinLoading, setLinkedinLoading] = useState<boolean>(false);
-  const [linkedinData, setLinkedinData] = useState<any>(null);
 
-  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
+  const API_BASE_URL = "https://intern-project-final-1.onrender.com";
 
   // Restore form data from sessionStorage on component mount
   useEffect(() => {
-    const savedFormData = sessionStorage.getItem('registrationFormData');
-    const savedHasLinkedIn = sessionStorage.getItem('hasLinkedIn');
-    
+    const savedFormData = sessionStorage.getItem("registrationFormData");
+
     if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData);
         setFormData(parsedData);
-        sessionStorage.removeItem('registrationFormData');
+        sessionStorage.removeItem("registrationFormData");
       } catch (error) {
-        console.error('Error parsing saved form data:', error);
-      }
-    }
-    
-    if (savedHasLinkedIn) {
-      try {
-        const parsedHasLinkedIn = JSON.parse(savedHasLinkedIn);
-        setHasLinkedIn(parsedHasLinkedIn);
-        sessionStorage.removeItem('hasLinkedIn');
-      } catch (error) {
-        console.error('Error parsing saved LinkedIn choice:', error);
+        console.error("Error parsing saved form data:", error);
       }
     }
   }, []);
-
-  const handleLinkedInAuth = async () => {
-    if (hasLinkedIn === true && !linkedinVerified) {
-      try {
-        setLinkedinLoading(true);
-        setErrors(prev => ({ ...prev, linkedin: undefined }));
-        const currentUrl = window.location.origin + window.location.pathname;
-        const state = Math.random().toString(36).substring(2, 15);
-        const linkedinAuthUrl = `${API_BASE_URL}/auth/linkedin/?redirect_url=${encodeURIComponent(currentUrl)}&state=${state}`;
-        sessionStorage.setItem('registrationFormData', JSON.stringify(formData));
-        sessionStorage.setItem('hasLinkedIn', JSON.stringify(hasLinkedIn));
-        sessionStorage.setItem('linkedin_state', state);
-        await new Promise(resolve => setTimeout(resolve, 100));
-        window.location.href = linkedinAuthUrl;
-      } catch (error) {
-        console.error('LinkedIn auth error:', error);
-        setErrors({ 
-          linkedin: `LinkedIn authentication failed. Please try again or choose "No" to continue without LinkedIn.` 
-        });
-        setLinkedinLoading(false);
-      }
-    }
-  };
-
-  // Enhanced URL parameter handling
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const linkedinToken = urlParams.get('linkedin_token');
-    const linkedinError = urlParams.get('linkedin_error');
-    
-    if (linkedinToken) {
-      console.log('LinkedIn token received:', linkedinToken);
-      verifyLinkedInToken(linkedinToken);
-      
-      // Clear URL parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    if (linkedinError) {
-      console.error('LinkedIn error:', linkedinError);
-      setErrors({ linkedin: `LinkedIn verification failed: ${decodeURIComponent(linkedinError)}` });
-      setLinkedinLoading(false);
-      // Clear URL parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-
-  const verifyLinkedInToken = async (token: string) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/linkedin/verify/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ linkedin_token: token })
-      });
-
-      const data = await response.json();
-      
-      if (response.ok && data.status === 'success') {
-        setLinkedinToken(token);
-        setLinkedinVerified(true);
-        setLinkedinData(data.data);
-        setLinkedinLoading(false);
-        setErrors(prev => ({ ...prev, linkedin: undefined }));
-        
-        // Optionally pre-fill form with LinkedIn data
-        if (data.data.full_name && !formData.full_name) {
-          setFormData(prev => ({
-            ...prev,
-            full_name: data.data.full_name
-          }));
-        }
-      } else {
-        throw new Error(data.message || 'LinkedIn verification failed');
-      }
-    } catch (error) {
-      console.error('LinkedIn token verification error:', error);
-      setErrors({ linkedin: error instanceof Error ? error.message : 'LinkedIn verification failed' });
-      setLinkedinLoading(false);
-    }
-  };
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -211,7 +112,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     let countdown: NodeJS.Timeout;
     if (showOtpModal && timer > 0) {
       countdown = setInterval(() => {
-        setTimer(prevTimer => {
+        setTimer((prevTimer) => {
           if (prevTimer <= 1) {
             clearInterval(countdown);
             return 0;
@@ -229,59 +130,66 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const isValidWebsiteUrl = (url: string): boolean => {
     try {
       // Add protocol if missing
-      const urlToTest = url.startsWith('http://') || url.startsWith('https://') 
-        ? url 
-        : `https://${url}`;
-      
+      const urlToTest =
+        url.startsWith("http://") || url.startsWith("https://")
+          ? url
+          : `https://${url}`;
+
       const urlObj = new URL(urlToTest);
-      
+
       // Check if hostname ends with .com
-      return urlObj.hostname.toLowerCase().endsWith('.com');
+      return urlObj.hostname.toLowerCase().endsWith(".com");
     } catch {
       return false;
     }
   };
 
   // Validate individual field
-  const validateField = (name: keyof FormData, value: string): string | undefined => {
+  const validateField = (
+    name: keyof FormData,
+    value: string
+  ): string | undefined => {
     switch (name) {
-      case 'full_name':
-        return !value.trim() ? 'Full name is required' : undefined;
-      
-      case 'email':
-        if (!value.trim()) return 'Email is required';
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Please enter a valid email address';
+      case "full_name":
+        return !value.trim() ? "Full name is required" : undefined;
+
+      case "email":
+        if (!value.trim()) return "Email is required";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Please enter a valid email address";
         return undefined;
-      
-      case 'password':
-        if (!value) return 'Password is required';
-        if (value.length < 6) return 'Password must be at least 6 characters';
+
+      case "password":
+        if (!value) return "Password is required";
+        if (value.length < 6) return "Password must be at least 6 characters";
         if (!/(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)) {
-          return 'Password must contain at least 1 letter, 1 number, and 1 special character';
+          return "Password must contain at least 1 letter, 1 number, and 1 special character";
         }
         return undefined;
-      
-        case 'confirmPassword':
-          if (!value) return 'Please confirm your password';
-          if (formData.password !== value) return 'Passwords do not match';
-          return undefined;
-      
-      case 'phone_number':
-        return !value ? 'Phone number is required' : undefined;
-      
-      case 'website_name':
-        if (!value.trim()) return 'Company website is required';
+
+      case "confirmPassword":
+        if (!value) return "Please confirm your password";
+        if (formData.password !== value) return "Passwords do not match";
+        return undefined;
+
+      case "phone_number":
+        return !value ? "Phone number is required" : undefined;
+
+      case "website_name":
+        if (!value.trim()) return "Company website is required";
         if (!isValidWebsiteUrl(value.trim())) {
-          return 'Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)';
+          return "Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)";
         }
         return undefined;
-      
+
       default:
         return undefined;
     }
@@ -290,37 +198,44 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   // Handle field blur (when user leaves the field)
   const handleFieldBlur = (fieldName: keyof FormData): void => {
     // Mark field as touched
-    setFieldTouched(prev => ({
+    setFieldTouched((prev) => ({
       ...prev,
-      [fieldName]: true
+      [fieldName]: true,
     }));
-  
+
     // Get the current field value
     const fieldValue = formData[fieldName];
-    
+
     // For password confirmation, we need special handling
     let error;
-    if (fieldName === 'confirmPassword') {
+    if (fieldName === "confirmPassword") {
       if (!fieldValue) {
-        error = 'Please confirm your password';
+        error = "Please confirm your password";
       } else if (formData.password !== fieldValue) {
-        error = 'Passwords do not match';
+        error = "Passwords do not match";
       }
     } else {
       error = validateField(fieldName, fieldValue);
     }
-    
-    setErrors(prev => ({
+
+    setErrors((prev) => ({
       ...prev,
-      [fieldName]: error
+      [fieldName]: error,
     }));
-  
+
     // When password field is blurred, also validate confirm password if it's been touched
-    if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
-      const confirmPasswordError = formData.password !== formData.confirmPassword ? 'Passwords do not match' : undefined;
-      setErrors(prev => ({
+    if (
+      fieldName === "password" &&
+      fieldTouched.confirmPassword &&
+      formData.confirmPassword
+    ) {
+      const confirmPasswordError =
+        formData.password !== formData.confirmPassword
+          ? "Passwords do not match"
+          : undefined;
+      setErrors((prev) => ({
         ...prev,
-        confirmPassword: confirmPasswordError
+        confirmPassword: confirmPasswordError,
       }));
     }
   };
@@ -328,34 +243,42 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     const fieldName = name as keyof FormData;
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     // Clear error when user starts typing
     if (errors[fieldName]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        [name]: undefined,
       }));
     }
 
     // Handle password matching validation during typing
-    if (fieldName === 'password' && fieldTouched.confirmPassword && formData.confirmPassword) {
-      const confirmPasswordError = value !== formData.confirmPassword ? 'Passwords do not match' : undefined;
-      setErrors(prev => ({
+    if (
+      fieldName === "password" &&
+      fieldTouched.confirmPassword &&
+      formData.confirmPassword
+    ) {
+      const confirmPasswordError =
+        value !== formData.confirmPassword
+          ? "Passwords do not match"
+          : undefined;
+      setErrors((prev) => ({
         ...prev,
-        confirmPassword: confirmPasswordError
+        confirmPassword: confirmPasswordError,
       }));
     }
 
-    if (fieldName === 'confirmPassword' && fieldTouched.confirmPassword) {
-      const confirmPasswordError = formData.password !== value ? 'Passwords do not match' : undefined;
-      setErrors(prev => ({
+    if (fieldName === "confirmPassword" && fieldTouched.confirmPassword) {
+      const confirmPasswordError =
+        formData.password !== value ? "Passwords do not match" : undefined;
+      setErrors((prev) => ({
         ...prev,
-        confirmPassword: confirmPasswordError
+        confirmPassword: confirmPasswordError,
       }));
     }
   };
@@ -365,85 +288,87 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      
+
       // Auto-focus next input
-      if (value !== '' && index < 5) {
+      if (value !== "" && index < 5) {
         inputRefs.current[index + 1]?.focus();
       }
 
       // Clear OTP error when user starts typing
       if (errors.otp) {
-        setErrors(prev => ({ ...prev, otp: undefined }));
+        setErrors((prev) => ({ ...prev, otp: undefined }));
       }
     }
   };
 
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleOtpKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
     // If backspace is pressed and current field is empty, focus previous field
-    if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
+    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const validateForm = (): FormErrors => {
     const newErrors: FormErrors = {};
-    
+
     // Validate all fields
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       const fieldName = key as keyof FormData;
       const error = validateField(fieldName, formData[fieldName]);
       if (error) {
         newErrors[fieldName] = error;
       }
     });
-    
-    // Validate LinkedIn choice
-    if (hasLinkedIn === null) {
-      newErrors.linkedin = 'Please specify if you have a LinkedIn account';
-    }
-    
+
     return newErrors;
   };
 
   const getCsrfToken = (): string => {
-    const cookies = document.cookie.split(';');
+    const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'csrftoken') {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "csrftoken") {
         return value;
       }
     }
-    return '';
+    return "";
   };
 
   // Enhanced API call with better error handling
   const makeApiCall = async (endpoint: string, payload: any): Promise<any> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken(),
         },
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(
+          errorData.message || `HTTP ${response.status}: ${response.statusText}`
+        );
       }
-      
+
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('Request timed out. Please check your connection and try again.');
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error(
+          "Request timed out. Please check your connection and try again."
+        );
       }
       throw error;
     }
@@ -451,7 +376,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    
+
     // Mark all fields as touched
     setFieldTouched({
       full_name: true,
@@ -460,36 +385,32 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       confirmPassword: true,
       phone_number: true,
       website_name: true,
-      linkedin: true
     });
-    
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    
-    // Check if LinkedIn authentication is required but not completed
-    if (hasLinkedIn === true && !linkedinVerified) {
-      await handleLinkedInAuth();
-      return;
-    }
-    
+
     setLoading(true);
     setErrors({});
-    
+
     try {
       // First check if email already exists
-      const checkData: CheckEmailResponse = await makeApiCall('/check_email_status/', {
-        email: formData.email
-      });
-      
+      const checkData: CheckEmailResponse = await makeApiCall(
+        "/check_email_status/",
+        {
+          email: formData.email,
+        }
+      );
+
       if (checkData.user_exists) {
         setErrors({ email: checkData.message });
         setLoading(false);
         return;
       }
-      
+
       // Proceed with registration
       const registerPayload = {
         email: formData.email,
@@ -497,30 +418,40 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         full_name: formData.full_name,
         phone_number: formData.phone_number,
         website_name: formData.website_name,
-        no_linkedin: hasLinkedIn === false,
-        linkedin_token: linkedinToken || null
+        no_linkedin: true,
       };
-      
-      console.log('Sending registration payload:', { ...registerPayload, password: '[REDACTED]' });
-      
-      const registerData: RegisterResponse = await makeApiCall('/register/', registerPayload);
-      
-      if (registerData.status === 'success') {
+
+      console.log("Sending registration payload:", {
+        ...registerPayload,
+        password: "[REDACTED]",
+      });
+
+      const registerData: RegisterResponse = await makeApiCall(
+        "/register/",
+        registerPayload
+      );
+
+      if (registerData.status === "success") {
         // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
-          console.log('Registration successful with tokens:', registerData.message);
+          console.log(
+            "Registration successful with tokens:",
+            registerData.message
+          );
         }
-        
+
         // Send OTP for email verification
         await sendOtp();
       } else {
         setErrors({ general: registerData.message });
       }
-      
     } catch (error) {
-      console.error('Registration error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Network error. Please try again.';
+      console.error("Registration error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Network error. Please try again.";
       setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
@@ -529,52 +460,59 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
 
   const sendOtp = async (): Promise<void> => {
     try {
-      const otpData: OtpResponse = await makeApiCall('/send_email_otp/', {
-        email: formData.email
+      const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
+        email: formData.email,
       });
-      
-      if (otpData.status === 'success') {
+
+      if (otpData.status === "success") {
         setShowOtpModal(true);
         setTimer(300); // Reset timer to 5 minutes
-        setOtp(['', '', '', '', '', '']); // Reset OTP fields
+        setOtp(["", "", "", "", "", ""]); // Reset OTP fields
       } else {
         setErrors({ general: otpData.message });
       }
     } catch (error) {
-      console.error('OTP send error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to send OTP. Please try again.';
+      console.error("OTP send error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to send OTP. Please try again.";
       setErrors({ general: errorMessage });
     }
   };
 
-  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleOtpSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    
-    const otpCode = otp.join('');
+
+    const otpCode = otp.join("");
     if (!otpCode || otpCode.length !== 6) {
-      setErrors({ otp: 'Please enter the complete 6-digit OTP' });
+      setErrors({ otp: "Please enter the complete 6-digit OTP" });
       return;
     }
-    
+
     setOtpLoading(true);
     setErrors({});
-    
+
     try {
-      const verifyData: OtpResponse = await makeApiCall('/verify_email_otp/', {
+      const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
         email: formData.email,
-        otp: otpCode
-      }); 
-      
-      if (verifyData.status === 'success') {
-        console.log('Registration and email verification successful!');
-        navigate('/successfullyregistered');
+        otp: otpCode,
+      });
+
+      if (verifyData.status === "success") {
+        console.log("Registration and email verification successful!");
+        navigate("/successfullyregistered");
       } else {
         setErrors({ otp: verifyData.message });
       }
-      
     } catch (error) {
-      console.error('OTP verification error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to verify OTP. Please try again.';
+      console.error("OTP verification error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to verify OTP. Please try again.";
       setErrors({ otp: errorMessage });
     } finally {
       setOtpLoading(false);
@@ -585,9 +523,9 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     setOtpLoading(true);
     try {
       await sendOtp();
-      console.log('OTP resent successfully!');
+      console.log("OTP resent successfully!");
     } catch (error) {
-      setErrors({ otp: 'Failed to resend OTP' });
+      setErrors({ otp: "Failed to resend OTP" });
     } finally {
       setOtpLoading(false);
     }
@@ -598,62 +536,35 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   };
 
   const handlePhoneChange = (value: string): void => {
-    setFormData(prev => ({ ...prev, phone_number: value }));
-    
+    setFormData((prev) => ({ ...prev, phone_number: value }));
+
     // Clear phone number error when user starts typing
     if (errors.phone_number) {
-      setErrors(prev => ({ ...prev, phone_number: undefined }));
+      setErrors((prev) => ({ ...prev, phone_number: undefined }));
     }
   };
 
   const handlePhoneBlur = (): void => {
-    setFieldTouched(prev => ({ ...prev, phone_number: true }));
-    
-    const error = validateField('phone_number', formData.phone_number);
-    setErrors(prev => ({
-      ...prev,
-      phone_number: error
-    }));
-  };
+    setFieldTouched((prev) => ({ ...prev, phone_number: true }));
 
-  const handleLinkedInChoice = (choice: boolean): void => {
-    setHasLinkedIn(choice);
-    setFieldTouched(prev => ({ ...prev, linkedin: true }));
-    
-    // Reset LinkedIn verification state when choice changes
-    if (choice !== hasLinkedIn) {
-      setLinkedinVerified(false);
-      setLinkedinToken('');
-      setLinkedinData(null);
-    }
-    
-    if (errors.linkedin) {
-      setErrors(prev => ({ ...prev, linkedin: undefined }));
-    }
+    const error = validateField("phone_number", formData.phone_number);
+    setErrors((prev) => ({
+      ...prev,
+      phone_number: error,
+    }));
   };
 
   // Restore form data from sessionStorage on component mount
   useEffect(() => {
-    const savedFormData = sessionStorage.getItem('registrationFormData');
-    const savedHasLinkedIn = sessionStorage.getItem('hasLinkedIn');
-    
+    const savedFormData = sessionStorage.getItem("registrationFormData");
+
     if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData);
         setFormData(parsedData);
-        sessionStorage.removeItem('registrationFormData');
+        sessionStorage.removeItem("registrationFormData");
       } catch (error) {
-        console.error('Error parsing saved form data:', error);
-      }
-    }
-    
-    if (savedHasLinkedIn) {
-      try {
-        const parsedHasLinkedIn = JSON.parse(savedHasLinkedIn);
-        setHasLinkedIn(parsedHasLinkedIn);
-        sessionStorage.removeItem('hasLinkedIn');
-      } catch (error) {
-        console.error('Error parsing saved LinkedIn choice:', error);
+        console.error("Error parsing saved form data:", error);
       }
     }
   }, []);
@@ -665,7 +576,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           {errors.general}
         </div>
       )}
-      
+
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Full Name</span>
@@ -676,11 +587,13 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           name="full_name"
           placeholder="Enter your full name"
           className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.full_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+            errors.full_name
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-400 focus:border-black"
           }`}
           value={formData.full_name}
           onChange={handleInputChange}
-          onBlur={() => handleFieldBlur('full_name')}
+          onBlur={() => handleFieldBlur("full_name")}
           disabled={loading}
           required
         />
@@ -688,7 +601,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.full_name}</span>
         )}
       </div>
-      
+
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Company Email ID</span>
@@ -699,11 +612,13 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           name="email"
           placeholder="Enter your company email ID"
           className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+            errors.email
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-400 focus:border-black"
           }`}
           value={formData.email}
           onChange={handleInputChange}
-          onBlur={() => handleFieldBlur('email')}
+          onBlur={() => handleFieldBlur("email")}
           disabled={loading}
           required
         />
@@ -711,50 +626,59 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.email}</span>
         )}
       </div>
-      
+
       <div className="flex gap-5 max-sm:flex-col max-sm:gap-4">
         <div className="flex-1">
-          <PasswordInput 
-            label="Password" 
-            required 
+          <PasswordInput
+            label="Password"
+            required
             placeholder="Enter password"
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            onBlur={() => handleFieldBlur('password')}
-            error={fieldTouched.password && errors.password ? errors.password : undefined}
+            onBlur={() => handleFieldBlur("password")}
+            error={
+              fieldTouched.password && errors.password
+                ? errors.password
+                : undefined
+            }
             disabled={loading}
           />
         </div>
         <div className="flex-1">
-          <PasswordInput 
-            label="Confirm Password" 
-            required 
+          <PasswordInput
+            label="Confirm Password"
+            required
             placeholder="Re - enter password"
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            onBlur={() => handleFieldBlur('confirmPassword')}
-            error={fieldTouched.confirmPassword && errors.confirmPassword ? errors.confirmPassword : undefined}
+            onBlur={() => handleFieldBlur("confirmPassword")}
+            error={
+              fieldTouched.confirmPassword && errors.confirmPassword
+                ? errors.confirmPassword
+                : undefined
+            }
             disabled={loading}
           />
         </div>
       </div>
-      
+
       <div className="text-xs text-gray-500 italic -mt-3">
-        Minimum 6 characters | At least 1 special character | At least 1 letter and 1 number
+        Minimum 6 characters | At least 1 special character | At least 1 letter
+        and 1 number
       </div>
-      
+
       <div className="flex flex-col gap-3">
-        <PhoneInput 
-          value={formData.phone_number} 
+        <PhoneInput
+          value={formData.phone_number}
           onChange={handlePhoneChange}
           onBlur={handlePhoneBlur}
           error={fieldTouched.phone_number ? errors.phone_number : undefined}
           disabled={loading}
         />
       </div>
-      
+
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Company Website</span>
@@ -765,11 +689,13 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           name="website_name"
           placeholder="Enter your Company website URL (e.g., example.com)"
           className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.website_name ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+            errors.website_name
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-400 focus:border-black"
           }`}
           value={formData.website_name}
           onChange={handleInputChange}
-          onBlur={() => handleFieldBlur('website_name')}
+          onBlur={() => handleFieldBlur("website_name")}
           disabled={loading}
           required
         />
@@ -777,84 +703,45 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.website_name}</span>
         )}
       </div>
-      
-      <div className="flex flex-col gap-3">
-        <div className="text-base text-black flex items-center gap-1">
-          <span>Do you have a LinkedIn account</span>
-          <span className="text-black ml-1">*</span>
-        </div>
-        <div className="flex gap-2.5">
-          <button 
-            type="button"
-            className={`w-14 h-7 border text-xs cursor-pointer shadow-sm transition-colors ${hasLinkedIn === true ? 'bg-black text-white' : 'bg-white hover:bg-gray-50'} rounded border-solid border-black disabled:opacity-50 disabled:cursor-not-allowed`}
-            onClick={() => handleLinkedInChoice(true)}
-            disabled={loading || linkedinLoading}
-          >
-            Yes
-          </button>
-          <button 
-            type="button"
-            className={`w-14 h-7 border text-xs cursor-pointer shadow-sm transition-colors ${hasLinkedIn === false ? 'bg-black text-white' : 'bg-white hover:bg-gray-50'} rounded border-solid border-black disabled:opacity-50 disabled:cursor-not-allowed`}
-            onClick={() => handleLinkedInChoice(false)}
-            disabled={loading || linkedinLoading}
-          >
-            No
-          </button>
-        </div>
-        
-        {/* LinkedIn verification status */}
-        {hasLinkedIn === true && (
-          <div className="flex items-center gap-2 text-sm">
-            {linkedinVerified ? (
-              <span className="text-green-600 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                LinkedIn verified
-              </span>
-            ) : (
-              <span className="text-gray-600">
-                LinkedIn verification will be required before registration
-              </span>
-            )}
-          </div>
-        )}
-        
-        {errors.linkedin && fieldTouched.linkedin && (
-          <span className="text-red-500 text-sm">{errors.linkedin}</span>
-        )}
-      </div>
-      
-      <button 
+
+      <button
         type="button"
         onClick={handleSubmit}
         className="w-full text-white text-base cursor-pointer bg-black mt-4 p-4 rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-        disabled={loading || linkedinLoading}
+        disabled={loading}
       >
         {loading ? (
           <>
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             Registering...
           </>
-        ) : linkedinLoading ? (
-          <>
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Connecting to LinkedIn...
-          </>
         ) : (
-          'Register'
+          "Register"
         )}
       </button>
-      
+
       <div className="text-center text-lg italic text-gray-500 mt-6">
         <span>Already have an account? </span>
-        <span 
+        <span
           className="text-black cursor-pointer hover:underline"
           onClick={handleLoginClick}
         >
@@ -866,28 +753,32 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-            <h2 className="text-center text-3xl font-bold mb-6">OTP Verification</h2>
-            
+            <h2 className="text-center text-3xl font-bold mb-6">
+              OTP Verification
+            </h2>
+
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
             </p>
-            
+
             <p className="text-center mb-8 text-gray-600">
               Please check your inbox (and spam/junk folder just in case)
-              <br />and enter the code below to continue.</p>
-            
+              <br />
+              and enter the code below to continue.
+            </p>
+
             {errors.otp && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
                 {errors.otp}
               </div>
             )}
-            
+
             <form onSubmit={handleOtpSubmit}>
               <div className="flex justify-center gap-2 mb-6">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
-                    ref={el => inputRefs.current[index] = el}
+                    ref={(el) => (inputRefs.current[index] = el)}
                     type="text"
                     maxLength={1}
                     value={digit}
@@ -898,14 +789,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
                   />
                 ))}
               </div>
-              
+
               <div className="text-center mb-6">
                 <span className="text-gray-600">Time remaining: </span>
-                <span className={`font-semibold ${timer <= 60 ? 'text-red-500' : 'text-black'}`}>
+                <span
+                  className={`font-semibold ${
+                    timer <= 60 ? "text-red-500" : "text-black"
+                  }`}
+                >
                   {formatTime(timer)}
                 </span>
               </div>
-              
+
               <button
                 type="submit"
                 className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
@@ -913,17 +808,33 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
               >
                 {otpLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Verifying...
                   </>
                 ) : (
-                  'Verify OTP'
+                  "Verify OTP"
                 )}
               </button>
-              
+
               <div className="text-center mt-4">
                 {timer === 0 ? (
                   <button
