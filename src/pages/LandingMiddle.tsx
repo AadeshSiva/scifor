@@ -1,151 +1,200 @@
+import PyramidDiagram from "../../public/assets/pyramid-diagram.png";
+import { Check, X } from "lucide-react";
 import React from "react";
 
-interface OfferingItem {
-  number: string;
-  title: string;
-  description: string;
-  leftCircleColor: string;
-  stats: {
-    top: string;
-    bottom: string;
-  };
-}
+type DropdownProps = {
+  id: number;
+};
 
-const LandingConfident: React.FC = () => {
-  // Data for the offerings
-  const offerings: OfferingItem[] = [
-    {
-      number: "1",
-      title: "CONFIDANTE",
-      description: "Your FREE, Private and Personal GPT\nfor Closing the Exit Gap",
-      leftCircleColor: "#FDFAF5",
-      stats: { top: "68%", bottom: "25–40%" }
-    },
-  ];
-
-  // Fill array with 12 items
-  const allOfferings = Array(12).fill(offerings[0]).map((item, index) => ({
-    ...item,
-    number: (index + 1).toString()
-  }));
-
-  const handleLearnMoreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+const Dropdown: React.FC<DropdownProps> = ({ id }) => {
+  const handleExpand = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const el = document.getElementById('offerings');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    const content = document.getElementById(`content-${e.currentTarget.id}`);
+    content?.classList.toggle("hidden");
   };
 
   return (
-    <div className="w-full overflow-x-hidden">
-      {/* Hero Section */}
-      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white text-center px-4 py-8 sm:py-12 md:py-16">
-        {/* Logo */}
-        <img
-          src="/assets/logo.jpg"
-          alt="PRSPERA Logo"
-          className="w-24 sm:w-32 md:w-40 mb-4 sm:mb-5 h-auto"
-        />
+    <div
+      id={`${id}`}
+      onClick={(e) => handleExpand(e)}
+      style={{ borderRadius: "100px" }}
+      className="mt-8 relative w-full max-w-3xl mx-auto border-[3px] border-[#DBA958] cursor-pointer"
+    >
+      <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 my-4 sm:my-6">
+        {/* Left circle */}
+        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#FDFAF5]" />
 
-        {/* Heading */}
-        <h1 className="w-full max-w-4xl mx-auto">
-          <span className="block font-walbaum text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[66px] text-[#0B0B0B] leading-tight font-light">
-            The One and Only System
+        {/* Center content */}
+        <div className="text-center px-2 sm:px-4 flex-1">
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-[#595959] tracking-wide font-linear">
+            <span className="font-normal mr-1">{id}.</span> CONFIDANTE
+          </h2>
+          <p className="text-[#404040] text-xs sm:text-sm md:text-base mt-1 font-linear font-thin">
+            Your FREE, Private and Personal GPT
+            <br />
+            for Closing the Exit Gap
+          </p>
+          <span className="text-[#DBA958] text-xs sm:text-sm mt-2 inline-block hover:underline font-linear">
+            Click to learn more
           </span>
-          <span className="block font-walbaum text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[60px] text-[#000000] font-normal mt-2 sm:mt-3 md:mt-4">
-            you need for building a business
-          </span>
-          <span className="block font-walbaum text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[60px] text-[#000000] font-normal mt-1 sm:mt-2">
-            with MARKETABLE VALUE.
-          </span>
-        </h1>
+        </div>
 
-        {/* Subtext */}
-        <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg lg:text-2xl xl:text-[32px] font-linear font-thin max-w-2xl mx-auto px-4">
-          Your Exit Isn't a Moment. It's a Strategy.
-          <br />
-          And PRSPERA is Your System.
-        </p>
+        {/* Right circle */}
+        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#F9F9F9] flex flex-col items-center justify-center text-gray-400 text-sm sm:text-base md:text-lg font-light relative overflow-hidden">
+          <div className="flex-1 flex items-center justify-center">
+            <span>68%</span>
+          </div>
+          <div className="w-full h-[6px] sm:h-[8px] bg-white" />
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-xs sm:text-sm md:text-base">25-40%</span>
+          </div>
+        </div>
 
-        {/* Learn more link */}
-        <a
-          href="#offerings"
-          className="mt-4 sm:mt-6 text-[#DBA958] font-semibold hover:underline font-linear text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] transition-all duration-300 hover:scale-105 inline-block"
-          onClick={handleLearnMoreClick}
-        >
-          Click offerings to learn more
-        </a>
+        {/* Bottom arrow */}
+        <div className="absolute -bottom-3 sm:-bottom-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] sm:border-l-[12px] border-r-[10px] sm:border-r-[12px] border-t-[14px] sm:border-t-[16px] border-l-transparent border-r-transparent border-t-[#DBA958]" />
       </div>
 
-      {/* Offerings Section */}
-      <div className="mt-8 sm:mt-12 md:mt-16 lg:mt-20 pb-8 sm:pb-12 md:pb-16 lg:pb-20 px-4 sm:px-6 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          {allOfferings.map((offering, index) => (
-            <OfferingCard key={index} offering={offering} />
-          ))}
+      <div
+        id={`content-${id}`}
+        className="bg-gradient-to-b from-gray-200 to-transparent w-full mt-8 sm:mt-10 px-4 sm:px-6 md:px-8 pb-8 sm:pb-12 hidden flex flex-col"
+      >
+        <img src={PyramidDiagram} alt="Pyramid Diagram" className="w-full max-w-md mx-auto" />
+
+        <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
+          This is your personal AI advisory layer — designed to learn your business, your tone, and
+          your needs over time - and no one else will ever know.
+        </p>
+
+        <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
+          It answers hard questions. It escalates when needed. It thinks with you. And unlike
+          ChatGPT… it's yours. No one else can ever see your thoughts.
+        </p>
+
+        <div className="flex flex-col sm:flex-row mt-6 sm:mt-8 text-base sm:text-lg gap-4 sm:gap-0">
+          <div className="w-full sm:w-1/2 bg-white p-4 sm:p-6 text-gray-600 font-thin">
+            <h1 className="text-black font-semibold">DO THIS</h1>
+
+            <div className="flex gap-2 mt-4">
+              <Check className="flex-shrink-0 mt-1" /> 
+              <span>It gets smarter the more you see it.</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Check className="flex-shrink-0 mt-1" /> 
+              <span>You stop wasting time looking for insight</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Check className="flex-shrink-0 mt-1" /> 
+              <span>It connects dots across your tools, data, and docs</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Check className="flex-shrink-0 mt-1" /> 
+              <span>If it can't help, we send a human who can</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Check className="flex-shrink-0 mt-1" /> 
+              <span>It's not a chatbot. It's a thought partner</span>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-1/2 bg-pink-100 p-4 sm:p-6 text-pink-600 font-thin">
+            <h1 className="text-pink-950 font-semibold">DON'T DO THIS</h1>
+            <div className="flex gap-2 mt-4">
+              <X className="flex-shrink-0 mt-1" /> 
+              <span>You'll keep bottlenecking decisions.</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <X className="flex-shrink-0 mt-1" /> 
+              <span>You'll overpay for slow advice</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <X className="flex-shrink-0 mt-1" /> 
+              <span>You'll miss chances to act quickly and win</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <X className="flex-shrink-0 mt-1" /> 
+              <span>You'll treat strategy like a task — not a muscle</span>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <X className="flex-shrink-0 mt-1" /> 
+              <span>You'll stay reactive when you could be radically proactive​</span>
+            </div>
+          </div>
         </div>
+
+        <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
+          Log into <span className="font-semibold">mivalua</span>™ - your personal AI strategy GPT
+          now. No consultants. No sales pitch. Just you and clarity — 24/7. Close your Exit Gap,
+          privately, personally for FREE.
+        </p>
+
+        <button className="mx-auto text-lg sm:text-xl bg-black text-[#DBA958] px-6 sm:px-8 py-3 sm:py-4 mt-10 sm:mt-14 font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-300">
+          Register For The Webinar
+        </button>
       </div>
     </div>
   );
 };
 
-interface OfferingCardProps {
-  offering: OfferingItem;
+function DropdownSection() {
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 mb-8">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white text-center px-4">
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+          alt="PRSPERA Logo"
+          className="w-32 sm:w-40 my-5"
+        />
+
+        <h1 className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#0B0B0B] leading-tight max-w-4xl font-light">
+          The One and Only System
+          <br />
+          <span className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#000000] font-normal">
+            you need for building a business
+          </span>
+          <br />
+          <span className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#000000] font-normal">
+            with MARKETABLE VALUE.
+          </span>
+        </h1>
+
+        <p className="mt-6 text-base sm:text-lg md:text-xl lg:text-2xl font-linear font-thin max-w-3xl">
+          Your Exit Isn't a Moment. It's a Strategy.
+          <br />
+          And PRSPERA is Your System.
+        </p>
+
+        <a
+          href="#offerings"
+          className="mt-4 text-[#DBA958] font-semibold hover:underline font-linear text-lg sm:text-xl md:text-2xl"
+        >
+          Click offerings to learn more
+        </a>
+      </div>
+
+      <div className="mt-12 sm:mt-20 space-y-4 sm:space-y-6">
+        <Dropdown id={1} />
+        <Dropdown id={2} />
+        <Dropdown id={3} />
+        <Dropdown id={4} />
+        <Dropdown id={5} />
+        <Dropdown id={6} />
+        <Dropdown id={7} />
+        <Dropdown id={8} />
+        <Dropdown id={9} />
+        <Dropdown id={10} />
+        <Dropdown id={11} />
+        <Dropdown id={12} />
+      </div>
+    </div>
+  );
 }
 
-const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
+const Index: React.FC = () => {
   return (
-    <a
-      href="#learn-more"
-      className="mt-4 sm:mt-6 md:mt-8 relative flex flex-col sm:flex-row items-center justify-between w-full max-w-5xl mx-auto p-4 sm:p-5 md:p-6 lg:px-8 lg:py-6 border-2 sm:border-[3px] border-[#DBA958] rounded-2xl sm:rounded-3xl md:rounded-full cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group"
-      style={{
-        WebkitTapHighlightColor: 'transparent',
-        touchAction: 'manipulation'
-      }}
-    >
-      {/* Left circle */}
-      <div 
-        className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mb-4 sm:mb-0"
-        style={{ 
-          backgroundColor: offering.leftCircleColor,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      />
-
-      {/* Center content */}
-      <div className="text-center sm:text-left md:text-center px-2 sm:px-3 md:px-4 flex-1 max-w-full sm:max-w-[60%] md:max-w-none">
-        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-[40px] font-light text-[#595959] tracking-wide font-linear break-words">
-          <span className="font-normal mr-1">{offering.number}.</span> 
-          <span className="inline-block">{offering.title}</span>
-        </h2>
-        <p className="text-[#404040] text-xs sm:text-sm md:text-base lg:text-lg xl:text-[20px] mt-1 sm:mt-2 font-linear font-thin whitespace-pre-line leading-relaxed">
-          {offering.description}
-        </p>
-        <span className="text-[#DBA958] text-xs sm:text-sm md:text-base lg:text-[18px] mt-2 inline-block hover:underline font-linear group-hover:scale-105 transition-transform duration-300">
-          Click to learn more
-        </span>
-      </div>
-
-      {/* Right circle with stats */}
-      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#F9F9F9] flex flex-col items-center justify-center text-gray-400 text-xs sm:text-sm md:text-base lg:text-lg font-light relative overflow-hidden mt-4 sm:mt-0"
-        style={{
-          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)'
-        }}
-      >
-        <div className="flex-1 flex items-center justify-center">
-          <span>{offering.stats.top}</span>
-        </div>
-        <div className="w-full h-1 sm:h-1.5 md:h-2 bg-white" />
-        <div className="flex-1 flex items-center justify-center">
-          <span>{offering.stats.bottom}</span>
-        </div>
-      </div>
-
-      {/* Bottom arrow - hidden on mobile */}
-      <div className="hidden sm:block absolute -bottom-3 md:-bottom-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[10px] sm:border-l-[12px] border-r-[10px] sm:border-r-[12px] border-t-[14px] sm:border-t-[16px] border-l-transparent border-r-transparent border-t-[#DBA958]" />
-    </a>
+    <div className="relative">
+      <DropdownSection />
+    </div>
   );
 };
 
-export default LandingConfident;
+export default Index;

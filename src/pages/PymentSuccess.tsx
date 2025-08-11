@@ -38,7 +38,7 @@ const PaymentSuccess = () => {
       console.error("Error confirming payment:", e);
       setUserType("member");
     } finally {
-      setTimeout(() => setIsUpdating(false), 1200);
+      setIsUpdating(false);
     }
   }, []);
 

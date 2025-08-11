@@ -91,51 +91,23 @@ const Pricing_Plan: React.FC = () => {
     openAuth('guest');
   };
 
-  const startMemberCheckout = async () => {
-    try {
-      setBusy(true);
-      const res = await fetch('https://intern-project-final-1.onrender.com/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...authHeaders(),
-        },
-        body: JSON.stringify({
-          plan: 'member',
-          success_url: `${window.location.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${window.location.origin}/pricing-plan?cancelled=1`,
-        }),
-      });
-      if (!res.ok) throw new Error('Unable to start checkout');
-      const data = await res.json();
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No checkout URL received');
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Could not start checkout. Please try again.');
-    } finally {
-      setBusy(false);
-    }
-  };
+ const handlePaidClick = async () => {
+  setBusy(true);
+  const status = await getUserStatus();
+  setBusy(false);
 
-  const handlePaidClick = async () => {
-    setBusy(true);
-    const status = await getUserStatus();
-    setBusy(false);
-
-    if (!status.authenticated) {
-      openAuth('member');
-      return;
-    }
-    if (status.isMember) {
-      window.location.href = '/confirmation-member';
-      return;
-    }
-    await startMemberCheckout();
-  };
+  if (!status.authenticated) {
+    openAuth('member');
+    return;
+  }
+  if (status.isMember) {
+    window.location.href = '/confirmation-member';
+    return;
+  }
+  
+  // For authenticated non-members, redirect directly to payment page
+  window.location.href = PAYMENT_PAGE;
+};
 
   const menuItems: string[] = [
     'CROSSCHECK',
