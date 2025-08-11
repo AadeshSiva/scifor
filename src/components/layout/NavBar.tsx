@@ -106,23 +106,23 @@ const NavBar: React.FC = () => {
             >
               COI
             </a>
-            <a
+            {/* <a
               onClick={() => {
                 navigate("/landing");
               }}
               className={getNavLinkClasses("/landing")}
             >
               WINNING
-            </a>
+            </a> */}
             <a
               onClick={() => {
                 navigate("/pricing-page");
               }}
-              className={getNavLinkClasses("/landing")}
+              className={getNavLinkClasses("/pricing-page")}
             >
-              Pricing Page
+              PRICING
             </a>
-            {/* <a className="text-black text-xl font-linear font-light cursor-pointer hover:text-gray-600 transition-colors">Free</a> */}
+            {/* <a className="text-black text-xl font-linear font-light cursor-pointer hover:text-gray-600 transition-colors">Free</a>
             <a
               onClick={() => {
                 navigate("/join");
@@ -130,7 +130,7 @@ const NavBar: React.FC = () => {
               className={getNavLinkClasses("/join")}
             >
               JOIN
-            </a>
+            </a> */}
             <a
               onClick={() => {
                 navigate("/chat");

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Landingpart from "./LandingMiddle.jsx";
 import StorySection from "./LandingTop.tsx";
+import HomePage from "./HomePage.tsx";
 interface CircleProps {
   text: string;
   active: boolean;
@@ -121,6 +122,7 @@ export default function Landing() {
         </div>
       </section>
       <Landingpart />
+      <HomePage />
     </>
   );
 }
