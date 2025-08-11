@@ -186,7 +186,7 @@ const Pricing_Plan: React.FC = () => {
       <div className='lg:flex md:flex mt-14 lg:mx-32 md:mx-40 mx-4'>
         <video
           className="md:h-[300px] h-[250px] w-[500px] rounded-lg shadow-2xl"
-          src="public\assets\HeroVideo.mp4"
+          src="/assets/HeroVideo.mp4"
           autoPlay
           muted
           loop
