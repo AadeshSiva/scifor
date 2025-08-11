@@ -188,7 +188,7 @@ const Pricing_Plan: React.FC = () => {
           className="md:h-[300px] h-[250px] w-[500px] rounded-lg shadow-2xl"
           src="/assets/HeroVideo.mp4"
           autoPlay
-          muted
+
           loop
           playsInline
         ></video>
