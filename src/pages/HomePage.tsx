@@ -1,250 +1,954 @@
-import FloatingButton from "@/components/extras/FloatingButton";
-import { FormSection } from "@/components/home/FormSection";
-import VideoPopup from "@/components/video/VideoPopup";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, CSSProperties, MouseEvent } from "react";
 
+// Type definitions
+interface StyleProps {
+  [key: string]: string | number;
+}
 
-const HeroSection: React.FC = () => {
-    return (
-      <section className="flex flex-col items-center text-center py-12 pb-0 relative">
-      <aside className="absolute right-4 top-4 z-10">
-        <div className="flex flex-col items-end">
-          <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-          </div>
-        </div>
-      </aside>
-      
-      <h1 className="text-[#818181] font-walbaum text-7xl font-normal text-center mb-8 max-md:text-5xl max-md:mb-5 max-sm:text-4xl max-sm:mb-4">
-        The world's first and only place
-      </h1>
-      
-      <div className="text-[#818181] text-center text-7xl font-normal max-w-[1200px] mb-16 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4 font-walbaum">
-        <p>that helps you <span className="text-[#007C7A]">WIN</span> in business.</p>
-      </div>
-      
-      <p className="text-[#555555] text-center text-[28px] max-w-[1500px] mb-2 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4 flex-col">
-        <p className="font-thin pb-10">Business winning is NOT just about profits, sales, growth or scaling.</p>
-        <p className="font-thin">WINNING is:</p>
-      </p>
-      
-      <p className="text-black text-center text-[28px]  font-normal leading-9 max-w-[800px] mb-8 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4">
-      Maximizing, monetizable value, tax effectively - for all invested.
-      </p>
-      
-      <p className="text-black text-center text-[28px] font-medium leading-9 max-w-[1200px] mb-3 mx-auto max-md:text-2xl max-md:mb-8 max-sm:text-xl max-sm:mb-6 flex-col">
-        <p className="mb-3">That's exactly what our client Jeff did –  he WON - and now he shares how he did it.</p>
-        <p className="text-[#555555] font-light">(Jeff grew and exited his freight services company</p>
-        <p className="text-[#555555] font-light mb-10">with double digit multiples, all tax effectively)</p>
-        <p>And with our help , you can WIN too.</p>
-      </p>
-    </section>
-    );
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface OpenItemsState {
+  [key: number]: boolean;
+}
+
+// Placeholder SVG Logo component
+const Logo: React.FC = () => (
+  <img
+    src="assets/Logo.svg"
+    alt="Logo"
+    className="inline-block align-middle"
+    style={{
+      width: '178px',
+      height: '34px',
+      transform: 'rotate(0deg)',
+      opacity: 1,
+      display: 'block'
+    }}
+  />
+);
+
+// Black Logo component for member card
+const LogoBlack: React.FC = () => (
+  <img
+    src="/assets/LogoBlack.svg"
+    alt="LogoBlack"
+    className="inline-block align-middle"
+    style={{
+      width: '178px',
+      height: '34px',
+      transform: 'rotate(0deg)',
+      opacity: 1,
+      display: 'block'
+    }}
+  />
+);
+
+// Plus icon component
+const PlusIcon: React.FC = () => (
+  <img
+    src="/assets/Plus.svg"
+    alt="Plus"
+    style={{ 
+      display: 'block',
+      width: '24px',
+      height: '24px',
+      flexShrink: 0,
+      WebkitFlexShrink: 0
+    } as CSSProperties}
+  />
+);
+
+// Close icon component
+const CloseIcon: React.FC = () => (
+  <img
+    src="/assets/Plus.svg"
+    alt="Close"
+    style={{ 
+      display: 'block',
+      width: '24px',
+      height: '24px',
+      flexShrink: 0,
+      WebkitFlexShrink: 0,
+      transform: 'rotate(45deg)',
+      WebkitTransform: 'rotate(45deg)',
+      MozTransform: 'rotate(45deg)',
+      msTransform: 'rotate(45deg)'
+    } as CSSProperties}
+  />
+);
+
+// Tick icon component (for free plan)
+const TickIcon: React.FC = () => (
+  <img
+    src="/assets/Tick.svg"
+    alt="Tick"
+    style={{
+      minWidth: '20px',
+      minHeight: '20px',
+      width: '20px',
+      height: '20px',
+      display: 'block',
+      flexShrink: 0,
+      WebkitFlexShrink: 0
+    } as CSSProperties}
+  />
+);
+
+// Black Tick icon component (for member plan) 
+const TickBlackIcon: React.FC = () => (
+  <img
+    src="/assets/TickBlack.svg"
+    alt="TickBlack"
+    style={{
+      minWidth: '20px',
+      minHeight: '20px',
+      width: '20px',
+      height: '20px',
+      display: 'block',
+      flexShrink: 0,
+      WebkitFlexShrink: 0
+    } as CSSProperties}
+  />
+);
+
+// Grow Richer SVG component (for free plan)
+const GrowRicherIcon: React.FC = () => (
+  <img
+    src="/assets/Grow richer.svg"
+    alt="Grow Richer"
+    style={{
+      position: 'absolute',
+      left: '8px',
+      top: '16px',
+      width: '15px',
+      height: 'auto',
+      transformOrigin: 'center',
+      WebkitTransformOrigin: 'center',
+      MozTransformOrigin: 'center',
+      msTransformOrigin: 'center',
+      display: 'block'
+    } as CSSProperties}
+  />
+);
+
+// Grow Richer Black SVG component (for member plan)
+const GrowRicherBlackIcon: React.FC = () => (
+  <img
+    src="/assets/GrowricherBlack.svg"
+    alt="Grow Richer Black"
+    style={{
+      position: 'absolute',
+      left: '8px',
+      top: '16px',
+      width: '15px',
+      height: 'auto',
+      transformOrigin: 'center',
+      WebkitTransformOrigin: 'center',
+      MozTransformOrigin: 'center',
+      msTransformOrigin: 'center',
+      display: 'block'
+    } as CSSProperties}
+  />
+);
+
+const saffronColor: string = "#F4A460";
+
+const featuresFree: string[] = [
+  "SAMPLE each of the 12 services",
+  "Enjoy FREE Tools and Gifts",
+  "Chance to WIN our monthly lotteries of each of our offerings",
+  "Be FIRST in line for exclusive platform updates and offers",
+];
+
+const featuresMember: string[] = [
+  "Grow Smarter to Exit Richer Immediately",
+  "Get TIME on your side and STOP value destruction in your business NOW",
+  "Start RECOVERING hard earned value in your business",
+  "Find Out How Valuable You Truly Are — Then Pivot the Business, Strategize Value, and Structure For Tax Efficiency Before Time (and Value) Run Out.",
+];
+
+// Pricing Plan Section
+const PricingPlan: React.FC = () => {
+  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  useEffect(() => {
+    const handleResize = (): void => setWindowWidth(window.innerWidth);
+
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  const handleLearnMoreClick = (e: MouseEvent<HTMLAnchorElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Redirecting to JoinPage.tsx");
+    window.location.href = '/pricing-plan';
   };
 
-  const StorySection = () => {
-    const circles = [
-      `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
-        <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
-          <tspan x="120" y="100">Canadian entrepreneur,</tspan>
-          <tspan x="120" y="120">founder and former</tspan>
-          <tspan x="120" y="140">CEO of Rodair</tspan>
-        </text>
-      </svg>`,
-      `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
-        <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
-          <tspan x="120" y="90">He and his team</tspan>
-          <tspan x="120" y="110">operationalized the DNA</tspan>
-          <tspan x="120" y="130">of their business a</tspan>
-          <tspan x="120" y="150">Unifying Philosophy:</tspan>
-          <tspan x="120" y="170">Prosperity For All</tspan>
-        </text>
-      </svg>`,
-      `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
-        <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
-          <tspan x="120" y="90">Prosperity For All</tspan>
-          <tspan x="120" y="110">helped him build a</tspan>
-          <tspan x="120" y="130">valuable, and Best</tspan>
-          <tspan x="120" y="150">Managed award-</tspan>
-          <tspan x="120" y="170">winning company.</tspan>
-        </text>
-      </svg>`,
-      `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
-        <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
-          <tspan x="120" y="80">Prosperity For All</tspan>
-          <tspan x="120" y="100">results: 25% high</tspan>
-          <tspan x="120" y="120">profit margins superb</tspan>
-          <tspan x="120" y="140">company culture</tspan>
-          <tspan x="120" y="160">double-digit</tspan>
-          <tspan x="120" y="180">multiple exit.</tspan>
-        </text>
-      </svg>`,
-      `<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="110" fill="#7F7F7F" fill-opacity="0.5"/>
-        <text x="120" y="120" text-anchor="middle" font-size="16" fill="black" font-family="Linear">
-          <tspan x="120" y="80">Prosperity For All A</tspan>
-          <tspan x="120" y="100">world's first:</tspan>
-          <tspan x="120" y="120">maximized vale</tspan>
-          <tspan x="120" y="140">across intangible</tspan>
-          <tspan x="120" y="160">assets, monetizing</tspan>
-          <tspan x="120" y="180">them, tax effectively.</tspan>
-        </text>
-      </svg>`
-    ];
-    
-    return (
-      <section className="flex flex-col items-center pt-36 pb-10 -mt-32">
-        <div className="w-screen relative py-20">
-  
-          {/* Content starts */}
-          <div className="text-center mb-12">
-            <h1 className="text-[#818181] font-walbaum text-7xl text-center mb-16 max-md:text-5xl max-md:mb-5 max-sm:text-4xl max-sm:mb-4">
-                Many grow and <span className="text-[#D22F27]">LOSE.</span> 
-            </h1>
-      
-      <p className="text-[#D02C31] text-center text-[28px] max-w-[1500px] mb-14 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4 flex-col font-light">
-        <p >When <span className="font-semibold">80%</span> businesses don't sell and</p>
-        <p>only <span className="font-semibold">6%</span> only got fair market value when sold,</p>
-        <p>most entrepreneurs and business families,</p>
-        <p>no matter how successful,</p>
-        <p>LOSE on exit/succession.</p>
-      </p>
-      
-      <p className="text-black text-center text-[28px] font-normal leading-9 max-w-[1250px] mb-3 mx-auto max-md:text-2xl max-md:mb-8 max-sm:text-xl max-sm:mb-6 flex-col gap-3">
-        <p className="mb-2">No one starts and grows a business to LOSE,</p>
-        <p className="mb-2">ButLOSE they do because:</p>
-        <p className="">They didn't grow value companies where 84%+ of their business value matters most – intangible assets.</p>
-      </p>
-            <h2 className="text-[#777] text-7xl font-extralight font-walbaum mb-6 mt-32 max-md:text-5xl max-sm:text-[32px]">
-                We rule all intangible assets with
-            </h2>
-            <h3 className="text-[#818181] text-7xl font-normal font-walbaum mb-16 max-md:text-5xl max-sm:text-[32px]">
-                ONE asset that's 6 words or less. ​
-            </h3>
-          </div>
-  
-          {/* Fixed image container */}
-          <div className="w-[689px] h-[690px] bg-white mt-0 mb-12 mx-auto rounded-3xl border-[3px] border-solid border-[rgba(158,158,158,0.50)] max-w-full overflow-hidden flex items-center justify-center">
-            <img 
-              src="https://ik.imagekit.io/je0rl3nnt/IMG-20250516-WA0027.jpg?updatedAt=1748409736037" 
-              alt="Jeff Cullen - Entrepreneur and CEO" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+  const featureTextStyle: CSSProperties = {
+    fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontWeight: 300,
+    fontStyle: 'normal',
+    fontSize: windowWidth < 640 ? '14px' : windowWidth < 768 ? '16px' : '18px',
+    lineHeight: windowWidth < 640 ? '20px' : windowWidth < 768 ? '24px' : '28px',
+    letterSpacing: '0%',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  } as CSSProperties;
 
-          <div className="flex justify-center">
-          <button className="bg-black text-white text-xl font-medium py-6 px-24 rounded max-w-3xl w-full text-center hover:bg-gray-800 transition-colors">
-            Start WINNING (Free Webinars + Trail Offers)
-          </button>
+  const headerTextStyle: CSSProperties = {
+    fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontSize: windowWidth < 640 ? '18px' : windowWidth < 768 ? '20px' : '24px',
+    fontWeight: 300,
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  } as CSSProperties;
+
+  const priceTextStyle: CSSProperties = {
+    fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontSize: windowWidth < 640 ? '28px' : windowWidth < 768 ? '32px' : '36px',
+    fontWeight: 700,
+    lineHeight: '1.2',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  } as CSSProperties;
+
+  const bottomBoxTextStyle: CSSProperties = {
+    fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontWeight: 300,
+    fontSize: windowWidth < 640 ? '18px' : windowWidth < 768 ? '20px' : '24px',
+    lineHeight: windowWidth < 640 ? '28px' : windowWidth < 768 ? '36px' : '44px',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  } as CSSProperties;
+
+  const featuresContainerStyle: CSSProperties = {
+    width: '80%',
+    maxWidth: '100%',
+    margin: '0 auto'
+  };
+
+  const containerStyle: CSSProperties = {
+    backgroundColor: '#e5e7eb',
+    padding: windowWidth < 640 ? '8px' : windowWidth < 768 ? '16px' : '32px',
+    borderRadius: '12px',
+    maxWidth: '1280px',
+    width: '100%',
+    margin: '0 auto',
+    boxSizing: 'border-box',
+    WebkitBoxSizing: 'border-box',
+    MozBoxSizing: 'border-box',
+    msBoxSizing: 'border-box'
+  } as CSSProperties;
+
+  const cardsWrapperStyle: CSSProperties = {
+    display: 'flex',
+    WebkitDisplay: 'flex',
+    msFlexDirection: windowWidth < 640 ? 'column' : 'row',
+    flexDirection: windowWidth < 640 ? 'column' : 'row',
+    WebkitFlexDirection: windowWidth < 640 ? 'column' : 'row',
+    justifyContent: 'center',
+    WebkitJustifyContent: 'center',
+    msFlexPack: 'center',
+    alignItems: windowWidth < 640 ? 'center' : 'stretch',
+    WebkitAlignItems: windowWidth < 640 ? 'center' : 'stretch',
+    msFlexAlign: windowWidth < 640 ? 'center' : 'stretch',
+    gap: windowWidth < 640 ? '16px' : windowWidth < 768 ? '20px' : '32px',
+    width: '100%',
+    margin: '0 auto'
+  } as CSSProperties;
+
+  const cardStyle: CSSProperties = {
+    backgroundColor: 'black',
+    color: 'white',
+    position: 'relative',
+    display: 'flex',
+    WebkitDisplay: 'flex',
+    msFlexDirection: 'column',
+    flexDirection: 'column',
+    WebkitFlexDirection: 'column',
+    overflow: 'hidden',
+    width: windowWidth < 640 ? '100%' : 'auto',
+    maxWidth: windowWidth < 640 ? '400px' : windowWidth < 768 ? '350px' : windowWidth < 1024 ? '380px' : '400px',
+    minHeight: windowWidth < 640 ? '550px' : windowWidth < 768 ? '600px' : windowWidth < 1024 ? '650px' : '700px',
+    borderRadius: windowWidth < 640 ? '15px' : '20px',
+    padding: windowWidth < 640 ? '20px' : windowWidth < 768 ? '24px' : '28px',
+    boxSizing: 'border-box',
+    WebkitBoxSizing: 'border-box',
+    MozBoxSizing: 'border-box',
+    msBoxSizing: 'border-box',
+    flex: windowWidth >= 640 ? '0 1 400px' : 'none',
+    WebkitFlex: windowWidth >= 640 ? '0 1 400px' : 'none',
+    msFlex: windowWidth >= 640 ? '0 1 400px' : 'none'
+  } as CSSProperties;
+
+  const memberCardStyle: CSSProperties = {
+    ...cardStyle,
+    backgroundColor: 'white',
+    color: '#111827',
+    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    WebkitBoxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    border: '1px solid #e5e7eb'
+  };
+
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#e5e7eb',
+      paddingTop: windowWidth < 640 ? '16px' : windowWidth < 768 ? '32px' : '64px',
+      paddingBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '32px' : '64px',
+      paddingLeft: windowWidth < 640 ? '8px' : '16px',
+      paddingRight: windowWidth < 640 ? '8px' : '16px'
+    }}>
+      <div style={{ maxWidth: '1536px', margin: '0 auto' }}>
+        {/* Header Section */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: windowWidth < 640 ? '24px' : windowWidth < 768 ? '32px' : '64px' 
+        }}>
+          <h1
+            style={{
+              fontFamily: 'walbaum, Georgia, "Times New Roman", Times, serif',
+              fontWeight: 300,
+              fontStyle: 'normal',
+              fontSize: windowWidth < 480 ? '28px' : 
+                        windowWidth < 640 ? '32px' : 
+                        windowWidth < 768 ? '36px' : 
+                        windowWidth < 1024 ? '42px' : 
+                        windowWidth < 1280 ? '48px' : 
+                        '56px',
+              lineHeight: windowWidth < 480 ? '32px' :
+                          windowWidth < 640 ? '36px' :
+                          windowWidth < 768 ? '40px' :
+                          windowWidth < 1024 ? '46px' :
+                          windowWidth < 1280 ? '52px' :
+                          '60px',
+              color: '#374151',
+              textAlign: 'center',
+              marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '48px',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale'
+            } as CSSProperties}
+          >
+            Pricing Plan
+          </h1>
+          <p style={{
+            fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontWeight: 200,
+            fontStyle: 'normal',
+            fontSize: windowWidth < 480 ? '14px' : 
+                      windowWidth < 640 ? '16px' : 
+                      windowWidth < 768 ? '18px' : 
+                      windowWidth < 1024 ? '22px' : 
+                      windowWidth < 1280 ? '28px' : 
+                      '32px',
+            lineHeight: windowWidth < 480 ? '20px' :
+                        windowWidth < 640 ? '24px' :
+                        windowWidth < 768 ? '26px' :
+                        windowWidth < 1024 ? '32px' :
+                        windowWidth < 1280 ? '38px' :
+                        '43px',
+            letterSpacing: '0%',
+            textAlign: 'center',
+            color: '#4b5563',
+            maxWidth: '672px',
+            margin: '0 auto',
+            paddingLeft: windowWidth < 640 ? '8px' : '16px',
+            paddingRight: windowWidth < 640 ? '8px' : '16px',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale'
+          } as CSSProperties}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
         </div>
-  
-          <div className="text-center mb-20 mt-20">
-            <h2 className="text-[#777] text-7xl mb-6 max-md:text-5xl max-sm:text-[32px] font-walbaum font-extralight">
-                From dream to done
-            </h2>
-            <h3 className="text-[#818181] text-7xl font-normal mb-20 max-md:text-5xl max-sm:text-[32px] font-walbaum">
-                with 6 words or less
-            </h3>
 
-            <div className="w-[689px] h-[690px] bg-white mt-0 mb-20 mx-auto rounded-3xl border-[3px] border-solid border-[rgba(158,158,158,0.50)] max-w-full overflow-hidden flex items-center justify-center">
-            <img 
-              src="https://ik.imagekit.io/je0rl3nnt/IMG-20250516-WA0027.jpg?updatedAt=1748409736037" 
-              alt="Jeff Cullen - Entrepreneur and CEO" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-  
-            <div className="max-w-[570px] mt-0 mb-20 mx-auto max-md:max-w-full max-md:px-4">
-              <p className="text-black text-justify text-[28px] font-semibold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
-                Jeff Cullen built a valuable, marketable company
-              </p>
-              <div className="text-black text-center text-[28px] font-bold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
-                <p>By creating and operationalizing</p>
-                <p>"Prosperity For All" -</p>
-                <p>his (Unifying Philosophy) UPh™</p>
-              </div>
-              <p className="text-black text-justify text-[28px] font-bold leading-8 mb-6 max-md:text-2xl max-sm:text-xl">
-                A UPh is your business DNA in 6 words or less.
-              </p>
-              <p className="text-black text-justify text-[28px] font-bold leading-8 max-md:text-2xl max-sm:text-xl">
-                It's the one asset that rules all intangible assets.
-              </p>
-            </div>
-  
-            <div className="flex w-full h-60 justify-center items-start mt-0 mb-20 max-md:w-full max-md:flex-wrap max-md:gap-4 max-sm:flex-col max-sm:items-center overflow-x-auto">
-              {circles.map((circle, index) => (
+        <div style={containerStyle}>
+           <div style={cardsWrapperStyle}>
+
+            {/* Free Plan Card */}
+            <div style={cardStyle}>
+              <GrowRicherIcon />
+
+              <div
+                style={{
+                  flex: '1',
+                  WebkitFlex: '1',
+                  msFlex: '1',
+                  display: 'flex',
+                  WebkitDisplay: 'flex',
+                  flexDirection: 'column',
+                  WebkitFlexDirection: 'column',
+                  msFlexDirection: 'column',
+                  paddingTop: windowWidth < 640 ? '12px' : windowWidth < 768 ? '24px' : '32px'
+                } as CSSProperties}
+              >
+                <div style={{ marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '32px' }}>
+                  <p style={{ 
+                    ...headerTextStyle, 
+                    color: '#d1d5db', 
+                    marginBottom: windowWidth < 640 ? '4px' : '8px', 
+                    textAlign: 'center' 
+                  }}>
+                    Become a
+                  </p>
+                  <div
+                    style={{
+                      display: 'flex',
+                      WebkitDisplay: 'flex',
+                      alignItems: 'center',
+                      WebkitAlignItems: 'center',
+                      msFlexAlign: 'center',
+                      justifyContent: 'center',
+                      WebkitJustifyContent: 'center',
+                      msFlexPack: 'center',
+                      gap: windowWidth < 640 ? '4px' : '8px',
+                      marginBottom: windowWidth < 640 ? '8px' : '16px'
+                    } as CSSProperties}
+                  >
+                    <div
+                      style={{
+                        transform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        WebkitTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        MozTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        msTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)'
+                      } as CSSProperties}
+                    >
+                      <Logo />
+                    </div>
+                    <span style={{ ...headerTextStyle, color: '#d1d5db' }}>Guest</span>
+                  </div>
+                  <h2 style={{ 
+                    ...priceTextStyle, 
+                    marginBottom: windowWidth < 640 ? '8px' : '16px', 
+                    textAlign: 'center' 
+                  }}>
+                    Free
+                  </h2>
+                </div>
+
                 <div
-                  key={index}
-                  className="w-30 h-30 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 mx-1"
+                  style={{
+                    flex: '1',
+                    WebkitFlex: '1',
+                    msFlex: '1',
+                    marginBottom: windowWidth < 640 ? '20px' : windowWidth < 768 ? '28px' : '32px'
+                  } as CSSProperties}
                 >
-                  <div dangerouslySetInnerHTML={{ __html: circle }} />
+                  <div style={featuresContainerStyle}>
+                    {featuresFree.map((feature, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: 'flex',
+                          WebkitDisplay: 'flex',
+                          alignItems: 'flex-start',
+                          WebkitAlignItems: 'flex-start',
+                          msFlexAlign: 'start',
+                          gap: '12px',
+                          marginBottom: windowWidth < 640 ? '12px' : windowWidth < 768 ? '16px' : '20px'
+                        } as CSSProperties}
+                      >
+                        <div style={{ 
+                          flexShrink: 0, 
+                          WebkitFlexShrink: 0, 
+                          msFlexNegative: 0, 
+                          marginTop: '4px' 
+                        } as CSSProperties}>
+                          <TickIcon />
+                        </div>
+                        <p
+                          style={{
+                            ...featureTextStyle,
+                            flex: '1',
+                            WebkitFlex: '1',
+                            msFlex: '1',
+                            color: 'white'
+                          } as CSSProperties}
+                        >
+                          {feature}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
-  
-            <div className="max-w-[870px] flex flex-col gap-10 mx-auto my-0 max-md:px-4 max-sm:px-2 font-thin">
-              <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
-                Jeff Cullen, a Canadian entrepreneur and logistics executive is best known as the founder and former CEO of Rodair, a Toronto-based third-party logistics provider.
-              </p>
-              <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
-                He launched Rodair in 1996 with just three employees, and by 2012, the company had expanded to 27 offices across 17 countries, generating CAD 170 million in sales.
-              </p>
-              <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
-                Under his leadership, Rodair became a full-service supply chain provider with 155 employees across Canada, serving industries such as fashion, retail, automotive, and mining.
-              </p>
-              <p className="text-black text-justify text-xl font-normal leading-8 max-md:text-lg max-md:leading-7 max-sm:text-base max-sm:leading-6">
-                In 2019, Rodair was acquired by Rhenus Logistics, a German global logistics firm. Cullen continued to lead the Canadian operations under the new name, Rhenus Canada. He emphasized a unifying business philosophy centered on shared prosperity, transparency, and long-term sustainability. His leadership style focused on creating value for all stakeholders—clients, employees, vendors, and shareholders alike.
-              </p>
+
+                <div
+                  style={{
+                    border: `1px solid ${saffronColor}`,
+                    borderRadius: '8px',
+                    minHeight: windowWidth < 640 ? '50px' : windowWidth < 768 ? '60px' : '70px',
+                    display: 'flex',
+                    WebkitDisplay: 'flex',
+                    flexDirection: 'column',
+                    WebkitFlexDirection: 'column',
+                    msFlexDirection: 'column',
+                    alignItems: 'center',
+                    WebkitAlignItems: 'center',
+                    msFlexAlign: 'center',
+                    justifyContent: 'center',
+                    WebkitJustifyContent: 'center',
+                    msFlexPack: 'center',
+                    padding: windowWidth < 640 ? '6px 8px' : '8px 12px',
+                    marginTop: 'auto',
+                    marginLeft: windowWidth < 640 ? '-4px' : '-8px',
+                    marginRight: windowWidth < 640 ? '-4px' : '-8px',
+                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)'
+                  } as CSSProperties}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      WebkitDisplay: 'flex',
+                      alignItems: 'center',
+                      WebkitAlignItems: 'center',
+                      msFlexAlign: 'center',
+                      gap: windowWidth < 640 ? '4px' : '8px',
+                      marginBottom: windowWidth < 640 ? '8px' : '12px'
+                    } as CSSProperties}
+                  >
+                    <div
+                      style={{
+                        transform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        WebkitTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        MozTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        msTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)'
+                      } as CSSProperties}
+                    >
+                      <Logo />
+                    </div>
+                    <span style={{ ...bottomBoxTextStyle, color: '#d1d5db' }}>Guest</span>
+                  </div>
+                  <a
+                    href="#"
+                    onClick={handleLearnMoreClick}
+                    style={{ 
+                      color: saffronColor,
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      textDecoration: 'none',
+                      cursor: 'pointer'
+                    }}
+                    onMouseOver={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
+                    onMouseOut={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
+                  >
+                    Click to Learn More
+                  </a>
+                </div>
+              </div>
             </div>
 
-            <div>
-                <h1 className="text-[#818181] font-walbaum text-7xl font-thin mt-24 text-center mb-8 max-md:text-5xl max-md:mb-5 max-sm:text-4xl max-sm:mb-4">
-                    You had a dream.
-                </h1>
-                
-                <div className="text-[#818181] text-center text-7xl font-normal max-w-[1200px] mb-16 mx-auto max-md:text-2xl max-md:mb-5 max-sm:text-xl max-sm:mb-4 font-walbaum">
-                    <p>His came true. What about yours?</p>
+            {/* Member Plan Card */}
+            <div style={memberCardStyle}>
+              <GrowRicherBlackIcon />
+
+              <div
+                style={{
+                  flex: '1',
+                  WebkitFlex: '1',
+                  msFlex: '1',
+                  display: 'flex',
+                  WebkitDisplay: 'flex',
+                  flexDirection: 'column',
+                  WebkitFlexDirection: 'column',
+                  msFlexDirection: 'column',
+                  paddingTop: windowWidth < 640 ? '12px' : windowWidth < 768 ? '24px' : '32px'
+                } as CSSProperties}
+              >
+                <div style={{ marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '32px' }}>
+                  <p style={{ 
+                    ...headerTextStyle, 
+                    color: '#6b7280', 
+                    marginBottom: windowWidth < 640 ? '4px' : '8px', 
+                    textAlign: 'center' 
+                  }}>
+                    Become a
+                  </p>
+                  <div
+                    style={{
+                      display: 'flex',
+                      WebkitDisplay: 'flex',
+                      alignItems: 'center',
+                      WebkitAlignItems: 'center',
+                      msFlexAlign: 'center',
+                      justifyContent: 'center',
+                      WebkitJustifyContent: 'center',
+                      msFlexPack: 'center',
+                      gap: windowWidth < 640 ? '4px' : '8px',
+                      marginBottom: windowWidth < 640 ? '8px' : '16px'
+                    } as CSSProperties}
+                  >
+                    <div
+                      style={{
+                        transform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        WebkitTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        MozTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        msTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)'
+                      } as CSSProperties}
+                    >
+                      <LogoBlack />
+                    </div>
+                    <span style={{ ...headerTextStyle, color: '#4b5563' }}>Member</span>
+                  </div>
+                  <h2 style={{ 
+                    ...priceTextStyle, 
+                    marginBottom: windowWidth < 640 ? '8px' : '16px', 
+                    textAlign: 'center',
+                    color: '#111827'
+                  }}>
+                    $1797
+                  </h2>
                 </div>
-                <div className="flex justify-center">
-                    <button className="bg-black text-white text-xl font-medium py-6 px-24 rounded max-w-3xl w-full text-center hover:bg-gray-800 transition-colors">
-                        Start WINNING (Free Webinars + Trail Offers)
-                    </button>
+
+                <div
+                  style={{
+                    flex: '1',
+                    WebkitFlex: '1',
+                    msFlex: '1',
+                    marginBottom: windowWidth < 640 ? '20px' : windowWidth < 768 ? '28px' : '32px'
+                  } as CSSProperties}
+                >
+                  <div style={featuresContainerStyle}>
+                    {featuresMember.map((feature, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: 'flex',
+                          WebkitDisplay: 'flex',
+                          alignItems: 'flex-start',
+                          WebkitAlignItems: 'flex-start',
+                          msFlexAlign: 'start',
+                          gap: '12px',
+                          marginBottom: windowWidth < 640 ? '12px' : windowWidth < 768 ? '16px' : '20px'
+                        } as CSSProperties}
+                      >
+                        <div style={{ 
+                          flexShrink: 0, 
+                          WebkitFlexShrink: 0, 
+                          msFlexNegative: 0, 
+                          marginTop: '4px' 
+                        } as CSSProperties}>
+                          <TickBlackIcon />
+                        </div>
+                        <p
+                          style={{
+                            ...featureTextStyle,
+                            flex: '1',
+                            WebkitFlex: '1',
+                            msFlex: '1',
+                            color: '#111827'
+                          } as CSSProperties}
+                        >
+                          {feature}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
+                <div
+                  style={{
+                    backgroundColor: 'black',
+                    border: `1px solid ${saffronColor}`,
+                    borderRadius: '8px',
+                    minHeight: windowWidth < 640 ? '50px' : windowWidth < 768 ? '60px' : '70px',
+                    display: 'flex',
+                    WebkitDisplay: 'flex',
+                    flexDirection: 'column',
+                    WebkitFlexDirection: 'column',
+                    msFlexDirection: 'column',
+                    alignItems: 'center',
+                    WebkitAlignItems: 'center',
+                    msFlexAlign: 'center',
+                    justifyContent: 'center',
+                    WebkitJustifyContent: 'center',
+                    msFlexPack: 'center',
+                    padding: windowWidth < 640 ? '6px 8px' : '8px 12px',
+                    marginTop: 'auto',
+                    marginLeft: windowWidth < 640 ? '-4px' : '-8px',
+                    marginRight: windowWidth < 640 ? '-4px' : '-8px',
+                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)'
+                  } as CSSProperties}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      WebkitDisplay: 'flex',
+                      alignItems: 'center',
+                      WebkitAlignItems: 'center',
+                      msFlexAlign: 'center',
+                      gap: windowWidth < 640 ? '4px' : '8px',
+                      marginBottom: windowWidth < 640 ? '8px' : '12px'
+                    } as CSSProperties}
+                  >
+                    <div
+                      style={{
+                        transform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        WebkitTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        MozTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        msTransform: windowWidth < 640 ? 'scale(0.75)' : windowWidth < 768 ? 'scale(0.9)' : 'scale(1)',
+                        color: 'white'
+                      } as CSSProperties}
+                    >
+                      <Logo />
+                    </div>
+                    <span style={{ ...bottomBoxTextStyle, color: '#d1d5db' }}>Member</span>
+                  </div>
+                  <a
+                    href="#"
+                    onClick={handleLearnMoreClick}
+                    style={{ 
+                      color: saffronColor,
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      textDecoration: 'none',
+                      cursor: 'pointer'
+                    }}
+                    onMouseOver={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
+                    onMouseOut={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
+                  >
+                    Click to Learn More
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-    );
-  };
-
-const Index: React.FC = () => {
-    const [videos, setVideos] = useState<unknown[]>([]);
-
-    return (
-      <div className="relative">
-        <FloatingButton />
-
-         <HeroSection />
-        <div className=" w-full mx-auto">
-          <div className="relative">
-            <FormSection onVideosLoaded={setVideos} />
-            <StorySection />
-          </div>
-          
-        </div>
-        <VideoPopup videos={videos} />
       </div>
-    );
+    </div>
+  );
+};
+
+// FAQ Section
+const faqs: FAQItem[] = [
+  { question: "I already have a profitable business. Why should I care about PRSPERA?", answer: "Because profit ≠ value. And value ≠ exit.80% of businesses never sell. Not because they weren't profitable — but because they weren't transferable, defensible, or structured to be bought.You may be generating income. But if 84% of your value is intangible and unmanaged, the market won't pay for it when it counts. PRSPERA makes sure they do." },
+  { question: "Why do I need a platform to tell me what my team should already be doing?", answer: "Because your team wasn't hired, trained, or incentivized to build enterprise value.They're executing — not capitalizing. And statistically?77% of them are disengaged.So yes — they're doing work, but they're not building value.PRSPERA gives you the structure, the tools, and the visibility to turn daily work into equity growth." },
+  { question: "I already have advisors — accountants, lawyers, even a coach.", answer: "Great. But PRSPERA doesn't replace your advisors.It activates your internal value engine so your advisors can actually protect and scale something worth defending.Most advisors come in after the value's been eroded.PRSPERA starts before — where value is built (or lost): inside your team, systems, and strategy." },
+  { question: "This sounds like theory. How do I know this stuff works?", answer: "It's not theory, it's facts:84% of your enterprise value is inside your intangible assets – if you have not maximized that value (across at least 11 value drivers), made that value monetizable, and tax effective then you risk everything you have built so far.Jeff Cullen proved that these intangible assets' value can be maximized, monetized tax effectively by all management and staff – if done early enough and operationalized on a daily basis via the Unifying Philosophy – a proprietary PRSPERA Strategy System.This isn't a \"nice-to-have\". PRSPERA is the difference between a life-changing exit… and a massive regret that will last generations." },
+  { question: "Can't I just wait until I'm ready to sell?", answer: "Sure. If you're okay with watching your value silently rot while you wait.Every day without action = compounding decay of your intangibles.By the time you're \"ready,\" it's often too late to recover what you've lost.PRSPERA is for founders who want control over when, how, and how much they exit for." },
+  { question: "What exactly do I get with PRSPERA? Break it down.", answer: "Here's what you unlock:A real-world M&A opinion of your street valuationA quantified Exit Richer Gap ReportA mapped de-risking action plan (top 10 plays, customized)Access to our vetted advisory networkTemplates, scorecards, and team-driven value acceleration toolsA system to activate your people to build transferable value dailyTax-efficient exit design strategy (yes, the real stuff)And if you're one of the first 111:You get lifetime access, a private session with Jeff, and the complete exit stack for $1797. One-time." },
+  { question: "What happens if I do nothing?", answer: "Simple:You'll keep thinking you're worth more than the market will pay.Your team will stay disengaged, and their work will keep leaking value.You'll exit with less. Maybe nothing.And you'll never know what you could have had — until it's too late." },
+  { question: "Why is it so cheap? $797 isn't for all that?", answer: "Because this is the founding member round.You're betting on the only platform designed to protect your exit before it's at risk.Later, this goes full enterprise. Full price. Full-stack.For now? We want the bold, the committed, the no-BS founders who get it — and want in.\"What if my business is 'too small' or 'not ready yet' for this?\"If you're profitable, if you've got people, and if you've built anything worth protecting — you're ready.This isn't just for $50M enterprises. This is for the $2M–$30M founder who wants to get smart before it's too late.PRSPERA is how you scale with intelligence, not ignorance.\"Can't I just get a valuation from a broker or banker instead?\"Sure — if you want a number based on theory that no real buyer will ever pay.Most valuations are inflated. Most founders never hit them.PRSPERA gives you the street value — what the market would offer you today, based on how transferable, defensible, and scalable your business really is.You want a vanity metric, go to a broker.You want reality and a plan to raise it? You're in the right place." },
+  { question: "How long does it take to get results?", answer: "The platform is built for fast clarity and immediate action:Your Exit Richer Gap Report lands in <14 days.Your street value opinion comes within 30–90 days (M&A partner dependent).Top 10 actions to recover value → same week.Some members see valuation boosts in 60–90 days.Others spend the year playing chess while everyone else plays checkers." },
+  { question: "Will this work in my industry?", answer: "If your business has people, processes, customers, and profit — yes.We're industry-agnostic, because the fundamentals are the same:Value is built on systems, teams, defensibility, and structure.Whether you're SaaS, services, manufacturing, or tech-enabled — PRSPERA gives you the levers." },
+  { question: "How do I know who's advising me? Who built this? You'll be backed by a vetted network of:", answer: "Ex-operators who exited 8- and 9-figure companies M&A pros with $1B+ in closed deals Tax and structuring experts who've saved founders millions And the creators of PRSPERA — a platform built on real-world exit wins, not ivory tower theory This isn't some guru course. This is execution infrastructure." },
+  { question: "Can I cancel or get a refund?", answer: "We don't offer refunds — we offer results.But if you show up, use the system, and don't get a clear valuation, de-risking strategy, and exit playbook within 90 days — we'll fix it or make it right.Simple as that." }
+];
+
+const FAQSection: React.FC = () => {
+  const [openItems, setOpenItems] = useState<OpenItemsState>({});
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const handleResize = (): void => setWindowWidth(window.innerWidth);
+    setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleItem = (index: number): void => {
+    setOpenItems(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
-export default Index;
+  const questionTextStyle: CSSProperties = {
+    fontSize: windowWidth < 640 ? '16px' : windowWidth < 768 ? '18px' : '20px',
+    lineHeight: windowWidth < 640 ? '24px' : windowWidth < 768 ? '28px' : '32px',
+    fontWeight: '600'
+  };
+
+  const answerTextStyle: CSSProperties = {
+    fontSize: windowWidth < 640 ? '14px' : windowWidth < 768 ? '16px' : '18px',
+    lineHeight: windowWidth < 640 ? '20px' : windowWidth < 768 ? '24px' : '28px'
+  };
+
+  return (
+    <section className="w-full py-6 sm:py-8 md:py-16 px-2 sm:px-4 bg-white">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-4 sm:mb-6 md:mb-12" />
+        <h2
+  className="text-center mb-4 sm:mb-6 md:mb-12"
+  style={{ 
+    fontFamily: 'walbaum', 
+    color: '#9ca3af',
+    fontSize: windowWidth < 480 ? '24px' : 
+              windowWidth < 640 ? '28px' : 
+              windowWidth < 768 ? '32px' : 
+              windowWidth < 1024 ? '38px' : 
+              windowWidth < 1280 ? '44px' : 
+              '52px',
+    lineHeight: windowWidth < 480 ? '28px' :
+                windowWidth < 640 ? '32px' :
+                windowWidth < 768 ? '36px' :
+                windowWidth < 1024 ? '42px' :
+                windowWidth < 1280 ? '48px' :
+                '56px',
+    fontWeight: 300,
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
+  } as CSSProperties}
+>
+  Frequently Asked Questions
+</h2>
+
+        <div className="py-8 sm:py-12 md:py-16">
+          <div className="space-y-2 sm:space-y-3 md:space-y-4">
+            {faqs.map((faq, idx) => (
+              <div
+                key={idx}
+                className="bg-white p-2 sm:p-3 md:p-4 cursor-pointer transition-all duration-300 border-b border-black"
+                onClick={() => toggleItem(idx)}
+              >
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8">
+                      {openItems[idx] ? <CloseIcon /> : <PlusIcon />}
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-gray-900 leading-relaxed break-words"
+                      style={questionTextStyle}
+                    >
+                      {faq.question}
+                    </p>
+                    {openItems[idx] && (
+                      <div className="mt-2 sm:mt-3 overflow-hidden transition-all duration-300">
+                        <p
+                          className="text-gray-600 leading-relaxed break-words"
+                          style={answerTextStyle}
+                        >
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Footer Section
+const Footer: React.FC = () => {
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const handleResize = (): void => setWindowWidth(window.innerWidth);
+    setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const taglineStyle: CSSProperties = {
+    marginTop: '25px',
+    fontSize: windowWidth < 640 ? '20px' : windowWidth < 768 ? '24px' : '28px',
+    fontWeight: '300',
+    lineHeight: windowWidth < 640 ? '28px' : windowWidth < 768 ? '32px' : '36px'
+  };
+
+  const linkStyle: CSSProperties = {
+    fontSize: windowWidth < 640 ? '14px' : '16px'
+  };
+
+  return (
+    <footer
+      className="bg-black text-white w-full"
+      style={{
+      height:
+        windowWidth < 768
+        ? "500px"
+        : "400px"
+      }}
+    >
+      <div className="w-full h-auto px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
+      <div className="max-w-7xl mx-auto h-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12 h-full">
+
+        {/* First Column - Logo and Tagline */}
+        <div className="flex flex-col justify-start">
+          {/* Logo */}
+          <div className="mb-6 sm:mb-8 md:mb-12">
+          <img
+            src="assets/Logo.svg"
+            alt="PRSPERA Logo"
+            className="h-6 sm:h-7 md:h-8 w-auto"
+          />
+          </div>
+
+          {/* Tagline */}
+          <h2 className="leading-tight" style={taglineStyle}>
+          Grow Smarter. <span className="font-bold">Exit Richer</span>
+          <sup className="text-xs sm:text-lg md:text-xl">™</sup>
+          </h2>
+        </div>
+
+        {/* Second Column */}
+        <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
+          <a
+          href="/support"
+          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+          style={linkStyle}
+          >
+          Support
+          </a>
+          <a
+          href="/privacy-policy"
+          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+          style={linkStyle}
+          >
+          Privacy Policy
+          </a>
+          <a
+          href="/acceptable-use-policy"
+          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+          style={linkStyle}
+          >
+          Acceptable Use of Policy
+          </a>
+        </div>
+
+        {/* Third Column*/}
+        <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
+          <a
+          href="/sales-terms"
+          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+          style={linkStyle}
+          >
+          Sales Terms And Condition
+          </a>
+          <a
+          href="/website-terms"
+          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+          style={linkStyle}
+          >
+          Website Terms And Condition
+          </a>
+        </div>
+        </div>
+      </div>
+      </div>
+    </footer>
+  );
+};
+
+const HomePage: React.FC = () => (
+  <div>
+    <PricingPlan />
+    <FAQSection />
+    <Footer />
+  </div>
+);
+
+export default HomePage;

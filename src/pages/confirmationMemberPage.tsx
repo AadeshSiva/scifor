@@ -6,8 +6,7 @@ const ConfirmationMember: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        // Replace with your API endpoint
-        fetch("/api/user")
+        fetch("https://intern-project-final-1.onrender.com/confirm-payment")
             .then((res) => res.json())
             .then((data) => {
                 setName(data.name);
