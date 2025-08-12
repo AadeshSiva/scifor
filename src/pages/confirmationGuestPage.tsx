@@ -11,7 +11,7 @@ const ConfirmationGuest: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/user") // <-- Replace with your API endpoint
+    fetch("https://intern-project-final-1.onrender.com/confirm-payment")
       .then((res) => res.json())
       .then((data) => {
         setUser(data);

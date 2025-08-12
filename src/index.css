@@ -134,62 +134,147 @@
   src: url('/assets/fonts/Walbaum60ptLight.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Walbaum';
   src: url('/assets/fonts/Walbaum60ptLightItalic.ttf') format('truetype');
   font-weight: 300;
   font-style: italic;
-  }
+}
 
 @font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Light.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
+}
+
+.highlight-message {
+  background-color: #fef3c7 !important;
+  border: 2px solid #f59e0b !important;
+  transition: all 0.3s ease;
+}
+
+.message-item {
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .fixed.top-5.right-5 {
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+  }
+}
+
+.sidebar-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 45;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-desktop {
+    position: relative !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure proper box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove tap highlight on mobile */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling with fallback */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Font fallbacks */
+.font-walbaum {
+  font-family: 'Walbaum', Georgia, 'Times New Roman', serif;
+}
+
+.font-linear {
+  font-family: 'Linear Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fix for older browsers */
+@supports not (display: flex) {
+  .flex {
+    display: table;
   }
 
-  .highlight-message {
-    background-color: #fef3c7 !important;
-    border: 2px solid #f59e0b !important;
-    transition: all 0.3s ease;
+  .flex>* {
+    display: table-cell;
   }
-  
-  .message-item {
-    transition: background-color 0.3s ease, border 0.3s ease;
-  }
+}
 
-  @media (max-width: 1024px) {
-    .fixed.top-5.right-5 {
-      position: relative !important;
-      top: 0 !important;
-      right: 0 !important;
-    }
-  }
 
-  .sidebar-mobile {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 45;
-  }
+/* Custom scrollbar styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: #9ca3af #e5e7eb;
+  /* thumb color, track color */
+}
 
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #e5e7eb;
   @media (min-width: 1024px) {
     .sidebar-desktop {
       position: relative !important;
