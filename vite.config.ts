@@ -4,7 +4,7 @@ import path from 'path';
 // import componentTagger from './path/to/componentTagger'; // uncomment and adjust if you have it
 
 export default defineConfig(({ mode }) => ({
-  base: '/',
+  base: './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

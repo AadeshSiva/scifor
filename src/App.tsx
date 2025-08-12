@@ -21,7 +21,7 @@ import PaymentCancelled from "./pages/PaymentCancelled";
 import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
-import Pricing_Plan from './pages/Pricing_Plan'
+// import Pricing_Plan from './pages/Pricing_Plan'
 
 const queryClient = new QueryClient();
 
