@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CircleArrowDown } from "lucide-react";
-import HeroVideo from "../../public/assets/HeroVideo.mp4";
+import HeroVideo from "/assets/HeroVideo.mp4";
 // import StoryVideo from "../../public/assets/Copy of Stage 1 ENDGAME 16_9.mp4";
 import JetImg from "../../public/assets/jeff-img.jpg";
 import WebinarImg from "../../public/assets/jeff-webinar.jpg";
