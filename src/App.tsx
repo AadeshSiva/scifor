@@ -27,29 +27,29 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <NavBar/>
-        <Routes>
-          <Route path="/otpverify" element={<ProtectedRoute><OTPVerification/></ProtectedRoute>}/>
-          <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
-          <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
-          <Route path="/chat" element={<ProtectedRoute><Chat/></ProtectedRoute>} />
-          <Route path="/" element={<ProtectedRoute requireAuth={false}><Landing/></ProtectedRoute>}/>
-          <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI/></ProtectedRoute>} />
-          <Route path="/pricing-plan" element={<ProtectedRoute requireAuth={false}><Pricing_Plan/></ProtectedRoute>} />
-          <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index/></ProtectedRoute>} />
-          <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage/></ProtectedRoute>} />
-          <Route path="/payment" element={<ProtectedRoute><Payment/></ProtectedRoute>} />
-          <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess/></ProtectedRoute>} />
-          <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled/></ProtectedRoute>} />
-          <Route path="/confirmation-guest" element={<ProtectedRoute><ConfirmationGuest/></ProtectedRoute>} />
-          <Route path="/confirmation-member" element={<ProtectedRoute><ConfirmationMember/></ProtectedRoute>} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <NavBar />
+          <Routes>
+            <Route path="/otpverify" element={<ProtectedRoute><OTPVerification /></ProtectedRoute>} />
+            <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
+            <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
+            <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+            <Route path="/" element={<ProtectedRoute requireAuth={false}><Landing /></ProtectedRoute>} />
+            <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI /></ProtectedRoute>} />
+            <Route path="/pricing-plan" element={<ProtectedRoute requireAuth={false}><Pricing_Plan /></ProtectedRoute>} />
+            <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index /></ProtectedRoute>} />
+            <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage /></ProtectedRoute>} />
+            <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+            <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
+            <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled /></ProtectedRoute>} />
+            <Route path="/confirmation-guest" element={<ProtectedRoute><ConfirmationGuest /></ProtectedRoute>} />
+            <Route path="/confirmation-member" element={<ProtectedRoute><ConfirmationMember /></ProtectedRoute>} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

@@ -134,81 +134,85 @@
   src: url('/assets/fonts/Walbaum60ptLight.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Walbaum';
   src: url('/assets/fonts/Walbaum60ptLightItalic.ttf') format('truetype');
   font-weight: 300;
   font-style: italic;
-  }
+}
 
 @font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
-  }
-  
-  @font-face {
+}
+
+@font-face {
   font-family: 'Linear Grotesk';
   src: url('/assets/fonts/LinearGrotesk-Light.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
-  }
+}
 
-  .highlight-message {
-    background-color: #fef3c7 !important;
-    border: 2px solid #f59e0b !important;
-    transition: all 0.3s ease;
-  }
-  
-  .message-item {
-    transition: background-color 0.3s ease, border 0.3s ease;
-  }
+.highlight-message {
+  background-color: #fef3c7 !important;
+  border: 2px solid #f59e0b !important;
+  transition: all 0.3s ease;
+}
 
-  @media (max-width: 1024px) {
-    .fixed.top-5.right-5 {
-      position: relative !important;
-      top: 0 !important;
-      right: 0 !important;
-    }
-  }
+.message-item {
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
 
-  .sidebar-mobile {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 45;
+@media (max-width: 1024px) {
+  .fixed.top-5.right-5 {
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
   }
+}
 
-  @media (min-width: 1024px) {
-    .sidebar-desktop {
-      position: relative !important;
-      transform: none !important;
-      z-index: auto !important;
-    }
+.sidebar-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 45;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-desktop {
+    position: relative !important;
+    transform: none !important;
+    z-index: auto !important;
   }
-  * {
+}
+
+* {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Ensure proper box-sizing */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 /* Remove tap highlight on mobile */
-a, button {
+a,
+button {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -244,7 +248,31 @@ img {
   .flex {
     display: table;
   }
-  .flex > * {
+
+  .flex>* {
     display: table-cell;
   }
+}
+
+
+/* Custom scrollbar styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: #9ca3af #e5e7eb;
+  /* thumb color, track color */
+}
+
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #e5e7eb;
 }
