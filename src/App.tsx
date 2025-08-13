@@ -140,7 +140,7 @@ const App = () => (
             <Route
               path="/confirmation-guest"
               element={
-                <ProtectedRoute requireAuth={false}>
+                <ProtectedRoute>
                   <ConfirmationGuest />
                 </ProtectedRoute>
               }
@@ -148,7 +148,7 @@ const App = () => (
             <Route
               path="/confirmation-member"
               element={
-                <ProtectedRoute requireAuth={false}>
+                <ProtectedRoute>
                   <ConfirmationMember />
                 </ProtectedRoute>
               }
