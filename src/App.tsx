@@ -8,7 +8,6 @@ import OTPVerification from "./pages/OtpVerification";
 import Chat from "./pages/Chat";
 import HomePage from "./pages/HomePage";
 import COI from "./pages/COI";
-import Pricing_Plan from "./pages/Pricing_Plan";
 import Payment from "./pages/PaymentPage";
 import Auth from "./pages/Auth";
 import NavBar from "./components/layout/NavBar";

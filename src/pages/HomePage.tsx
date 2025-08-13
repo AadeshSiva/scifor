@@ -51,7 +51,7 @@ const PlusIcon: React.FC = () => (
   <img
     src="/assets/Plus.svg"
     alt="Plus"
-    style={{ 
+    style={{
       display: 'block',
       width: '24px',
       height: '24px',
@@ -66,7 +66,7 @@ const CloseIcon: React.FC = () => (
   <img
     src="/assets/Plus.svg"
     alt="Close"
-    style={{ 
+    style={{
       display: 'block',
       width: '24px',
       height: '24px',
@@ -184,7 +184,7 @@ const PricingPlan: React.FC = () => {
     }
   }, []);
 
-  const handleLearnMoreClick = (e: MouseEvent<HTMLAnchorElement>): void => {
+  const handleLearnMoreClick = (e: MouseEvent<HTMLDivElement>): void => {
     e.preventDefault();
     e.stopPropagation();
     console.log("Redirecting to JoinPage.tsx");
@@ -298,8 +298,8 @@ const PricingPlan: React.FC = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
+    <div style={{
+      minHeight: '100vh',
       backgroundColor: '#e5e7eb',
       paddingTop: windowWidth < 640 ? '16px' : windowWidth < 768 ? '32px' : '64px',
       paddingBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '32px' : '64px',
@@ -308,27 +308,27 @@ const PricingPlan: React.FC = () => {
     }}>
       <div style={{ maxWidth: '1536px', margin: '0 auto' }}>
         {/* Header Section */}
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: windowWidth < 640 ? '24px' : windowWidth < 768 ? '32px' : '64px' 
+        <div style={{
+          textAlign: 'center',
+          marginBottom: windowWidth < 640 ? '24px' : windowWidth < 768 ? '32px' : '64px'
         }}>
           <h1
             style={{
               fontFamily: 'walbaum, Georgia, "Times New Roman", Times, serif',
               fontWeight: 300,
               fontStyle: 'normal',
-              fontSize: windowWidth < 480 ? '28px' : 
-                        windowWidth < 640 ? '32px' : 
-                        windowWidth < 768 ? '36px' : 
-                        windowWidth < 1024 ? '42px' : 
-                        windowWidth < 1280 ? '48px' : 
+              fontSize: windowWidth < 480 ? '28px' :
+                windowWidth < 640 ? '32px' :
+                  windowWidth < 768 ? '36px' :
+                    windowWidth < 1024 ? '42px' :
+                      windowWidth < 1280 ? '48px' :
                         '56px',
               lineHeight: windowWidth < 480 ? '32px' :
-                          windowWidth < 640 ? '36px' :
-                          windowWidth < 768 ? '40px' :
-                          windowWidth < 1024 ? '46px' :
-                          windowWidth < 1280 ? '52px' :
-                          '60px',
+                windowWidth < 640 ? '36px' :
+                  windowWidth < 768 ? '40px' :
+                    windowWidth < 1024 ? '46px' :
+                      windowWidth < 1280 ? '52px' :
+                        '60px',
               color: '#374151',
               textAlign: 'center',
               marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '48px',
@@ -342,18 +342,18 @@ const PricingPlan: React.FC = () => {
             fontFamily: 'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             fontWeight: 200,
             fontStyle: 'normal',
-            fontSize: windowWidth < 480 ? '14px' : 
-                      windowWidth < 640 ? '16px' : 
-                      windowWidth < 768 ? '18px' : 
-                      windowWidth < 1024 ? '22px' : 
-                      windowWidth < 1280 ? '28px' : 
+            fontSize: windowWidth < 480 ? '14px' :
+              windowWidth < 640 ? '16px' :
+                windowWidth < 768 ? '18px' :
+                  windowWidth < 1024 ? '22px' :
+                    windowWidth < 1280 ? '28px' :
                       '32px',
             lineHeight: windowWidth < 480 ? '20px' :
-                        windowWidth < 640 ? '24px' :
-                        windowWidth < 768 ? '26px' :
-                        windowWidth < 1024 ? '32px' :
-                        windowWidth < 1280 ? '38px' :
-                        '43px',
+              windowWidth < 640 ? '24px' :
+                windowWidth < 768 ? '26px' :
+                  windowWidth < 1024 ? '32px' :
+                    windowWidth < 1280 ? '38px' :
+                      '43px',
             letterSpacing: '0%',
             textAlign: 'center',
             color: '#4b5563',
@@ -369,7 +369,7 @@ const PricingPlan: React.FC = () => {
         </div>
 
         <div style={containerStyle}>
-           <div style={cardsWrapperStyle}>
+          <div style={cardsWrapperStyle}>
 
             {/* Free Plan Card */}
             <div style={cardStyle}>
@@ -389,11 +389,11 @@ const PricingPlan: React.FC = () => {
                 } as CSSProperties}
               >
                 <div style={{ marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '32px' }}>
-                  <p style={{ 
-                    ...headerTextStyle, 
-                    color: '#d1d5db', 
-                    marginBottom: windowWidth < 640 ? '4px' : '8px', 
-                    textAlign: 'center' 
+                  <p style={{
+                    ...headerTextStyle,
+                    color: '#d1d5db',
+                    marginBottom: windowWidth < 640 ? '4px' : '8px',
+                    textAlign: 'center'
                   }}>
                     Become a
                   </p>
@@ -423,10 +423,10 @@ const PricingPlan: React.FC = () => {
                     </div>
                     <span style={{ ...headerTextStyle, color: '#d1d5db' }}>Guest</span>
                   </div>
-                  <h2 style={{ 
-                    ...priceTextStyle, 
-                    marginBottom: windowWidth < 640 ? '8px' : '16px', 
-                    textAlign: 'center' 
+                  <h2 style={{
+                    ...priceTextStyle,
+                    marginBottom: windowWidth < 640 ? '8px' : '16px',
+                    textAlign: 'center'
                   }}>
                     Free
                   </h2>
@@ -454,11 +454,11 @@ const PricingPlan: React.FC = () => {
                           marginBottom: windowWidth < 640 ? '12px' : windowWidth < 768 ? '16px' : '20px'
                         } as CSSProperties}
                       >
-                        <div style={{ 
-                          flexShrink: 0, 
-                          WebkitFlexShrink: 0, 
-                          msFlexNegative: 0, 
-                          marginTop: '4px' 
+                        <div style={{
+                          flexShrink: 0,
+                          WebkitFlexShrink: 0,
+                          msFlexNegative: 0,
+                          marginTop: '4px'
                         } as CSSProperties}>
                           <TickIcon />
                         </div>
@@ -498,8 +498,22 @@ const PricingPlan: React.FC = () => {
                     marginTop: 'auto',
                     marginLeft: windowWidth < 640 ? '-4px' : '-8px',
                     marginRight: windowWidth < 640 ? '-4px' : '-8px',
-                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)'
+                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    WebkitTransition: 'all 0.3s ease',
+                    MozTransition: 'all 0.3s ease',
+                    msTransition: 'all 0.3s ease'
                   } as CSSProperties}
+                  onClick={handleLearnMoreClick}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(244, 164, 96, 0.1)';
+                    e.currentTarget.style.borderColor = '#F4A460';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.borderColor = saffronColor;
+                  }}
                 >
                   <div
                     style={{
@@ -509,7 +523,8 @@ const PricingPlan: React.FC = () => {
                       WebkitAlignItems: 'center',
                       msFlexAlign: 'center',
                       gap: windowWidth < 640 ? '4px' : '8px',
-                      marginBottom: windowWidth < 640 ? '8px' : '12px'
+                      marginBottom: windowWidth < 640 ? '8px' : '12px',
+                      pointerEvents: 'none'
                     } as CSSProperties}
                   >
                     <div
@@ -524,21 +539,17 @@ const PricingPlan: React.FC = () => {
                     </div>
                     <span style={{ ...bottomBoxTextStyle, color: '#d1d5db' }}>Guest</span>
                   </div>
-                  <a
-                    href="#"
-                    onClick={handleLearnMoreClick}
-                    style={{ 
+                  <span
+                    style={{
                       color: saffronColor,
                       fontSize: '12px',
                       fontWeight: 500,
                       textDecoration: 'none',
-                      cursor: 'pointer'
+                      pointerEvents: 'none'
                     }}
-                    onMouseOver={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
-                    onMouseOut={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
                   >
                     Click to Learn More
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -561,11 +572,11 @@ const PricingPlan: React.FC = () => {
                 } as CSSProperties}
               >
                 <div style={{ marginBottom: windowWidth < 640 ? '16px' : windowWidth < 768 ? '24px' : '32px' }}>
-                  <p style={{ 
-                    ...headerTextStyle, 
-                    color: '#6b7280', 
-                    marginBottom: windowWidth < 640 ? '4px' : '8px', 
-                    textAlign: 'center' 
+                  <p style={{
+                    ...headerTextStyle,
+                    color: '#6b7280',
+                    marginBottom: windowWidth < 640 ? '4px' : '8px',
+                    textAlign: 'center'
                   }}>
                     Become a
                   </p>
@@ -595,9 +606,9 @@ const PricingPlan: React.FC = () => {
                     </div>
                     <span style={{ ...headerTextStyle, color: '#4b5563' }}>Member</span>
                   </div>
-                  <h2 style={{ 
-                    ...priceTextStyle, 
-                    marginBottom: windowWidth < 640 ? '8px' : '16px', 
+                  <h2 style={{
+                    ...priceTextStyle,
+                    marginBottom: windowWidth < 640 ? '8px' : '16px',
                     textAlign: 'center',
                     color: '#111827'
                   }}>
@@ -627,11 +638,11 @@ const PricingPlan: React.FC = () => {
                           marginBottom: windowWidth < 640 ? '12px' : windowWidth < 768 ? '16px' : '20px'
                         } as CSSProperties}
                       >
-                        <div style={{ 
-                          flexShrink: 0, 
-                          WebkitFlexShrink: 0, 
-                          msFlexNegative: 0, 
-                          marginTop: '4px' 
+                        <div style={{
+                          flexShrink: 0,
+                          WebkitFlexShrink: 0,
+                          msFlexNegative: 0,
+                          marginTop: '4px'
                         } as CSSProperties}>
                           <TickBlackIcon />
                         </div>
@@ -672,8 +683,22 @@ const PricingPlan: React.FC = () => {
                     marginTop: 'auto',
                     marginLeft: windowWidth < 640 ? '-4px' : '-8px',
                     marginRight: windowWidth < 640 ? '-4px' : '-8px',
-                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)'
+                    width: windowWidth < 640 ? 'calc(100% + 8px)' : 'calc(100% + 16px)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    WebkitTransition: 'all 0.3s ease',
+                    MozTransition: 'all 0.3s ease',
+                    msTransition: 'all 0.3s ease'
                   } as CSSProperties}
+                  onClick={handleLearnMoreClick}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1a1a1a'; // Slight grey shade
+                    e.currentTarget.style.borderColor = '#F4A460';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = 'black';
+                    e.currentTarget.style.borderColor = saffronColor;
+                  }}
                 >
                   <div
                     style={{
@@ -683,7 +708,8 @@ const PricingPlan: React.FC = () => {
                       WebkitAlignItems: 'center',
                       msFlexAlign: 'center',
                       gap: windowWidth < 640 ? '4px' : '8px',
-                      marginBottom: windowWidth < 640 ? '8px' : '12px'
+                      marginBottom: windowWidth < 640 ? '8px' : '12px',
+                      pointerEvents: 'none'
                     } as CSSProperties}
                   >
                     <div
@@ -699,21 +725,17 @@ const PricingPlan: React.FC = () => {
                     </div>
                     <span style={{ ...bottomBoxTextStyle, color: '#d1d5db' }}>Member</span>
                   </div>
-                  <a
-                    href="#"
-                    onClick={handleLearnMoreClick}
-                    style={{ 
+                  <span
+                    style={{
                       color: saffronColor,
                       fontSize: '12px',
                       fontWeight: 500,
                       textDecoration: 'none',
-                      cursor: 'pointer'
+                      pointerEvents: 'none'
                     }}
-                    onMouseOver={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
-                    onMouseOut={(e: MouseEvent<HTMLAnchorElement>) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
                   >
                     Click to Learn More
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -774,29 +796,29 @@ const FAQSection: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <div className="mb-4 sm:mb-6 md:mb-12" />
         <h2
-  className="text-center mb-4 sm:mb-6 md:mb-12"
-  style={{ 
-    fontFamily: 'walbaum', 
-    color: '#9ca3af',
-    fontSize: windowWidth < 480 ? '24px' : 
-              windowWidth < 640 ? '28px' : 
-              windowWidth < 768 ? '32px' : 
-              windowWidth < 1024 ? '38px' : 
-              windowWidth < 1280 ? '44px' : 
-              '52px',
-    lineHeight: windowWidth < 480 ? '28px' :
-                windowWidth < 640 ? '32px' :
+          className="text-center mb-4 sm:mb-6 md:mb-12"
+          style={{
+            fontFamily: 'walbaum',
+            color: '#9ca3af',
+            fontSize: windowWidth < 480 ? '24px' :
+              windowWidth < 640 ? '28px' :
+                windowWidth < 768 ? '32px' :
+                  windowWidth < 1024 ? '38px' :
+                    windowWidth < 1280 ? '44px' :
+                      '52px',
+            lineHeight: windowWidth < 480 ? '28px' :
+              windowWidth < 640 ? '32px' :
                 windowWidth < 768 ? '36px' :
-                windowWidth < 1024 ? '42px' :
-                windowWidth < 1280 ? '48px' :
-                '56px',
-    fontWeight: 300,
-    WebkitFontSmoothing: 'antialiased',
-    MozOsxFontSmoothing: 'grayscale'
-  } as CSSProperties}
->
-  Frequently Asked Questions
-</h2>
+                  windowWidth < 1024 ? '42px' :
+                    windowWidth < 1280 ? '48px' :
+                      '56px',
+            fontWeight: 300,
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale'
+          } as CSSProperties}
+        >
+          Frequently Asked Questions
+        </h2>
 
         <div className="py-8 sm:py-12 md:py-16">
           <div className="space-y-2 sm:space-y-3 md:space-y-4">
@@ -866,78 +888,78 @@ const Footer: React.FC = () => {
     <footer
       className="bg-black text-white w-full"
       style={{
-      height:
-        windowWidth < 768
-        ? "500px"
-        : "400px"
+        height:
+          windowWidth < 768
+            ? "500px"
+            : "400px"
       }}
     >
       <div className="w-full h-auto px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
-      <div className="max-w-7xl mx-auto h-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12 h-full">
+        <div className="max-w-7xl mx-auto h-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12 h-full">
 
-        {/* First Column - Logo and Tagline */}
-        <div className="flex flex-col justify-start">
-          {/* Logo */}
-          <div className="mb-6 sm:mb-8 md:mb-12">
-          <img
-            src="assets/Logo.svg"
-            alt="PRSPERA Logo"
-            className="h-6 sm:h-7 md:h-8 w-auto"
-          />
+          {/* First Column - Logo and Tagline */}
+<div className="flex flex-col justify-start items-start">
+  {/* Logo */}
+  <div className="mb-6 sm:mb-8 md:mb-12">
+    <img
+      src="assets/Logo.svg"
+      alt="PRSPERA Logo"
+      className="h-6 sm:h-7 md:h-8 w-auto"
+    />
+  </div>
+
+  {/* Tagline */}
+  <h2 className="leading-tight text-left" style={taglineStyle}>
+    Grow Smarter. <span className="font-bold">Exit Richer</span>
+    <sup className="text-xs sm:text-lg md:text-xl">™</sup>
+  </h2>
+</div>
+
+            {/* Second Column */}
+            <div className="hidden  flex-col space-y-4 sm:space-y-5 md:space-y-6">
+              <a
+                href="/support"
+                className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+                style={linkStyle}
+              >
+                Support
+              </a>
+              <a
+                href="/privacy-policy"
+                className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+                style={linkStyle}
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="/acceptable-use-policy"
+                className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+                style={linkStyle}
+              >
+                Acceptable Use of Policy
+              </a>
+            </div>
+
+            {/* Third Column*/}
+            <div className="hidden  flex-col space-y-4 sm:space-y-5 md:space-y-6">
+              <a
+                href="/sales-terms"
+                className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+                style={linkStyle}
+              >
+                Sales Terms And Condition
+              </a>
+              <a
+                href="/website-terms"
+                className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
+                style={linkStyle}
+              >
+                Website Terms And Condition
+              </a>
+            </div>
           </div>
-
-          {/* Tagline */}
-          <h2 className="leading-tight" style={taglineStyle}>
-          Grow Smarter. <span className="font-bold">Exit Richer</span>
-          <sup className="text-xs sm:text-lg md:text-xl">™</sup>
-          </h2>
         </div>
-
-        {/* Second Column */}
-        <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
-          <a
-          href="/support"
-          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
-          style={linkStyle}
-          >
-          Support
-          </a>
-          <a
-          href="/privacy-policy"
-          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
-          style={linkStyle}
-          >
-          Privacy Policy
-          </a>
-          <a
-          href="/acceptable-use-policy"
-          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
-          style={linkStyle}
-          >
-          Acceptable Use of Policy
-          </a>
-        </div>
-
-        {/* Third Column*/}
-        <div className="flex flex-col space-y-4 sm:space-y-5 md:space-y-6">
-          <a
-          href="/sales-terms"
-          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
-          style={linkStyle}
-          >
-          Sales Terms And Condition
-          </a>
-          <a
-          href="/website-terms"
-          className="text-white hover:text-gray-300 transition-colors duration-200 font-normal"
-          style={linkStyle}
-          >
-          Website Terms And Condition
-          </a>
-        </div>
-        </div>
-      </div>
       </div>
     </footer>
   );
