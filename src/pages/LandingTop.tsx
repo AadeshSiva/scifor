@@ -70,17 +70,17 @@ const StorySection: React.FC = () => {
 
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
                     <div className="w-full lg:w-1/2 flex justify-center">
-    <div className="relative w-full max-w-lg">
-        <div className="relative pb-[100%]"> {/* This creates a 1:1 aspect ratio container */}
-            <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-xl"
-                src="https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/preview"
-                allow="autoplay; fullscreen"
-                allowFullScreen
-            ></iframe>
-        </div>
-    </div>
-</div>
+                        <div className="relative w-full max-w-lg">
+                            <div className="relative pb-[100%]"> {/* This creates a 1:1 aspect ratio container */}
+                                <iframe
+                                    className="absolute top-0 left-0 w-full h-full rounded-xl"
+                                    src="https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/preview"
+                                    allow="autoplay; fullscreen"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="w-full lg:w-1/2 text-left mt-6 lg:mt-0">
                         <p className="text-3xl mb-4">Your invited to win a chance to meet Jeff Cullen</p>
