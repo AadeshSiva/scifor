@@ -8,7 +8,6 @@ import OTPVerification from "./pages/OtpVerification";
 import Chat from "./pages/Chat";
 import HomePage from "./pages/HomePage";
 import COI from "./pages/COI";
-import Pricing_Plan from "./pages/Pricing_Plan";
 import Payment from "./pages/PaymentPage";
 import Auth from "./pages/Auth";
 import NavBar from "./components/layout/NavBar";
@@ -21,6 +20,7 @@ import PaymentCancelled from "./pages/PaymentCancelled";
 import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
+import Pricing_Plan from './pages/Pricing_Plan'
 
 const queryClient = new QueryClient();
 
@@ -42,6 +42,7 @@ const App = () => (
             <Route path="/pricing-plan" element={<ProtectedRoute requireAuth={false}><Pricing_Plan /></ProtectedRoute>} />
             <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index /></ProtectedRoute>} />
             <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage /></ProtectedRoute>} />
+            <Route path="/pricing-page" element={<ProtectedRoute requireAuth={false}><Pricing_Plan /></ProtectedRoute>} />
             <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
             <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
             <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled /></ProtectedRoute>} />

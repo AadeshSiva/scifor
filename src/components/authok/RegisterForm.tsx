@@ -554,23 +554,32 @@ export function RegisterForm({
     }));
   };
 
-  // Restore form data from sessionStorage on component mount
-  useEffect(() => {
-    const savedFormData = sessionStorage.getItem("registrationFormData");
-
-    if (savedFormData) {
-      try {
-        const parsedData = JSON.parse(savedFormData);
-        setFormData(parsedData);
-        sessionStorage.removeItem("registrationFormData");
-      } catch (error) {
-        console.error("Error parsing saved form data:", error);
-      }
-    }
-  }, []);
-
   return (
     <div className="flex flex-col gap-4">
+      {/* Close icon for registration popup */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={handleLoginClick}
+          className="text-gray-500 hover:text-gray-700 transition-colors"
+          disabled={loading}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
       {errors.general && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           {errors.general}
@@ -673,9 +682,9 @@ export function RegisterForm({
         <PhoneInput
           value={formData.phone_number}
           onChange={handlePhoneChange}
-          onBlur={handlePhoneBlur}
+          // onBlur={handlePhoneBlur}
           error={fieldTouched.phone_number ? errors.phone_number : undefined}
-          disabled={loading}
+          // disabled={loading}
         />
       </div>
 
@@ -749,13 +758,35 @@ export function RegisterForm({
         </span>
       </div>
 
-      {/* Enhanced OTP Modal */}
+      {/* Enhanced OTP Modal with back icon */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-            <h2 className="text-center text-3xl font-bold mb-6">
-              OTP Verification
-            </h2>
+            {/* Header with back icon */}
+            <div className="flex items-center justify-between mb-6">
+              <button
+                type="button"
+                onClick={() => setShowOtpModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                disabled={otpLoading}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+              </button>
+              <h2 className="text-3xl font-bold">OTP Verification</h2>
+              <div className="w-6"></div> {/* Spacer for center alignment */}
+            </div>
 
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
@@ -857,4 +888,4 @@ export function RegisterForm({
       )}
     </div>
   );
-};
+}
