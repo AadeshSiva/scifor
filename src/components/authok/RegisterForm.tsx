@@ -373,45 +373,99 @@ export function RegisterForm({
       throw error;
     }
   };
-
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-
-    // Mark all fields as touched
-    setFieldTouched({
-      full_name: true,
-      email: true,
-      password: true,
-      confirmPassword: true,
-      phone_number: true,
-      website_name: true,
+  const sendOtp = async () => {
+  try {
+    const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
+      email: formData.email,
     });
+    if (otpData.status === "success") {
+      setShowOtpModal(true);
+      setOtp(["", "", "", "", "", ""]);
+      setTimer(300); // Reset timer to 5 minutes
+    } else {
+      setErrors({ general: otpData.message });
+    }
+  } catch (error) {
+    setErrors({
+      general:
+        error instanceof Error
+          ? error.message
+          : "Failed to send OTP. Please try again.",
+    });
+  }
+};
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  e.preventDefault();
+
+  setFieldTouched({
+    full_name: true,
+    email: true,
+    password: true,
+    confirmPassword: true,
+    phone_number: true,
+    website_name: true,
+  });
+
+  const validationErrors = validateForm();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setLoading(true);
+  setErrors({});
+
+  try {
+    // First check if email already exists
+    const checkData: CheckEmailResponse = await makeApiCall(
+      "/check_email_status/",
+      { email: formData.email }
+    );
+
+    if (checkData.user_exists) {
+      setErrors({ email: checkData.message });
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setErrors({});
+    // Send OTP for email verification (do NOT register yet)
+    await sendOtp();
+  } catch (error) {
+    console.error("Registration error:", error);
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Network error. Please try again.";
+    setErrors({ general: errorMessage });
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      // First check if email already exists
-      const checkData: CheckEmailResponse = await makeApiCall(
-        "/check_email_status/",
-        {
-          email: formData.email,
-        }
-      );
+const handleOtpSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+): Promise<void> => {
+  e.preventDefault();
 
-      if (checkData.user_exists) {
-        setErrors({ email: checkData.message });
-        setLoading(false);
-        return;
-      }
+  const otpCode = otp.join("");
+  if (!otpCode || otpCode.length !== 6) {
+    setErrors({ otp: "Please enter the complete 6-digit OTP" });
+    return;
+  }
 
-      // Proceed with registration
+  setOtpLoading(true);
+  setErrors({});
+
+  try {
+    // Verify OTP first
+    const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
+      email: formData.email,
+      otp: otpCode,
+    });
+
+    if (verifyData.status === "success") {
+      // Now register the user
       const registerPayload = {
         email: formData.email,
         password: formData.password,
@@ -421,119 +475,36 @@ export function RegisterForm({
         no_linkedin: true,
       };
 
-      console.log("Sending registration payload:", {
-        ...registerPayload,
-        password: "[REDACTED]",
-      });
-
       const registerData: RegisterResponse = await makeApiCall(
         "/register/",
         registerPayload
       );
 
       if (registerData.status === "success") {
-        // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
-          console.log(
-            "Registration successful with tokens:",
-            registerData.message
-          );
         }
-
-        // Send OTP for email verification
-        await sendOtp();
-      } else {
-        setErrors({ general: registerData.message });
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Network error. Please try again.";
-      setErrors({ general: errorMessage });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const sendOtp = async (): Promise<void> => {
-    try {
-      const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
-        email: formData.email,
-      });
-
-      if (otpData.status === "success") {
-        setShowOtpModal(true);
-        setTimer(300); // Reset timer to 5 minutes
-        setOtp(["", "", "", "", "", ""]); // Reset OTP fields
-      } else {
-        setErrors({ general: otpData.message });
-      }
-    } catch (error) {
-      console.error("OTP send error:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to send OTP. Please try again.";
-      setErrors({ general: errorMessage });
-    }
-  };
-
-  const handleOtpSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-
-    const otpCode = otp.join("");
-    if (!otpCode || otpCode.length !== 6) {
-      setErrors({ otp: "Please enter the complete 6-digit OTP" });
-      return;
-    }
-
-    setOtpLoading(true);
-    setErrors({});
-
-    try {
-      const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
-        email: formData.email,
-        otp: otpCode,
-      });
-
-      if (verifyData.status === "success") {
-        console.log("Registration and email verification successful!");
         navigate("/successfullyregistered");
       } else {
-        setErrors({ otp: verifyData.message });
+        setErrors({ otp: registerData.message });
       }
-    } catch (error) {
-      console.error("OTP verification error:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to verify OTP. Please try again.";
-      setErrors({ otp: errorMessage });
-    } finally {
-      setOtpLoading(false);
+    } else {
+      setErrors({ otp: verifyData.message });
     }
-  };
-
-  const resendOtp = async (): Promise<void> => {
-    setOtpLoading(true);
-    try {
-      await sendOtp();
-      console.log("OTP resent successfully!");
-    } catch (error) {
-      setErrors({ otp: "Failed to resend OTP" });
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
+  } catch (error) {
+    console.error("OTP verification error:", error);
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to verify OTP. Please try again.";
+    setErrors({ otp: errorMessage });
+  } finally {
+    setOtpLoading(false);
+  }
+};
   const handleLoginClick = (): void => {
-    onSwitchToLogin();
-  };
+  navigate("/");
+};
 
   const handlePhoneChange = (value: string): void => {
     setFormData((prev) => ({ ...prev, phone_number: value }));
@@ -748,7 +719,7 @@ export function RegisterForm({
         )}
       </button>
 
-      <div className="text-center text-lg italic text-gray-500 mt-6">
+      {/* <div className="text-center text-lg italic text-gray-500 mt-6">
         <span>Already have an account? </span>
         <span
           className="text-black cursor-pointer hover:underline"
@@ -756,7 +727,7 @@ export function RegisterForm({
         >
           Login
         </span>
-      </div>
+      </div> */}
 
       {/* Enhanced OTP Modal with back icon */}
       {showOtpModal && (

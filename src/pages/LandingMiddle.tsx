@@ -137,8 +137,8 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
 
 function DropdownSection() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 mb-8">
-      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white text-center px-4">
+    <div >
+      {/* <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white text-center px-4">
         <img
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
           alt="PRSPERA Logo"
@@ -169,9 +169,9 @@ function DropdownSection() {
         >
           Click offerings to learn more
         </a>
-      </div>
+      </div> */}
 
-      <div className="mt-12 sm:mt-20 space-y-4 sm:space-y-6">
+      {/* <div className="mt-12 sm:mt-20 space-y-4 sm:space-y-6">
         <Dropdown id={1} />
         <Dropdown id={2} />
         <Dropdown id={3} />
@@ -184,7 +184,7 @@ function DropdownSection() {
         <Dropdown id={10} />
         <Dropdown id={11} />
         <Dropdown id={12} />
-      </div>
+      </div> */}
     </div>
   );
 }

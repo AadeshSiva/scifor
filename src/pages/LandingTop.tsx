@@ -118,161 +118,80 @@ const StorySection: React.FC = () => {
         </button>
       </div>
 
-      <div className="max-w-6xl mx-auto text-center mt-20">
-        <div className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin mb-16">
-          <h1 className="font-thin">Jeff's dream came true.</h1>
-          <h1 className="font-normal mt-5">How about yours?</h1>
-          <p className="font-linear font-thin text-3xl mt-10">
-            Find out how he and his team did it.
-          </p>
-        </div>
+        {/* Webinar Agenda */}
+            {/* <div className="max-w-6xl mx-auto text-center mt-20">
+                <div className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin mb-16">
+                    <h1 className="font-thin">From dream to done</h1>
+                    <h1 className="font-normal mt-5">with six words or less.</h1>
+                    <p className="font-linear font-thin text-3xl mt-10">
+                        Find out how he and his team did it.
+                    </p>
+                </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 text-left">
-          <div className="w-full lg:w-1/2">
-            {/* <img
-              src="https://placehold.co/400x600"
-              alt="Jeff Cullen and another person standing next to a private jet"
-              className="w-full rounded-lg"
-            /> */}
-            <img
-              src={JetImg}
-              alt="Jeff Cullen and his wife"
-              className="w-full rounded-lg"
-            />
-          </div>
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-8 text-left">
+                    <div className="w-full lg:w-1/2">
+                        <img src={WebinarImg} alt="Jeff Cullen" className="w-full rounded-lg" />
+                    </div>
 
-          <div className="w-full lg:w-1/2 space-y-4 text-sm font-light">
-            <h1 className="text-6xl font-thin">Jeff Cullen</h1>
+                    <div className="w-full lg:w-1/2 space-y-4 text-sm font-light">
+                        <h1 className="text-6xl font-thin">Webinar Agenda</h1>
 
-            <div className="font-medium text-xl">
-              <p>Canadian Entrepreneur</p>
-              <p>Founder, Former CEO of Rodair</p>
-              <p className="mt-6">
-                Jeff and his team didn’t just build a company called Rodair —​
-                they created a buisness with marketable value —​ driven by
-                <span className="text-black font-semibold">
-                  {" "}
-                  Prosperity For All <span style={{ fontSize: "1.8rem" }}>™</span>.
-                </span>
-              </p>
-              <div className="font-semibold text-black">
-                <p className="mt-6">Prosperity For All <span style={{ fontSize: "1.8rem" }}>™</span>.</p>
-                <p>
-                  This was not a slogan or mission statement. This was the DNA
-                  of their business in 6 words or less - also known as their
-                  <span className="text-white">
-                    {" "}
-                    Unifying Philosophy (UPh ™).
-                  </span>
-                </p>
-              </div>
+                        <div className="text-black text-xl font-semibold">
+                            <ol style={{ listStyleType: "decimal" }} className="ml-6">
+                                <li className="mb-4">
+                                    The Prosperity Playbook{" "}
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                                <li className="mb-4">
+                                    The UPh Story: Prosperity for all
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                                <li className="mb-4">
+                                    RODAIR: Before vs. After UPh™
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                                <li className="mb-4">
+                                    Always Buyer Ready
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                                <li className="mb-4">
+                                    Always Exit Ready
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                                <li className="mb-4">
+                                    Prosperity Post Exit
+                                    <button className="flex gap-2 text-white font-medium">
+                                        <CircleArrowDown />
+                                        Click to reveal
+                                    </button>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
 
-              <p className="mt-6">Their UPh powered business was an:</p>
-              <ul style={{ listStyleType: "disc" }} className="ml-6">
-                <li>Award-winning (multiple business awards)</li>
-                <li>High-margin (25% higher than industry) </li>
-                <li>culture-led business (near perfect engagement)</li>
-              </ul>
-              <p>
-                resulting in a double-digit Multiplier exit that monetized,
-                intangible assets—tax efficiently.
-              </p>
-
-              <p className="text-black font-semibold mt-6">
-                Rodair's Prosperity For All became a world-first: the first UPh
-                operationalized business that maximized enterprise value via
-                their intangible assets, was remarkably monetized all tax
-                effectively - creating generational wealth.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={handleRegisterClick}
-          className="text-xl bg-foreground text-[#DBA958] px-8 py-4 mt-14 font-semibold rounded-lg hover:bg-primary transition-colors duration-300"
-        >
-          Register For The Webinar
-        </button>
-      </div>
-
-      <div className="max-w-6xl mx-auto text-center mt-20">
-        <div className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin mb-16">
-          <h1 className="font-thin">From dream to done</h1>
-          <h1 className="font-normal mt-5">with six words or less.</h1>
-          <p className="font-linear font-thin text-3xl mt-10">
-            Find out how he and his team did it.
-          </p>
-        </div>
-
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 text-left">
-          <div className="w-full lg:w-1/2">
-            <img
-              src={WebinarImg}
-              alt="Jeff Cullen"
-              className="w-full rounded-lg"
-            />
-          </div>
-
-          <div className="w-full lg:w-1/2 space-y-4 text-sm font-light">
-            <h1 className="text-6xl font-thin">Webinar Agenda</h1>
-
-            <div className="text-black text-xl font-semibold">
-              <ol style={{ listStyleType: "decimal" }} className="ml-6">
-                <li className="mb-4">
-                  The Prosperity Playbook{" "}
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-                <li className="mb-4">
-                  The UPh Story: Prosperity for all
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-                <li className="mb-4">
-                  RODAIR: Before vs. After UPh™
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-                <li className="mb-4">
-                  Always Buyer Ready
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-                <li className="mb-4">
-                  Always Exit Ready
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-                <li className="mb-4">
-                  Prosperity Post Exit
-                  <button className="flex gap-2 text-white font-medium">
-                    <CircleArrowDown />
-                    Click to reveal
-                  </button>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={handleRegisterClick}
-          className="text-xl bg-foreground text-[#DBA958] px-8 py-4 mt-14 font-semibold rounded-lg hover:bg-primary transition-colors duration-300"
-        >
-          Register For The Webinar
-        </button>
-      </div>
+                <button
+                    onClick={handleRegisterClick}
+                    className="text-xl bg-foreground text-[#DBA958] px-8 py-4 mt-14 font-semibold rounded-lg hover:bg-primary transition-colors duration-300"
+                >
+                    Register For The Webinar
+                </button>
+            </div> */}
     </div>
   );
 };
