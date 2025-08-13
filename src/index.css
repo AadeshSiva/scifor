@@ -51,6 +51,9 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  ::-webkit-scrollbar{
+    display: none;
+  }
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
