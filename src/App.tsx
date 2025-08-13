@@ -21,7 +21,6 @@ import PaymentCancelled from "./pages/PaymentCancelled";
 import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
-import Pricing_Plan from './pages/Pricing_Plan'
 
 const queryClient = new QueryClient();
 
@@ -34,21 +33,126 @@ const App = () => (
         <BrowserRouter>
           <NavBar />
           <Routes>
-            <Route path="/otpverify" element={<ProtectedRoute><OTPVerification /></ProtectedRoute>} />
-            <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
-            <Route path="*" element={<ProtectedRoute requireAuth={false}><NotFound /></ProtectedRoute>} />
-            <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-            <Route path="/" element={<ProtectedRoute requireAuth={false}><Landing /></ProtectedRoute>} />
-            <Route path="/coi" element={<ProtectedRoute requireAuth={false}><COI /></ProtectedRoute>} />
-            <Route path="/pricing-plan" element={<ProtectedRoute requireAuth={false}><Pricing_Plan /></ProtectedRoute>} />
-            <Route path="/meeting" element={<ProtectedRoute requireAuth={false}><Index /></ProtectedRoute>} />
-            <Route path="/article" element={<ProtectedRoute requireAuth={false}><ArticlePage /></ProtectedRoute>} />
-            <Route path="/pricing-page" element={<ProtectedRoute requireAuth={false}><Pricing_Plan /></ProtectedRoute>} />
-            <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-            <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
-            <Route path="/payment-cancelled" element={<ProtectedRoute><PaymentCancelled /></ProtectedRoute>} />
-            <Route path="/confirmation-guest" element={<ProtectedRoute><ConfirmationGuest /></ProtectedRoute>} />
-            <Route path="/confirmation-member" element={<ProtectedRoute><ConfirmationMember /></ProtectedRoute>} />
+            <Route
+              path="/otpverify"
+              element={
+                <ProtectedRoute>
+                  <OTPVerification />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/auth"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Auth />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <NotFound />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <Chat />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Landing />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/coi"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <COI />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pricing-plan"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Pricing_Plan />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meeting"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/article"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ArticlePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pricing-page"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Pricing_Plan />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <Payment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment-success"
+              element={
+                <ProtectedRoute>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment-cancelled"
+              element={
+                <ProtectedRoute>
+                  <PaymentCancelled />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/confirmation-guest"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ConfirmationGuest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/confirmation-member"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ConfirmationMember />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

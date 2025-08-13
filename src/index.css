@@ -97,69 +97,69 @@
 
   body {
     @apply bg-background text-foreground;
-    @apply font-linear
+    @apply font-linear;
   }
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60pt.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60pt.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60ptBold.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60ptBold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60ptItalic.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60ptItalic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60ptBoldItalic.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60ptBoldItalic.ttf") format("truetype");
   font-weight: 700;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60ptLight.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60ptLight.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Walbaum';
-  src: url('/assets/fonts/Walbaum60ptLightItalic.ttf') format('truetype');
+  font-family: "Walbaum";
+  src: url("/assets/fonts/Walbaum60ptLightItalic.ttf") format("truetype");
   font-weight: 300;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Linear Grotesk';
-  src: url('/assets/fonts/LinearGrotesk-Regular.otf') format('opentype');
+  font-family: "Linear Grotesk";
+  src: url("/assets/fonts/LinearGrotesk-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Linear Grotesk';
-  src: url('/assets/fonts/LinearGrotesk-Bold.otf') format('opentype');
+  font-family: "Linear Grotesk";
+  src: url("/assets/fonts/LinearGrotesk-Bold.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Linear Grotesk';
-  src: url('/assets/fonts/LinearGrotesk-Light.otf') format('opentype');
+  font-family: "Linear Grotesk";
+  src: url("/assets/fonts/LinearGrotesk-Light.otf") format("opentype");
   font-weight: 300;
   font-style: normal;
 }
@@ -229,11 +229,12 @@ html {
 
 /* Font fallbacks */
 .font-walbaum {
-  font-family: 'Walbaum', Georgia, 'Times New Roman', serif;
+  font-family: "Walbaum", Georgia, "Times New Roman", serif;
 }
 
 .font-linear {
-  font-family: 'Linear Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Linear Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Ensure images are responsive */
@@ -249,11 +250,10 @@ img {
     display: table;
   }
 
-  .flex>* {
+  .flex > * {
     display: table-cell;
   }
 }
-
 
 /* Custom scrollbar styles */
 .custom-scrollbar {
@@ -282,9 +282,9 @@ img {
       z-index: auto !important;
     }
   }
+}
 
-
-  /* Custom scrollbar styles */
+/* Custom scrollbar styles */
 .custom-scrollbar {
   scrollbar-width: thin;
   /* Firefox */
