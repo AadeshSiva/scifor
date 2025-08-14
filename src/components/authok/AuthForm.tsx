@@ -6,7 +6,7 @@ import { RegisterForm } from "./RegisterForm";
 type Tab = "login" | "register";
 
 export function AuthForm({
-  initialTab = "login",
+  initialTab = "register",
   onSuccess,
   compact = false,
 }: {
@@ -29,7 +29,7 @@ export function AuthForm({
   return (
     <Wrapper>
       <div className="w-full max-w-[700px] max-h-[95vh] overflow-y-auto shadow-lg bg-white px-6 py-4 rounded-2xl sm:px-8 sm:py-6">
-        <div className="flex mb-6 border-b border-gray-300">
+        {/* <div className="flex mb-6 border-b border-gray-300">
           {(["login", "register"] as Tab[]).map((tab) => (
             <button
               key={tab}
@@ -42,19 +42,23 @@ export function AuthForm({
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
+        </div> */}
+        <div className="flex mb-6 border-b border-gray-300 py-5 font-semibold border-b-4 text-2xl">
+          {activeTab === "login" ? "Login" : "Register"} here
         </div>
-
         {activeTab === "login" ? (
           <LoginForm
             onSwitchToRegister={() => setActiveTab("register")}
             onSuccess={onSuccess}
           />
         ) : (
-          <RegisterForm
-            onSwitchToLogin={() => setActiveTab("login")}
-            onSuccess={onSuccess}
-          />
+         <RegisterForm
+          onSwitchToLogin={() => setActiveTab("login")}
+          onSuccess={onSuccess}
+        />
         )}
+        
+        
       </div>
     </Wrapper>
   );

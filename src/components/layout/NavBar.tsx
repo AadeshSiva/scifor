@@ -216,7 +216,7 @@ const NavBar: React.FC = () => {
                 navigate("/auth");
               }}
             >
-              Login
+              Register
             </button>
           )}
         </header>
