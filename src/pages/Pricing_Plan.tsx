@@ -91,23 +91,23 @@ const Pricing_Plan: React.FC = () => {
     openAuth('guest');
   };
 
- const handlePaidClick = async () => {
-  setBusy(true);
-  const status = await getUserStatus();
-  setBusy(false);
+  const handlePaidClick = async () => {
+    setBusy(true);
+    const status = await getUserStatus();
+    setBusy(false);
 
-  if (!status.authenticated) {
-    openAuth('member');
-    return;
-  }
-  if (status.isMember) {
-    window.location.href = '/confirmation-member';
-    return;
-  }
-  
-  // For authenticated non-members, redirect directly to payment page
-  window.location.href = PAYMENT_PAGE;
-};
+    if (!status.authenticated) {
+      openAuth('member');
+      return;
+    }
+    if (status.isMember) {
+      window.location.href = '/confirmation-member';
+      return;
+    }
+
+    // For authenticated non-members, redirect directly to payment page
+    window.location.href = PAYMENT_PAGE;
+  };
 
   const menuItems: string[] = [
     'CROSSCHECK',
@@ -266,6 +266,7 @@ const Pricing_Plan: React.FC = () => {
 
   return (
     <section className="bg-white h-auto ">
+
       <h1 className=" text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum mt-12  ">
         The World’s One and Only <br />
         Fact-Based Platform to <br />
@@ -281,148 +282,173 @@ const Pricing_Plan: React.FC = () => {
       </h1>
 
       {/* Video and Message */}
-      <div className="lg:flex md:flex mt-14 lg:mx-32 md:mx-40 mx-4">
-        <video
-          className="md:h-[300px] h-[250px] w-[500px] rounded-lg shadow-2xl"
-          src="/assets/HeroVideo.mp4"
-          autoPlay
-          loop
-          playsInline
-        ></video>
+      <div className="max-w-[1100px] mx-auto flex flex-col lg:flex-row items-center justify-between mt-14 px-4 md:px-8 gap-3">
 
+        {/* Video Container */}
+        <div className="w-full lg:w-1/2 flex justify-center">
+        
+          <div className="relative w-full max-w-lg">
+            <video
+              className="w-full rounded-xl shadow-2xl"
+              src="/assets/HeroVideo.mp4"
+              autoPlay
+              loop
+              playsInline
+              controls
+            ></video>
+          </div>
+        </div>
 
-        <div className="pl-7 pt-4 lg:pt-0 md:pt-0 space-y-4 text-gray-700 text-lg leading-relaxed font-walbaum">
-          <p>“Most entrepreneurs fail not because their business wasn’t profitable enough. </p>
+        {/* Text Container */}
+        <div className="w-full lg:w-1/2 text-left space-y-6 text-lg lg:text-xl font-walbaum text-gray-700 leading-relaxed">
+          <p>
+            “Most entrepreneurs fail not because their business wasn’t profitable enough.
+          </p>
           <p>
             They fail (on exit) because they didn’t create a business with marketable value that
             creates the generational wealth they and their family dynasty deserves for the years
-            they sacrificed and invested in building that business.”{' '}
+            they sacrificed and invested in building that business.”
           </p>
           <p>-Harish Chauhan</p>
         </div>
+
       </div>
 
       {/* Guest & Member Section */}
-      <div className="h-auto mt-14 lg:mx-32 md:mx-40 mx-4 lg:border-2 md:border-2 border-black lg:flex md:flex ">
-        {/* Left */}
-        <div className="h-auto lg:w-[280px] mb:w-[280px] bg-gray-200 lg:mx-0 md:mx-0">
-          <h1 className="text-center text-4xl font-extralight pt-8">Jeff Cullen</h1>
-          <h1 className="text-center text-3xl font-light pt-4">LIVE</h1>
+      <div className="max-w-[1100px] mx-auto md:px-0 h-auto mt-14 border-black border-2 flex flex-col lg:flex-row ">
 
-          <div className="h-[400px] lg:w-[240px] md:w-[240px] border-2 border-black mx-5 mt-4">
-            <img className="h-[396px] w-[320px]" src="/assets/jeff-webinar.jpg" alt="Jeff Webinar" />
+        {/* Left */}
+        <div className="bg-gray-400 lg:w-[280px] md:w-[280px] ">
+
+          <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
+          <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
+
+          <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
+            <img className=" max-w-[240px] h-auto" src="/assets/jeff-webinar.jpg" alt="Jeff Webinar" />
           </div>
 
-          <p className="px-4 font-sans pt-4">
+          <p className="pt-4 font-sans px-4">
             Wednesday, August 20, 2025 <br />
-            10am est –11am est Success Story​ 11:15am est-12:15pm est Q&amp;A{' '}
+            10am est – 11am est Success Story<br />
+            11:15am est – 12:15pm est Q&amp;A
           </p>
-          <p className="px-4  pt-4 font-sans font-semibold text-lg pb-2">Only 33 Seats</p>
+          <p className="pt-4 pb-10 font-sans font-semibold text-lg px-4">Only 33 Seats</p>
         </div>
 
         {/* Middle */}
-        <div className="h-[736px] w-[362px] bg-black">
-          <h1 className="text-center text-2xl pt-4 text-white font-sans">Guest Registration</h1>
-          <p className="text-center text-yellow-500 text-xl pt-8">Free</p>
+        <div className="bg-black flex-1 min-w-[300px]">
 
-          <hr className="border-t-2 border-gray-400 mt-20" />
+          <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">Guest Registration</h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">Free</p>
 
-          <h1 className="text-base font-sans text-white px-2 pt-3">
-            You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
-            Attendance is not guaranteed
+          <hr className="border-t-2 border-gray-400 mt-16" />
+
+          <h1 className="text-sm lg:text-base text-white px-2 pt-4">
+            You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter. Attendance is not guaranteed.
           </h1>
-          <h1 className="text-base font-sans text-white px-2 pt-4">
+          <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             If NOT selected in the lottery, you’ll still receive:
           </h1>
 
-          <div className="space-y-4 text-white text-base font-sans pt-4 px-2">
-            <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+          <div className="space-y-3 text-white text-sm lg:text-base font-sans pt-4 px-2 pb-10">
+
+            <div className="flex gap-2 items-center">
+              <span className="text-lg text-white lg:text-2xl">&#10003;</span>
               <p>Ability to ask Jeff your own business questions</p>
             </div>
 
-            <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+            <div className="flex gap-2 items-center">
+              <span className="text-lg lg:text-2xl text-white">&#10003;</span>
               <p>Full replay of the webinar</p>
             </div>
 
-            <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+            <div className="flex gap-2 items-center">
+              <span className="text-lg lg:text-2xl text-white">&#10003;</span>
               <p>Complete Q&amp;A report, including concepts, questions, and Jeff’s expert answers</p>
             </div>
 
-            <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+            <div className="flex gap-2 items-center">
+              <span className="text-lg lg:text-2xl text-white">&#10003;</span>
               <p>
-                Ongoing Guest benefits that extend far beyond this event –{' '}
-                <span className="text-yellow-500 font-medium">See Below</span>
+                Ongoing Guest benefits that extend far beyond this event –
+                <span className="text-yellow-500 font-medium"> See Below</span>
               </p>
             </div>
           </div>
+
+
         </div>
 
+
         {/* Right */}
-        <div className="h-[736px] w-[362px] bg-slate-100">
-          <h1 className="text-center text-2xl pt-4 text-black font-sans">Member</h1>
-          <p className="text-center text-yellow-500 text-xl pt-8">$1797 USD</p>
+        <div className="bg-white flex-1 min-w-[300px]">
+
+          <h1 className="text-center text-xl lg:text-2xl font-sans">Member</h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">$1797 USD</p>
           <p className="text-center font-sans font-light pt-2 px-2">
             One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
           </p>
 
           <hr className="border-t-2 border-black mt-6" />
 
-          <h1 className="text-base font-sans text-black px-2 pt-3">
-            Be one of the first 33 paid PRSPERA Lifetime members, and you are automatically
-            guaranteed a seat.
+          <h1 className="text-sm lg:text-base font-sans px-2 pt-3">
+            Be one of the first 33 paid PRSPERA Lifetime members, and you are automatically guaranteed a seat.
           </h1>
 
-          <div className="space-y-4 text-black text-base font-sans pt-4 px-2">
+          <div className="space-y-3 text-sm lg:text-base font-sans pt-4 px-2 pb-10">
+
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
               <p>As a member, you receive:</p>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
-              <p>Guaranted live access to jeff&apos;s webinar - no lottery</p>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
+              <p>Guaranteed live access to Jeff's webinar - no lottery</p>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
-              <p>Ability to ask jeff your own business question</p>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
+              <p>Ability to ask Jeff your own business question</p>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
               <p>Full replay of the webinar</p>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
-              <p>Complete Q&amp;A report, including concepts, questions, and Jeff’s expert answers</p>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
+              <p>Complete Q&A report, including concepts, questions, and Jeff’s expert answers</p>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+              <span className="text-lg lg:text-2xl">&#10003;</span>
               <p>
-                Ongoing Member benefits that extend far beyond this event –{' '}
+                Ongoing Member benefits that extend far beyond this event –{" "}
                 <span className="text-yellow-500 font-medium">See Below</span>
               </p>
             </div>
           </div>
+
+
         </div>
+
       </div>
 
+
+
       {/* Service */}
-      <div className="h-auto mt-14 lg:mx-32 md:mx-40 mx-4 lg:border-2 md:border-2 border-black lg:flex md:flex ">
+      <div className="max-w-[1100px] mx-auto md:px-0 h-auto mt-14 border-black border-2 flex flex-col lg:flex-row ">
+
         {/* Left */}
-        <div className="lg:h-[796px] md:h-[796] h-[200px] lg:w-[280px] md:[280px] w-[364px] bg-gray-200 lg:mx-0 md:mx-0">
+        <div className="bg-white lg:w-[280px] md:w-[280px] pb-20">
           <h1 className="text-center text-4xl font-normal pt-8">PRSPERA</h1>
           <h1 className="text-center text-3xl font-normal pt-4">Service</h1>
         </div>
 
         {/* Middle */}
-        <div className="lg:h-[796px] md:h-[796px] h-[300px] w-[362px] bg-black">
+        <div className="bg-black flex-1 min-w-[300px] pb-20">
           <h1 className="text-center text-2xl pt-4 text-white font-sans">
             Become our <br /> Guest
           </h1>
@@ -437,7 +463,7 @@ const Pricing_Plan: React.FC = () => {
         </div>
 
         {/* Right */}
-        <div className="h-[796px] w-[362px] bg-slate-100">
+        <div className="bg-white flex-1 min-w-[300px]">
           <h1 className="text-center text-2xl pt-4 text-black font-sans">
             Become a PRSPERA <br />
             Founding Lifetime Member
@@ -453,7 +479,7 @@ const Pricing_Plan: React.FC = () => {
 
           <div className="space-y-3 text-black text-base font-sans pt-4 px-2">
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+              <span className="text-2xl">&#10003;</span>
 
               <div className="space-y-2">
                 <p>One Time buy – value for life</p>
@@ -476,7 +502,7 @@ const Pricing_Plan: React.FC = () => {
             </div>
 
             <div className="flex gap-2">
-              <span className="text-xl">✔</span>
+              <span className="text-2xl">&#10003;</span>
 
               <div className="space-y-2">
                 <p>Why membership matters: ​</p>
@@ -496,7 +522,7 @@ const Pricing_Plan: React.FC = () => {
                   <span className="font-medium">▪ Monetize intangibles​​</span>
                 </p>
 
-                <p className="text-sm">
+                <p className="text-sm pb-10">
                   Not someday Now Everyone becomes accountable and incentivized to build value
                   smarter.
                 </p>
@@ -506,10 +532,12 @@ const Pricing_Plan: React.FC = () => {
         </div>
       </div>
 
+
+
       {/* Main */}
-      <div className=" font-sans lg:border-2 md:border-2 border-black mt-2 lg:flex md:flex lg:mx-32 md:mx-32 mx-4 mb-20">
+      <div className="max-w-[1100px] mx-auto md:px-0 h-auto mt-14 border-black border-2 flex flex-col lg:flex-row mb-20 ">
         {/* Left */}
-        <div className="w-[280px] bg-white  lg:mx-0 md:mx-0 mx-8">
+        <div className="w-[280px] bg-white lg:mx-0 md:mx-0 mx-8 lg:w-[280px] md:w-[280px] pb-10">
           {menuItems.map((item, index) => (
             <div
               key={index}
@@ -523,7 +551,8 @@ const Pricing_Plan: React.FC = () => {
         </div>
 
         {/* Middle */}
-        <div className="w-[362px] h-[600px] flex flex-col bg-black text-white lg:p-2 md:p-2 p-4">
+        <div className="min-w-[300px] h-[600px] flex flex-col bg-black text-white lg:p-2 md:p-2 p-4 flex-1  pb-10">
+          
           <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 ">
             {Array.isArray(messages1[activeItem]) ? (
               (messages1[activeItem] as string[]).map((msg, index) => (
@@ -546,7 +575,7 @@ const Pricing_Plan: React.FC = () => {
         </div>
 
         {/* Right */}
-        <div className="w-[362px] h-[600px] flex flex-col bg-white text-black lg:p-2 md:p-2 p-4">
+        <div className="min-w-[300px] h-[600px] flex flex-col bg-white text-black lg:p-2 md:p-2 p-4 flex-1  pb-10">
           <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3">
             {Array.isArray(messages2[activeItem]) ? (
               (messages2[activeItem] as string[]).map((msg, index) => (

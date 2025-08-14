@@ -76,13 +76,13 @@ export default function IcebergCarousel() {
   };
 
   return (
-    <section className="w-full bg-black text-white py-8 flex flex-col items-center">
+    <section className="w-full bg-black text-white py-12 md:py-16 flex flex-col items-center">
       {/* Title */}
-      <div className="text-center max-w-2xl mb-8">
-        <h2 className="text-xl md:text-2xl font-walbaum">
+      <div className="text-center max-w-4xl mb-10 md:mb-12 px-4">
+        <h2 className="text-2xl md:text-4xl font-walbaum leading-snug">
           Six Icebergs Sink the EntrepreneurSHIP Every Day
         </h2>
-        <p className="mt-4 text-center text-white text-sm md:text-base max-w-[90%] font-light leading-relaxed">
+        <p className="mt-6 text-center text-white text-base md:text-lg font-light leading-relaxed">
           Every one of these icebergs can quietly destroy value.
           <br />
           These are hidden forces leaders underestimate — until they hit.
@@ -90,12 +90,12 @@ export default function IcebergCarousel() {
       </div>
 
       {/* Custom nav images */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-3 mb-8">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className="relative w-3 h-3 rounded-full overflow-hidden"
+            className="relative w-4 h-4 md:w-5 md:h-5 rounded-full overflow-hidden"
           >
             {index === current ? (
               <img
@@ -110,44 +110,51 @@ export default function IcebergCarousel() {
         ))}
       </div>
 
-      {/* Slide container with smooth transition */}
-      <div className="relative w-full max-w-5xl overflow-hidden">
+      {/* Slide container */}
+      <div className="relative w-full max-w-8xl overflow-hidden px-6 md:px-10">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, index) => (
-            <div
-              key={index}
-              className="w-full flex-shrink-0 flex flex-col items-center p-4"
-            >
+            <div className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8">
               {index === 0 ? (
                 <div className="flex flex-col items-center">
                   <img
                     src="/assets/circle.png"
                     alt="Iceberg Circle"
-                    className="w-80 h-80 object-contain"
+                    className="w-64 h-64 sm:w-60 sm:h-60 md:w-[24rem] md:h-[24rem] object-contain mt-24 sm:mt-6"
                   />
                 </div>
               ) : (
-                <div className="flex flex-col items-center">
-                  <h2 className="text-2xl mb-4 self-start">{slide.title}</h2>
-                  <div className="flex items-center justify-center gap-6">
-                    <div className="relative w-40 h-40">
+                <div className="flex flex-col items-center w-full max-w-3xl mx-auto">
+                  {/* Title */}
+                  <h2 className="text-lg sm:text-xl md:text-3xl mb-6 text-center md:text-left max-w-4xl w-full px-4">
+                    {slide.title}
+                  </h2>
+
+                  {/* Iceberg + Short Description */}
+                  <div className="flex flex-col md:flex-row items-center md:items-center justify-between gap-6 md:gap-12 w-full px-4">
+                    {/* Iceberg */}
+                    <div className="relative flex-shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 lg:w-56 lg:h-56">
                       <img
                         src="/assets/iceberg.png"
                         alt="Iceberg"
                         className="w-full h-full object-contain"
                       />
-                      <span className="absolute inset-0 flex items-center justify-center text-4xl font-bold">
+                      <span className="absolute inset-0 flex items-center justify-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
                         {slide.percent}
                       </span>
                     </div>
-                    <p className="text-left max-w-sm text-base font-light">
+
+                    {/* Short description */}
+                    <p className="flex-1 text-center md:text-left text-lg sm:text-base md:text-xl font-light leading-relaxed">
                       {slide.shortDescription}
                     </p>
                   </div>
-                  <p className="mt-6 text-sm max-w-xl leading-relaxed font-light text-justify">
+
+                  {/* Long Description */}
+                  <p className="mt-8 text-xs sm:text-sm md:text-base max-w-4xl leading-relaxed font-light text-justify px-4">
                     {slide.longDescription}
                   </p>
                 </div>
@@ -156,19 +163,19 @@ export default function IcebergCarousel() {
           ))}
         </div>
 
-        {/* Left arrow */}
+        {/* Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-10 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full hover:bg-gray-800 transition"
+          className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full hover:bg-gray-800 transition"
         >
-          <ChevronLeft size={28} color="yellow" />
+          <ChevronLeft size={32} color="yellow" />
         </button>
 
         <button
           onClick={nextSlide}
-          className="absolute right-10 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full hover:bg-gray-800 transition"
+          className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full hover:bg-gray-800 transition"
         >
-          <ChevronRight size={28} color="yellow" />
+          <ChevronRight size={32} color="yellow" />
         </button>
       </div>
     </section>
