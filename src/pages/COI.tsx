@@ -1,12 +1,12 @@
-import Accordion from '@/components/coi/Accordion';
-import { PremiumPopup } from '@/components/coi/premiumPopup';
-import RegistrationForm from '@/components/coi/webinarForm';
-import FloatingButton from '@/components/extras/FloatingButton';
-import VideoPopup from '@/components/video/VideoPopup';
-import { useAuth } from '@/utils/AuthContext';
-import { log } from 'console';
-import { Dot } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import Accordion from "@/components/coi/Accordion";
+import { PremiumPopup } from "@/components/coi/premiumPopup";
+import RegistrationForm from "@/components/coi/webinarForm";
+import FloatingButton from "@/components/extras/FloatingButton";
+import VideoPopup from "@/components/video/VideoPopup";
+import { useAuth } from "@/utils/AuthContext";
+import { log } from "console";
+import { Dot } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 interface PasswordPopupProps {
   isOpen: boolean;
@@ -17,7 +17,6 @@ interface PasswordPopupProps {
   error: string;
 }
 
-
 // Updated PasswordPopup component with cross icon and validation
 const PasswordPopup: React.FC<PasswordPopupProps> = ({
   isOpen,
@@ -25,27 +24,27 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
   onVerifyNow,
   onVerifyLater,
   loading,
-  error
+  error,
 }) => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [validationError, setValidationError] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleVerifyNow = () => {
-    setValidationError('');
+    setValidationError("");
 
     if (!password || !confirmPassword) {
-      setValidationError('Both password fields are required');
+      setValidationError("Both password fields are required");
       return;
     }
 
     if (password.length < 6) {
-      setValidationError('Password must be at least 6 characters');
+      setValidationError("Password must be at least 6 characters");
       return;
     }
 
     if (password !== confirmPassword) {
-      setValidationError('Passwords do not match');
+      setValidationError("Passwords do not match");
       return;
     }
 
@@ -53,20 +52,20 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
   };
 
   const handleVerifyLater = () => {
-    setValidationError('');
+    setValidationError("");
 
     if (!password || !confirmPassword) {
-      setValidationError('Both password fields are required');
+      setValidationError("Both password fields are required");
       return;
     }
 
     if (password.length < 6) {
-      setValidationError('Password must be at least 6 characters');
+      setValidationError("Password must be at least 6 characters");
       return;
     }
 
     if (password !== confirmPassword) {
-      setValidationError('Passwords do not match');
+      setValidationError("Passwords do not match");
       return;
     }
 
@@ -74,9 +73,9 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
   };
 
   const resetForm = () => {
-    setPassword('');
-    setConfirmPassword('');
-    setValidationError('');
+    setPassword("");
+    setConfirmPassword("");
+    setValidationError("");
   };
 
   useEffect(() => {
@@ -96,7 +95,13 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
           className="absolute top-4 right-4 text-gray-900 hover:text-gray-700"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M15 5L5 15M5 5L15 15"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
 
@@ -110,9 +115,7 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -124,9 +127,7 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -144,7 +145,7 @@ const PasswordPopup: React.FC<PasswordPopupProps> = ({
             disabled={loading}
             className="flex-1 bg-black text-white py-2 px-4 rounded-md hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Processing...' : 'Verify Now'}
+            {loading ? "Processing..." : "Verify Now"}
           </button>
           <button
             onClick={handleVerifyLater}
@@ -176,9 +177,9 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
   onResend,
   onClose,
   loading,
-  error
+  error,
 }) => {
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
 
   const handleVerify = () => {
     if (!otp || otp.length !== 6) {
@@ -189,7 +190,7 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setOtp('');
+      setOtp("");
     }
   }, [isOpen]);
 
@@ -211,14 +212,12 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Enter OTP
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Enter OTP</label>
             <input
               type="text"
               value={otp}
               onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                const value = e.target.value.replace(/\D/g, "").slice(0, 6);
                 setOtp(value);
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900 text-center text-lg tracking-widest"
@@ -235,7 +234,7 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
             disabled={loading || otp.length !== 6}
             className="flex-1 bg-black text-white py-2 px-4 rounded-md hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Verifying...' : 'Verify'}
+            {loading ? "Verifying..." : "Verify"}
           </button>
           <button
             onClick={onResend}
@@ -246,10 +245,7 @@ const OTPPopup: React.FC<OTPPopupProps> = ({
           </button>
         </div>
 
-        <button
-          onClick={onClose}
-          className="w-full mt-3 text-gray-600 hover:text-gray-800"
-        >
+        <button onClick={onClose} className="w-full mt-3 text-gray-600 hover:text-gray-800">
           Skip for now
         </button>
       </div>
@@ -261,44 +257,50 @@ const COI: React.FC = () => {
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [showOTPPopup, setShowOTPPopup] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [popupInterval, setPopupInterval] = useState<NodeJS.Timeout | null>(null);
-  const { login, user: authUser, updateUser } = useAuth() // Added updateUser from useAuth
-  const [webinarFormStatus, setWebinarFormStatus] = useState(false)
+  const { login, user: authUser, updateUser } = useAuth(); // Added updateUser from useAuth
+  const [webinarFormStatus, setWebinarFormStatus] = useState(false);
   const { isAuthenticated, isLoading, user } = useAuth();
   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
   const [showWebinarForm, setShowWebinarForm] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    email: '',
-    website: '',
-    phone: '',
-    privacy: false
-  })
+    fullName: "",
+    email: "",
+    website: "",
+    phone: "",
+    privacy: false,
+  });
   const ok = async () => {
-    const response = await fetch('https://intern-project-final-1.onrender.com' + '/category-statistics/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      "https://intern-project-final-1.onrender.com" + "/category-statistics/",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    });
-    const response2 = await fetch('https://intern-project-final-1.onrender.com' + '/category-list/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    );
+    const response2 = await fetch(
+      "https://intern-project-final-1.onrender.com" + "/category-list/",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    });
-    const data = await response.json()
-    const data2 = await response2.json()
-    console.log(data)
-    console.log(data2)
-  }
+    );
+    const data = await response.json();
+    const data2 = await response2.json();
+    console.log(data);
+    console.log(data2);
+  };
 
   // Check for stored form data on component mount
   useEffect(() => {
-    ok()
-    const storedFormData = localStorage.getItem('coiFormData');
+    ok();
+    const storedFormData = localStorage.getItem("coiFormData");
     if (storedFormData) {
       try {
         const parsedData = JSON.parse(storedFormData);
@@ -312,8 +314,8 @@ const COI: React.FC = () => {
 
         setPopupInterval(interval);
       } catch (err) {
-        console.error('Error parsing stored form data:', err);
-        localStorage.removeItem('coiFormData');
+        console.error("Error parsing stored form data:", err);
+        localStorage.removeItem("coiFormData");
       }
     }
 
@@ -327,24 +329,27 @@ const COI: React.FC = () => {
 
   const handleUpdateWebinarStatus = async (email: string) => {
     try {
-      const response = await fetch('https://intern-project-final-1.onrender.com/set-webinar-form-filled-by-email/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email })
-      });
+      const response = await fetch(
+        "https://intern-project-final-1.onrender.com/set-webinar-form-filled-by-email/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
-      console.log('Webinar status update:', data);
+      console.log("Webinar status update:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update webinar status');
+        throw new Error(data.message || "Failed to update webinar status");
       }
 
       return data;
     } catch (err) {
-      console.error('Error updating webinar status:', err);
+      console.error("Error updating webinar status:", err);
       throw err;
     }
   };
@@ -352,16 +357,19 @@ const COI: React.FC = () => {
   // Function to refresh user data from server
   const refreshUserData = async () => {
     try {
-      const accessToken = localStorage.getItem('access_token');
+      const accessToken = localStorage.getItem("access_token");
       if (!accessToken) return null;
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/extract-user-data/', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        "https://intern-project-final-1.onrender.com/extract-user-data/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const userData = await response.json();
@@ -373,59 +381,56 @@ const COI: React.FC = () => {
       }
       return null;
     } catch (err) {
-      console.error('Error refreshing user data:', err);
+      console.error("Error refreshing user data:", err);
       return null;
     }
   };
 
   const determineFormToShow = () => {
-    if (isLoading) return 'loading';
+    if (isLoading) return "loading";
 
     if (isAuthenticated && user) {
       if (user.iswebinarformfilled) {
-        return 'premium-popup'; // Show premium popup if webinar form is already filled
+        return "premium-popup"; // Show premium popup if webinar form is already filled
       } else {
-        return 'webinar-form'; // Show webinar form if user exists but hasn't filled it
+        return "webinar-form"; // Show webinar form if user exists but hasn't filled it
       }
     }
 
     // For non-authenticated users, always show webinar form
-    return 'webinar-form';
+    return "webinar-form";
   };
 
   useEffect(() => {
     const formToShow = determineFormToShow();
 
-    if (formToShow === 'premium-popup') {
+    if (formToShow === "premium-popup") {
       setShowPremiumPopup(true);
     } else {
       setShowPremiumPopup(false);
     }
   }, [isAuthenticated, user, isLoading]);
 
-
-
-
   const handleFormSubmit = async (submittedFormData: FormData) => {
-    setError('');
-    console.log(submittedFormData)
+    setError("");
+    console.log(submittedFormData);
     setFormData(submittedFormData);
 
     // Validate required fields
     if (!submittedFormData.fullName || !submittedFormData.email || !submittedFormData.phone) {
-      setError('Please fill in all required fields');
+      setError("Please fill in all required fields");
       return;
     }
 
     if (!submittedFormData.privacy) {
-      setError('Please accept the privacy policy');
+      setError("Please accept the privacy policy");
       return;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(submittedFormData.email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
 
@@ -453,27 +458,33 @@ const COI: React.FC = () => {
       // If user is not authenticated, proceed with registration flow
       if (!isAuthenticated) {
         // Save form data to database first
-        const saveResponse = await fetch('https://intern-project-final-1.onrender.com/save-coi-form/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: submittedFormData.email,
-            full_name: submittedFormData.fullName,
-            phone_number: submittedFormData.phone,
-            website_name: submittedFormData.website
-          })
-        });
+        const saveResponse = await fetch(
+          "https://intern-project-final-1.onrender.com/save-coi-form/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: submittedFormData.email,
+              full_name: submittedFormData.fullName,
+              phone_number: submittedFormData.phone,
+              website_name: submittedFormData.website,
+            }),
+          }
+        );
 
         const saveResult = await saveResponse.json();
 
         if (!saveResponse.ok) {
-          throw new Error(saveResult.message || 'Failed to save form data');
+          throw new Error(saveResult.message || "Failed to save form data");
         }
 
         // **FIXED: Pass submittedFormData to registerUser instead of relying on state**
-        const registrationResult = await registerUser('temp_password_' + Date.now(), submittedFormData);
+        const registrationResult = await registerUser(
+          "temp_password_" + Date.now(),
+          submittedFormData
+        );
 
         // After successful registration, update webinar form status
         await handleUpdateWebinarStatus(submittedFormData.email);
@@ -482,7 +493,7 @@ const COI: React.FC = () => {
         await refreshUserData();
 
         // Store form data in localStorage for popup flow
-        localStorage.setItem('coiFormData', JSON.stringify(submittedFormData));
+        localStorage.setItem("coiFormData", JSON.stringify(submittedFormData));
 
         // Show password popup after successful login
         setShowPasswordPopup(true);
@@ -494,10 +505,9 @@ const COI: React.FC = () => {
 
         setPopupInterval(interval);
       }
-
     } catch (err) {
-      console.error('Error during form submission:', err);
-      setError(err.message || 'Failed to process form submission');
+      console.error("Error during form submission:", err);
+      setError(err.message || "Failed to process form submission");
     } finally {
       setLoading(false);
     }
@@ -506,7 +516,7 @@ const COI: React.FC = () => {
   // **FIXED: Accept formData as parameter instead of relying on state**
   const registerUser = async (password?: string, currentFormData?: FormData) => {
     setLoading(true);
-    setError('');
+    setError("");
 
     // Use passed formData or fall back to state (for backwards compatibility)
     const dataToUse = currentFormData || formData;
@@ -514,46 +524,46 @@ const COI: React.FC = () => {
     try {
       const registrationData = {
         email: dataToUse.email,
-        password: password || 'temp_password', // Temporary password for "verify later"
+        password: password || "temp_password", // Temporary password for "verify later"
         full_name: dataToUse.fullName,
         phone_number: dataToUse.phone,
         website_name: dataToUse.website,
-        no_linkedin: true
+        no_linkedin: true,
       };
 
-      console.log(registrationData)
+      console.log(registrationData);
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/register/', {
-        method: 'POST',
+      const response = await fetch("https://intern-project-final-1.onrender.com/register/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(registrationData)
+        body: JSON.stringify(registrationData),
       });
 
       const data = await response.json();
 
       if (data.tokens) {
         await login(data.tokens);
-        console.log('Registration successful with tokens:', data.message);
+        console.log("Registration successful with tokens:", data.message);
       } else {
         // Fallback to localStorage if auth context is not available
         if (data.tokens) {
-          localStorage.setItem('access_token', data.tokens.access);
-          localStorage.setItem('refresh_token', data.tokens.refresh);
+          localStorage.setItem("access_token", data.tokens.access);
+          localStorage.setItem("refresh_token", data.tokens.refresh);
         }
       }
 
       if (!response.ok) {
         if (data.user_exists) {
-          throw new Error('User with this email already exists. Please try logging in.');
+          throw new Error("User with this email already exists. Please try logging in.");
         }
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || "Registration failed");
       }
 
       return data;
     } catch (err) {
-      console.error('Registration error:', err);
+      console.error("Registration error:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -562,32 +572,32 @@ const COI: React.FC = () => {
 
   const sendEmailOTP = async () => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('https://intern-project-final-1.onrender.com/send_email_otp/', {
-        method: 'POST',
+      const response = await fetch("https://intern-project-final-1.onrender.com/send_email_otp/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: formData.email })
+        body: JSON.stringify({ email: formData.email }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         if (data.is_verified) {
-          throw new Error('Email already verified. Please login.');
+          throw new Error("Email already verified. Please login.");
         }
         if (!data.user_exists) {
-          throw new Error('Please register first.');
+          throw new Error("Please register first.");
         }
-        throw new Error(data.message || 'Failed to send OTP');
+        throw new Error(data.message || "Failed to send OTP");
       }
 
       return data;
     } catch (err) {
-      console.error('Send OTP error:', err);
+      console.error("Send OTP error:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -596,29 +606,32 @@ const COI: React.FC = () => {
 
   const verifyEmailOTP = async (otp: string) => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('https://intern-project-final-1.onrender.com/verify_email_otp/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          otp: otp
-        })
-      });
+      const response = await fetch(
+        "https://intern-project-final-1.onrender.com/verify_email_otp/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            otp: otp,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'OTP verification failed');
+        throw new Error(data.message || "OTP verification failed");
       }
 
       return data;
     } catch (err) {
-      console.error('OTP verification error:', err);
+      console.error("OTP verification error:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -629,21 +642,21 @@ const COI: React.FC = () => {
   const handleVerifyNow = async (password: string, confirmPassword: string) => {
     try {
       // Update user password (you'll need to create this endpoint)
-      const response = await fetch('https://intern-project-final-1.onrender.com/reset-password/', {
-        method: 'POST',
+      const response = await fetch("https://intern-project-final-1.onrender.com/reset-password/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}` // Use stored token
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Use stored token
         },
         body: JSON.stringify({
           email: formData.email,
-          new_password: password
-        })
+          new_password: password,
+        }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Failed to update password');
+        throw new Error(data.message || "Failed to update password");
       }
 
       // Send OTP for email verification
@@ -658,7 +671,7 @@ const COI: React.FC = () => {
       setShowPasswordPopup(false);
       setShowOTPPopup(true);
     } catch (err) {
-      setError(err.message || 'An error occurred during password update');
+      setError(err.message || "An error occurred during password update");
     }
   };
 
@@ -672,20 +685,20 @@ const COI: React.FC = () => {
         clearInterval(popupInterval);
         setPopupInterval(null);
       }
-      localStorage.removeItem('coiFormData');
+      localStorage.removeItem("coiFormData");
       setShowPasswordPopup(false);
-      setSuccessMessage('Registration successful! You can verify your email later.');
+      setSuccessMessage("Registration successful! You can verify your email later.");
 
       // Reset form
       setFormData({
-        fullName: '',
-        email: '',
-        website: '',
-        phone: '',
-        privacy: false
+        fullName: "",
+        email: "",
+        website: "",
+        phone: "",
+        privacy: false,
       });
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
     }
   };
 
@@ -694,48 +707,48 @@ const COI: React.FC = () => {
       await verifyEmailOTP(otp);
 
       // Clear localStorage and close popup
-      localStorage.removeItem('coiFormData');
+      localStorage.removeItem("coiFormData");
       setShowOTPPopup(false);
-      setSuccessMessage('Email verified successfully! Welcome aboard!');
+      setSuccessMessage("Email verified successfully! Welcome aboard!");
 
       // Reset form
       setFormData({
-        fullName: '',
-        email: '',
-        website: '',
-        phone: '',
-        privacy: false
+        fullName: "",
+        email: "",
+        website: "",
+        phone: "",
+        privacy: false,
       });
     } catch (err) {
-      setError(err.message || 'OTP verification failed');
+      setError(err.message || "OTP verification failed");
     }
   };
 
   const handleOTPResend = async () => {
     try {
       await sendEmailOTP();
-      setSuccessMessage('OTP resent successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setSuccessMessage("OTP resent successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
-      setError(err.message || 'Failed to resend OTP');
+      setError(err.message || "Failed to resend OTP");
     }
   };
 
   const handleOTPClose = () => {
-    localStorage.removeItem('coiFormData');
+    localStorage.removeItem("coiFormData");
     setShowOTPPopup(false);
     setFormData({
-      fullName: '',
-      email: '',
-      website: '',
-      phone: '',
-      privacy: false
+      fullName: "",
+      email: "",
+      website: "",
+      phone: "",
+      privacy: false,
     });
   };
 
   const handlePasswordPopupClose = () => {
     setShowPasswordPopup(false);
-    setError(''); // Clear any errors when closing
+    setError(""); // Clear any errors when closing
   };
 
   useEffect(() => {
@@ -773,16 +786,20 @@ const COI: React.FC = () => {
           </div>
         </section>
 
-
         {/* Value Proposition */}
         <section className="flex flex-col justify-center items-center gap-6 max-w-[1036px] w-full mx-auto px-0 py-10 max-sm:p-5 font-linear">
           <h3 className="text-black text-2xl text-center max-w-[800px] w-full max-sm:text-lg">
             When 84% of your business value is locked inside your intangible assets
           </h3>
           <p className="text-[#6f6f6f] text-center text-2xl font-normal max-w-[1036px] w-full max-sm:text-lg">
-            (your brand, goodwill, strategic advantage, growth potential, intellectual property, human capital etc)​  </p>
+            (your brand, goodwill, strategic advantage, growth potential, intellectual property,
+            human capital etc)​{" "}
+          </p>
           <div className="text-black text-center text-2xl max-w-[900px] w-full max-sm:text-lg">
-            <p>your business value and generational wealth is at risk – unless you unlock that value...​</p>
+            <p>
+              your business value and generational wealth is at risk – unless you unlock that
+              value...​
+            </p>
           </div>
         </section>
 
@@ -800,10 +817,12 @@ const COI: React.FC = () => {
         <section className="w-full flex flex-col justify-center items-center px-0 py-0">
           <div className="w-full max-w-[900px] text-center">
             <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
-              The numbers prove​ <br />why its easier to​
+              The numbers prove​ <br />
+              why its easier to​
             </h2>
             <h2 className="text-[#777] text-7xl font-normal mt-5 max-w-[736px] mx-auto max-md:text-5xl max-sm:text-[32px] font-walbaum">
-              <span className='text-[#D02C31]'>LOSE</span> than it is to <span className='text-[#007C7A]'>WIN.</span>
+              <span className="text-[#D02C31]">LOSE</span> than it is to{" "}
+              <span className="text-[#007C7A]">WIN.</span>
             </h2>
           </div>
         </section>
@@ -827,7 +846,6 @@ const COI: React.FC = () => {
         <h2 className="text-[#777] text-4xl font-normal text-center pt-10 max-md:text-5xl max-sm:text-[32px] font-walbaum">
           (See for yourself) ​
         </h2>
-
 
         {/* Main Content Layout */}
         <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center py-20">
@@ -855,19 +873,20 @@ const COI: React.FC = () => {
           <div>
             <Accordion />
           </div>
-
         </div>
       </main>
       <VideoPopup />
       <aside className="absolute right-4 top-4 z-10">
         <div className="flex flex-col items-end">
           <img
-            src='https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc'
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc"
             alt="Side Logo"
             className="w-[140px] h-[35px]"
           />
           <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
-            <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
+            <span>
+              Grow Smarter. <span className="font-bold">Exit Richer™</span>
+            </span>
           </div>
         </div>
       </aside>
