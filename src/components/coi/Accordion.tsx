@@ -87,17 +87,18 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   }, [selectedCategory]); // Changed dependency to selectedCategory
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full flex flex-col gap-7  ${className}`}>
       {/* Sticky Category Navigation - Multiple lines with flex wrap */}
       <div 
         ref={navbarRef}
-        className="sticky top-[86px] z-10 bg-[#F5F5F5] px-8 py-4 border border-gray-500 shadow-lg rounded-lg max-w-4xl"
+        className="sticky top-[86px] z-10 bg-[#F5F5F5] px-8 py-4 border border-gray-500 shadow-lg rounded-lg"
+        // aaaaaa
       >
         <div className="flex flex-wrap gap-2">
           {/* All button */}
           <button
             onClick={() => handleCategorySelect('All')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+            className={`px-4 py-2 rounded-[7px] text-sm font-medium transition-colors whitespace-nowrap ${
               selectedCategory === 'All'
                 ? 'bg-black text-white'
                 : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
@@ -111,7 +112,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
             <button
               key={index}
               onClick={() => handleCategorySelect(category.category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`px-4 py-2 rounded-[7px] text-sm font-medium transition-colors whitespace-nowrap ${
                 selectedCategory === category.category
                   ? 'bg-black text-white'
                   : 'bg-white text-black hover:bg-gray-50 border border-gray-500'
@@ -124,7 +125,8 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto border-b border-gray-400 border-l border-r">
+      <div className=" mx-auto border border-gray-400 rounded-lg overflow-hidden min-w-[100%] ">
+        
         {filteredData.map((category, categoryIndex) => (
           <div key={categoryIndex}>
             {/* Research Points */}
@@ -235,7 +237,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
   );
 };
 
-// Example of how to use with API data
 const AccordionWithApi: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -243,7 +244,7 @@ const AccordionWithApi: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://intern-project-final-1.onrender.com/category-statistics/');
+        const response = await fetch('https://internship-pro.onrender.com//category-statistics/');
         const result = await response.json();
         console.log(result)
         setData(result);
