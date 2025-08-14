@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import PhoneInput from "@/components/ui/PhoneInput";
+
 
 // Define interfaces for type safety
 interface FormData {
@@ -79,6 +80,13 @@ export function RegisterForm({
     website_name: false,
   });
 
+  const location = useLocation();
+
+const getPlan = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get("plan") || "guest";
+  };
+
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState<number>(300); // 5 minutes in seconds
@@ -89,20 +97,20 @@ export function RegisterForm({
 
   const API_BASE_URL = "https://intern-project-final-1.onrender.com";
 
-  // Restore form data from sessionStorage on component mount
-  useEffect(() => {
-    const savedFormData = sessionStorage.getItem("registrationFormData");
+  // // Restore form data from sessionStorage on component mount
+  // useEffect(() => {
+  //   const savedFormData = sessionStorage.getItem("registrationFormData");
 
-    if (savedFormData) {
-      try {
-        const parsedData = JSON.parse(savedFormData);
-        setFormData(parsedData);
-        sessionStorage.removeItem("registrationFormData");
-      } catch (error) {
-        console.error("Error parsing saved form data:", error);
-      }
-    }
-  }, []);
+  //   if (savedFormData) {
+  //     try {
+  //       const parsedData = JSON.parse(savedFormData);
+  //       setFormData(parsedData);
+  //       sessionStorage.removeItem("registrationFormData");
+  //     } catch (error) {
+  //       console.error("Error parsing saved form data:", error);
+  //     }
+  //   }
+  // }, []);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -373,99 +381,45 @@ export function RegisterForm({
       throw error;
     }
   };
-  const sendOtp = async () => {
-  try {
-    const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
-      email: formData.email,
+
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+
+    // Mark all fields as touched
+    setFieldTouched({
+      full_name: true,
+      email: true,
+      password: true,
+      confirmPassword: true,
+      phone_number: true,
+      website_name: true,
     });
-    if (otpData.status === "success") {
-      setShowOtpModal(true);
-      setOtp(["", "", "", "", "", ""]);
-      setTimer(300); // Reset timer to 5 minutes
-    } else {
-      setErrors({ general: otpData.message });
-    }
-  } catch (error) {
-    setErrors({
-      general:
-        error instanceof Error
-          ? error.message
-          : "Failed to send OTP. Please try again.",
-    });
-  }
-};
 
-const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-  e.preventDefault();
-
-  setFieldTouched({
-    full_name: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-    phone_number: true,
-    website_name: true,
-  });
-
-  const validationErrors = validateForm();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-  setLoading(true);
-  setErrors({});
-
-  try {
-    // First check if email already exists
-    const checkData: CheckEmailResponse = await makeApiCall(
-      "/check_email_status/",
-      { email: formData.email }
-    );
-
-    if (checkData.user_exists) {
-      setErrors({ email: checkData.message });
-      setLoading(false);
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    // Send OTP for email verification (do NOT register yet)
-    await sendOtp();
-  } catch (error) {
-    console.error("Registration error:", error);
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Network error. Please try again.";
-    setErrors({ general: errorMessage });
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setErrors({});
 
-const handleOtpSubmit = async (
-  e: React.FormEvent<HTMLFormElement>
-): Promise<void> => {
-  e.preventDefault();
+    try {
+      // First check if email already exists
+      const checkData: CheckEmailResponse = await makeApiCall(
+        "/check_email_status/",
+        {
+          email: formData.email,
+        }
+      );
 
-  const otpCode = otp.join("");
-  if (!otpCode || otpCode.length !== 6) {
-    setErrors({ otp: "Please enter the complete 6-digit OTP" });
-    return;
-  }
+      if (checkData.user_exists) {
+        setErrors({ email: checkData.message });
+        setLoading(false);
+        return;
+      }
 
-  setOtpLoading(true);
-  setErrors({});
-
-  try {
-    // Verify OTP first
-    const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
-      email: formData.email,
-      otp: otpCode,
-    });
-
-    if (verifyData.status === "success") {
-      // Now register the user
+      // Proceed with registration
       const registerPayload = {
         email: formData.email,
         password: formData.password,
@@ -475,36 +429,125 @@ const handleOtpSubmit = async (
         no_linkedin: true,
       };
 
+      console.log("Sending registration payload:", {
+        ...registerPayload,
+        password: "[REDACTED]",
+      });
+
       const registerData: RegisterResponse = await makeApiCall(
         "/register/",
         registerPayload
       );
 
       if (registerData.status === "success") {
+        // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
+          console.log(
+            "Registration successful with tokens:",
+            registerData.message
+          );
         }
-        navigate("/successfullyregistered");
+
+        // Send OTP for email verification
+        await sendOtp();
       } else {
-        setErrors({ otp: registerData.message });
+        setErrors({ general: registerData.message });
       }
-    } else {
-      setErrors({ otp: verifyData.message });
+    } catch (error) {
+      console.error("Registration error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Network error. Please try again.";
+      setErrors({ general: errorMessage });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("OTP verification error:", error);
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to verify OTP. Please try again.";
-    setErrors({ otp: errorMessage });
-  } finally {
-    setOtpLoading(false);
-  }
-};
+  };
+
+  const sendOtp = async (): Promise<void> => {
+    try {
+      const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
+        email: formData.email,
+      });
+
+      if (otpData.status === "success") {
+        setShowOtpModal(true);
+        setTimer(300); // Reset timer to 5 minutes
+        setOtp(["", "", "", "", "", ""]); // Reset OTP fields
+      } else {
+        setErrors({ general: otpData.message });
+      }
+    } catch (error) {
+      console.error("OTP send error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to send OTP. Please try again.";
+      setErrors({ general: errorMessage });
+    }
+  };
+
+  const handleOtpSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+
+    const otpCode = otp.join("");
+    if (!otpCode || otpCode.length !== 6) {
+      setErrors({ otp: "Please enter the complete 6-digit OTP" });
+      return;
+    }
+
+    setOtpLoading(true);
+    setErrors({});
+
+    try {
+      const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
+        email: formData.email,
+        otp: otpCode,
+      });
+
+      
+      if (verifyData.status === "success") {
+        // Redirect based on plan
+        const plan = getPlan();
+        if (plan === "guest") {
+  navigate("/confirmation-guest");
+} else if (plan === "paid" || plan === "member") {
+  navigate("/payment");
+}
+      } else {
+        setErrors({ otp: verifyData.message });
+      }
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to verify OTP. Please try again.";
+      setErrors({ otp: errorMessage });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const resendOtp = async (): Promise<void> => {
+    setOtpLoading(true);
+    try {
+      await sendOtp();
+      console.log("OTP resent successfully!");
+    } catch (error) {
+      setErrors({ otp: "Failed to resend OTP" });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
   const handleLoginClick = (): void => {
-  navigate("/");
-};
+    navigate("/pricing-plan");
+  };
 
   const handlePhoneChange = (value: string): void => {
     setFormData((prev) => ({ ...prev, phone_number: value }));
@@ -524,6 +567,32 @@ const handleOtpSubmit = async (
       phone_number: error,
     }));
   };
+
+  // Restore form data from sessionStorage on component mount
+  useEffect(() => {
+    const savedFormData = sessionStorage.getItem("registrationFormData");
+
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+        sessionStorage.removeItem("registrationFormData");
+      } catch (error) {
+        console.error("Error parsing saved form data:", error);
+      }
+    }
+  }, []);
+   // Clear sessionStorage and localStorage on tab close or refresh
+  useEffect(() => {
+    const clearStorage = () => {
+      sessionStorage.clear();
+      localStorage.clear();
+    };
+    window.addEventListener("beforeunload", clearStorage);
+    return () => {
+      window.removeEventListener("beforeunload", clearStorage);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -653,9 +722,9 @@ const handleOtpSubmit = async (
         <PhoneInput
           value={formData.phone_number}
           onChange={handlePhoneChange}
-          // onBlur={handlePhoneBlur}
+          onBlur={handlePhoneBlur}
           error={fieldTouched.phone_number ? errors.phone_number : undefined}
-          // disabled={loading}
+          disabled={loading}
         />
       </div>
 
@@ -729,35 +798,15 @@ const handleOtpSubmit = async (
         </span>
       </div> */}
 
-      {/* Enhanced OTP Modal with back icon */}
+ 
+
+      {/* Enhanced OTP Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-            {/* Header with back icon */}
-            <div className="flex items-center justify-between mb-6">
-              <button
-                type="button"
-                onClick={() => setShowOtpModal(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
-                disabled={otpLoading}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
-              </button>
-              <h2 className="text-3xl font-bold">OTP Verification</h2>
-              <div className="w-6"></div> {/* Spacer for center alignment */}
-            </div>
+            <h2 className="text-center text-3xl font-bold mb-6">
+              OTP Verification
+            </h2>
 
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
@@ -859,4 +908,4 @@ const handleOtpSubmit = async (
       )}
     </div>
   );
-}
+};
