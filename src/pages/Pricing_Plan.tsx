@@ -74,19 +74,19 @@ const Pricing_Plan: React.FC = () => {
     setAuthOpen(true);
   };
 
- const handleFreeClick = () => {
-  window.location.href = '/auth?plan=guest';
-};
+  const handleFreeClick = () => {
+    window.location.href = '/auth?plan=guest';
+  };
 
-   const handlePaidClick = () => {
-  window.location.href = '/auth?plan=member';
-};
+  const handlePaidClick = () => {
+    window.location.href = '/auth?plan=member';
+  };
 
   //   // For authenticated non-members, redirect directly to payment page
   //   window.location.href = PAYMENT_PAGE;
   // };
 
- 
+
 
   const menuItems: string[] = [
     "CROSSCHECK",
@@ -245,6 +245,7 @@ const Pricing_Plan: React.FC = () => {
 
   return (
     <section className="bg-white h-auto ">
+
       <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum mt-12 ">
         The World’s One and Only Fact-Based Platform to Maximize and Monetize Your Business Value –
         Tax Effectively – for All Invested.
@@ -257,6 +258,7 @@ const Pricing_Plan: React.FC = () => {
 
       {/* Video and Message */}
       <div className="w-full flex flex-col md:flex-row lg:flex-row mt-14 px-4 gap-3">
+
         {/* Video Container */}
         <div className="w-full lg:w-1/2 flex justify-center">
           <div className="relative w-full max-w-lg">
@@ -283,8 +285,10 @@ const Pricing_Plan: React.FC = () => {
         </div>
       </div>
 
+
       {/* Guest & Member Section */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
+
         {/* Left */}
         <div className="bg-gray-400 lg:w-[280px] md:w-[280px] ">
           <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
@@ -299,9 +303,8 @@ const Pricing_Plan: React.FC = () => {
           </div>
 
           <p className="pt-4 font-sans px-4 text-base md:text-lg lg:text-xl">
-            Wednesday, August 20, 2025 <br />
+            Wednesday, August 20, 2025 
             10am est – 11am est Success Story
-            <br />
             11:15am est – 12:15pm est Q&amp;A
           </p>
           <p className="pt-4 pb-10 font-sans font-semibold text-base md:text-lg lg:text-2xl px-4">
@@ -311,6 +314,7 @@ const Pricing_Plan: React.FC = () => {
 
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
+
           <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
             Guest Registration
           </h1>
@@ -356,9 +360,10 @@ const Pricing_Plan: React.FC = () => {
 
         {/* Right */}
         <div className="bg-white flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl font-sans">Member</h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">$1797 USD</p>
-          <p className="text-center font-sans font-light pt-2 px-2">
+
+          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
+          <p className="text-center font-sans font-light px-2">
             One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
           </p>
 
@@ -406,12 +411,14 @@ const Pricing_Plan: React.FC = () => {
         </div>
       </div>
 
+
       {/* Service */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
+
         {/* Left */}
         <div className="bg-white lg:w-[280px] md:w-[280px] pb-20">
-          <h1 className="text-center text-4xl font-normal pt-8">PRSPERA</h1>
-          <h1 className="text-center text-3xl font-normal pt-4">Service</h1>
+          <h1 className="text-center text-4xl font-normal pt-4">PRSPERA</h1>
+          <h1 className="text-center text-3xl font-normal pt-3">Service</h1>
         </div>
 
         {/* Middle */}
@@ -503,20 +510,21 @@ const Pricing_Plan: React.FC = () => {
 
       {/* Main */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row mb-20 ">
+
         {/* Left */}
         <div className="w-[280px] bg-white lg:mx-0 md:mx-0 mx-8 lg:w-[280px] md:w-[280px] pb-10">
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
-                activeItem === item ? "bg-yellow-300 font-semibold" : ""
-              }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
+                }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
             </div>
           ))}
         </div>
+
 
         {/* Middle */}
         <div className="min-w-[300px] h-[600px] flex flex-col bg-black text-white lg:p-2 md:p-2 p-4 flex-1  pb-10">
@@ -535,11 +543,13 @@ const Pricing_Plan: React.FC = () => {
           <button
             onClick={handleFreeClick}
             disabled={busy}
-            className="h-[50px] w-[340px] border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
+            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
           >
             {busy ? "Please wait..." : "Register for Free"}
           </button>
+
         </div>
+
 
         {/* Right */}
         <div className="min-w-[300px] h-[600px] flex flex-col bg-white text-black lg:p-2 md:p-2 p-4 flex-1  pb-10">
@@ -557,7 +567,7 @@ const Pricing_Plan: React.FC = () => {
           <button
             onClick={handlePaidClick}
             disabled={busy}
-            className="h-[50px] w-[340px] border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
+            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
           >
             {busy ? "Please wait..." : "$1797 USD"}
           </button>
