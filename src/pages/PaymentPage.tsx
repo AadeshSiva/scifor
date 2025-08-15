@@ -528,15 +528,8 @@ const Payment: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
                 <PaymentMethodButton
                   icon={creditCardIcon}
-                  label="Credit Card"
+                  label="Card"
                   selected={selectedMethod === "credit"}
-                  onClick={() => setSelectedMethod("credit")}
-                />
-
-                {/* Make this button functionable */}
-                <PaymentMethodButton
-                  icon={creditCardIcon}
-                  label="Debit Card"
                   onClick={() => setSelectedMethod("credit")}
                 />
 
@@ -570,7 +563,7 @@ const Payment: React.FC = () => {
                       : "border-gray-400 focus-within:border-black"
                   }`}
                 >
-                  <div ref={cardMountRef} className="min-h-[60px]" />
+                  <div ref={cardMountRef} />
                   {stripeLoading && (
                     <div className="flex items-center justify-center h-[60px] text-gray-500">
                       Loading card form...

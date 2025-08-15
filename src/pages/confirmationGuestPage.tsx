@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 interface User {
@@ -31,7 +30,6 @@ const ConfirmationGuest: React.FC = () => {
       }}
     >
       <div className="w-full max-w-2xl px-1 py-1 relative overflow-hidden rounded-lg">
-        
         {/* Top content */}
         <div className="text-center mx-auto pt-6">
           <h1 className="font-walbaum text-huge tracking-wide text-[66px] font-light">
@@ -49,8 +47,18 @@ const ConfirmationGuest: React.FC = () => {
                 <h2 className="font-walbaum text-big-title font-light text-[#007C7A] text-[48px]">
                   {user.name}
                 </h2>
-                <p className="mt-2 text-base text-white/200 font-linear text-[32px] font-normal">
-                  {user.email}
+                <p className="mt-2 text-base text-white/200 font-linear text-[32px] font-light">
+                  <p>
+                    You have registered with Prospera using the email:
+                    <span className="font-semibold"> {user.email}</span>
+                  </p>
+                  {/* Add alias logic here */}
+                  {/* <br />
+                  <p>
+                    The alias assigned to you by Prospera is:
+                    <br />
+                    <span className="font-semibold">RedPipe123</span>
+                  </p> */}
                 </p>
               </>
             ) : (
@@ -62,7 +70,6 @@ const ConfirmationGuest: React.FC = () => {
         {/* Center check area */}
         <div className="w-full flex justify-center mt-20">
           <div className="relative w-56 h-56 flex items-center justify-center">
-            
             {/* subtle radial behind check */}
             <svg viewBox="0 0 120 120" className="absolute w-full h-full z-0">
               <defs>
@@ -81,7 +88,12 @@ const ConfirmationGuest: React.FC = () => {
             </svg>
 
             {/* teal arc */}
-            <svg className="absolute w-full h-full z-20" viewBox="0 0 120 120" fill="none" aria-hidden>
+            <svg
+              className="absolute w-full h-full z-20"
+              viewBox="0 0 120 120"
+              fill="none"
+              aria-hidden
+            >
               <path
                 d="M 60 18 A 42 42 0 0 1 102 60"
                 stroke="#08a397"
@@ -128,7 +140,6 @@ const ConfirmationGuest: React.FC = () => {
                 />
               </svg>
             </div>
-
           </div>
         </div>
       </div>
