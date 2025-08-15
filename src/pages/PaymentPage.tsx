@@ -808,14 +808,14 @@ const Payment: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mb-8">
+                {/* <div className="mb-8">
                   <h4 className="text-base font-bold text-black mb-4">This includes:</h4>
                   <div className="space-y-3">
                     {features.map((feature, index) => (
                       <PlanFeature key={index} text={feature} />
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                   <span className="text-lg font-medium text-gray-600">Total</span>

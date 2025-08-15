@@ -154,6 +154,8 @@ const App = () => (
               }
             />
           </Routes>
+
+          <Payment/>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
