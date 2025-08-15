@@ -67,9 +67,7 @@ const NavBar: React.FC = () => {
   const getNavLinkClasses = (path: string) => {
     const baseClasses =
       "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light";
-    const activeClasses = isActivePage(path)
-      ? "underline decoration-2 underline-offset-4"
-      : "";
+    const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
     return `${baseClasses} ${activeClasses}`;
   };
 
@@ -79,73 +77,74 @@ const NavBar: React.FC = () => {
     return email.substring(0, maxLength) + "...";
   };
 
-  if (isLoading) {
-    return (
-      <>
-        <div
-          className="fixed top-0 left-0 right-0 z-10 w-full bg-white"
-          data-navbar
-          style={{ display: isVisible ? "block" : "none" }}
-        >
-          <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-6 max-sm:p-5">
-            <div
-              className="flex items-center gap-4 cursor-pointer"
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-                alt="Prospera Logo"
-                className="w-[195px] h-[34px]"
-              />
-              <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-                Grow Smarter. Exit Richer™️
-              </span>
-            </div>
-            <div className="relative">
-              <button
-                className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowDropdown(!showDropdown);
-                }}
-              >
-                <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-                <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-                <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
-              </button>
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate("/coi");
-                      setShowDropdown(false);
-                    }}
-                    className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-                  >
-                    COI
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate("/pricing-plan");
-                      setShowDropdown(false);
-                    }}
-                    className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-                  >
-                    Pricing
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-        </div>
-        <div style={{ height: navbarHeight || "86px" }}></div>
-      </>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <>
+  //       <div
+  //         className="fixed top-0 left-0 right-0 z-10 w-full bg-white"
+  //         data-navbar
+  //         style={{ display: isVisible ? "block" : "none" }}
+  //       >
+  //         <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-6 max-sm:p-5">
+  //           <div
+  //             className="flex items-center gap-4 cursor-pointer"
+  //             onClick={() => {
+  //               navigate("/");
+  //             }}
+  //           >
+  //             <img
+  //               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+  //               alt="Prospera Logo"
+  //               className="w-[195px] h-[34px]"
+  //             />
+  //             <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+  //               Grow Smarter. Exit Richer™️
+  //             </span>
+  //           </div>
+
+  //           <div className="relative">
+  //             <button
+  //               className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
+  //               onClick={(e) => {
+  //                 e.stopPropagation();
+  //                 setShowDropdown(!showDropdown);
+  //               }}
+  //             >
+  //               <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+  //               <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+  //               <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
+  //             </button>
+  //             {showDropdown && (
+  //               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
+  //                 <button
+  //                   onClick={(e) => {
+  //                     e.stopPropagation();
+  //                     navigate("/coi");
+  //                     setShowDropdown(false);
+  //                   }}
+  //                   className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+  //                 >
+  //                   COI
+  //                 </button>
+  //                 <button
+  //                   onClick={(e) => {
+  //                     e.stopPropagation();
+  //                     navigate("/pricing-plan");
+  //                     setShowDropdown(false);
+  //                   }}
+  //                   className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+  //                 >
+  //                   Pricing
+  //                 </button>
+  //               </div>
+  //             )}
+  //           </div>
+  //         </header>
+  //       </div>
+  //       <div style={{ height: navbarHeight || "86px" }}></div>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -172,7 +171,7 @@ const NavBar: React.FC = () => {
           </div>
 
           {/* Hide existing nav links and user menu, replace with hamburger dropdown */}
-          <div className="relative">
+          {/* <div className="relative">
             <button
               className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
               onClick={(e) => {
@@ -209,15 +208,12 @@ const NavBar: React.FC = () => {
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
         </header>
 
         {/* Overlay to close dropdown when clicking outside */}
         {showDropdown && (
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setShowDropdown(false)}
-          />
+          <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
         )}
       </div>
 
