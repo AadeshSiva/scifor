@@ -740,15 +740,12 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         )}
       </button>
 
-      {/* <div className="text-center text-lg italic text-gray-500 mt-6">
+      <div className="text-center text-lg italic text-gray-500 mt-6">
         <span>Already have an account? </span>
-        <span
-          className="text-black cursor-pointer hover:underline"
-          onClick={onSwitchToLogin}
-        >
+        <span className="text-black cursor-pointer hover:underline" onClick={onSwitchToLogin}>
           Login
         </span>
-      </div>  */}
+      </div>
 
       {/* Enhanced OTP Modal */}
       {showOtpModal && (
