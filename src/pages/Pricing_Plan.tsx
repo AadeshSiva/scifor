@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AuthForm } from "@/components/authok/AuthForm";
-
-const PAYMENT_PAGE = "/payment";
+import { useAuth } from "@/utils/AuthContext";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
@@ -43,6 +42,7 @@ const Pricing_Plan: React.FC = () => {
   const [initialTab] = useState<"login" | "register">("register");
   const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(null);
   const [busy, setBusy] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!authOpen) return;
@@ -75,16 +75,24 @@ const Pricing_Plan: React.FC = () => {
   };
 
   const handleFreeClick = () => {
-    window.location.href = "/auth?plan=guest";
+    if (!isAuthenticated) {
+      window.location.href = "/auth?plan=guest";
+    } else if (user?.paid) {
+      alert("You are already registered as a Member.");
+    } else {
+      alert("You are already registered as a Guest User.");
+    }
   };
 
   const handlePaidClick = () => {
-    window.location.href = "/auth?plan=member";
+    if (!isAuthenticated) {
+      window.location.href = "/auth?plan=member";
+    } else if (user?.paid) {
+      alert("You are already registered as a Member.");
+    } else {
+      window.location.href = "/payment";
+    }
   };
-
-  //   // For authenticated non-members, redirect directly to payment page
-  //   window.location.href = PAYMENT_PAGE;
-  // };
 
   const menuItems: string[] = [
     "CROSSCHECK",

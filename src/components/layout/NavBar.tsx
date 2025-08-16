@@ -227,7 +227,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/utils/AuthContext"; // Adjust path as needed
+import { useAuth } from "@/utils/AuthContext";
 
 // Header Component
 const NavBar: React.FC = () => {

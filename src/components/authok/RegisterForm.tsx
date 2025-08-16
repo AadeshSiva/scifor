@@ -449,6 +449,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       setOtp(["", "", "", "", "", ""]);
     }
   };
+
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
