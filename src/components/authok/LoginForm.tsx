@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
 import {
   Eye,
@@ -431,18 +431,6 @@ async function getUserStatus() {
   }
 }
 
-const handleLoginRedirect = async () => {
-  const status = await getUserStatus();
-  if (status.authenticated) {
-    if (status.isMember) {
-      alert("You are already registered as a member.");
-      return "/";
-    } else {
-      return "/payment";
-    }
-  }
-};
-
 // Main Login Form Component
 export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [formData, setFormData] = useState({
@@ -454,9 +442,9 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -466,6 +454,25 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     }));
     // Clear error when user starts typing
     if (error) setError("");
+  };
+
+  const handleLoginRedirect = async () => {
+    const plan = location.pathname.includes("member") ? "member" : "guest";
+
+    const status = await getUserStatus();
+    if (status.authenticated) {
+      if (status.isMember) {
+        alert("You are already registered as a member.");
+        navigate("/");
+      } else {
+        if (plan === "guest") {
+          alert("You are already registered as a guest.");
+          navigate("/");
+        } else if (plan === "member") {
+          navigate("/payment");
+        }
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -510,9 +517,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
 
         console.log("Login successful:", data.message);
 
-        // unable to fetch data with this method
-        const redirectLink = await handleLoginRedirect();
-        navigate(redirectLink);
+        await handleLoginRedirect();
       } else {
         setError(data.message || "Login failed");
       }

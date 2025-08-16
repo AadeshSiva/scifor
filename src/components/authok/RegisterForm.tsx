@@ -504,6 +504,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const handleCloseClick = (): void => {
     navigate("/pricing-plan");
   };
+
   const handlePhoneChange = (value: string): void => {
     setFormData((prev) => ({ ...prev, phone_number: value }));
 

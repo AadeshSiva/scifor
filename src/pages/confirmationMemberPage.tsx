@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useAuth } from "@/utils/AuthContext";
 
 const ConfirmationMember: React.FC = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [name, setName] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    fetch("https://intern-project-final-1.onrender.com/confirm-payment")
-      .then((res) => res.json())
-      .then((data) => {
-        setName(data.name);
-        setEmail(data.email);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching user data:", err);
-        setLoading(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://intern-project-final-1.onrender.com/confirm-payment")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setName(data.name);
+  //       setEmail(data.email);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching user data:", err);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   return (
     <div
@@ -37,29 +39,28 @@ const ConfirmationMember: React.FC = () => {
           </p>
 
           <div className="mt-10">
-            {loading ? (
+            {/* {loading ? (
               <p className="text-gray-300">Loading user info...</p>
             ) : (
-              <>
-                <h2 className="font-walbaum text-big-title font-light text-[#DBA958] text-[48px]">
-                  {name || "No User found"}
-                </h2>
-                <p className="mt-2 text-base text-white/200 font-linear text-[32px] font-light">
-                  <p>
-                    You have registered with Prospera using the email:
-                    <span className="font-semibold"> {email || "No email found"}</span>
-                  </p>
+            )} */}
 
-                  {/* Add alias logic here */}
-                  {/* <br />
-                  <p>
-                    The alias assigned to you by Prospera is:
-                    <br />
-                    <span className="font-semibold">RedPipe123</span>
-                  </p> */}
+            <>
+              <h2 className="font-walbaum text-big-title font-light text-[#DBA958] text-[48px]">
+                {user.full_name || "No User found"}
+              </h2>
+              <p className="mt-2 text-base text-white/200 font-linear text-[32px] font-light">
+                <p>
+                  You have registered with Prospera using the email:
+                  <span className="font-semibold"> {user.email || "No email found"}</span>
                 </p>
-              </>
-            )}
+                <br />
+                <p>
+                  The alias assigned to you by Prospera is:
+                  <br />
+                  <span className="font-semibold">{user.username || "No Alias found"}</span>
+                </p>
+              </p>
+            </>
           </div>
         </div>
 

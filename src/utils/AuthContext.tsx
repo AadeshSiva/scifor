@@ -4,6 +4,7 @@ interface User {
   id: string;
   email: string;
   full_name: string;
+  username: string;
   phone_number?: string;
   website_name?: string;
   linkedin_url?: string;
