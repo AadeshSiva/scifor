@@ -5,35 +5,6 @@ import { useAuth } from "@/utils/AuthContext";
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
 
-const authHeaders = () => {
-  const token = getAccessToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-// Infer current user status from backend (reuses your confirm-payment endpoint without session_id)
-async function getUserStatus() {
-  const token = getAccessToken();
-  if (!token) return { authenticated: false, isMember: false, name: "", email: "" };
-
-  try {
-    const res = await fetch("https://intern-project-final-1.onrender.com/confirm-payment", {
-      headers: { ...authHeaders() },
-      credentials: "include",
-    });
-    if (!res.ok) return { authenticated: true, isMember: false, name: "", email: "" };
-    const data = await res.json();
-    const isMember = !!data?.user_paid || data?.status === "paid";
-    return {
-      authenticated: true,
-      isMember,
-      name: data?.name || "",
-      email: data?.email || "",
-    };
-  } catch {
-    return { authenticated: true, isMember: false, name: "", email: "" };
-  }
-}
-
 const Pricing_Plan: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>("CROSSCHECK");
 

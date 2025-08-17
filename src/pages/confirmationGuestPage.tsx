@@ -31,17 +31,17 @@ const ConfirmationGuest: React.FC = () => {
         backgroundImage: "url('../public/assets/Bg-confirmationPage.png')",
       }}
     >
-      <div className="w-full max-w-2xl px-1 py-1 relative overflow-hidden rounded-lg">
+      <div className="w-full max-w-2xl relative overflow-hidden rounded-lg px-4">
         {/* Top content */}
         <div className="text-center mx-auto pt-6">
-          <h1 className="font-walbaum text-huge tracking-wide text-[66px] font-light">
+          <h1 className="font-walbaum tracking-wide text-4xl sm:text-5xl md:text-7xl font-thin">
             Congratulations!
           </h1>
-          <p className="mt-4 text-[#FFFFFF] text-[30px] font-linear font-thin">
+          <p className="mt-8 text-[#FFFFFF] text-xl md:text-3xl font-linear font-thin">
             You are now registered as a guest of Prospera.
           </p>
 
-          <div className="mt-5">
+          <div className="mt-6">
             {/* {loading ? (
               <p className="text-gray-400">Loading user info...</p>
             ) : user ? (
@@ -50,12 +50,13 @@ const ConfirmationGuest: React.FC = () => {
             )} */}
 
             <>
-              <h2 className="font-walbaum text-big-title font-light text-[#007C7A] text-[48px]">
+              <h2 className="font-walbaum font-light text-[#007C7A] text-4xl sm:text-5xl md:text-7xl">
                 {user.full_name || "No User found"}
               </h2>
-              <p className="mt-2 text-base text-white/200 font-linear text-[32px] font-light">
+              <p className="mt-10 text-white/200 font-linear text-lg md:text-2xl font-thin">
                 <p>
                   You have registered with Prospera using the email:
+                  <br />
                   <span className="font-semibold"> {user.email || "No email found"}</span>
                 </p>
                 <br />

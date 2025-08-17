@@ -46,16 +46,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Get user details from backend
   const fetchUserDetails = async (accessToken: string): Promise<User | null> => {
     try {
-      const response = await fetch(
-        "https://intern-project-final-1.onrender.com/extract-user-data/",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
       console.log(response);
       if (response.ok) {
         const userData = await response.json();

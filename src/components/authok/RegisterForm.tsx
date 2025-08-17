@@ -94,22 +94,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const API_BASE_URL = "https://intern-project-final-1.onrender.com";
-
-  // // Restore form data from sessionStorage on component mount
-  // useEffect(() => {
-  //   const savedFormData = sessionStorage.getItem("registrationFormData");
-
-  //   if (savedFormData) {
-  //     try {
-  //       const parsedData = JSON.parse(savedFormData);
-  //       setFormData(parsedData);
-  //       sessionStorage.removeItem("registrationFormData");
-  //     } catch (error) {
-  //       console.error("Error parsing saved form data:", error);
-  //     }
-  //   }
-  // }, []);
+  const API_BASE_URL = "https://internship-pro.onrender.com";
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -335,6 +320,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
+        // credentials: "include",
       });
 
       clearTimeout(timeoutId);
@@ -379,7 +365,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     setErrors({});
 
     try {
-      // First check if email already exists
+      // Check if email already exists
       const checkData: CheckEmailResponse = await makeApiCall("/check_email_status/", {
         email: formData.email,
       });
@@ -390,37 +376,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         return;
       }
 
-      // Proceed with registration
-      const registerPayload = {
-        email: formData.email,
-        password: formData.password,
-        full_name: formData.full_name,
-        phone_number: formData.phone_number,
-        website_name: formData.website_name,
-        no_linkedin: true,
-      };
-
-      console.log("Sending registration payload:", {
-        ...registerPayload,
-        password: "[REDACTED]",
-      });
-
-      const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
-
-      if (registerData.status === "success") {
-        // Store tokens using the auth context
-        if (registerData.tokens) {
-          await login(registerData.tokens);
-          console.log("Registration successful with tokens:", registerData.message);
-        }
-
-        // Send OTP for email verification
-        await sendOtp();
-      } else {
-        setErrors({ general: registerData.message });
-      }
+      // Send OTP for email verification BEFORE registration
+      await sendOtp();
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Pre-registration error:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Network error. Please try again.";
       setErrors({ general: errorMessage });
@@ -463,12 +422,41 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     setErrors({});
 
     try {
+      // First verify OTP
       const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
         email: formData.email,
         otp: otpCode,
       });
 
-      if (verifyData.status === "success") {
+      if (verifyData.status !== "success") {
+        setErrors({ otp: verifyData.message });
+        return;
+      }
+
+      // OTP verified successfully, now register the user
+      const registerPayload = {
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.full_name,
+        phone_number: formData.phone_number,
+        website_name: formData.website_name,
+        no_linkedin: true,
+      };
+
+      console.log("Sending registration payload:", {
+        ...registerPayload,
+        password: "[REDACTED]",
+      });
+
+      const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
+
+      if (registerData.status === "success") {
+        // Store tokens using the auth context
+        if (registerData.tokens) {
+          await login(registerData.tokens);
+          console.log("Registration successful with tokens:", registerData.message);
+        }
+
         // Redirect based on plan
         const plan = getPlan();
         if (plan === "guest") {
@@ -477,12 +465,14 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           navigate("/payment");
         }
       } else {
-        setErrors({ otp: verifyData.message });
+        setErrors({ otp: registerData.message });
       }
     } catch (error) {
-      console.error("OTP verification error:", error);
+      console.error("OTP verification or registration error:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to verify OTP. Please try again.";
+        error instanceof Error
+          ? error.message
+          : "Failed to complete registration. Please try again.";
       setErrors({ otp: errorMessage });
     } finally {
       setOtpLoading(false);
@@ -524,38 +514,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     }));
   };
 
-  // Restore form data from sessionStorage on component mount
-  useEffect(() => {
-    const savedFormData = sessionStorage.getItem("registrationFormData");
-
-    if (savedFormData) {
-      try {
-        const parsedData = JSON.parse(savedFormData);
-        setFormData(parsedData);
-        sessionStorage.removeItem("registrationFormData");
-      } catch (error) {
-        console.error("Error parsing saved form data:", error);
-      }
-    }
-  }, []);
-
   //remove cold start of BAckend
   useEffect(() => {
     fetch(`${API_BASE_URL}/health`, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(
       () => {}
     );
-  }, []);
-
-  // Clear sessionStorage and localStorage on tab close or refresh
-  useEffect(() => {
-    const clearStorage = () => {
-      sessionStorage.clear();
-      localStorage.clear();
-    };
-    window.addEventListener("beforeunload", clearStorage);
-    return () => {
-      window.removeEventListener("beforeunload", clearStorage);
-    };
   }, []);
 
   return (
@@ -735,7 +698,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            Registering...
+            Sending OTP...
           </>
         ) : (
           "Register"
@@ -762,7 +725,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
             <p className="text-center mb-8 text-gray-600">
               Please check your inbox (and spam/junk folder just in case)
               <br />
-              and enter the code below to continue.
+              and enter the code below to complete your registration.
             </p>
 
             {errors.otp && (
@@ -822,10 +785,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Verifying...
+                    Completing Registration...
                   </>
                 ) : (
-                  "Verify OTP"
+                  "Verify OTP & Register"
                 )}
               </button>
 
