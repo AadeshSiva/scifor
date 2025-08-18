@@ -243,13 +243,16 @@ const Pricing_Plan: React.FC = () => {
             />
           </div>
 
-          <p className="pt-4 font-sans px-4 text-base md:text-lg lg:text-xl">
-            Wednesday, August 20, 2025 10am est – 11am est Success Story 11:15am est – 12:15pm est
-            Q&amp;A
+          <p className="pt-3 font-sans px-3 text-base text-center md:text-left lg:text-left">
+            Wednesday, August 20, 2025 <br />
+            10am est– 11am est Success Story <br />
+            11:15am est– 12:15pm est Q&A
           </p>
-          <p className="pt-4 pb-10 font-sans font-semibold text-base md:text-lg lg:text-2xl px-4">
+
+          <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
             Only 33 Seats
           </p>
+
         </div>
 
         {/* Middle */}
@@ -348,6 +351,7 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       </div>
+
 
       {/* Service */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
@@ -450,9 +454,8 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
-                activeItem === item ? "bg-yellow-300 font-semibold" : ""
-              }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
+                }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
