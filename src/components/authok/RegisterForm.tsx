@@ -37,6 +37,7 @@ interface FieldTouched {
 interface CheckEmailResponse {
   user_exists: boolean;
   message: string;
+  paid: boolean;
 }
 
 interface RegisterResponse {
@@ -371,7 +372,14 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       });
 
       if (checkData.user_exists) {
-        setErrors({ email: checkData.message });
+        console.log(checkData);
+        setErrors({
+          email: `${
+            checkData.paid
+              ? "Email already registered as a Member in Prspera. Please log in."
+              : "Email already registered as a Guest in Prespera. Please log in."
+          }`,
+        });
         setLoading(false);
         return;
       }

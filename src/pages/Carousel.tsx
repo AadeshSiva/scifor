@@ -35,6 +35,23 @@ const slides: SlideData[] = [
     image: "/assets/iceberg.png",
   },
   {
+    percent: "78%",
+    title: "5. No Good Help",
+    shortDescription: "of entrepreneurs don’t have an adequate advisory team for their exit.",
+    longDescription:
+      "Advisors are everywhere — but the right ones are rare. Those that understand Intangible assets are the rarest.  Most founders lack access to M&A-savvy operators who understand how to shape and signal marketable value early. M&A bankers aren’t in the business of long-term guidance. By the time they step in, it’s too late to build.",
+    image: "/assets/iceberg.png",
+  },
+
+  {
+    percent: "61%",
+    title: "6. Strategy Inactionable",
+    shortDescription: "of executives admit their company struggles to implement its strategy.",
+    longDescription:
+      "Strategy isn’t the problem — execution is. Great ideas stay in pitch decks because teams can’t translate strategy into daily actions. The gap between intention and action kills momentum. If strategy doesn’t shape operations, culture, and incentives — it’s not strategy. It’s storytelling.",
+    image: "/assets/iceberg.png",
+  },
+  {
     percent: "84%",
     title: "3. Marketable Value Unseenn",
     shortDescription:
@@ -49,22 +66,6 @@ const slides: SlideData[] = [
     shortDescription: "of the global workforce is disengaged - destroying value daily.",
     longDescription:
       "Most owners assume value accumulates ‘automatically’ over time — but without the right systems in place, it quietly erodes. Every misaligned decision, manual process, disengaged team member, and reactive strategy threatens what your business is worth. Value isn’t just built — it’s protected, grown, and proven daily. If you don’t manage it intentionally, the market will discount it brutally.",
-    image: "/assets/iceberg.png",
-  },
-  {
-    percent: "78%",
-    title: "5. No Good Help",
-    shortDescription: "of entrepreneurs don’t have an adequate advisory team for their exit.",
-    longDescription:
-      "Advisors are everywhere — but the right ones are rare. Those that understand Intangible assets are the rarest.  Most founders lack access to M&A-savvy operators who understand how to shape and signal marketable value early. M&A bankers aren’t in the business of long-term guidance. By the time they step in, it’s too late to build.",
-    image: "/assets/iceberg.png",
-  },
-  {
-    percent: "61%",
-    title: "6. Strategy Inactionable",
-    shortDescription: "of executives admit their company struggles to implement its strategy.",
-    longDescription:
-      "Strategy isn’t the problem — execution is. Great ideas stay in pitch decks because teams can’t translate strategy into daily actions. The gap between intention and action kills momentum. If strategy doesn’t shape operations, culture, and incentives — it’s not strategy. It’s storytelling.",
     image: "/assets/iceberg.png",
   },
 ];
@@ -122,7 +123,7 @@ export default function IcebergCarousel() {
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, index) => (
-            <div className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8">
+            <div key={index} className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8">
               {index === 0 ? (
                 <div className="relative flex flex-col items-center">
                   {/* Outer circle */}

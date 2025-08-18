@@ -60,13 +60,19 @@ const ConfirmationMember: React.FC = () => {
                   <br />
                   <span className="font-semibold">{user.username || "No Alias found"}</span>
                 </p>
+                <br />
+                <p className="text-base md:text-lg">
+                  Thank you for registering with Prspera. We will contact you shortly with further
+                  instructions on how to best use our platform for maximum efficiency, along with a
+                  link to the webinar.
+                </p>
               </p>
             </>
           </div>
         </div>
 
         {/* Center check area */}
-        <div className="w-full flex justify-center mt-20">
+        <div className="w-full flex justify-center mt-10">
           <div className="relative w-56 h-56 flex items-center justify-center">
             {/* subtle radial behind check */}
             <svg viewBox="0 0 120 120" className="absolute w-full h-full z-0">
