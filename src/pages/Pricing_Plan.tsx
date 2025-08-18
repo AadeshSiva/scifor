@@ -1,39 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { AuthForm } from "@/components/authok/AuthForm";
-
-const PAYMENT_PAGE = "/payment";
+import { useAuth } from "@/utils/AuthContext";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
-
-const authHeaders = () => {
-  const token = getAccessToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-// Infer current user status from backend (reuses your confirm-payment endpoint without session_id)
-async function getUserStatus() {
-  const token = getAccessToken();
-  if (!token) return { authenticated: false, isMember: false, name: "", email: "" };
-
-  try {
-    const res = await fetch("https://intern-project-final-1.onrender.com/confirm-payment", {
-      headers: { ...authHeaders() },
-      credentials: "include",
-    });
-    if (!res.ok) return { authenticated: true, isMember: false, name: "", email: "" };
-    const data = await res.json();
-    const isMember = !!data?.user_paid || data?.status === "paid";
-    return {
-      authenticated: true,
-      isMember,
-      name: data?.name || "",
-      email: data?.email || "",
-    };
-  } catch {
-    return { authenticated: true, isMember: false, name: "", email: "" };
-  }
-}
 
 const Pricing_Plan: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>("CROSSCHECK");
@@ -43,6 +13,7 @@ const Pricing_Plan: React.FC = () => {
   const [initialTab] = useState<"login" | "register">("register");
   const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(null);
   const [busy, setBusy] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!authOpen) return;
@@ -69,28 +40,35 @@ const Pricing_Plan: React.FC = () => {
     };
   }, [authOpen, selectedPlan]);
 
-  const openAuth = (plan: 'guest' | 'member') => {
+  const openAuth = (plan: "guest" | "member") => {
     setSelectedPlan(plan);
     setAuthOpen(true);
   };
 
- const handleFreeClick = () => {
-  window.location.href = '/auth?plan=guest';
-};
+  const handleFreeClick = () => {
+    if (!isAuthenticated) {
+      window.location.href = "/auth?plan=guest";
+    } else if (user?.paid) {
+      alert("You are already registered as a Member.");
+    } else {
+      alert("You are already registered as a Guest User.");
+    }
+  };
 
-   const handlePaidClick = () => {
-  window.location.href = '/auth?plan=member';
-};
-
-  //   // For authenticated non-members, redirect directly to payment page
-  //   window.location.href = PAYMENT_PAGE;
-  // };
-
- 
+  const handlePaidClick = () => {
+    if (!isAuthenticated) {
+      window.location.href = "/auth?plan=member";
+    } else if (user?.paid) {
+      alert("You are already registered as a Member.");
+    } else {
+      window.location.href = "/payment";
+    }
+  };
 
   const menuItems: string[] = [
     "CROSSCHECK",
     "CONFIDANTE",
+    "CONSULTING",
     "CONCIERGE (for members only)",
     "COURSE",
     "COMMUNITY",
@@ -100,90 +78,57 @@ const Pricing_Plan: React.FC = () => {
     "CURES (Done–for–You Tools)",
     "COACHING (Winning skills – course relevant)",
     "CLOUT",
-    "CONSULTING",
+    "PRSPERA COMPLETE​",
   ];
 
   const messages1: { [key: string]: string | string[] } = {
     CROSSCHECK: [
-      "Each member starting in November 2025 will complete a comprehensive submission, all anonymous, to present their business profile, financials and target exit richer valuation and more.",
-      "A minimum of 3 opinions will be provided by M&A firms and business brokers across our network of over 250+ firms. These firms will do their best to ‘sell’ you on why they are the firm of choice to represent selling your business or helping you with any of their services based on your exit preferences – roll up, sell, merger etc.",
-      "1) STREET VALUE: Responding firms will deliver their assessment of the ‘Street Value’ of the business based on financials and profile provided ",
-      "2)  KEY RISKS OF EXIT VALUE: Responding firms will provide their idea of the top risk factors that are hurting your exit value. ",
-      "3) ACCESS TO BUYERS: Responding firms will confirm they have: ",
-      "a) existing access to strategic buyers ",
-      "b) can have access to strategic buyers",
-      "c) know of and can provide insights on what those buyers would pay premiums for  ",
-      "4) ART OF WAR STRATEGIES: Based on your ‘desired exit richer number’ which, at your option, you may share with them in advance, responding firms can help articulate the ‘ART OF WAR’ strategy could you help us execute should you be retained to achieve 100% of the target exit richer number – or what % could you assure securing if not 100% of the target. ",
-      "ART OF WAR STRATEGY recommended ",
-      "Target % of Exit Richer Number ",
-      "Any other recommendations ",
-      "A minimum of 3 detailed reports from a network of 250+ M&A Firms or Business Brokers will deliver exceptional and crucial strategic insights on how best to Grow Smarter now, pivot the business, and structure its value correctly.  ",
-      "These reports will be delivered in your membership profile INBOX and will NOT BE SHARED with OTHER MEMBERS.  ",
-      "Any ART OF WAR STRATEGY received from responding firms that are deemed unique, valuable or extraordinary to all paid members, including yourself,  will be compiled into a library and shared.  ",
-      "This further enhances the Grow Smarter and Exit Richer success of all PRSPERA Members.  ",
+      "Each month, one Guest member will be selected by lottery to enjoy the benefits of Crosscheck feature for a month.  Use this opportunity to find the street value of your business and getting access to multiple M&A firms vying for your attention, in the process.",
       "",
     ],
 
-    CONFIDANTE: ["", ""],
+    CONFIDANTE: [
+      "Welcome to the World’s First and Only Proprietary GPT on Maximizing Monetizable Value, Tax Effectively – For All Invested. ",
+      "Use this GPT to help you 24/7 to learn, direct and strategize how to Grow Smarter by maximizing value correctly so that you protect and capitalize on the years of value you built to exit richer.​",
+      "You get the exact same features as paid members.",
+    ],
 
     "CONCIERGE (for members only)": [
-      " Yes, please include me in the monthly CONCIERGE lottery.",
-      "FREE members will enjoy a concierge service after our PRSPERA membership exceeds 1111 members. Here’s how:  ",
-      "Each month the most frequently ranked topic will be chosen and presented by the Concierge – giving FREE members a sample of our Concierge service.  ",
-      "FREE members who have configured their concierge will be If you could have a concierge what would you need one for? The following is a list of the most critical topics related to building a valuable company so that the owners can exit richer and create generational wealth. What topics would you want to learn more about with the help of a concierge?  ",
-      "Configure your concierge here: Your custom concierge configuration will be save in your profile and can be updated at anytime by you – and this will help us serve you if and when you decide to become a PRSPERA member.  ",
-      "(backend calclulates the configurations of all FREE members and picks the highest ranking topic – the Concierge service is then described as here is how we help: The advisors who can help who have been PRSPERA authorized – this can be a list and it also can be a webinar presented by the concierge – it can also include a process map as to how we resolve this issue – and any other related solutions that address this problem including a testimonial from other PRSPERA members who have solved this problem already – with or without the concierge service) – this will be a recorded presentation and archived for all FREE members to view on demand so that they can see how our concierge service reduces their time to resolve a critical element in their business.  ",
-      "<<< Check box list + 5 text fields>>>",
-      "1. 73% of privately held companies in the U.S. plan to transition within the next 10 years, representing a $14 trillion opportunity. ",
-      "2. Only 17% of business owners actually have a formal exit plan, and over half have never had their business appraised, which leaves many unaware of all of their exit options. ",
-      "3. 60% of first-generation business owners favor an internal exit, while 82% of second-generation business owners favor an internal exit. ",
-      "4. 85% of owners who believed themselves to be best-in-class or better in exit planning had sought education, and 84% received outside advice. ",
-      "5. 16% of business owners plan to exit their businesses in fewer than five years, 37% plan to exit within 5–10 years, and 47% plan to exit in more than ten years. ",
-      "6. 56% of Millennial owners have written personal plans, 55% have written company plans, and 68% have written personal financial plans. ",
-      "7. 52% of business owners include written detailed personal planning in their exit strategy, compared to only 9% in previous surveys. ",
-      "8. 51% of privately held U.S. businesses are owned by baby boomers, leading to a significant wealth transfer as they sell to millennials. ",
-      "9. Up to 80% of businesses that go to market do not sell, leaving owners without solid options to harvest their wealth and ensure economic continuity into the next generation. ",
-      "10. In recent surveys, 3 out of 4 business owners (75%)profoundly regretted their decision to sell within one year of exiting due to lack of readiness.",
-      "11. 52% of business owners have not considered how they would exit their business in the event of a dispute with a business partner. ",
-      "12. Younger owners—Millennials and those in Generation X—view exit strategy as a priority, with 56% of Millennial owners having written personal plans, 55% written company plans, and 68% written personal financial plans. ",
-      "13. An estimated 73% of privately held companies in the U.S. plan to transition ownership within the next decade, representing a $14 trillion opportunity. ",
-      "14. After exiting, 42% of owners plan to retire, 39% intend to invest in another business, and 31% want to pursue philanthropy or civic engagement. ",
-      "15. The most common succession plan is to pass the business to a family member (41%), followed by selling the business to a third party (31%). ",
-      "16. Only 12% of businesses that sell to a third party sell to private equity firms, with the majority selling to individual buyers. ",
-      "17. Business owners who actively plan for a transition are more likely to achieve their goals, including maximizing the value of the business and preserving its legacy.",
-      "18. Only 2% of businesses that sell to a third party use an auction process, but those that do achieve significantly higher sale prices. ",
-      "19. The number of businesses transitioning ownership is expected to double in the next 10-15 years, creating a significant demand for transition planning services. ",
-      "",
+      " You get to choose what you'd like to have in your concierge service should you decide to upgrade your PRSPERA account to be a Member.  Each month, the most frequently ranked topic will be chosen and presented by the Concierge – giving free members a sample of our Concierge service.",
     ],
 
     COURSE: [
-      "Audit and submit questions and thoughts about the curriculum -  ",
+      "Audit and submit questions and thoughts about the curriculum -  ",
       "Configure the course to what you need – in the future you will get free video overviews of each module – pick the order in which you would be interested in learning about  ",
       "",
     ],
 
     COMMUNITY: [
-      "View only – topics you would be interested  ",
-      "Configure your community channels – select check boxes – we will then show you updates from these channels ",
+      "You get access to our chat engine as a listener.  Watch what our community members are discussing in various channels.  Upgrade your membership to participate in these discussions.",
       "",
     ],
 
     CRITIQUE: [
-      "View only – topics you would be interested ",
-      "Configure your community channels – select check boxes – we will then show you updates from these channels ",
+      "Download PDF guides containing key questions and the expected responses—right or wrong—to use when interviewing your advisors (accountants, legal professionals, etc.). These documents are designed to help you assess their competence and make informed decisions.  Tap into the PRSPERA certified vendors / service providers through our CLOUT program.",
     ],
     "CRITICAL TOOLS":
-      "List all the tools to be made available – in Oct/Nov - for now here is a list of key problems by dept or function check all the areas in which you have struggles in",
-    CURATED: "",
-    "CURES (Done–for–You Tools)": "",
+      "You will gain access to a suite of tools designed to help diagnose challenges within your business. A custom GPT assistant will be available to discuss your current issues and recommend the most relevant tools for deeper analysis.",
+    CURATED:
+      "You may pick the topics and/or the questions you may have for experts in various fields.  We'll invite you to participate in webinars with experts responding to these questions and more.​",
+    "CURES (Done–for–You Tools)": [
+      "Each month, one Guest member will be selected by lottery to enjoy the benefits of our CURES feature for a month. Sign up for a chance to win and enjoy all the benefits of Membership.",
+      "Guests can download all our Done-for-You-Tools and use them in a self-guided manner. For additional support and hand-holding, you may upgrade your membership.",
+    ],
     "COACHING (Winning skills – course relevant)":
-      "Tell us what area of coaching you need – replays only  ",
+      "Tell us what do you need coaching for (example – mental health, HR practices).  We'll arrange coaching sessions with experts based on priority and Guest members will have access to recorded sessions.  ",
     CLOUT: [
-      "Welcome to the World’s First and Only Proprietary GPT on Maximizing Monetizable Value, Tax Effectively – For All Invested.  ",
-      "Use this GPT to help you 24/7 to learn, direct and strategize how to Grow Smarter by maximizing value correctly so that you protect and capitalize on the years of value you built to exit richer ",
+      "Request a PRSPERA certified vendor or a service provider.  Once we identify one or more based on your criteria, switch to become a paid member to get access.",
     ],
     CONSULTING:
-      "Free get 1 lottery winner each month to have their strategy fixed begins October with rirst draw y sept 30 – shared on live webinar with anonympups attendees only – must be registered with login alias ",
+      "Guests do not have access to Consulting – unless they win the monthly lottery to try out PRSPERA member services for a month.  In which case, you are eligible to receive consulting on 1 core issue that month.  Upgrade membership to enjoy the full benefits of up to 3 core issue consulting every month. ",
+
+    "PRSPERA COMPLETE​":
+      "All the offerings of PRSPERA, bundled in an app complete with a dashboard that guides your daily actions towards building value.  The app gives you access to all PRSPERA products based on your permissions as our Guest User.",
   };
 
   const messages2: { [key: string]: string | string[] } = {
@@ -213,34 +158,35 @@ const Pricing_Plan: React.FC = () => {
     ],
 
     "CONCIERGE (for members only)": [
-      "Prepare onboarding schedule – Vinod to prepare draft – welcome call with vinod and I – if a few then 1:1 if many then anonymous webinar weekly – depending on inflow; ROI interview within first 72 hours of sign up – INTAKE SESSION or SESSIONS – 1 hr/ea; VALIDATION SESSIONS -  ",
-      "",
+      "Choose what would you like to have in your Concierge service.  You'll have an intake session with PRSPERA where we'll capture your needs and aspirations that will guide us setting up your Concierge services.  Once set up, you'll have access to your Concierge services on-demand.",
     ],
 
-    COURSE:
-      "Paid members will get added into the first cohort of 33 people – module every other week – 33 steps – first class is October launch ",
+    COURSE: [
+      "Members get access to the entire self-paced and instructor-led tutorial.  The 33 people first cohort will start in October 2025.​",
+      "They will also have a say in the configuration and auditing of the course. ",
+    ],
     COMMUNITY: [
-      "We will hold off on launching the community until we have our first 111 members  ",
-      "Configure which channels you would want to participate in – upon launch  ",
-      "(vinod to identify the channels – AI will sort the channels from open conversations first) ",
+      "Chat with other members anonymously.  You get access to a chat engine developed specifically for our members to chat with other members anonymously.  Discuss anything related to the business without worrying about revealing your identity.  Configure which channels you want to participate in. ",
     ],
 
     CRITIQUE:
-      "They would request the experts they want to replace or interview to be PRSPERA Authorized and we will get back to them when we have secured them – we would need a minimum of 100 per legal jurisdiction - city as requested – e.g. 100 people in new york city want a tax lawyer PRSPERA Authorized  ",
+      "Download PDF guides containing key questions and the expected responses—right or wrong—to use when interviewing your advisors (accountants, legal professionals, etc.). These documents are designed to help you assess their competence and make informed decisions.  Tap into the PRSPERA certified vendors / service providers through our CLOUT program.  ",
     "CRITICAL TOOLS":
-      "List all the tools to be made available – in Oct/Nov - for now here is a list of key problems by dept or function check all the areas in which you have struggles in – PAID _ this could come out of the ROI interview with the concierge  PRSPERA Advisor  ",
-    CURATED: "",
-    "CURES (Done–for–You Tools)": "UPh SS, MS, OS",
+      "You will gain access to a suite of tools designed to help diagnose challenges within your business. A custom GPT assistant will be available to discuss your current issues and recommend the most relevant tools for deeper analysis.  We will handhold you on using these tools.​ ",
+    CURATED:
+      "You'll be invited to attend webinars with experts on various topics as requested by various members.  You may also pick the topics and/or the questions you may have for experts in various fields.  We'll invite you to participate in webinars with experts responding to these questions and more.",
+    "CURES (Done–for–You Tools)":
+      "We will guide you with the Done-for-You-Tools. We will do the ROI calculator with you. We will walk you through the UPh process and that how it could solve a few challenges with the business. You'll have access to our ROI Calculator, Brand Diagnostics and Brand Assets Checklist.",
     "COACHING (Winning skills – course relevant)":
-      "ilve sessions monthly with topics selected month prior – may include featured guest speakers where relevant and available ",
+      "Live sessions monthly with topics selected based on your requests.  The session may include featured guest speakers where relevant and available.",
     CLOUT: [
-      "Welcome to the World’s First and Only Proprietary GPT on Maximizing Monetizable Value, Tax Effectively – For All Invested.   ",
-      "Use this GPT to help you 24/7 to learn, direct and strategize how to Grow Smarter by maximizing value correctly so that you protect and capitalize on the years of value you built to exit richer  ",
+      "Request a PRSPERA certified vendor or a service provider. Once we identify one or more based on your criteria, we'll make the introduction and you enjoy the negotiated pricing should you decide to go with that vendor or service provider.  No additional fee or markup for this service.",
     ],
     CONSULTING: [
-      "Welcome to the World’s First and Only Proprietary GPT on Maximizing Monetizable Value, Tax Effectively – For All Invested.   ",
-      "Use this GPT to help you 24/7 to learn, direct and strategize how to Grow Smarter by maximizing value correctly so that you protect and capitalize on the years of value you built to exit richer  ",
+      "Members receive Consulting on Demand –every quarter or every month – they can request this via their Concierge – up to three core issues each month – In the event it’s a recurring theme not addressed by a PRSPERA platform solution set then this may require an external expert at an additional cost – if it is within our set of offerings inclusive or a la carte then no extra fee will be charged – unless in order to solve it requires the that service to solve it (e.g. UPh ",
     ],
+    "PRSPERA COMPLETE​":
+      "All the offerings of PRSPERA, bundled in an app complete with a dashboard that guides your daily actions towards building value. The app gives you access to all PRSPERA products based on your permissions as our valuable Member.",
   };
 
   return (
@@ -263,7 +209,6 @@ const Pricing_Plan: React.FC = () => {
             <video
               className="w-full rounded-xl shadow-2xl"
               src="/assets/HeroVideo.mp4"
-              autoPlay
               loop
               playsInline
               controls
@@ -299,10 +244,8 @@ const Pricing_Plan: React.FC = () => {
           </div>
 
           <p className="pt-4 font-sans px-4 text-base md:text-lg lg:text-xl">
-            Wednesday, August 20, 2025 <br />
-            10am est – 11am est Success Story
-            <br />
-            11:15am est – 12:15pm est Q&amp;A
+            Wednesday, August 20, 2025 10am est – 11am est Success Story 11:15am est – 12:15pm est
+            Q&amp;A
           </p>
           <p className="pt-4 pb-10 font-sans font-semibold text-base md:text-lg lg:text-2xl px-4">
             Only 33 Seats
@@ -356,9 +299,9 @@ const Pricing_Plan: React.FC = () => {
 
         {/* Right */}
         <div className="bg-white flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl font-sans">Member</h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">$1797 USD</p>
-          <p className="text-center font-sans font-light pt-2 px-2">
+          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
+          <p className="text-center font-sans font-light px-2">
             One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
           </p>
 
@@ -410,8 +353,8 @@ const Pricing_Plan: React.FC = () => {
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
         {/* Left */}
         <div className="bg-white lg:w-[280px] md:w-[280px] pb-20">
-          <h1 className="text-center text-4xl font-normal pt-8">PRSPERA</h1>
-          <h1 className="text-center text-3xl font-normal pt-4">Service</h1>
+          <h1 className="text-center text-4xl font-normal pt-4">PRSPERA</h1>
+          <h1 className="text-center text-3xl font-normal pt-3">Service</h1>
         </div>
 
         {/* Middle */}
@@ -423,9 +366,8 @@ const Pricing_Plan: React.FC = () => {
           <hr className="border-t-2 border-gray-400 mt-8" />
 
           <h1 className="text-base font-sans text-yellow-600 px-2 pt-3">
-            TL;DR <br /> Sample each of the 12 PRSPERA Services with a monthly lottery so all our
-            guests can benefit through participation while also experiencing the benefits of
-            membership.
+            <br /> Sample each of the 12 PRSPERA Services with a monthly lottery so all our guests
+            can benefit through participation while also experiencing the benefits of membership.
           </h1>
         </div>
 
@@ -439,9 +381,9 @@ const Pricing_Plan: React.FC = () => {
           <hr className="border-t-2 border-black mt-8" />
 
           <h1 className="text-base font-sans text-yellow-600 px-2 pt-3">
-            TL;DR <br /> Stop losing enterprise value in the chaos. Lock in PRSPERA once. Make it
-            part of your valuation narrative. Create alignment and accountability across the
-            business. Learn more
+            <br /> Stop losing enterprise value in the chaos. Lock in PRSPERA once. Make it part of
+            your valuation narrative. Create alignment and accountability across the business. Learn
+            more
           </h1>
 
           <div className="space-y-3 text-black text-base font-sans pt-4 px-2">
@@ -504,7 +446,7 @@ const Pricing_Plan: React.FC = () => {
       {/* Main */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row mb-20 ">
         {/* Left */}
-        <div className="w-[280px] bg-white lg:mx-0 md:mx-0 mx-8 lg:w-[280px] md:w-[280px] pb-10">
+        <div className="bg-white lg:w-[280px] md:w-[280px]">
           {menuItems.map((item, index) => (
             <div
               key={index}
@@ -519,7 +461,7 @@ const Pricing_Plan: React.FC = () => {
         </div>
 
         {/* Middle */}
-        <div className="min-w-[300px] h-[600px] flex flex-col bg-black text-white lg:p-2 md:p-2 p-4 flex-1  pb-10">
+        <div className="min-w-[300px] h-[600px] flex flex-col bg-black text-white lg:p-2 md:p-2 p-4 flex-1 pb-10">
           <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 ">
             {Array.isArray(messages1[activeItem]) ? (
               (messages1[activeItem] as string[]).map((msg, index) => (
@@ -535,14 +477,14 @@ const Pricing_Plan: React.FC = () => {
           <button
             onClick={handleFreeClick}
             disabled={busy}
-            className="h-[50px] w-[340px] border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
+            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
           >
             {busy ? "Please wait..." : "Register for Free"}
           </button>
         </div>
 
         {/* Right */}
-        <div className="min-w-[300px] h-[600px] flex flex-col bg-white text-black lg:p-2 md:p-2 p-4 flex-1  pb-10">
+        <div className="min-w-[300px] h-[600px] flex flex-col bg-white text-black lg:p-2 md:p-2 p-4 flex-1 pb-10">
           <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3">
             {Array.isArray(messages2[activeItem]) ? (
               (messages2[activeItem] as string[]).map((msg, index) => (
@@ -557,7 +499,7 @@ const Pricing_Plan: React.FC = () => {
           <button
             onClick={handlePaidClick}
             disabled={busy}
-            className="h-[50px] w-[340px] border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
+            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
           >
             {busy ? "Please wait..." : "$1797 USD"}
           </button>

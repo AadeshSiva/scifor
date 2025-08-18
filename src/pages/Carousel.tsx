@@ -27,39 +27,44 @@ const slides: SlideData[] = [
     image: "/assets/iceberg.png",
   },
   {
-    percent: "77%",
+    percent: "80%",
     title: "2. No One On The Same Page​",
-    shortDescription:
-      "of the global workforce is disengaged - destroying value daily.",
+    shortDescription: "of businesses never sell. Of those that do, only 6% get fair market value",
     longDescription:
-      "Ask everyone Why do our Customers buy from us and everyone will have a different answer. No one is on the same page. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. Run your business as a sports team and only then YOU ALL WIN TOGETHER.",
+      "Ask everyone in any company: &nbsp;&nbsp; Why do customers buy from us?<br/><br/>Everyone will have a different answer. No one is on the same page – going in the same direction. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. ",
     image: "/assets/iceberg.png",
   },
   {
-    percent: "80%",
+    percent: "84%",
     title: "3. Marketable Value Unseenn",
     shortDescription:
-      "of the global workforce is disengaged - destroying value daily.",
+      "of enterprise value today is intangible — yet most founders can’t define it, track it, or grow it.",
     longDescription:
       "Most owners chase revenue and profit, but the real driver of marketable value is hidden. Intangible assets like brand, systems, customer loyalty, culture, IP are the most valuable. Without a system that connects all the intangible assets and value drivers, marketable value stays invisible, exposed, and deeply undervalued. If buyers cant see it, they wont pay for it. What isnt built to show cant be sold for what its worth.",
     image: "/assets/iceberg.png",
   },
   {
-    percent: "85%",
-    title: "4. Poor Execution",
-    shortDescription:
-      "of the global workforce is disengaged - destroying value daily.",
+    percent: "77%",
+    title: "4. Value Destroyed Daily",
+    shortDescription: "of the global workforce is disengaged - destroying value daily.",
     longDescription:
-      "Ask everyone Why do our Customers buy from us and everyone will have a different answer. No one is on the same page. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. Run your business as a sports team and only then YOU ALL WIN TOGETHER.",
+      "Most owners assume value accumulates ‘automatically’ over time — but without the right systems in place, it quietly erodes. Every misaligned decision, manual process, disengaged team member, and reactive strategy threatens what your business is worth. Value isn’t just built — it’s protected, grown, and proven daily. If you don’t manage it intentionally, the market will discount it brutally.",
     image: "/assets/iceberg.png",
   },
   {
-    percent: "89%",
-    title: "5. Poor Execution",
-    shortDescription:
-      "of the global workforce is disengaged - destroying value daily.",
+    percent: "78%",
+    title: "5. No Good Help",
+    shortDescription: "of entrepreneurs don’t have an adequate advisory team for their exit.",
     longDescription:
-      "Ask everyone Why do our Customers buy from us and everyone will have a different answer. No one is on the same page. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. Run your business as a sports team and only then YOU ALL WIN TOGETHER.",
+      "Advisors are everywhere — but the right ones are rare. Those that understand Intangible assets are the rarest.  Most founders lack access to M&A-savvy operators who understand how to shape and signal marketable value early. M&A bankers aren’t in the business of long-term guidance. By the time they step in, it’s too late to build.",
+    image: "/assets/iceberg.png",
+  },
+  {
+    percent: "61%",
+    title: "6. Strategy Inactionable",
+    shortDescription: "of executives admit their company struggles to implement its strategy.",
+    longDescription:
+      "Strategy isn’t the problem — execution is. Great ideas stay in pitch decks because teams can’t translate strategy into daily actions. The gap between intention and action kills momentum. If strategy doesn’t shape operations, culture, and incentives — it’s not strategy. It’s storytelling.",
     image: "/assets/iceberg.png",
   },
 ];
@@ -119,11 +124,19 @@ export default function IcebergCarousel() {
           {slides.map((slide, index) => (
             <div className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8">
               {index === 0 ? (
-                <div className="flex flex-col items-center">
+                <div className="relative flex flex-col items-center">
+                  {/* Outer circle */}
                   <img
                     src="/assets/circle.png"
                     alt="Iceberg Circle"
-                    className="w-64 h-64 sm:w-60 sm:h-60 md:w-[24rem] md:h-[24rem] object-contain mt-24 sm:mt-6"
+                    className="w-64 h-64 sm:w-60 sm:h-60 md:w-[24rem] md:h-[24rem] object-contain mt-28 sm:mt-6"
+                  />
+
+                  {/* Inner circle in the middle */}
+                  <img
+                    src="/assets/inner-circle.png"
+                    alt="Inner Circle"
+                    className="absolute mt-14 md:mt-2 top-1/2 left-1/2 w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover -translate-x-1/2 -translate-y-1/2"
                   />
                 </div>
               ) : (
@@ -154,9 +167,10 @@ export default function IcebergCarousel() {
                   </div>
 
                   {/* Long Description */}
-                  <p className="mt-8 text-xs sm:text-sm md:text-base max-w-4xl leading-relaxed font-light text-justify px-4">
-                    {slide.longDescription}
-                  </p>
+                  <p
+                    dangerouslySetInnerHTML={{ __html: slide.longDescription }}
+                    className="mt-8 text-xs sm:text-sm md:text-base max-w-4xl leading-relaxed font-light text-justify px-4"
+                  ></p>
                 </div>
               )}
             </div>
@@ -166,16 +180,32 @@ export default function IcebergCarousel() {
         {/* Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full hover:bg-gray-800 transition"
+          className="absolute left-2 sm:left-6 md:left-10 lg:left-[15%] top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 rounded-full bg-black/40 hover:bg-black/60 transition "
         >
-          <ChevronLeft size={32} color="yellow" />
+          <ChevronLeft
+            size={28} // mobile
+            className="sm:hidden"
+            color="yellow"
+          />
+          <ChevronLeft
+            size={36} // tablet
+            className="hidden sm:block md:hidden"
+            color="yellow"
+          />
+          <ChevronLeft
+            size={48} // desktop
+            className="hidden md:block"
+            color="yellow"
+          />
         </button>
 
         <button
           onClick={nextSlide}
-          className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full hover:bg-gray-800 transition"
+          className=" absolute right-2 sm:right-6 md:right-10 lg:right-[15%] top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 rounded-full bg-black/40 hover:bg-black/60 transition"
         >
-          <ChevronRight size={32} color="yellow" />
+          <ChevronRight size={28} className="sm:hidden" color="yellow" />
+          <ChevronRight size={36} className="hidden sm:block md:hidden" color="yellow" />
+          <ChevronRight size={48} className="hidden md:block" color="yellow" />
         </button>
       </div>
     </section>

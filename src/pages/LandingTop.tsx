@@ -13,9 +13,7 @@ const HeroSection: React.FC = () => {
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin text-gray-700 mb-10">
           <div>Your Business Is Profitable -</div>
           <div className="font-normal mt-5">But Is It Truly Valuable?</div>
-          <div className=" font-walbaum font-normal text-black mt-5">
-            We Can Help You.
-          </div>
+          <div className=" font-walbaum font-normal text-black mt-5">We Can Help You.</div>
         </h1>
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -34,17 +32,16 @@ const HeroSection: React.FC = () => {
             <p>
               Welcome to the World's One and Only,
               <br />
-              <strong className="font-semibold">Fact-Based Platform</strong> to
-              help you build a valuable business - via your most lucrative
-              assets, tax effectively.
+              <strong className="font-semibold">Fact-Based Platform</strong> to help you build a
+              valuable business - via your most lucrative assets, tax effectively.
             </p>
             <p>
-              You're winning being profitable - but 84%+ of your business value
-              is intangible and is overlooked - every day (by your own people).
+              You're winning being profitable - but 84%+ of your business value is intangible and is
+              overlooked - every day (by your own people).
             </p>
             <p>
-              Start recovering and building that value daily - so that you can
-              exit richer at the right time.
+              Start recovering and building that value daily - so that you can exit richer at the
+              right time.
             </p>
           </div>
         </div>
@@ -70,52 +67,44 @@ const StorySection: React.FC = () => {
             Find out how he and his team did it.
           </p>
         </div>
-<div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-  <div className="w-full lg:w-1/2 flex justify-center">
-    <div className="relative w-full max-w-lg">
-      <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
-        {/* Thumbnail image that fills the square container */}
-        <img
-          src="https://i.imgur.com/kmZyPld.png"
-          alt="Webinar Video Thumbnail"
-          className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
-        />
-        {/* Play button overlay */}
-        <button
-          onClick={() =>
-            window.open(
-              "https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/view",
-              "_blank"
-            )
-          }
-          className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-4xl rounded-xl hover:bg-black/50 transition-colors"
-        >
-          ▶
-        </button>
-      </div>
-    </div>
-  </div>
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="w-full lg:w-1/2 flex justify-center">
+            <div className="relative w-full max-w-lg">
+              <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
+                {/* Thumbnail image that fills the square container */}
+                <img
+                  src="https://i.imgur.com/kmZyPld.png"
+                  alt="Webinar Video Thumbnail"
+                  className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
+                />
+                {/* Play button overlay */}
+                <button
+                  onClick={() =>
+                    window.open(
+                      "https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/view",
+                      "_blank"
+                    )
+                  }
+                  className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-4xl rounded-xl hover:bg-black/50 transition-colors"
+                >
+                  ▶
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="w-full lg:w-1/2 text-left mt-6 lg:mt-0">
-            <p className="text-3xl mb-4">
-              Your invited to win a chance to meet Jeff Cullen
-            </p>
+            <p className="text-3xl mb-4">Your invited to win a chance to meet Jeff Cullen</p>
             <p className="text-xl font-light">Wednesday, August 20, 2025</p>
             <p className="text-xl font-light mb-4">
-              10am est – 11am est{" "}
-              <strong className="font-normal">Success Story</strong>
+              10am est – 11am est <strong className="font-normal">Success Story</strong>
               <br />
-              11:15am est – 12:15pm est{" "}
-              <strong className="font-normal">Q&A</strong>
+              11:15am est – 12:15pm est <strong className="font-normal">Q&A</strong>
             </p>
-            <p className="text-2xl font-semibold text-black mb-4">
-              Only 33 seats
-            </p>
-            <p className="text-2xl font-semibold text-black mb-2">
-              Get Actionable Insights
-            </p>
+            <p className="text-2xl font-semibold text-black mb-4">Only 33 seats</p>
+            <p className="text-2xl font-semibold text-black mb-2">Get Actionable Insights</p>
             <p className="text-xl font-light mb-8">
-              Register to Ask Jeff what you want to know, get the replay and
-              report – so you don’t miss out.
+              Register to Ask Jeff what you want to know, get the replay and report – so you don’t
+              miss out.
             </p>
           </div>
         </div>
@@ -128,8 +117,8 @@ const StorySection: React.FC = () => {
         </button>
       </div>
 
-        {/* Webinar Agenda */}
-            {/* <div className="max-w-6xl mx-auto text-center mt-20">
+      {/* Webinar Agenda */}
+      {/* <div className="max-w-6xl mx-auto text-center mt-20">
                 <div className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin mb-16">
                     <h1 className="font-thin">From dream to done</h1>
                     <h1 className="font-normal mt-5">with six words or less.</h1>

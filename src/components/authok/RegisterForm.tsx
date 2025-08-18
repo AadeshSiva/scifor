@@ -4,7 +4,6 @@ import { useAuth } from "@/utils/AuthContext";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import PhoneInput from "@/components/ui/PhoneInput";
 
-
 // Define interfaces for type safety
 interface FormData {
   full_name: string;
@@ -56,11 +55,11 @@ interface OtpResponse {
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
+  onSuccess?: (user?: any) => void;
+  onClose?: () => void;
 }
 
-export function RegisterForm({
-  onSwitchToLogin,
-}: RegisterFormProps): JSX.Element {
+export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
     full_name: "",
     email: "",
@@ -82,7 +81,7 @@ export function RegisterForm({
 
   const location = useLocation();
 
-const getPlan = () => {
+  const getPlan = () => {
     const params = new URLSearchParams(location.search);
     return params.get("plan") || "guest";
   };
@@ -95,22 +94,7 @@ const getPlan = () => {
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const API_BASE_URL = "https://intern-project-final-1.onrender.com";
-
-  // // Restore form data from sessionStorage on component mount
-  // useEffect(() => {
-  //   const savedFormData = sessionStorage.getItem("registrationFormData");
-
-  //   if (savedFormData) {
-  //     try {
-  //       const parsedData = JSON.parse(savedFormData);
-  //       setFormData(parsedData);
-  //       sessionStorage.removeItem("registrationFormData");
-  //     } catch (error) {
-  //       console.error("Error parsing saved form data:", error);
-  //     }
-  //   }
-  // }, []);
+  const API_BASE_URL = "https://internship-pro.onrender.com";
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -138,18 +122,14 @@ const getPlan = () => {
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
-      .toString()
-      .padStart(2, "0")}`;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   const isValidWebsiteUrl = (url: string): boolean => {
     try {
       // Add protocol if missing
       const urlToTest =
-        url.startsWith("http://") || url.startsWith("https://")
-          ? url
-          : `https://${url}`;
+        url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
 
       const urlObj = new URL(urlToTest);
 
@@ -161,18 +141,14 @@ const getPlan = () => {
   };
 
   // Validate individual field
-  const validateField = (
-    name: keyof FormData,
-    value: string
-  ): string | undefined => {
+  const validateField = (name: keyof FormData, value: string): string | undefined => {
     switch (name) {
       case "full_name":
         return !value.trim() ? "Full name is required" : undefined;
 
       case "email":
         if (!value.trim()) return "Email is required";
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          return "Please enter a valid email address";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Please enter a valid email address";
         return undefined;
 
       case "password":
@@ -232,15 +208,9 @@ const getPlan = () => {
     }));
 
     // When password field is blurred, also validate confirm password if it's been touched
-    if (
-      fieldName === "password" &&
-      fieldTouched.confirmPassword &&
-      formData.confirmPassword
-    ) {
+    if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
       const confirmPasswordError =
-        formData.password !== formData.confirmPassword
-          ? "Passwords do not match"
-          : undefined;
+        formData.password !== formData.confirmPassword ? "Passwords do not match" : undefined;
       setErrors((prev) => ({
         ...prev,
         confirmPassword: confirmPasswordError,
@@ -266,15 +236,9 @@ const getPlan = () => {
     }
 
     // Handle password matching validation during typing
-    if (
-      fieldName === "password" &&
-      fieldTouched.confirmPassword &&
-      formData.confirmPassword
-    ) {
+    if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
       const confirmPasswordError =
-        value !== formData.confirmPassword
-          ? "Passwords do not match"
-          : undefined;
+        value !== formData.confirmPassword ? "Passwords do not match" : undefined;
       setErrors((prev) => ({
         ...prev,
         confirmPassword: confirmPasswordError,
@@ -309,10 +273,7 @@ const getPlan = () => {
     }
   };
 
-  const handleOtpKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
     // If backspace is pressed and current field is empty, focus previous field
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -348,7 +309,7 @@ const getPlan = () => {
   // Enhanced API call with better error handling
   const makeApiCall = async (endpoint: string, payload: any): Promise<any> => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
 
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -359,15 +320,14 @@ const getPlan = () => {
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
+        // credentials: "include",
       });
 
       clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`
-        );
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       return await response.json();
@@ -375,7 +335,7 @@ const getPlan = () => {
       clearTimeout(timeoutId);
       if (error instanceof Error && error.name === "AbortError") {
         throw new Error(
-          "Request timed out. Please check your connection and try again."
+          "The request took too long. Our servers might be waking up — please try again."
         );
       }
       throw error;
@@ -405,13 +365,10 @@ const getPlan = () => {
     setErrors({});
 
     try {
-      // First check if email already exists
-      const checkData: CheckEmailResponse = await makeApiCall(
-        "/check_email_status/",
-        {
-          email: formData.email,
-        }
-      );
+      // Check if email already exists
+      const checkData: CheckEmailResponse = await makeApiCall("/check_email_status/", {
+        email: formData.email,
+      });
 
       if (checkData.user_exists) {
         setErrors({ email: checkData.message });
@@ -419,7 +376,64 @@ const getPlan = () => {
         return;
       }
 
-      // Proceed with registration
+      // Send OTP for email verification BEFORE registration
+      await sendOtp();
+    } catch (error) {
+      console.error("Pre-registration error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Network error. Please try again.";
+      setErrors({ general: errorMessage });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendOtp = async (): Promise<void> => {
+    try {
+      const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
+        email: formData.email,
+      });
+
+      if (otpData.status !== "success") {
+        throw new Error(otpData.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      setErrors({
+        general: error instanceof Error ? error.message : "Failed to send OTP. Please try again.",
+      });
+      // still open modal so user can press "Resend"
+    } finally {
+      setShowOtpModal(true);
+      setTimer(300);
+      setOtp(["", "", "", "", "", ""]);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
+    const otpCode = otp.join("");
+    if (!otpCode || otpCode.length !== 6) {
+      setErrors({ otp: "Please enter the complete 6-digit OTP" });
+      return;
+    }
+
+    setOtpLoading(true);
+    setErrors({});
+
+    try {
+      // First verify OTP
+      const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
+        email: formData.email,
+        otp: otpCode,
+      });
+
+      if (verifyData.status !== "success") {
+        setErrors({ otp: verifyData.message });
+        return;
+      }
+
+      // OTP verified successfully, now register the user
       const registerPayload = {
         email: formData.email,
         password: formData.password,
@@ -434,99 +448,31 @@ const getPlan = () => {
         password: "[REDACTED]",
       });
 
-      const registerData: RegisterResponse = await makeApiCall(
-        "/register/",
-        registerPayload
-      );
+      const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
 
       if (registerData.status === "success") {
         // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
-          console.log(
-            "Registration successful with tokens:",
-            registerData.message
-          );
+          console.log("Registration successful with tokens:", registerData.message);
         }
 
-        // Send OTP for email verification
-        await sendOtp();
-      } else {
-        setErrors({ general: registerData.message });
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Network error. Please try again.";
-      setErrors({ general: errorMessage });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const sendOtp = async (): Promise<void> => {
-    try {
-      const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
-        email: formData.email,
-      });
-
-      if (otpData.status === "success") {
-        setShowOtpModal(true);
-        setTimer(300); // Reset timer to 5 minutes
-        setOtp(["", "", "", "", "", ""]); // Reset OTP fields
-      } else {
-        setErrors({ general: otpData.message });
-      }
-    } catch (error) {
-      console.error("OTP send error:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to send OTP. Please try again.";
-      setErrors({ general: errorMessage });
-    }
-  };
-
-  const handleOtpSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-
-    const otpCode = otp.join("");
-    if (!otpCode || otpCode.length !== 6) {
-      setErrors({ otp: "Please enter the complete 6-digit OTP" });
-      return;
-    }
-
-    setOtpLoading(true);
-    setErrors({});
-
-    try {
-      const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
-        email: formData.email,
-        otp: otpCode,
-      });
-
-      
-      if (verifyData.status === "success") {
         // Redirect based on plan
         const plan = getPlan();
         if (plan === "guest") {
-  navigate("/confirmation-guest");
-} else if (plan === "paid" || plan === "member") {
-  navigate("/payment");
-}
+          navigate("/confirmation-guest");
+        } else if (plan === "paid" || plan === "member") {
+          navigate("/payment");
+        }
       } else {
-        setErrors({ otp: verifyData.message });
+        setErrors({ otp: registerData.message });
       }
     } catch (error) {
-      console.error("OTP verification error:", error);
+      console.error("OTP verification or registration error:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Failed to verify OTP. Please try again.";
+          : "Failed to complete registration. Please try again.";
       setErrors({ otp: errorMessage });
     } finally {
       setOtpLoading(false);
@@ -545,7 +491,7 @@ const getPlan = () => {
     }
   };
 
-  const handleLoginClick = (): void => {
+  const handleCloseClick = (): void => {
     navigate("/pricing-plan");
   };
 
@@ -568,30 +514,11 @@ const getPlan = () => {
     }));
   };
 
-  // Restore form data from sessionStorage on component mount
+  //remove cold start of BAckend
   useEffect(() => {
-    const savedFormData = sessionStorage.getItem("registrationFormData");
-
-    if (savedFormData) {
-      try {
-        const parsedData = JSON.parse(savedFormData);
-        setFormData(parsedData);
-        sessionStorage.removeItem("registrationFormData");
-      } catch (error) {
-        console.error("Error parsing saved form data:", error);
-      }
-    }
-  }, []);
-   // Clear sessionStorage and localStorage on tab close or refresh
-  useEffect(() => {
-    const clearStorage = () => {
-      sessionStorage.clear();
-      localStorage.clear();
-    };
-    window.addEventListener("beforeunload", clearStorage);
-    return () => {
-      window.removeEventListener("beforeunload", clearStorage);
-    };
+    fetch(`${API_BASE_URL}/health`, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(
+      () => {}
+    );
   }, []);
 
   return (
@@ -600,16 +527,11 @@ const getPlan = () => {
       <div className="flex justify-end">
         <button
           type="button"
-          onClick={handleLoginClick}
+          onClick={handleCloseClick}
           className="text-gray-500 hover:text-gray-700 transition-colors"
           disabled={loading}
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -686,11 +608,7 @@ const getPlan = () => {
             value={formData.password}
             onChange={handleInputChange}
             onBlur={() => handleFieldBlur("password")}
-            error={
-              fieldTouched.password && errors.password
-                ? errors.password
-                : undefined
-            }
+            error={fieldTouched.password && errors.password ? errors.password : undefined}
             disabled={loading}
           />
         </div>
@@ -714,8 +632,7 @@ const getPlan = () => {
       </div>
 
       <div className="text-xs text-gray-500 italic -mt-3">
-        Minimum 6 characters | At least 1 special character | At least 1 letter
-        and 1 number
+        Minimum 6 characters | At least 1 special character | At least 1 letter and 1 number
       </div>
 
       <div className="flex flex-col gap-3">
@@ -781,32 +698,25 @@ const getPlan = () => {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            Registering...
+            Sending OTP...
           </>
         ) : (
           "Register"
         )}
       </button>
 
-      {/* <div className="text-center text-lg italic text-gray-500 mt-6">
+      <div className="text-center text-lg italic text-gray-500 mt-6">
         <span>Already have an account? </span>
-        <span
-          className="text-black cursor-pointer hover:underline"
-          onClick={handleLoginClick}
-        >
+        <span className="text-black cursor-pointer hover:underline" onClick={onSwitchToLogin}>
           Login
         </span>
-      </div> */}
-
- 
+      </div>
 
       {/* Enhanced OTP Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-            <h2 className="text-center text-3xl font-bold mb-6">
-              OTP Verification
-            </h2>
+            <h2 className="text-center text-3xl font-bold mb-6">OTP Verification</h2>
 
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
@@ -815,7 +725,7 @@ const getPlan = () => {
             <p className="text-center mb-8 text-gray-600">
               Please check your inbox (and spam/junk folder just in case)
               <br />
-              and enter the code below to continue.
+              and enter the code below to complete your registration.
             </p>
 
             {errors.otp && (
@@ -843,11 +753,7 @@ const getPlan = () => {
 
               <div className="text-center mb-6">
                 <span className="text-gray-600">Time remaining: </span>
-                <span
-                  className={`font-semibold ${
-                    timer <= 60 ? "text-red-500" : "text-black"
-                  }`}
-                >
+                <span className={`font-semibold ${timer <= 60 ? "text-red-500" : "text-black"}`}>
                   {formatTime(timer)}
                 </span>
               </div>
@@ -879,10 +785,10 @@ const getPlan = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Verifying...
+                    Completing Registration...
                   </>
                 ) : (
-                  "Verify OTP"
+                  "Verify OTP & Register"
                 )}
               </button>
 
@@ -908,4 +814,4 @@ const getPlan = () => {
       )}
     </div>
   );
-};
+}

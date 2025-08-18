@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { BackIcon } from "../ui/icons";
@@ -30,33 +29,27 @@ interface SettingProps {
 }
 
 // InfoRow Component
-const InfoRow = ({ 
-  title, 
-  value, 
+const InfoRow = ({
+  title,
+  value,
   onClick,
-  isLoading = false
-}: { 
-  title: string; 
-  value: string; 
+  isLoading = false,
+}: {
+  title: string;
+  value: string;
   onClick: () => void;
   isLoading?: boolean;
 }) => {
   return (
-    <div 
+    <div
       className="flex items-center relative p-[30px] border-b-[rgba(158,158,158,0.5)] border-b border-solid max-md:p-[25px] max-sm:flex-col max-sm:items-start max-sm:p-5 cursor-pointer hover:bg-neutral-200"
       onClick={onClick}
       role="button"
       tabIndex={0}
     >
-      <div className="text-lg text-black flex-1 max-md:text-base max-sm:mb-2">
-        {title}
-      </div>
+      <div className="text-lg text-black flex-1 max-md:text-base max-sm:mb-2">{title}</div>
       <div className="text-sm text-[#555] font-medium mr-10 max-md:text-[13px] max-md:mr-[30px] max-sm:mb-2">
-        {isLoading ? (
-          <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
-        ) : (
-          value
-        )}
+        {isLoading ? <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div> : value}
       </div>
       <div className="absolute text-black right-[30px] max-sm:-translate-y-2/4 max-sm:top-2/4">
         <ChevronRight size={24} />
@@ -66,11 +59,11 @@ const InfoRow = ({
 };
 
 // BasicInfoCard Component
-const BasicInfoCard = ({ 
+const BasicInfoCard = ({
   profileInfo,
   setDisplay,
   isLoading,
-  error
+  error,
 }: {
   profileInfo: ProfileInfo;
   setDisplay: (view: string) => void;
@@ -81,50 +74,53 @@ const BasicInfoCard = ({
 
   return (
     <section className="max-w-[1200px] mx-auto my-0 p-10 max-md:max-w-[991px] max-md:p-5 max-sm:max-w-screen-sm max-sm:p-[15px]">
-      <div className="flex items-center gap-[18px] cursor-pointer mb-[50px]" onClick={()=>setDisplay('chat')}>
+      <div
+        className="flex items-center gap-[18px] cursor-pointer mb-[50px]"
+        onClick={() => setDisplay("chat")}
+      >
         <BackIcon />
         <div className="text-[#555] text-2xl">Back</div>
       </div>
-      
+
       <h1 className="text-[32px] text-black mb-10 max-md:text-[28px] max-md:mb-[30px] max-sm:text-2xl max-sm:mb-5">
         Basic Information
       </h1>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
           {error}
         </div>
       )}
-      
+
       <div className="overflow-hidden bg-neutral-100 rounded-2xl border-2 border-solid border-[rgba(158,158,158,0.5)]">
-        <InfoRow 
-          title="Profile Information" 
-          value={name} 
-          onClick={() => setDisplay("profile")} 
+        <InfoRow
+          title="Profile Information"
+          value={name}
+          onClick={() => setDisplay("profile")}
           isLoading={isLoading}
         />
-        <InfoRow 
-          title="Change Username" 
-          value={username} 
-          onClick={() => setDisplay("username")} 
+        <InfoRow
+          title="Change Username"
+          value={username}
+          onClick={() => setDisplay("username")}
           isLoading={isLoading}
         />
-        <InfoRow 
-          title="Change Email ID" 
-          value={email} 
-          onClick={() => setDisplay("email")} 
+        <InfoRow
+          title="Change Email ID"
+          value={email}
+          onClick={() => setDisplay("email")}
           isLoading={isLoading}
         />
-        <InfoRow 
-          title="Change Password" 
-          value={password} 
-          onClick={() => setDisplay("password")} 
+        <InfoRow
+          title="Change Password"
+          value={password}
+          onClick={() => setDisplay("password")}
           isLoading={isLoading}
         />
-        <InfoRow 
-          title="Purchase History" 
-          value={''} 
-          onClick={() => setDisplay("history")} 
+        <InfoRow
+          title="Purchase History"
+          value={""}
+          onClick={() => setDisplay("history")}
           isLoading={isLoading}
         />
       </div>
@@ -140,7 +136,7 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
     email: "Loading...",
     password: "••••••••", // Masked password for security
   });
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -148,13 +144,13 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
   const getAuthToken = (): string | null => {
     try {
       // Try to get token from localStorage
-      const token = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
+      const token = localStorage.getItem("access_token") || localStorage.getItem("accessToken");
       if (token) return token;
-      
+
       // Try to get from sessionStorage as fallback
-      return sessionStorage.getItem('access_token') || sessionStorage.getItem('accessToken');
+      return sessionStorage.getItem("access_token") || sessionStorage.getItem("accessToken");
     } catch (error) {
-      console.error('Error accessing token from storage:', error);
+      console.error("Error accessing token from storage:", error);
       return null;
     }
   };
@@ -164,45 +160,48 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const token = getAuthToken();
       if (!token) {
-        throw new Error('No authentication token found. Please login again.');
+        throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/extract-user-data/', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        "https://intern-project-final-1.onrender.com/extract-user-data/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Session expired. Please login again.');
+          throw new Error("Session expired. Please login again.");
         }
         throw new Error(`Failed to fetch user data: ${response.status}`);
       }
 
       const data = await response.json();
-      
-      if (data.status === 'success' && data.user_data) {
+
+      if (data.status === "success" && data.user_data) {
         const userData: UserData = data.user_data;
-        
+
         setProfileInfo({
-          name: userData.full_name || 'Not provided',
-          username: userData.username || 'Not set',
-          email: userData.email || 'Not provided',
+          name: userData.full_name || "Not provided",
+          username: userData.username || "Not set",
+          email: userData.email || "Not provided",
           password: "••••••••", // Always masked for security
         });
       } else {
-        throw new Error(data.message || 'Failed to load user data');
+        throw new Error(data.message || "Failed to load user data");
       }
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      setError(error instanceof Error ? error.message : 'Failed to load user data');
-      
+      console.error("Error fetching user data:", error);
+      setError(error instanceof Error ? error.message : "Failed to load user data");
+
       // Set fallback values on error
       setProfileInfo({
         name: "Unable to load",
@@ -237,7 +236,7 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
         isLoading={isLoading}
         error={error}
       />
-      
+
       {error && (
         <div className="max-w-[1200px] mx-auto px-10 max-md:px-5 max-sm:px-[15px]">
           <button

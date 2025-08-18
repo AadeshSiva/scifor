@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
-import { Eye, EyeOff, AlertCircle, CheckCircle, Loader2, ArrowLeft, X, Mail, Lock } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  ArrowLeft,
+  X,
+  Mail,
+  Lock,
+} from "lucide-react";
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -24,7 +34,7 @@ const ForgotPasswordModal: React.FC<{
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
+  const API_BASE_URL = "https://internship-pro.onrender.com";
 
   const resetForm = () => {
     setStep(1);
@@ -55,11 +65,11 @@ const ForgotPasswordModal: React.FC<{
 
     try {
       const response = await fetch(`${API_BASE_URL}/forgot-password-send-otp/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email.trim() })
+        body: JSON.stringify({ email: email.trim() }),
       });
 
       const data = await response.json();
@@ -92,14 +102,14 @@ const ForgotPasswordModal: React.FC<{
 
     try {
       const response = await fetch(`${API_BASE_URL}/verify-otp/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: email.trim(),
-          otp: otp.trim()
-        })
+          otp: otp.trim(),
+        }),
       });
 
       const data = await response.json();
@@ -142,14 +152,14 @@ const ForgotPasswordModal: React.FC<{
 
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: email.trim(),
-          new_password: newPassword
-        })
+          new_password: newPassword,
+        }),
       });
 
       const data = await response.json();
@@ -238,7 +248,10 @@ const ForgotPasswordModal: React.FC<{
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Mail
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type="email"
                     id="forgotEmail"
@@ -267,7 +280,7 @@ const ForgotPasswordModal: React.FC<{
                   type="text"
                   id="otp"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                   placeholder="Enter 6-digit code"
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 text-center text-lg tracking-widest"
@@ -287,16 +300,17 @@ const ForgotPasswordModal: React.FC<{
           {/* Step 3: New Password */}
           {step === 3 && (
             <div className="space-y-4">
-              <p className="text-gray-600 text-sm mb-4">
-                Create a new password for your account.
-              </p>
-              
+              <p className="text-gray-600 text-sm mb-4">Create a new password for your account.</p>
+
               <div>
                 <label htmlFor="newPassword" className="block text-gray-800 font-medium mb-2">
                   New Password
                 </label>
                 <div className="relative">
-                  <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Lock
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type={showNewPassword ? "text" : "password"}
                     id="newPassword"
@@ -322,7 +336,10 @@ const ForgotPasswordModal: React.FC<{
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Lock
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
@@ -380,93 +397,147 @@ const ForgotPasswordModal: React.FC<{
   );
 };
 
+const getAccessToken = () =>
+  sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+
+const authHeaders = () => {
+  const token = getAccessToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+async function getUserStatus() {
+  const token = getAccessToken();
+  if (!token) return { authenticated: false, isMember: false };
+
+  try {
+    const res = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+      headers: { ...authHeaders() },
+    });
+
+    if (!res.ok) {
+      return { authenticated: false, isMember: false };
+    }
+
+    const data = await res.json();
+    console.log(data);
+
+    return {
+      authenticated: true,
+      isMember: data?.user_data.paid === true,
+    };
+  } catch (error) {
+    console.error("Error fetching user status:", error);
+    return { authenticated: false, isMember: false };
+  }
+}
+
 // Main Login Form Component
 export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [formData, setFormData] = useState({
-    identifier: '',
-    password: ''
+    identifier: "",
+    password: "",
   });
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
-    if (error) setError('');
+    if (error) setError("");
+  };
+
+  const handleLoginRedirect = async () => {
+    const plan = location.pathname.includes("member") ? "member" : "guest";
+
+    const status = await getUserStatus();
+    if (status.authenticated) {
+      if (status.isMember) {
+        alert("You are already registered as a member.");
+        navigate("/");
+      } else {
+        if (plan === "guest") {
+          alert("You are already registered as a guest.");
+          navigate("/");
+        } else if (plan === "member") {
+          navigate("/payment");
+        }
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.identifier || !formData.password) {
-      setError('Please fill in all required fields');
+      setError("Please fill in all required fields");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('https://intern-project-final-1.onrender.com/login/', {
-        method: 'POST',
+      const response = await fetch("https://internship-pro.onrender.com/login/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCsrfToken(),
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken(),
         },
         body: JSON.stringify({
           identifier: formData.identifier,
           password: formData.password,
-          remember_me: rememberMe
-        })
+          remember_me: rememberMe,
+        }),
       });
 
       const data = await response.json();
 
-      if (data.status === 'success') {
+      if (data.status === "success") {
         // Use the auth context login function
         await login(data.tokens, rememberMe);
-        
+
         // Store remember me preference if needed
         if (rememberMe) {
-          localStorage.setItem('rememberMe', 'true');
-          localStorage.setItem('userIdentifier', formData.identifier);
+          localStorage.setItem("rememberMe", "true");
+          localStorage.setItem("userIdentifier", formData.identifier);
         } else {
-          localStorage.removeItem('rememberMe');
-          localStorage.removeItem('userIdentifier');
+          localStorage.removeItem("rememberMe");
+          localStorage.removeItem("userIdentifier");
         }
-        
-        console.log('Login successful:', data.message);
-        navigate('/');
+
+        console.log("Login successful:", data.message);
+
+        await handleLoginRedirect();
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || "Login failed");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Network error. Please try again.');
+      console.error("Login error:", err);
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const getCsrfToken = () => {
-    const cookies = document.cookie.split(';');
+    const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'csrftoken') {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "csrftoken") {
         return value;
       }
     }
-    return '';
+    return "";
   };
 
   const togglePasswordVisibility = () => {
@@ -478,20 +549,20 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   };
 
   const handleForgotPasswordSuccess = () => {
-    setError('');
+    setError("");
     // Optionally show a success message
-    console.log('Password reset completed successfully!');
+    console.log("Password reset completed successfully!");
   };
 
   // Load remember me preference on component mount
   React.useEffect(() => {
-    const rememberedUser = localStorage.getItem('userIdentifier');
-    const shouldRemember = localStorage.getItem('rememberMe') === 'true';
-    
+    const rememberedUser = localStorage.getItem("userIdentifier");
+    const shouldRemember = localStorage.getItem("rememberMe") === "true";
+
     if (shouldRemember && rememberedUser) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        identifier: rememberedUser
+        identifier: rememberedUser,
       }));
       setRememberMe(true);
     }
@@ -506,7 +577,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             <span>{error}</span>
           </div>
         )}
-        
+
         <div className="flex flex-col gap-3">
           <div className="text-base text-black flex items-center gap-1">
             <span>Email or Username</span>
@@ -522,7 +593,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             autoComplete="username"
           />
         </div>
-        
+
         <div className="flex flex-col gap-3">
           <div className="text-base text-black flex items-center gap-1">
             <span>Password</span>
@@ -561,7 +632,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             />
             <span className="text-sm text-gray-700">Remember me</span>
           </label>
-          
+
           <button
             type="button"
             onClick={() => setShowForgotPassword(true)}
@@ -571,8 +642,8 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             Forgot Password?
           </button>
         </div>
-        
-        <button 
+
+        <button
           type="button"
           onClick={handleSubmit}
           disabled={loading}
@@ -584,13 +655,13 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               Logging in...
             </>
           ) : (
-            'Login'
+            "Login"
           )}
         </button>
-        
+
         <div className="text-center text-lg italic text-gray-500 mt-6">
           <span>Don't have an account? </span>
-          <span 
+          <span
             className="text-black cursor-pointer hover:underline transition-colors"
             onClick={handleRegisterClick}
           >
