@@ -63,8 +63,8 @@ const Payment: React.FC = () => {
 
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 1797,
-    description: "seats available for 50 members",
+    price: 1,
+    description: "Seats available for 50 members",
   };
 
   // Initialize Stripe and create Elements + Card element
