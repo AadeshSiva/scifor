@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DropdownSection from "./LandingMiddle";
 import StorySection from "./LandingTop";
-import HomePage from "./HomePage"; 
+import HomePage from "./HomePage";
 import Carousel from "./Carousel";
 interface CircleProps {
   text: string;
@@ -54,13 +54,11 @@ export default function Landing() {
         </p>
 
         <p className="text-center text-white text-sm md:text-base max-w-[90%] md:max-w-[40%] font-light leading-relaxed">
-          Since 2003, Jeff successfully operationalized the Unifying Philosophy
-          (UPhTM) <br />
+          Since 2003, Jeff successfully operationalized the Unifying Philosophy (UPh™) <br />
           Strategy System TWICE.
           <br />
-          His 20+ year journey inspired our 6 Step Course for entrepreneurs to
-          Grow Smarter to Exit Richer. My interview with him captures his story
-          in the context of these 6 Steps.
+          His 20+ year journey inspired our 6 Step Course for entrepreneurs to Grow Smarter to Exit
+          Richer. My interview with him captures his story in the context of these 6 Steps.
         </p>
 
         <div className="flex justify-center items-center text-white p-8">
@@ -89,16 +87,10 @@ export default function Landing() {
             >
               <Circle text="1. Endgame" active={circleinfo === 0} />
             </div>
-            <div
-              className="absolute top-[15%] -right-8"
-              onClick={() => setCircleinfo(1)}
-            >
+            <div className="absolute top-[15%] -right-8" onClick={() => setCircleinfo(1)}>
               <Circle text="2. Valufacturing" active={circleinfo === 1} />
             </div>
-            <div
-              className="absolute bottom-[15%] -right-8"
-              onClick={() => setCircleinfo(2)}
-            >
+            <div className="absolute bottom-[15%] -right-8" onClick={() => setCircleinfo(2)}>
               <Circle text="3. Scaling" active={circleinfo === 2} />
             </div>
             <div
@@ -107,24 +99,18 @@ export default function Landing() {
             >
               <Circle text="4. Staging" active={circleinfo === 3} />
             </div>
-            <div
-              className="absolute bottom-[15%] -left-8"
-              onClick={() => setCircleinfo(4)}
-            >
+            <div className="absolute bottom-[15%] -left-8" onClick={() => setCircleinfo(4)}>
               <Circle text="5. Moment(s) of Truth" active={circleinfo === 4} />
             </div>
-            <div
-              className="absolute top-[15%] -left-8"
-              onClick={() => setCircleinfo(5)}
-            >
+            <div className="absolute top-[15%] -left-8" onClick={() => setCircleinfo(5)}>
               <Circle text="6. Pride" active={circleinfo === 5} />
             </div>
           </div>
         </div>
       </section>
-      <Carousel/>
-      <DropdownSection/>
-      <HomePage/> 
+      <Carousel />
+      <DropdownSection />
+      <HomePage />
     </>
   );
 }
@@ -133,11 +119,7 @@ function Circle({ text, active }: CircleProps) {
   return (
     <div
       className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex justify-center items-center text-center text-white text-xs sm:text-sm p-2 cursor-pointer transition-colors duration-200
-      ${
-        active
-          ? "bg-yellow-500 text-black shadow-lg scale-110"
-          : "bg-gray-800 hover:bg-gray-700"
-      }`}
+      ${active ? "bg-yellow-500 text-black shadow-lg scale-110" : "bg-gray-800 hover:bg-gray-700"}`}
     >
       {text}
     </div>

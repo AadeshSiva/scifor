@@ -949,7 +949,7 @@ const faqs: FAQItem[] = [
       "Simple:You'll keep thinking you're worth more than the market will pay.Your team will stay disengaged, and their work will keep leaking value.You'll exit with less. Maybe nothing.And you'll never know what you could have had — until it's too late.",
   },
   {
-    question: "Why is it so cheap? $797 isn't for all that?",
+    question: "Why is it so cheap? $1797 isn't for all that?",
     answer:
       "Because this is the founding member round.You're betting on the only platform designed to protect your exit before it's at risk.Later, this goes full enterprise. Full price. Full-stack.For now? We want the bold, the committed, the no-BS founders who get it — and want in.\"What if my business is 'too small' or 'not ready yet' for this?\"If you're profitable, if you've got people, and if you've built anything worth protecting — you're ready.This isn't just for $50M enterprises. This is for the $2M–$30M founder who wants to get smart before it's too late.PRSPERA is how you scale with intelligence, not ignorance.\"Can't I just get a valuation from a broker or banker instead?\"Sure — if you want a number based on theory that no real buyer will ever pay.Most valuations are inflated. Most founders never hit them.PRSPERA gives you the street value — what the market would offer you today, based on how transferable, defensible, and scalable your business really is.You want a vanity metric, go to a broker.You want reality and a plan to raise it? You're in the right place.",
   },

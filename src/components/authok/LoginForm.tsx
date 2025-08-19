@@ -457,18 +457,21 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   };
 
   const handleLoginRedirect = async () => {
-    const plan = location.pathname.includes("member") ? "member" : "guest";
+    const queryParams = new URLSearchParams(location.search);
+    const plan = queryParams.get("plan") || "guest";
 
     const status = await getUserStatus();
     if (status.authenticated) {
       if (status.isMember) {
         alert("You are already registered as a member.");
-        navigate("/");
+        navigate("/confirmation-member");
       } else {
         if (plan === "guest") {
+          console.log(plan);
           alert("You are already registered as a guest.");
-          navigate("/");
+          navigate("/confirmation-guest");
         } else if (plan === "member") {
+          alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
         }
       }
