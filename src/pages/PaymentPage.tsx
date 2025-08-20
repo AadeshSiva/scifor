@@ -143,7 +143,7 @@ const Payment: React.FC = () => {
         // If Stripe already on window
         if ((window as any).Stripe) {
           const s = (window as any).Stripe(
-            "pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv"
+            "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
           );
           await setupStripeElements(s);
           return;
@@ -155,7 +155,7 @@ const Payment: React.FC = () => {
         script.onload = async () => {
           try {
             const s = (window as any).Stripe(
-              "pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv"
+              "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
             );
             await setupStripeElements(s);
           } catch (error) {
