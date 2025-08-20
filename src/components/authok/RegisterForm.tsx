@@ -449,6 +449,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         phone_number: formData.phone_number,
         website_name: formData.website_name,
         no_linkedin: true,
+        came_from_plan: getPlan(),
       };
 
       console.log("Sending registration payload:", {
