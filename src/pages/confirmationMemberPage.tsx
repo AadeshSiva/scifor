@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/utils/AuthContext";
+import confirmationGuestBg from "../../public/assets/Bg-confirmationPage.png";
 
 const ConfirmationMember: React.FC = () => {
   // const [name, setName] = useState<string>("");
@@ -25,7 +26,7 @@ const ConfirmationMember: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center text-white bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: "url('../public/assets/Bg-confirmationPage.png')",
+        backgroundImage: confirmationGuestBg,
       }}
     >
       <div className="w-full max-w-2xl relative overflow-hidden rounded-lg px-4">

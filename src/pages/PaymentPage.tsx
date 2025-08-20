@@ -794,7 +794,7 @@ const Payment: React.FC = () => {
               <div className="border border-gray-400 rounded-2xl p-8 mb-6">
                 <div className="mb-8">
                   <h3 className="text-2xl text-black mb-2">{planDetails.name}</h3>
-                  <p className="text-base text-gray-600 mb-6">{planDetails.description}</p>
+                  {/* <p className="text-base text-gray-600 mb-6">{planDetails.description}</p> */}
                   <div className="mb-8">
                     <span className="text-4xl font-bold text-black">${planDetails.price}</span>
                     <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
