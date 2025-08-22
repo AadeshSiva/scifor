@@ -63,7 +63,7 @@ const Payment: React.FC = () => {
 
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 1,
+    price: 100,
     description: "Seats available for 50 members",
   };
 
@@ -143,7 +143,7 @@ const Payment: React.FC = () => {
         // If Stripe already on window
         if ((window as any).Stripe) {
           const s = (window as any).Stripe(
-            "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
+            "pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv"
           );
           await setupStripeElements(s);
           return;
@@ -155,7 +155,7 @@ const Payment: React.FC = () => {
         script.onload = async () => {
           try {
             const s = (window as any).Stripe(
-              "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
+              "pk_test_51RPvxVGq7lR7zc6NwAd6VKBnrteOef9QOGEBwAdhmOYCdkB84JZ1C6X3MpddKym6jtVGGBvRlKS9dWV7tG2UtAYS00dZUM68Xv"
             );
             await setupStripeElements(s);
           } catch (error) {
@@ -361,23 +361,30 @@ const Payment: React.FC = () => {
         };
       }
 
-      const response = await fetch(
-        "https://intern-project-final-1.onrender.com/process-tokenized-payment/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            amount: planDetails.price, // if backend expects cents, send price*100
-            product_name: planDetails.name,
-            billing_info: billingInfo,
-            payment_method_data: paymentMethodData,
-            currency: "usd",
-          }),
-        }
-      );
+      const response = await fetch("https://internship-pro.onrender.com/create-checkout-session/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: planDetails.price, // if backend expects cents, send price*100
+          product_name: planDetails.name,
+          billing_info: billingInfo,
+        }),
+      });
+
+      // payment_method_data: paymentMethodData,
+      // currency: "usd",
+
+      console.log({
+        amount: planDetails.price,
+        product_name: planDetails.name,
+        billing_info: billingInfo,
+      });
+
+      // log everything
+      console.log("Raw backend response:", response);
 
       const data = await response.json();
       if (!response.ok) {
