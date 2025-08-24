@@ -184,7 +184,7 @@ const Payment: React.FC = () => {
       cancelled = true;
       try {
         cardElementRef.current?.unmount();
-      } catch {}
+      } catch { }
     };
   }, []);
 
@@ -289,6 +289,125 @@ const Payment: React.FC = () => {
   const getAuthToken = (): string | null =>
     localStorage.getItem("access_token") || sessionStorage.getItem("access_token") || null;
 
+  // const processPayment = async () => {
+  //   try {
+  //     setErrors({});
+
+  //     if (!validateBillingInfo()) return;
+
+  //     // Handle unavailable methods early
+  //     if (selectedMethod === "upi" || selectedMethod === "others") {
+  //       if (selectedMethod === "upi" && !validateUpiPayment()) return;
+  //       setErrors({
+  //         payment: "This payment method is not supported yet. Please use Credit Card or Bank.",
+  //       });
+  //       return;
+  //     }
+
+  //     if (selectedMethod === "bank" && !validateBankAccount()) return;
+
+  //     if (selectedMethod === "credit") {
+  //       if (stripeLoading || !stripe || !elements) {
+  //         setErrors({ payment: "Payment system is still loading. Please wait a moment." });
+  //         return;
+  //       }
+  //     }
+
+  //     const token = getAuthToken();
+  //     if (!token) {
+  //       setErrors({ payment: "Authentication required. Please log in again." });
+  //       return;
+  //     }
+
+  //     setIsLoading(true);
+
+  //     let paymentMethodData: any = {};
+
+  //     if (selectedMethod === "credit") {
+  //       const card = elements.getElement("card");
+  //       if (!card) {
+  //         setErrors({ payment: "Card input not ready. Please refresh and try again." });
+  //         setIsLoading(false);
+  //         return;
+  //       }
+
+  //       const { paymentMethod, error } = await stripe.createPaymentMethod({
+  //         type: "card",
+  //         card,
+  //         billing_details: {
+  //           name: billingInfo.fullName,
+  //           email: billingInfo.email,
+  //         },
+  //       });
+  //       if (error) throw new Error(error.message);
+
+  //       paymentMethodData = {
+  //         payment_method_id: paymentMethod.id,
+  //         type: "card",
+  //       };
+  //     } else if (selectedMethod === "bank") {
+  //       paymentMethodData = {
+  //         type: "us_bank_account",
+  //         us_bank_account: {
+  //           account_number: bankInfo.accountNumber,
+  //           routing_number: bankInfo.routingNumber,
+  //           account_type: bankInfo.accountType,
+  //           account_holder_type: "individual",
+  //         },
+  //         billing_details: {
+  //           name: bankInfo.accountHolderName,
+  //           email: billingInfo.email,
+  //         },
+  //       };
+  //     }
+
+  //     const response = await fetch("https://internship-pro.onrender.com/create-checkout-session/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         amount: planDetails.price, // if backend expects cents, send price*100
+  //         product_name: planDetails.name,
+  //         billing_info: billingInfo,
+  //       }),
+  //     });
+
+  //     // payment_method_data: paymentMethodData,
+  //     // currency: "usd",
+
+  //     console.log({
+  //       amount: planDetails.price,
+  //       product_name: planDetails.name,
+  //       billing_info: billingInfo,
+  //     });
+
+  //     // log everything
+  //     console.log("Raw backend response:", response);
+
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new Error(data.error || `Server error: ${response.status}`);
+  //     }
+
+  //     if (data.requires_action && data.client_secret) {
+  //       const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+  //       if (confirmError) throw new Error(confirmError.message);
+  //       setSuccess(true);
+  //     } else if (data.status === "succeeded") {
+  //       setSuccess(true);
+  //     } else {
+  //       throw new Error(data.error || "Payment processing failed");
+  //     }
+  //   } catch (err) {
+  //     console.error("Payment processing error:", err);
+  //     const msg = err instanceof Error ? err.message : "An unexpected error occurred";
+  //     setErrors({ payment: msg });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const processPayment = async () => {
     try {
       setErrors({});
@@ -321,45 +440,18 @@ const Payment: React.FC = () => {
 
       setIsLoading(true);
 
-      let paymentMethodData: any = {};
-
-      if (selectedMethod === "credit") {
-        const card = elements.getElement("card");
-        if (!card) {
-          setErrors({ payment: "Card input not ready. Please refresh and try again." });
-          setIsLoading(false);
-          return;
+      // CORRECTED: Send data in the format your backend expects
+      const requestData = {
+        amount: planDetails.price,
+        product_name: planDetails.name,
+        billing_info: {
+          fullName: billingInfo.fullName,
+          email: billingInfo.email,
+          companyName: billingInfo.companyName,
         }
+      };
 
-        const { paymentMethod, error } = await stripe.createPaymentMethod({
-          type: "card",
-          card,
-          billing_details: {
-            name: billingInfo.fullName,
-            email: billingInfo.email,
-          },
-        });
-        if (error) throw new Error(error.message);
-
-        paymentMethodData = {
-          payment_method_id: paymentMethod.id,
-          type: "card",
-        };
-      } else if (selectedMethod === "bank") {
-        paymentMethodData = {
-          type: "us_bank_account",
-          us_bank_account: {
-            account_number: bankInfo.accountNumber,
-            routing_number: bankInfo.routingNumber,
-            account_type: bankInfo.accountType,
-            account_holder_type: "individual",
-          },
-          billing_details: {
-            name: bankInfo.accountHolderName,
-            email: billingInfo.email,
-          },
-        };
-      }
+      console.log("Sending to backend:", requestData);
 
       const response = await fetch("https://internship-pro.onrender.com/create-checkout-session/", {
         method: "POST",
@@ -367,39 +459,35 @@ const Payment: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          amount: planDetails.price, // if backend expects cents, send price*100
-          product_name: planDetails.name,
-          billing_info: billingInfo,
-        }),
+        body: JSON.stringify(requestData),
       });
 
-      // payment_method_data: paymentMethodData,
-      // currency: "usd",
-
-      console.log({
-        amount: planDetails.price,
-        product_name: planDetails.name,
-        billing_info: billingInfo,
-      });
-
-      // log everything
-      console.log("Raw backend response:", response);
+      console.log("Response status:", response.status);
 
       const data = await response.json();
+      console.log("Parsed response data:", data);
+
       if (!response.ok) {
-        throw new Error(data.error || `Server error: ${response.status}`);
+        throw new Error(data.error || data.message || `Server error: ${response.status}`);
       }
 
-      if (data.requires_action && data.client_secret) {
-        const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
-        if (confirmError) throw new Error(confirmError.message);
-        setSuccess(true);
-      } else if (data.status === "succeeded") {
-        setSuccess(true);
+      // YOUR BACKEND IS USING STRIPE CHECKOUT - REDIRECT TO THE CHECKOUT URL
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else if (data.sessionId) {
+        // Alternative: Use Stripe.js to redirect to checkout
+        // This is a fallback if you have the sessionId but not the URL
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: data.sessionId
+        });
+        if (error) throw new Error(error.message);
       } else {
-        throw new Error(data.error || "Payment processing failed");
+        throw new Error("No checkout URL or session ID received from server");
       }
+
+
+
     } catch (err) {
       console.error("Payment processing error:", err);
       const msg = err instanceof Error ? err.message : "An unexpected error occurred";
@@ -408,7 +496,6 @@ const Payment: React.FC = () => {
       setIsLoading(false);
     }
   };
-
   const PaymentMethodButton: React.FC<{
     icon?: string;
     label: string;
@@ -417,9 +504,8 @@ const Payment: React.FC = () => {
   }> = ({ icon, label, selected, onClick }) => (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 border text-gray-600 cursor-pointer px-8 py-3 rounded-xl border-solid transition-colors ${
-        selected ? "border-black bg-gray-50" : "border-gray-400 hover:border-gray-600"
-      } flex-1 min-w-0`}
+      className={`flex items-center justify-center gap-2 border text-gray-600 cursor-pointer px-8 py-3 rounded-xl border-solid transition-colors ${selected ? "border-black bg-gray-50" : "border-gray-400 hover:border-gray-600"
+        } flex-1 min-w-0`}
     >
       {icon && <div dangerouslySetInnerHTML={{ __html: icon }} />}
       <span className="whitespace-nowrap">{label}</span>
@@ -495,11 +581,10 @@ const Payment: React.FC = () => {
                     placeholder="Enter full name"
                     value={billingInfo.fullName}
                     onChange={handleBillingChange}
-                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                      errors.fullName
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-gray-400 focus:border-black"
-                    }`}
+                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.fullName
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-gray-400 focus:border-black"
+                      }`}
                   />
                   <ErrorMessage message={errors.fullName} />
                 </div>
@@ -510,11 +595,10 @@ const Payment: React.FC = () => {
                     placeholder="Enter billing email"
                     value={billingInfo.email}
                     onChange={handleBillingChange}
-                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                      errors.email
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-gray-400 focus:border-black"
-                    }`}
+                    className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.email
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-gray-400 focus:border-black"
+                      }`}
                   />
                   <ErrorMessage message={errors.email} />
                 </div>
@@ -530,7 +614,7 @@ const Payment: React.FC = () => {
             </section>
 
             {/* Payment Methods */}
-            <section>
+            <section className="hidden">
               <h2 className="text-3xl font-bold text-black mb-6">Pay with</h2>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
                 <PaymentMethodButton
@@ -564,11 +648,10 @@ const Payment: React.FC = () => {
               {/* Credit card form (kept mounted, hidden when not selected) */}
               <div className={`space-y-6 ${selectedMethod === "credit" ? "" : "hidden"}`}>
                 <div
-                  className={`border rounded-xl p-6 transition-colors ${
-                    stripeLoading
-                      ? "border-gray-300 bg-gray-50"
-                      : "border-gray-400 focus-within:border-black"
-                  }`}
+                  className={`border rounded-xl p-6 transition-colors ${stripeLoading
+                    ? "border-gray-300 bg-gray-50"
+                    : "border-gray-400 focus-within:border-black"
+                    }`}
                 >
                   <div ref={cardMountRef} />
                   {stripeLoading && (
@@ -593,7 +676,7 @@ const Payment: React.FC = () => {
                   Your card details are secure and encrypted by Stripe
                 </p>
               </div>
-
+            </section><section>
               {/* Bank account form */}
               {selectedMethod === "bank" && (
                 <div className="space-y-6">
@@ -612,11 +695,10 @@ const Payment: React.FC = () => {
                       placeholder="Account holder name (must match bank records)"
                       value={bankInfo.accountHolderName}
                       onChange={handleBankChange}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.accountHolderName
-                          ? "border-red-500 focus:border-red-500"
-                          : "border-gray-400 focus:border-black"
-                      }`}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.accountHolderName
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-400 focus:border-black"
+                        }`}
                     />
                     <ErrorMessage message={errors.accountHolderName} />
                   </div>
@@ -630,11 +712,10 @@ const Payment: React.FC = () => {
                       onChange={handleBankChange}
                       maxLength={9}
                       pattern="[0-9]{9}"
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.routingNumber
-                          ? "border-red-500 focus:border-red-500"
-                          : "border-gray-400 focus:border-black"
-                      }`}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.routingNumber
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-400 focus:border-black"
+                        }`}
                     />
                     <ErrorMessage message={errors.routingNumber} />
                     <p className="text-xs text-gray-500 mt-1">
@@ -651,11 +732,10 @@ const Payment: React.FC = () => {
                       onChange={handleBankChange}
                       minLength={8}
                       maxLength={17}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.accountNumber
-                          ? "border-red-500 focus:border-red-500"
-                          : "border-gray-400 focus:border-black"
-                      }`}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.accountNumber
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-400 focus:border-black"
+                        }`}
                     />
                     <ErrorMessage message={errors.accountNumber} />
                   </div>
@@ -716,11 +796,10 @@ const Payment: React.FC = () => {
                       placeholder="Enter your UPI ID (e.g., user@paytm)"
                       value={bankInfo.upiId || ""}
                       onChange={(e) => setBankInfo((prev) => ({ ...prev, upiId: e.target.value }))}
-                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${
-                        errors.upiId
-                          ? "border-red-500 focus:border-red-500"
-                          : "border-gray-400 focus:border-black"
-                      }`}
+                      className={`w-full h-16 px-6 text-lg text-gray-600 border rounded-xl focus:outline-none transition-colors ${errors.upiId
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-400 focus:border-black"
+                        }`}
                     />
                     <ErrorMessage message={errors.upiId} />
                     <p className="text-xs text-gray-500 mt-1">
