@@ -394,7 +394,7 @@ const PricingPlan: React.FC = () => {
           <div style={cardsWrapperStyle}>
             {/* Free Plan Card */}
             <div style={cardStyle}>
-              <GrowRicherIcon />
+              {/* <GrowRicherIcon /> */}
 
               <div
                 style={
@@ -443,34 +443,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      style={
-                        {
-                          transform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          WebkitTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          MozTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          msTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                        } as CSSProperties
-                      }
+                      // style={
+                      //   {
+                      //     transform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     WebkitTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     MozTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     msTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //   } as CSSProperties
+                      // }
                     >
                       <Logo />
                     </div>
@@ -599,34 +599,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      style={
-                        {
-                          transform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          WebkitTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          MozTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          msTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                        } as CSSProperties
-                      }
+                      // style={
+                      //   {
+                      //     transform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     WebkitTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     MozTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     msTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //   } as CSSProperties
+                      // }
                     >
                       <Logo />
                     </div>
@@ -649,7 +649,7 @@ const PricingPlan: React.FC = () => {
 
             {/* Member Plan Card */}
             <div style={memberCardStyle}>
-              <GrowRicherBlackIcon />
+              {/* <GrowRicherBlackIcon /> */}
 
               <div
                 style={
@@ -698,34 +698,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      style={
-                        {
-                          transform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          WebkitTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          MozTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          msTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                        } as CSSProperties
-                      }
+                      // style={
+                      //   {
+                      //     transform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     WebkitTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     MozTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     msTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //   } as CSSProperties
+                      // }
                     >
                       <LogoBlack />
                     </div>
@@ -833,7 +833,7 @@ const PricingPlan: React.FC = () => {
                   }
                   onClick={handleLearnMoreClick}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#1a1a1a"; // Slight grey shade
+                    e.currentTarget.style.backgroundColor = "#1a1a1a"; 
                     e.currentTarget.style.borderColor = "#F4A460";
                   }}
                   onMouseOut={(e) => {
@@ -856,35 +856,35 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      style={
-                        {
-                          transform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          WebkitTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          MozTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          msTransform:
-                            windowWidth < 640
-                              ? "scale(0.75)"
-                              : windowWidth < 768
-                              ? "scale(0.9)"
-                              : "scale(1)",
-                          color: "white",
-                        } as CSSProperties
-                      }
+                      // style={
+                      //   {
+                      //     transform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     WebkitTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     MozTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     msTransform:
+                      //       windowWidth < 640
+                      //         ? "scale(0.75)"
+                      //         : windowWidth < 768
+                      //         ? "scale(0.9)"
+                      //         : "scale(1)",
+                      //     color: "white",
+                      //   } as CSSProperties
+                      // }
                     >
                       <Logo />
                     </div>
