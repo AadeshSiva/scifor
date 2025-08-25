@@ -394,7 +394,7 @@ const PricingPlan: React.FC = () => {
           <div style={cardsWrapperStyle}>
             {/* Free Plan Card */}
             <div style={cardStyle}>
-              <GrowRicherIcon />
+              {/* <GrowRicherIcon /> */}
 
               <div
                 style={
@@ -649,7 +649,7 @@ const PricingPlan: React.FC = () => {
 
             {/* Member Plan Card */}
             <div style={memberCardStyle}>
-              <GrowRicherBlackIcon />
+              {/* <GrowRicherBlackIcon /> */}
 
               <div
                 style={
