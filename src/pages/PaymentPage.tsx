@@ -1306,6 +1306,7 @@ const Payment: React.FC = () => {
   //     setIsLoading(false);
   //   }
   // };
+
   const processPayment = async () => {
     try {
       setErrors({});
@@ -1786,7 +1787,9 @@ const Payment: React.FC = () => {
                   <h3 className="text-2xl text-black mb-2">{planDetails.name}</h3>
                   {/* <p className="text-base text-gray-600 mb-6">{planDetails.description}</p> */}
                   <div className="mb-8">
-                    <span className="text-4xl font-bold text-black">${planDetails.price}</span>
+                    <span className="text-4xl font-bold text-black">
+                      ${planDetails.price / 100}
+                    </span>
                     <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
                   </div>
                 </div>
@@ -1802,7 +1805,7 @@ const Payment: React.FC = () => {
 
                 <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                   <span className="text-lg font-medium text-gray-600">Total</span>
-                  <span className="text-2xl font-bold text-black">${planDetails.price}</span>
+                  <span className="text-2xl font-bold text-black">${planDetails.price / 100}</span>
                 </div>
 
                 <button
@@ -1833,7 +1836,7 @@ const Payment: React.FC = () => {
                       Processing...
                     </span>
                   ) : (
-                    `Pay $${planDetails.price}`
+                    `Pay $${planDetails.price / 100}`
                   )}
                 </button>
 
