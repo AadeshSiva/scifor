@@ -97,8 +97,7 @@ const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({
   if (!isOpen) return null;
 
   const handleGetPremium = () => {
-    // Replace with your actual premium upgrade logic
-    window.location.href = "/join";
+    window.location.href = "/payment";
   };
 
   return (
@@ -337,8 +336,7 @@ const Chat = () => {
               30000
             );
             console.log(
-              `Attempting to reconnect in ${timeout}ms (attempt ${
-                reconnectAttempts + 1
+              `Attempting to reconnect in ${timeout}ms (attempt ${reconnectAttempts + 1
               })`
             );
 
@@ -517,10 +515,10 @@ const Chat = () => {
       isPinned: backendMsg.is_pinned || false,
       replyTo: backendMsg.reply_to
         ? {
-            id: backendMsg.reply_to.id,
-            sender: backendMsg.reply_to.sender,
-            text: backendMsg.reply_to.content,
-          }
+          id: backendMsg.reply_to.id,
+          sender: backendMsg.reply_to.sender,
+          text: backendMsg.reply_to.content,
+        }
         : null,
     };
   };
@@ -815,13 +813,13 @@ const Chat = () => {
         <span className="text-gray-600">{getStatusText()}</span>
         {(connectionStatus === "disconnected" ||
           connectionStatus === "error") && (
-          <button
-            onClick={reconnectWebSocket}
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            Reconnect
-          </button>
-        )}
+            <button
+              onClick={reconnectWebSocket}
+              className="text-blue-600 hover:text-blue-800 underline ml-2"
+            >
+              Reconnect
+            </button>
+          )}
       </div>
     );
   };
@@ -954,11 +952,10 @@ const Chat = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => handlePollVote(message.id, option.id)}
-                  className={`px-3 py-1 rounded text-sm ${
-                    option.user_voted
+                  className={`px-3 py-1 rounded text-sm ${option.user_voted
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 hover:bg-gray-300"
-                  }`}
+                    }`}
                 >
                   {option.text}
                 </button>
@@ -982,11 +979,10 @@ const Chat = () => {
       {/* Sidebar */}
       {showSidebar && (
         <nav
-          className={`${
-            showSidebar
+          className={`${showSidebar
               ? "w-[400px] translate-x-0"
               : "w-[300px] -translate-x-full lg:translate-x-0"
-          } lg:w-[300px] lg:relative fixed lg:static top-0 left-0 h-full lg:h-auto z-45 flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 border-r transition-transform duration-300 ease-in-out sidebar-mobile lg:sidebar-desktop`}
+            } lg:w-[300px] lg:relative fixed lg:static top-0 left-0 h-full lg:h-auto z-45 flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 border-r transition-transform duration-300 ease-in-out sidebar-mobile lg:sidebar-desktop`}
         >
           <div className="flex items-center gap-2.5 px-6 py-4">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
@@ -1003,12 +999,11 @@ const Chat = () => {
             {getMenuItems().map((item) => (
               <div
                 key={item.id}
-                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${
-                  (item.id === 1 && !isAiChatMode) ||
-                  (item.id === 2 && isAiChatMode)
+                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${(item.id === 1 && !isAiChatMode) ||
+                    (item.id === 2 && isAiChatMode)
                     ? "bg-neutral-200"
                     : "bg-neutral-100"
-                }`}
+                  }`}
                 onClick={() => handleMenuItemClick(item)}
               >
                 {item.icon === "message-square" ? (
@@ -1294,8 +1289,8 @@ const Chat = () => {
                     .filter((msg) =>
                       searchQuery
                         ? msg.text
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase())
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
                         : true
                     )
                     .map((msg) => (
@@ -1307,9 +1302,8 @@ const Chat = () => {
                         {msg.isPoll ? (
                           // Poll Message
                           <div
-                            className={`flex flex-col ${
-                              msg.replyTo ? "mt-2" : "mt-0"
-                            }`}
+                            className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                              }`}
                           >
                             {msg.replyTo && (
                               <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
@@ -1354,11 +1348,10 @@ const Chat = () => {
                                       onClick={() =>
                                         handlePollVote(msg.id, option.id)
                                       }
-                                      className={`w-full text-left p-2 rounded border transition-colors ${
-                                        isVoted
+                                      className={`w-full text-left p-2 rounded border transition-colors ${isVoted
                                           ? "bg-black text-white border-black"
                                           : "bg-white text-[#555] border-[rgba(158,158,158,0.5)] hover:bg-gray-50"
-                                      }`}
+                                        }`}
                                     >
                                       <div className="flex justify-between items-center">
                                         <span className="text-xs">
@@ -1372,9 +1365,8 @@ const Chat = () => {
                                       {totalVotes > 0 && (
                                         <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
                                           <div
-                                            className={`h-1 rounded-full transition-all ${
-                                              isVoted ? "bg-white" : "bg-black"
-                                            }`}
+                                            className={`h-1 rounded-full transition-all ${isVoted ? "bg-white" : "bg-black"
+                                              }`}
                                             style={{ width: `${percentage}%` }}
                                           ></div>
                                         </div>
@@ -1437,9 +1429,8 @@ const Chat = () => {
                         ) : msg.isUser ? (
                           // User's own message (right side)
                           <div
-                            className={`flex flex-col ${
-                              msg.replyTo ? "mt-2" : "mt-0"
-                            }`}
+                            className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                              }`}
                           >
                             {msg.replyTo && (
                               <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
@@ -1507,9 +1498,8 @@ const Chat = () => {
                               </div>
                             </div>
                             <div
-                              className={`flex flex-col ${
-                                msg.replyTo ? "mt-2" : "mt-0"
-                              }`}
+                              className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                                }`}
                             >
                               {msg.replyTo && (
                                 <div className="flex items-center gap-2 ml-12 mb-1 text-xs text-[#9E9E9E]">
@@ -1663,8 +1653,40 @@ const Chat = () => {
                   </button>
                 ) : null}
 
+                {/* <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
+                  <Sticker stroke="#555" size={22} className="flex-shrink-0" />
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type a message..."
+                    className="text-[#555] text-sm w-full bg-transparent outline-none flex-1"
+                  />
+                </div> */}
+
                 <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
-                  {/* <Sticker stroke="#555" size={22} className="flex-shrink-0" /> */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (user && user.paid === false) {
+                        setShowPremiumPopup(true);
+                        return;
+                      }
+                      // Optional: keep polls admin-only. If you want everyone to create polls, remove this block.
+                      // if (!isAdmin) {
+                      //   alert("Only admins can create polls");
+                      //   return;
+                      // }
+
+                      setShowPollCreator(true);
+                    }}
+                    className="flex items-center justify-center p-1 rounded-full hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-black/20"
+                    aria-label="Create poll"
+                    title="Create poll"
+                  >
+                    <Sticker stroke="#555" size={22} className="flex-shrink-0" />
+                  </button>
+
                   <input
                     type="text"
                     value={message}
@@ -1677,9 +1699,8 @@ const Chat = () => {
                 <button
                   type="submit"
                   disabled={!message.trim()}
-                  className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${
-                    !message.trim() ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${!message.trim() ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   aria-label="Send message"
                 >
                   <SendHorizonal />
@@ -1835,20 +1856,18 @@ const Chat = () => {
                                 }))
                               }
                               type="button"
-                              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${
-                                pollFormData.allowMultipleAnswers
+                              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${pollFormData.allowMultipleAnswers
                                   ? "bg-black"
                                   : "bg-gray-200"
-                              }`}
+                                }`}
                               role="switch"
                               aria-checked={pollFormData.allowMultipleAnswers}
                             >
                               <span
-                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                  pollFormData.allowMultipleAnswers
+                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${pollFormData.allowMultipleAnswers
                                     ? "translate-x-5"
                                     : "translate-x-0"
-                                }`}
+                                  }`}
                               />
                             </button>
                           </div>
