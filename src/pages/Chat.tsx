@@ -21,7 +21,7 @@ import {
 import { useAuth } from "@/utils/AuthContext";
 import { HeroSection } from "@/components/chat/LivePage";
 import PinnedMessages from "@/components/chat/PinnedMessage";
-import VideoPopup from "@/components/video/VideoPopup";
+// import VideoPopup from "@/components/video/VideoPopup";
 import PurchaseHistory from "@/components/settings/PaymentHistory";
 import { useLocation } from "react-router-dom";
 
@@ -90,12 +90,14 @@ interface PremiumMembershipPopupProps {
   onClose: () => void;
 }
 
-const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({ isOpen, onClose }) => {
+const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({
+  isOpen,
+  onClose,
+}) => {
   if (!isOpen) return null;
 
   const handleGetPremium = () => {
-    // Replace with your actual premium upgrade logic
-    window.location.href = "/join";
+    window.location.href = "/payment";
   };
 
   return (
@@ -119,10 +121,12 @@ const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({ isOpen,
 
         {/* Header matching COI typography */}
         <div className="text-center mb-6">
-          <h2 className="text-[#2B2B2B] text-2xl font-walbaum mb-2">Upgrade to Premium</h2>
+          <h2 className="text-[#2B2B2B] text-2xl font-walbaum mb-2">
+            Upgrade to Premium
+          </h2>
           <p className="text-[#6f6f6f] text-sm font-linear leading-relaxed">
-            You need a premium membership to send messages in the chat. Unlock unlimited messaging
-            and exclusive features!
+            You need a premium membership to send messages in the chat. Unlock
+            unlimited messaging and exclusive features!
           </p>
         </div>
 
@@ -135,13 +139,21 @@ const PremiumMembershipPopup: React.FC<PremiumMembershipPopupProps> = ({ isOpen,
             "Exclusive premium content",
           ].map((feature, index) => (
             <div key={index} className="flex items-center gap-3 text-[#2B2B2B]">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                className="flex-shrink-0"
+              >
                 <path
                   d="M4.07573 11.8036L0.175729 7.44535C-0.0585762 7.18351 -0.0585762 6.75898 0.175729 6.49711L1.02424 5.54888C1.25854 5.28702 1.63846 5.28702 1.87277 5.54888L4.5 8.48478L10.1272 2.19638C10.3615 1.93454 10.7415 1.93454 10.9758 2.19638L11.8243 3.14461C12.0586 3.40645 12.0586 3.83098 11.8243 4.09285L4.92426 11.8036C4.68994 12.0655 4.31004 12.0655 4.07573 11.8036Z"
                   fill="black"
                 />
               </svg>
-              <span className="font-linear text-sm text-[#2B2B2B]">{feature}</span>
+              <span className="font-linear text-sm text-[#2B2B2B]">
+                {feature}
+              </span>
             </div>
           ))}
         </div>
@@ -187,7 +199,8 @@ const Chat = () => {
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [inappropriateMessageAlert, setInappropriateMessageAlert] = useState(null);
+  const [inappropriateMessageAlert, setInappropriateMessageAlert] =
+    useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const location = useLocation();
@@ -249,7 +262,9 @@ const Chat = () => {
 
     const connectWebSocket = () => {
       if (!isAuthenticated || !user || isLoading) {
-        console.log("User not authenticated or still loading, skipping WebSocket connection");
+        console.log(
+          "User not authenticated or still loading, skipping WebSocket connection"
+        );
         return;
       }
 
@@ -305,16 +320,24 @@ const Chat = () => {
           }
 
           // Don't auto-reconnect for authentication errors
-          if (event.code === 4001 || event.code === 4003 || event.code === 4004) {
+          if (
+            event.code === 4001 ||
+            event.code === 4003 ||
+            event.code === 4004
+          ) {
             console.log("Authentication failed, not attempting to reconnect");
             return;
           }
 
           // Auto-reconnect for other errors
           if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
-            const timeout = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+            const timeout = Math.min(
+              1000 * Math.pow(2, reconnectAttempts),
+              30000
+            );
             console.log(
-              `Attempting to reconnect in ${timeout}ms (attempt ${reconnectAttempts + 1})`
+              `Attempting to reconnect in ${timeout}ms (attempt ${reconnectAttempts + 1
+              })`
             );
 
             reconnectTimeoutRef.current = setTimeout(() => {
@@ -397,7 +420,9 @@ const Chat = () => {
         setMessages((prev) => prev.filter((msg) => msg.id !== data.message_id));
 
         // Also remove from pinned messages if it was pinned
-        setpinnedMessages((prev) => prev.filter((p) => p.messageId !== data.message_id));
+        setpinnedMessages((prev) =>
+          prev.filter((p) => p.messageId !== data.message_id)
+        );
         break;
 
       case "poll_message":
@@ -423,7 +448,9 @@ const Chat = () => {
       case "message_pinned":
         // Update the message in the current messages array
         setMessages((prev) =>
-          prev.map((msg) => (msg.id === data.message.id ? { ...msg, isPinned: true } : msg))
+          prev.map((msg) =>
+            msg.id === data.message.id ? { ...msg, isPinned: true } : msg
+          )
         );
 
         // Add to pinned messages if not already there
@@ -488,10 +515,10 @@ const Chat = () => {
       isPinned: backendMsg.is_pinned || false,
       replyTo: backendMsg.reply_to
         ? {
-            id: backendMsg.reply_to.id,
-            sender: backendMsg.reply_to.sender,
-            text: backendMsg.reply_to.content,
-          }
+          id: backendMsg.reply_to.id,
+          sender: backendMsg.reply_to.sender,
+          text: backendMsg.reply_to.content,
+        }
         : null,
     };
   };
@@ -500,7 +527,10 @@ const Chat = () => {
     id: backendPoll.message_id,
     sender: backendPoll.created_by,
     text: "",
-    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    time: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
     isUser: backendPoll.created_by === user?.full_name, // Use user.full_name instead of userName
     isPoll: true,
     pollData: formatPollData(backendPoll),
@@ -561,7 +591,10 @@ const Chat = () => {
           id: 1,
           sender: "AI Assistant",
           text: "Hello! I'm your AI assistant. I'm currently in development and will be live in 45 days. How can I help you today?",
-          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
           isUser: false,
           isAi: true,
         },
@@ -589,7 +622,10 @@ const Chat = () => {
   const handleAddPollOption = () => {
     setPollFormData((prev) => ({
       ...prev,
-      options: [...prev.options, { id: String(Date.now()), text: "", votes: 0, voters: [] }],
+      options: [
+        ...prev.options,
+        { id: String(Date.now()), text: "", votes: 0, voters: [] },
+      ],
     }));
   };
 
@@ -603,7 +639,9 @@ const Chat = () => {
   const handleUpdatePollOption = (id: string, text: string) => {
     setPollFormData((prev) => ({
       ...prev,
-      options: prev.options.map((opt) => (opt.id === id ? { ...opt, text } : opt)),
+      options: prev.options.map((opt) =>
+        opt.id === id ? { ...opt, text } : opt
+      ),
     }));
   };
 
@@ -773,14 +811,15 @@ const Chat = () => {
       <div className="flex items-center space-x-2 text-sm">
         <div className={`w-2 h-2 rounded-full ${getStatusColor()}`}></div>
         <span className="text-gray-600">{getStatusText()}</span>
-        {(connectionStatus === "disconnected" || connectionStatus === "error") && (
-          <button
-            onClick={reconnectWebSocket}
-            className="text-blue-600 hover:text-blue-800 underline ml-2"
-          >
-            Reconnect
-          </button>
-        )}
+        {(connectionStatus === "disconnected" ||
+          connectionStatus === "error") && (
+            <button
+              onClick={reconnectWebSocket}
+              className="text-blue-600 hover:text-blue-800 underline ml-2"
+            >
+              Reconnect
+            </button>
+          )}
       </div>
     );
   };
@@ -796,7 +835,9 @@ const Chat = () => {
 
     // Additional connection check
     if (connectionStatus !== "connected") {
-      alert("Please wait for connection to be established before sending messages.");
+      alert(
+        "Please wait for connection to be established before sending messages."
+      );
       return;
     }
 
@@ -855,7 +896,12 @@ const Chat = () => {
   const getMenuItems = () => {
     return [
       { id: 1, title: "Anonymous Group Chat", icon: "message-square" },
-      { id: 2, title: "Ai Chat Bot (coming soon)", icon: "menu-item-icon", isAiBot: true },
+      {
+        id: 2,
+        title: "Ai Chat Bot (coming soon)",
+        icon: "menu-item-icon",
+        isAiBot: true,
+      },
       ...Array(8)
         .fill(null)
         .map((_, index) => ({
@@ -889,8 +935,12 @@ const Chat = () => {
     return (
       <div className="bg-blue-50 p-4 rounded-lg border">
         <div className="mb-3">
-          <h4 className="font-semibold text-gray-800">{message.pollData.question}</h4>
-          <p className="text-sm text-gray-600">by {message.pollData.createdBy}</p>
+          <h4 className="font-semibold text-gray-800">
+            {message.pollData.question}
+          </h4>
+          <p className="text-sm text-gray-600">
+            by {message.pollData.createdBy}
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -902,9 +952,10 @@ const Chat = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => handlePollVote(message.id, option.id)}
-                  className={`px-3 py-1 rounded text-sm ${
-                    option.user_voted ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"
-                  }`}
+                  className={`px-3 py-1 rounded text-sm ${option.user_voted
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 hover:bg-gray-300"
+                    }`}
                 >
                   {option.text}
                 </button>
@@ -916,7 +967,8 @@ const Chat = () => {
 
         <div className="mt-2 text-sm text-gray-500">
           Total votes: {message.pollData.totalVotes}
-          {message.pollData.allowMultipleAnswers && " • Multiple answers allowed"}
+          {message.pollData.allowMultipleAnswers &&
+            " • Multiple answers allowed"}
         </div>
       </div>
     );
@@ -927,15 +979,18 @@ const Chat = () => {
       {/* Sidebar */}
       {showSidebar && (
         <nav
-          className={`${
-            showSidebar ? "w-[400px] translate-x-0" : "w-[300px] -translate-x-full lg:translate-x-0"
-          } lg:w-[300px] lg:relative fixed lg:static top-0 left-0 h-full lg:h-auto z-45 flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 border-r transition-transform duration-300 ease-in-out sidebar-mobile lg:sidebar-desktop`}
+          className={`${showSidebar
+              ? "w-[400px] translate-x-0"
+              : "w-[300px] -translate-x-full lg:translate-x-0"
+            } lg:w-[300px] lg:relative fixed lg:static top-0 left-0 h-full lg:h-auto z-45 flex-shrink-0 flex flex-col overflow-hidden bg-neutral-100 border-r transition-transform duration-300 ease-in-out sidebar-mobile lg:sidebar-desktop`}
         >
           <div className="flex items-center gap-2.5 px-6 py-4">
             <div className="w-8 h-8 bg-[#555] rounded-full flex items-center justify-center text-white text-xs">
               {userName.charAt(0)}
             </div>
-            <div className=" text-black font-normal font-linear py-5">Welcome {userName} 👋</div>
+            <div className=" text-black font-normal font-linear py-5">
+              Welcome {userName} 👋
+            </div>
           </div>
 
           <div className=" flex items-center gap-2 px-6"></div>
@@ -944,14 +999,18 @@ const Chat = () => {
             {getMenuItems().map((item) => (
               <div
                 key={item.id}
-                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${
-                  (item.id === 1 && !isAiChatMode) || (item.id === 2 && isAiChatMode)
+                className={`flex items-center gap-2.5 px-6 py-2.5 hover:bg-white cursor-pointer transition-colors ${(item.id === 1 && !isAiChatMode) ||
+                    (item.id === 2 && isAiChatMode)
                     ? "bg-neutral-200"
                     : "bg-neutral-100"
-                }`}
+                  }`}
                 onClick={() => handleMenuItemClick(item)}
               >
-                {item.icon === "message-square" ? <MessageSquare /> : <NotepadText />}
+                {item.icon === "message-square" ? (
+                  <MessageSquare />
+                ) : (
+                  <NotepadText />
+                )}
                 <div className="font-linear">{item.title}</div>
               </div>
             ))}
@@ -978,7 +1037,7 @@ const Chat = () => {
           </div>
         </nav>
       )}
-      <VideoPopup videos={[]} />
+      {/* <VideoPopup videos={[]} /> */}
 
       {display === "chat" ? (
         <main className="flex-1 flex flex-col h-screen max-h-[calc(100vh-86px)]">
@@ -1059,7 +1118,10 @@ const Chat = () => {
               {showSearch && (
                 <div className="w-full flex items-center justify-center bg-neutral-100 px-2 sm:px-5 py-3 border-b border-[rgba(158,158,158,0.3)]">
                   <div className="flex items-center gap-4">
-                    <button aria-label="Toggle down" className="p-1 hover:bg-white rounded-full">
+                    <button
+                      aria-label="Toggle down"
+                      className="p-1 hover:bg-white rounded-full"
+                    >
                       <svg
                         width="24"
                         height="24"
@@ -1073,7 +1135,10 @@ const Chat = () => {
                         />
                       </svg>
                     </button>
-                    <button aria-label="Toggle up" className="p-1 hover:bg-white rounded-full">
+                    <button
+                      aria-label="Toggle up"
+                      className="p-1 hover:bg-white rounded-full"
+                    >
                       <svg
                         width="24"
                         height="24"
@@ -1103,7 +1168,10 @@ const Chat = () => {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <button aria-label="Calendar" className="p-1 hover:bg-white rounded-full">
+                    <button
+                      aria-label="Calendar"
+                      className="p-1 hover:bg-white rounded-full"
+                    >
                       <Calendar stroke="#555555" size={22} />
                     </button>
                     <button
@@ -1141,14 +1209,18 @@ const Chat = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 text-[10px] font-medium">
                       <div className="bg-black w-1 h-5 rounded-full" />
-                      <div className="text-black">Pinned Messages ({pinnedMessages.length})</div>
+                      <div className="text-black">
+                        Pinned Messages ({pinnedMessages.length})
+                      </div>
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-[#555]">
                       <div className="bg-[rgba(217,217,217,1)] w-1 h-5 rounded-full" />
                       <button
                         className="truncate pr-4 max-w-full hover:underline cursor-pointer text-left"
                         onClick={() =>
-                          jumpToMessage(pinnedMessages[currentPinnedMessage]?.messageId)
+                          jumpToMessage(
+                            pinnedMessages[currentPinnedMessage]?.messageId
+                          )
                         }
                       >
                         {pinnedMessages[currentPinnedMessage]?.text}
@@ -1169,7 +1241,10 @@ const Chat = () => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" fill="#555" />
+                        <path
+                          d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"
+                          fill="#555"
+                        />
                       </svg>
                     </button>
 
@@ -1178,7 +1253,9 @@ const Chat = () => {
                       aria-label="Next Pinned Message"
                       className="p-2 hover:bg-white rounded-full flex-shrink-0"
                       onClick={() =>
-                        setCurrentPinnedMessage((currentPinnedMessage + 1) % pinnedMessages.length)
+                        setCurrentPinnedMessage(
+                          (currentPinnedMessage + 1) % pinnedMessages.length
+                        )
                       }
                     >
                       <svg
@@ -1211,7 +1288,9 @@ const Chat = () => {
                   {messages
                     .filter((msg) =>
                       searchQuery
-                        ? msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+                        ? msg.text
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
                         : true
                     )
                     .map((msg) => (
@@ -1222,7 +1301,10 @@ const Chat = () => {
                       >
                         {msg.isPoll ? (
                           // Poll Message
-                          <div className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"}`}>
+                          <div
+                            className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                              }`}
+                          >
                             {msg.replyTo && (
                               <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
                                 <span>Replying to {msg.replyTo.sender}</span>
@@ -1233,44 +1315,58 @@ const Chat = () => {
                             )}
                             <div className="bg-neutral-100 ml-auto border w-auto max-w-[90%] sm:max-w-[70%] text-sm font-normal p-3 sm:p-4 rounded-[20px] border-[rgba(158,158,158,0.5)] border-solid">
                               <div className="flex items-center gap-2 mb-3">
-                                <ChartNoAxesColumn className="rotate-90" size={16} stroke="#555" />
-                                <span className="text-[#555] font-medium">Poll</span>
+                                <ChartNoAxesColumn
+                                  className="rotate-90"
+                                  size={16}
+                                  stroke="#555"
+                                />
+                                <span className="text-[#555] font-medium">
+                                  Poll
+                                </span>
                               </div>
                               <h3 className="text-black font-medium mb-3">
                                 {msg.pollData.question}
                               </h3>
                               <div className="space-y-2">
                                 {msg.pollData.options.map((option) => {
-                                  const totalVotes = msg.pollData.options.reduce(
-                                    (sum, opt) => sum + opt.votes,
-                                    0
-                                  );
+                                  const totalVotes =
+                                    msg.pollData.options.reduce(
+                                      (sum, opt) => sum + opt.votes,
+                                      0
+                                    );
                                   const percentage =
-                                    totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-                                  const isVoted = option.voters.includes(user?.full_name);
+                                    totalVotes > 0
+                                      ? (option.votes / totalVotes) * 100
+                                      : 0;
+                                  const isVoted = option.voters.includes(
+                                    user?.full_name
+                                  );
 
                                   return (
                                     <button
                                       key={option.id}
-                                      onClick={() => handlePollVote(msg.id, option.id)}
-                                      className={`w-full text-left p-2 rounded border transition-colors ${
-                                        isVoted
+                                      onClick={() =>
+                                        handlePollVote(msg.id, option.id)
+                                      }
+                                      className={`w-full text-left p-2 rounded border transition-colors ${isVoted
                                           ? "bg-black text-white border-black"
                                           : "bg-white text-[#555] border-[rgba(158,158,158,0.5)] hover:bg-gray-50"
-                                      }`}
+                                        }`}
                                     >
                                       <div className="flex justify-between items-center">
-                                        <span className="text-xs">{option.text}</span>
+                                        <span className="text-xs">
+                                          {option.text}
+                                        </span>
                                         <span className="text-xs font-medium">
-                                          {option.votes} ({percentage.toFixed(0)}%)
+                                          {option.votes} (
+                                          {percentage.toFixed(0)}%)
                                         </span>
                                       </div>
                                       {totalVotes > 0 && (
                                         <div className="mt-1 w-full bg-gray-200 rounded-full h-1">
                                           <div
-                                            className={`h-1 rounded-full transition-all ${
-                                              isVoted ? "bg-white" : "bg-black"
-                                            }`}
+                                            className={`h-1 rounded-full transition-all ${isVoted ? "bg-white" : "bg-black"
+                                              }`}
                                             style={{ width: `${percentage}%` }}
                                           ></div>
                                         </div>
@@ -1284,7 +1380,10 @@ const Chat = () => {
                                   ? "Multiple answers allowed"
                                   : "Single answer only"}{" "}
                                 • Total votes:{" "}
-                                {msg.pollData.options.reduce((sum, opt) => sum + opt.votes, 0)}
+                                {msg.pollData.options.reduce(
+                                  (sum, opt) => sum + opt.votes,
+                                  0
+                                )}
                               </div>
                             </div>
                             <div className="flex items-center gap-4 text-[10px] text-[#9E9E9E] mt-2 justify-end">
@@ -1329,7 +1428,10 @@ const Chat = () => {
                           </div>
                         ) : msg.isUser ? (
                           // User's own message (right side)
-                          <div className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"}`}>
+                          <div
+                            className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                              }`}
+                          >
                             {msg.replyTo && (
                               <div className="flex items-center gap-2 ml-auto mb-1 text-xs text-[#9E9E9E]">
                                 <span>Replying to {msg.replyTo.sender}</span>
@@ -1391,9 +1493,14 @@ const Chat = () => {
                                   .map((name) => name[0])
                                   .join("")}
                               </div>
-                              <div className="font-medium text-black">{msg.sender}</div>
+                              <div className="font-medium text-black">
+                                {msg.sender}
+                              </div>
                             </div>
-                            <div className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"}`}>
+                            <div
+                              className={`flex flex-col ${msg.replyTo ? "mt-2" : "mt-0"
+                                }`}
+                            >
                               {msg.replyTo && (
                                 <div className="flex items-center gap-2 ml-12 mb-1 text-xs text-[#9E9E9E]">
                                   <span>Replying to {msg.replyTo.sender}</span>
@@ -1491,7 +1598,9 @@ const Chat = () => {
                     </button>
                   </div>
                   <div className="flex-1">
-                    <div className="text-black font-medium">Replying to {replyingTo.sender}</div>
+                    <div className="text-black font-medium">
+                      Replying to {replyingTo.sender}
+                    </div>
                     <div className="text-[#555] mt-1 text-xs truncate max-w-md">
                       {replyingTo.text}
                     </div>
@@ -1535,13 +1644,49 @@ const Chat = () => {
                     className="flex items-center justify-center w-16 sm:w-20 h-10 rounded-full gap-1 sm:gap-2 text-[#555] flex-shrink-0"
                     aria-label="Create poll"
                   >
-                    <ChartNoAxesColumn className="rotate-90" size={18} strokeWidth={3} />
+                    <ChartNoAxesColumn
+                      className="rotate-90"
+                      size={18}
+                      strokeWidth={3}
+                    />
                     <p className="text-xs sm:text-sm hidden sm:block">Poll</p>
                   </button>
                 ) : null}
 
-                <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
+                {/* <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
                   <Sticker stroke="#555" size={22} className="flex-shrink-0" />
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type a message..."
+                    className="text-[#555] text-sm w-full bg-transparent outline-none flex-1"
+                  />
+                </div> */}
+
+                <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (user && user.paid === false) {
+                        setShowPremiumPopup(true);
+                        return;
+                      }
+                      // Optional: keep polls admin-only. If you want everyone to create polls, remove this block.
+                      // if (!isAdmin) {
+                      //   alert("Only admins can create polls");
+                      //   return;
+                      // }
+
+                      setShowPollCreator(true);
+                    }}
+                    className="flex items-center justify-center p-1 rounded-full hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-black/20"
+                    aria-label="Create poll"
+                    title="Create poll"
+                  >
+                    <Sticker stroke="#555" size={22} className="flex-shrink-0" />
+                  </button>
+
                   <input
                     type="text"
                     value={message}
@@ -1554,9 +1699,8 @@ const Chat = () => {
                 <button
                   type="submit"
                   disabled={!message.trim()}
-                  className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${
-                    !message.trim() ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 ${!message.trim() ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   aria-label="Send message"
                 >
                   <SendHorizonal />
@@ -1613,7 +1757,10 @@ const Chat = () => {
                             <textarea
                               value={pollFormData.question}
                               onChange={(e) =>
-                                setPollFormData((prev) => ({ ...prev, question: e.target.value }))
+                                setPollFormData((prev) => ({
+                                  ...prev,
+                                  question: e.target.value,
+                                }))
                               }
                               className="w-full h-20 px-3 py-2 text-sm border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-black focus:border-transparent transition-shadow"
                               placeholder="What would you like to ask?"
@@ -1628,7 +1775,9 @@ const Chat = () => {
                         {/* Options */}
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
-                            <label className="text-sm font-medium text-gray-900">Options</label>
+                            <label className="text-sm font-medium text-gray-900">
+                              Options
+                            </label>
                             <button
                               onClick={handleAddPollOption}
                               type="button"
@@ -1640,7 +1789,10 @@ const Chat = () => {
 
                           <div className="space-y-3">
                             {pollFormData.options.map((option, index) => (
-                              <div key={option.id} className="flex items-center gap-3">
+                              <div
+                                key={option.id}
+                                className="flex items-center gap-3"
+                              >
                                 <div className="flex-shrink-0 w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center">
                                   <div className="w-2 h-2 rounded-full bg-gray-400"></div>
                                 </div>
@@ -1648,14 +1800,19 @@ const Chat = () => {
                                   type="text"
                                   value={option.text}
                                   onChange={(e) =>
-                                    handleUpdatePollOption(option.id, e.target.value)
+                                    handleUpdatePollOption(
+                                      option.id,
+                                      e.target.value
+                                    )
                                   }
                                   className="flex-1 px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-shadow"
                                   placeholder={`Option ${index + 1}`}
                                 />
                                 {pollFormData.options.length > 2 && (
                                   <button
-                                    onClick={() => handleRemovePollOption(option.id)}
+                                    onClick={() =>
+                                      handleRemovePollOption(option.id)
+                                    }
                                     type="button"
                                     className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
                                     aria-label="Delete option"
@@ -1694,22 +1851,23 @@ const Chat = () => {
                               onClick={() =>
                                 setPollFormData((prev) => ({
                                   ...prev,
-                                  allowMultipleAnswers: !prev.allowMultipleAnswers,
+                                  allowMultipleAnswers:
+                                    !prev.allowMultipleAnswers,
                                 }))
                               }
                               type="button"
-                              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${
-                                pollFormData.allowMultipleAnswers ? "bg-black" : "bg-gray-200"
-                              }`}
+                              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${pollFormData.allowMultipleAnswers
+                                  ? "bg-black"
+                                  : "bg-gray-200"
+                                }`}
                               role="switch"
                               aria-checked={pollFormData.allowMultipleAnswers}
                             >
                               <span
-                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                  pollFormData.allowMultipleAnswers
+                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${pollFormData.allowMultipleAnswers
                                     ? "translate-x-5"
                                     : "translate-x-0"
-                                }`}
+                                  }`}
                               />
                             </button>
                           </div>
@@ -1759,9 +1917,13 @@ const Chat = () => {
       ) : null}
       {display === "setting" ? <Setting setDisplay={setDisplay} /> : null}
       {display === "profile" ? <ProfileForm setDisplay={setDisplay} /> : null}
-      {display === "password" ? <PasswordChangeForm setDisplay={setDisplay} /> : null}
+      {display === "password" ? (
+        <PasswordChangeForm setDisplay={setDisplay} />
+      ) : null}
       {display === "email" ? <EmailSettings setDisplay={setDisplay} /> : null}
-      {display === "username" ? <ChangeUsernameForm setDisplay={setDisplay} /> : null}
+      {display === "username" ? (
+        <ChangeUsernameForm setDisplay={setDisplay} />
+      ) : null}
       {display === "history" ? <PurchaseHistory /> : null}
       <PremiumMembershipPopup
         isOpen={showPremiumPopup}
