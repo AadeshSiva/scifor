@@ -1,4 +1,5 @@
 import React, { useState, useEffect, CSSProperties, MouseEvent } from "react";
+import { HiOutlineMail } from 'react-icons/hi'; 
 
 // Type definitions
 interface StyleProps {
@@ -1113,10 +1114,10 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer
+  <footer
       className="bg-black text-white w-full"
       style={{
-        height: windowWidth < 768 ? "500px" : "400px",
+        height: windowWidth < 768 ? "500px" : "420px",
       }}
     >
       <div className="w-full h-auto px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
@@ -1134,10 +1135,29 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Tagline */}
-              <h2 className="leading-tight text-left" style={taglineStyle}>
+              <h2 className="leading-tight text-left mb-6" style={taglineStyle}>
                 Grow Smarter. <span className="font-bold">Exit Richer</span>
                 <sup className="text-xs sm:text-lg md:text-xl">™</sup>
               </h2>
+
+              {/* Address */}
+              <div className="text-gray-400 text-sm mb-4 leading-relaxed">
+                <p>99 Lamp Crescent</p>
+                <p>Vaughan Ontario</p>
+                <p>Canada</p>
+                <p>L4L 6J6</p>
+              </div>
+
+              {/* Email with Icon */}
+              <div className="flex items-center">
+                <HiOutlineMail className="w-4 h-4 mr-2 text-gray-400"  />
+                <a 
+                  href="mailto:Prosper@prspera.com" 
+                  className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                >
+                  Prosper@prspera.com
+                </a>
+              </div>
             </div>
 
             {/* Second Column */}
