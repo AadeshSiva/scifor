@@ -28,32 +28,16 @@ const slides: SlideData[] = [
   },
   {
     percent: "80%",
-    title: "2. No One On The Same Page​",
-    shortDescription: "of businesses never sell. Of those that do, only 6% get fair market value",
+    title: "2. Value Destroyed Daily",
+    shortDescription:
+      "of businesses never sell. Of those that do, only 6% get fair market value.​",
     longDescription:
-      "Ask everyone in any company: &nbsp;&nbsp; Why do customers buy from us?<br/><br/>Everyone will have a different answer. No one is on the same page – going in the same direction. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. ",
-    image: "/assets/iceberg.png",
-  },
-  {
-    percent: "78%",
-    title: "5. No Good Help",
-    shortDescription: "of entrepreneurs don’t have an adequate advisory team for their exit.",
-    longDescription:
-      "Advisors are everywhere — but the right ones are rare. Those that understand Intangible assets are the rarest.  Most founders lack access to M&A-savvy operators who understand how to shape and signal marketable value early. M&A bankers aren’t in the business of long-term guidance. By the time they step in, it’s too late to build.",
-    image: "/assets/iceberg.png",
-  },
-
-  {
-    percent: "61%",
-    title: "6. Strategy Inactionable",
-    shortDescription: "of executives admit their company struggles to implement its strategy.",
-    longDescription:
-      "Strategy isn’t the problem — execution is. Great ideas stay in pitch decks because teams can’t translate strategy into daily actions. The gap between intention and action kills momentum. If strategy doesn’t shape operations, culture, and incentives — it’s not strategy. It’s storytelling.",
+      "Most owners assume value accumulates ‘automatically’ over time — but without the right systems in place, it quietly erodes. Every misaligned decision, manual process, disengaged team member, and reactive strategy threatens what your business is worth. Value isn’t just built — it’s protected, grown, and proven daily. If you don’t manage it intentionally, the market will discount it brutally.",
     image: "/assets/iceberg.png",
   },
   {
     percent: "84%",
-    title: "3. Marketable Value Unseenn",
+    title: "3. Marketable Value Unseen",
     shortDescription:
       "of enterprise value today is intangible — yet most founders can’t define it, track it, or grow it.",
     longDescription:
@@ -62,10 +46,30 @@ const slides: SlideData[] = [
   },
   {
     percent: "77%",
-    title: "4. Value Destroyed Daily",
-    shortDescription: "of the global workforce is disengaged - destroying value daily.",
+    title: "4. No One On The Same Page​",
+    shortDescription:
+      "of the global workforce is disengaged - destroying value daily.",
     longDescription:
-      "Most owners assume value accumulates ‘automatically’ over time — but without the right systems in place, it quietly erodes. Every misaligned decision, manual process, disengaged team member, and reactive strategy threatens what your business is worth. Value isn’t just built — it’s protected, grown, and proven daily. If you don’t manage it intentionally, the market will discount it brutally.",
+      'Ask everyone "Why do our Customers buy from us" and everyone will have a different answer. No one is on the same page. When everyone is going in their own direction there is little, if any, momentum, unity, or reason to ‘row the boat’ together. With no common goal that rewards everyone, there’s only disengagement and value destruction versus execution and value maximization. Run your business as a sports team and only then YOU ALL WIN TOGETHER.',
+    image: "/assets/iceberg.png",
+  },
+  {
+    percent: "61%",
+    title: "5.  Strategy Inactionable",
+    shortDescription:
+      "of executives admit their company struggles to implement its strategy.",
+    longDescription:
+      "Strategy isn’t the problem — execution is. Great ideas stay in pitch decks because teams can’t translate strategy into daily actions. The gap between intention and action kills momentum. If strategy doesn’t shape operations, culture, and incentives — it’s not strategy. It’s storytelling.",
+    image: "/assets/iceberg.png",
+  },
+
+  {
+    percent: "78%",
+    title: "6.  No Good Help​",
+    shortDescription:
+      "of executives admit their company struggles to implement its strategy.",
+    longDescription:
+      "Advisors are everywhere — but the right ones are rare. Those that understand Intangible assets are the rarest. Most founders lack access to M&A-savvy operators who understand how to shape and signal marketable value early. M&A bankers aren’t in the business of long-term guidance. By the time they step in, it’s too late maximize, monetizable value to Exit Richer.",
     image: "/assets/iceberg.png",
   },
 ];
@@ -123,12 +127,15 @@ export default function IcebergCarousel() {
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, index) => (
-            <div key={index} className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8">
+            <div
+              key={index}
+              className="w-full flex-shrink-0 flex flex-col items-center p-4 md:p-8"
+            >
               {index === 0 ? (
                 <div className="relative flex flex-col items-center">
                   {/* Outer circle */}
                   <img
-                    src="/assets/circle.png"
+                    src="/assets/cir1.png"
                     alt="Iceberg Circle"
                     className="w-64 h-64 sm:w-60 sm:h-60 md:w-[24rem] md:h-[24rem] object-contain mt-28 sm:mt-6"
                   />
@@ -205,7 +212,11 @@ export default function IcebergCarousel() {
           className=" absolute right-2 sm:right-6 md:right-10 lg:right-[15%] top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 rounded-full bg-black/40 hover:bg-black/60 transition"
         >
           <ChevronRight size={28} className="sm:hidden" color="yellow" />
-          <ChevronRight size={36} className="hidden sm:block md:hidden" color="yellow" />
+          <ChevronRight
+            size={36}
+            className="hidden sm:block md:hidden"
+            color="yellow"
+          />
           <ChevronRight size={48} className="hidden md:block" color="yellow" />
         </button>
       </div>
