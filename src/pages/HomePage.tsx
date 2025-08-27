@@ -1,5 +1,5 @@
 import React, { useState, useEffect, CSSProperties, MouseEvent } from "react";
-import { HiOutlineMail } from 'react-icons/hi'; 
+import { HiOutlineMail } from "react-icons/hi";
 
 // Type definitions
 interface StyleProps {
@@ -444,34 +444,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      // style={
-                      //   {
-                      //     transform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     WebkitTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     MozTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     msTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //   } as CSSProperties
-                      // }
+                    // style={
+                    //   {
+                    //     transform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     WebkitTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     MozTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     msTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //   } as CSSProperties
+                    // }
                     >
                       <Logo />
                     </div>
@@ -600,34 +600,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      // style={
-                      //   {
-                      //     transform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     WebkitTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     MozTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     msTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //   } as CSSProperties
-                      // }
+                    // style={
+                    //   {
+                    //     transform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     WebkitTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     MozTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     msTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //   } as CSSProperties
+                    // }
                     >
                       <Logo />
                     </div>
@@ -699,34 +699,34 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      // style={
-                      //   {
-                      //     transform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     WebkitTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     MozTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     msTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //   } as CSSProperties
-                      // }
+                    // style={
+                    //   {
+                    //     transform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     WebkitTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     MozTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     msTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //   } as CSSProperties
+                    // }
                     >
                       <LogoBlack />
                     </div>
@@ -834,7 +834,7 @@ const PricingPlan: React.FC = () => {
                   }
                   onClick={handleLearnMoreClick}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#1a1a1a"; 
+                    e.currentTarget.style.backgroundColor = "#1a1a1a";
                     e.currentTarget.style.borderColor = "#F4A460";
                   }}
                   onMouseOut={(e) => {
@@ -857,35 +857,35 @@ const PricingPlan: React.FC = () => {
                     }
                   >
                     <div
-                      // style={
-                      //   {
-                      //     transform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     WebkitTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     MozTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     msTransform:
-                      //       windowWidth < 640
-                      //         ? "scale(0.75)"
-                      //         : windowWidth < 768
-                      //         ? "scale(0.9)"
-                      //         : "scale(1)",
-                      //     color: "white",
-                      //   } as CSSProperties
-                      // }
+                    // style={
+                    //   {
+                    //     transform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     WebkitTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     MozTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     msTransform:
+                    //       windowWidth < 640
+                    //         ? "scale(0.75)"
+                    //         : windowWidth < 768
+                    //         ? "scale(0.9)"
+                    //         : "scale(1)",
+                    //     color: "white",
+                    //   } as CSSProperties
+                    // }
                     >
                       <Logo />
                     </div>
@@ -1114,7 +1114,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-  <footer
+    <footer
       className="bg-black text-white w-full"
       style={{
         height: windowWidth < 768 ? "500px" : "420px",
@@ -1150,9 +1150,9 @@ const Footer: React.FC = () => {
 
               {/* Email with Icon */}
               <div className="flex items-center">
-                <HiOutlineMail className="w-4 h-4 mr-2 text-gray-400"  />
-                <a 
-                  href="mailto:Prosper@prspera.com" 
+                <HiOutlineMail className="w-4 h-4 mr-2 text-gray-400" />
+                <a
+                  href="mailto:Prosper@prspera.com"
                   className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   Prosper@prspera.com
