@@ -961,7 +961,7 @@ const Payment: React.FC = () => {
 
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 100,
+    price: 179700,
     description: "Seats available for 50 members",
   };
 
@@ -1392,6 +1392,7 @@ const Payment: React.FC = () => {
       setIsLoading(false);
     }
   };
+
   const PaymentMethodButton: React.FC<{
     icon?: string;
     label: string;
