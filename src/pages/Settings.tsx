@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
-import { BackIcon } from "../ui/icons";
+import { BackIcon } from "../components/ui/icons";
 
 interface ProfileInfo {
   name: string;

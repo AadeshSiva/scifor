@@ -20,6 +20,7 @@ import PaymentCancelled from "./pages/PaymentCancelled";
 import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
+import AboutUs from "./pages/AboutUs";
 
 const queryClient = new QueryClient();
 
@@ -149,6 +150,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <ConfirmationMember />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="about-us"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <AboutUs />
                 </ProtectedRoute>
               }
             />
