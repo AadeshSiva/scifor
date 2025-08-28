@@ -154,7 +154,7 @@ const App = () => (
               }
             />
             <Route
-              path="about-us"
+              path="/about-us"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <AboutUs />

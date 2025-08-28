@@ -215,18 +215,15 @@ const Chat = () => {
         return false;
       }
 
-      const response = await fetch(
-        "https://intern-project-final-1.onrender.com/api/token/refresh/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            refresh: refreshToken,
-          }),
-        }
-      );
+      const response = await fetch("https://internship-pro.onrender.com/api/token/refresh/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh: refreshToken,
+        }),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -259,7 +256,7 @@ const Chat = () => {
           return;
         }
 
-        const wsUrl = `wss://intern-project-final-1.onrender.com/ws/chat/general/?token=${token}`;
+        const wsUrl = `wss://internship-pro.onrender.com/ws/chat/general/?token=${token}`;
         console.log("Attempting to connect to:", wsUrl);
 
         ws = new WebSocket(wsUrl);

@@ -388,7 +388,7 @@ const NavBar: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* <button
+                  <button
                     onClick={handleSettings}
                     className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
@@ -412,7 +412,7 @@ const NavBar: React.FC = () => {
                       />
                     </svg>
                     Settings
-                  </button> */}
+                  </button>
 
                   <button
                     onClick={handleLogout}
@@ -437,17 +437,16 @@ const NavBar: React.FC = () => {
               )}
             </div>
           ) : (
-            <></>
-            // <button
-            //   className={`rounded text-white text-base w-[194px] bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
-            //     location.pathname === "/auth" ? "invisible" : "visible"
-            //   }`}
-            //   onClick={() => {
-            //     navigate("/auth");
-            //   }}
-            // >
-            //   Register
-            // </button>
+            <button
+              className={`rounded text-white text-base w-[194px] bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
+                location.pathname === "/auth" ? "invisible" : "visible"
+              }`}
+              onClick={() => {
+                navigate("/auth");
+              }}
+            >
+              Register
+            </button>
           )}
         </header>
 
@@ -456,9 +455,6 @@ const NavBar: React.FC = () => {
           <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
         )}
       </div>
-
-      {/* Spacer div to prevent content from going under navbar */}
-      {/* <div style={{ height: navbarHeight || "86px" }}></div> */}
     </>
   );
 };
