@@ -5,25 +5,36 @@ interface TooltipItemProps {
   children: ReactNode;
 }
 
-const TooltipItem = ({ children }: TooltipItemProps) => {
+interface TooltipItemProps {
+  children: ReactNode;
+}
+
+const TooltipItem = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex items-start relative group">
-      <div className="w-5 h-5 bg-[#A4A4A4] rounded-full mt-1 mr-4 flex-shrink-0 flex items-center justify-center text-white text-sm font-bold cursor-pointer">
-        i
-      </div>
-      <p className="text-xl font-light font-linear leading-relaxed">{children}</p>
-      <div className="absolute left-0 -top-20 bg-[#757575] text-white px-6 py-4 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 w-96 shadow-xl pointer-events-none">
-        <div className="relative">
-          <p className="ext-xl font-semibold font-linear leading-relaxed">
-            This synchronizes the business system – people, process, tech.
-          </p>
-          <div className="absolute -bottom-3 left-6 w-0 h-0 border-l-6 border-r-6 border-t-6 border-l-transparent border-r-transparent border-t-gray-700"></div>
+    <div className="flex items-start relative">
+      <div className="group relative w-5 h-5 bg-[#A4A4A4] rounded-full mt-1 mr-4 flex-shrink-0 flex items-center justify-center text-white text-sm font-semibold cursor-pointer font-linear">
+        i{/* Tooltip */}
+        <div className="absolute top-full left-0 mt-2 ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+          <div className="relative drop-shadow-lg">
+            <div className="bg-[#595959] text-white px-5 py-3 rounded-sm whitespace-nowrap font-thin">
+              This synchronizes the business system – people, process, tech.
+            </div>
+
+            {/* Triangle*/}
+            <div
+              className="absolute left-4 -top-[19px] w-5 h-5 bg-[#595959]"
+              style={{
+                clipPath: "polygon(0% 100%, 100% 100%, 0% 0%)",
+              }}
+            />
+          </div>
         </div>
       </div>
+
+      <p className="text-xl font-light font-linear leading-relaxed">{children}</p>
     </div>
   );
 };
-
 const ProofSections: React.FC = () => {
   const jeffSectionStyle: CSSProperties = {
     width: "961px",
