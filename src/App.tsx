@@ -21,6 +21,7 @@ import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
 import AboutUs from "./pages/AboutUs";
+import ProofSections from "./pages/Proof";
 
 const queryClient = new QueryClient();
 
@@ -153,6 +154,15 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+
+             <Route
+              path="/proof"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ProofSections />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/about-us"
               element={
@@ -166,6 +176,8 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
+
+
 );
 
 export default App;
