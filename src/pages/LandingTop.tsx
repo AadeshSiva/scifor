@@ -110,7 +110,7 @@ export const StorySection: React.FC = () => {
           </p>
         </div> */}
 
-        <JoinBtn />
+        <JoinBtn page="/proof">See Jeff's 10X+ Multiple Exit Story</JoinBtn>
       </div>
 
       <div className="max-w-6xl mx-auto text-center mt-20 mb-40">
@@ -183,7 +183,7 @@ export const StorySection: React.FC = () => {
 
         <img src={JetImg} alt="Jeff Cullen" className="w-full h-[734px] rounded-lg object-cover " />
 
-        <JoinBtn />
+        <JoinBtn page="/proof">See Jeff's 10X+ Multiple Exit Story</JoinBtn>
 
         <div className="text-black text-xl font-semibold text-left">
           <div className="grid grid-cols-[300px] sm:grid-cols-[300px_300px] place-content-around gap-y-8 mt-14">

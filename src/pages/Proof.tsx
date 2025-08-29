@@ -1,5 +1,6 @@
 import React, { ReactNode, useState, useEffect, CSSProperties } from "react";
 import { Footer } from "@/components/Footer";
+import JoinBtn from "@/components/JoinBtn";
 
 interface TooltipItemProps {
   children: ReactNode;
@@ -35,7 +36,7 @@ const TooltipItem = ({ children }: { children: React.ReactNode }) => {
     </div>
   );
 };
-const ProofSections: React.FC = () => {
+const ProofPage: React.FC = () => {
   const jeffSectionStyle: CSSProperties = {
     width: "961px",
     height: "283px",
@@ -61,38 +62,38 @@ const ProofSections: React.FC = () => {
             <div className="flex items-center justify-center bg-gray-100">
               <div className="w-full lg:w-1/2 flex justify-center">
                 <div className="relative w-full max-w-lg">
-                  <div className="relative w-full max-w-lg">
-                    <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
-                      {/* Thumbnail image that fills the square container */}
-                      <img
-                        src="https://i.imgur.com/kmZyPld.png"
-                        alt="Webinar Video Thumbnail"
-                        className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
-                      />
+                  <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
+                    {/* Thumbnail image that fills the square container */}
+                    <img
+                      src="https://i.imgur.com/kmZyPld.png"
+                      alt="Webinar Video Thumbnail"
+                      className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
+                    />
 
-                      {/* Play Button Overlay */}
-                      <button
-                        onClick={() =>
-                          window.open(
-                            "https://1drv.ms/v/c/b10a5de209baeefa/EYkSisNJTclIqUvXmKdyq9kBAZEgeLGNUxfJzeWbQ_PfIQ",
-                            "_blank"
-                          )
-                        }
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        <div className="w-14 h-14 bg-black bg-opacity-60 rounded-full flex items-center justify-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-12 w-12 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      </button>
-                    </div>
+                    {/* Play Button Overlay */}
+                    <button
+                      onClick={() =>
+                        window.open(
+                          "https://1drv.ms/v/c/b10a5de209baeefa/EYkSisNJTclIqUvXmKdyq9kBAZEgeLGNUxfJzeWbQ_PfIQ",
+                          "_blank"
+                        )
+                      }
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <div className="w-14 h-14 bg-black bg-opacity-60 rounded-full flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-12 w-12 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </button>
                   </div>
+
+                  <JoinBtn page="/pricing-plan">JOIN PRSPERA</JoinBtn>
                 </div>
               </div>
             </div>
@@ -167,4 +168,4 @@ const ProofSections: React.FC = () => {
   );
 };
 
-export default ProofSections;
+export default ProofPage;

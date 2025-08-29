@@ -21,6 +21,7 @@ import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
+import ProofPage from "./pages/Proof";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,14 @@ const App = () => (
               }
             />
             <Route
+              path="/proof"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ProofPage />
+                </ProtectedRoute>
+              }
+            />{" "}
+            <Route
               path="/pricing-plan"
               element={
                 <ProtectedRoute requireAuth={false}>
@@ -102,14 +111,6 @@ const App = () => (
               element={
                 <ProtectedRoute requireAuth={false}>
                   <ArticlePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pricing-page"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Pricing_Plan />
                 </ProtectedRoute>
               }
             />
