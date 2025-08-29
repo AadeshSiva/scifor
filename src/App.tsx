@@ -20,6 +20,8 @@ import PaymentCancelled from "./pages/PaymentCancelled";
 import ConfirmationGuest from "./pages/confirmationGuestPage";
 import ConfirmationMember from "./pages/confirmationMemberPage";
 import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
+import ProofPage from "./pages/Proof";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +83,14 @@ const App = () => (
               }
             />
             <Route
+              path="/proof"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <ProofPage />
+                </ProtectedRoute>
+              }
+            />{" "}
+            <Route
               path="/pricing-plan"
               element={
                 <ProtectedRoute requireAuth={false}>
@@ -105,10 +115,10 @@ const App = () => (
               }
             />
             <Route
-              path="/pricing-page"
+              path="/dashboard"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Pricing_Plan />
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
-import { BackIcon } from "../ui/icons";
+import { BackIcon } from "../components/ui/icons";
 
 interface ProfileInfo {
   name: string;
@@ -166,16 +166,13 @@ const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch(
-        "https://intern-project-final-1.onrender.com/extract-user-data/",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         if (response.status === 401) {
