@@ -1,6 +1,15 @@
-
 import React, { useState } from "react";
-import { X, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import {
+  X,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
 
 // Add these new state variables to your existing ChangeUsernameForm component
 const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
@@ -15,7 +24,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = 'https://intern-project-final-1.onrender.com';
+  const API_BASE_URL = "https://internship-pro.onrender.com";
 
   const resetForm = () => {
     setStep(1);
@@ -45,12 +54,12 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/forgot-password-send-otp/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        body: JSON.stringify({ email: email.trim() })
+        body: JSON.stringify({ email: email.trim() }),
       });
 
       const data = await response.json();
@@ -79,15 +88,15 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/verify-otp/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: email.trim(),
-          otp: otp.trim()
-        })
+          otp: otp.trim(),
+        }),
       });
 
       const data = await response.json();
@@ -126,15 +135,15 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: email.trim(),
-          new_password: newPassword
-        })
+          new_password: newPassword,
+        }),
       });
 
       const data = await response.json();
@@ -223,7 +232,10 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Mail
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type="email"
                     id="forgotEmail"
@@ -252,7 +264,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
                   type="text"
                   id="otp"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                   placeholder="Enter 6-digit code"
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 text-center text-lg tracking-widest"
@@ -272,16 +284,17 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           {/* Step 3: New Password */}
           {step === 3 && (
             <div className="space-y-4">
-              <p className="text-gray-600 text-sm mb-4">
-                Create a new password for your account.
-              </p>
-              
+              <p className="text-gray-600 text-sm mb-4">Create a new password for your account.</p>
+
               <div>
                 <label htmlFor="newPassword" className="block text-gray-800 font-medium mb-2">
                   New Password
                 </label>
                 <div className="relative">
-                  <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Lock
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type={showNewPassword ? "text" : "password"}
                     id="newPassword"
@@ -307,7 +320,10 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Lock
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
@@ -365,5 +381,4 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
   );
 };
 
-
-export default ForgotPasswordPopups
+export default ForgotPasswordPopups;

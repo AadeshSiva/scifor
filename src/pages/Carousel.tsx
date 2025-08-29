@@ -211,7 +211,7 @@ export default function IcebergCarousel() {
         </button>
       </div>
 
-      <JoinBtn />
+      <JoinBtn page="/proof">See Jeff's 10X+ Multiple Exit Story</JoinBtn>
     </section>
   );
 }

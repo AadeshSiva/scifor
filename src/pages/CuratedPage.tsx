@@ -1,6 +1,9 @@
 import React from "react";
 import { useState } from "react";
-// import Footer from "./Footer";
+import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
+
+
 
 const CuratedPage: React.FC = () => {
 
@@ -288,7 +291,7 @@ const CuratedPage: React.FC = () => {
                     {/* Heading */}
                     <div className="text-center text-white pt-20">
                         <h1 className="text-4xl font-extralight ">ASK Jeff</h1>
-                        <h1 className="text-4xl font-bold">Our Global UPh Ambassador <br /> He founded, grew and exited with a <br /> double-digit multiple valuation – <br /> <span className="text-black"> using his UPh: Prosperity For All. </span></h1>
+                        <h1 className="text-4xl font-bold pt-4">Our Global UPh Ambassador <br /> He founded, grew and exited with a <br /> double-digit multiple valuation – <br /> <span className="text-black"> using his UPh: Prosperity For All. </span></h1>
                     </div>
 
                     {/* Video & Content Section */}
@@ -313,7 +316,11 @@ const CuratedPage: React.FC = () => {
                             <p className="">Every quarter, at Jeff’s availability – we will ask him for his insights on your biggest, baddest, burning blockers. ​</p>
                             <p> As a courtesy to Jeff who is celebrating entrepreneurial freedom. We require you to confirm you have reviewed all the content already presented by Jeff and PRSPERA Founder, Harish Chauhan – on our PROOF page here.</p>
 
-                            <button className="bg-black text-xl text-yellow-600 border-2 border-yellow-600 hover:text-yellow-800 rounded-xl font-semibold p-3" >Jeff’s FULLStory On How He WON</button>
+                            <Link to="/Proof">
+                                <button className="bg-black text-xl text-yellow-600 border-2 border-yellow-600 hover:text-yellow-800 rounded-xl font-semibold p-3 mt-4">
+                                    Jeff’s FULLStory On How He WON
+                                </button>
+                            </Link>
 
                         </div>
 
@@ -328,7 +335,7 @@ const CuratedPage: React.FC = () => {
 
 
                     {/* Question  */}
-                    <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl mx-auto mt-20">
+                    <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl mx-2 md:mx-auto mt-20">
 
                         <form className="space-y-10 pt-8">
 
@@ -440,25 +447,28 @@ const CuratedPage: React.FC = () => {
                     </div>
 
 
-                    {/* Button */}
+                    {/*Ask Jeff  Button */}
                     <div className="flex justify-center mt-20 mb-20">
-                        <button
-                            type="button"
-                            className="px-28 py-6 rounded-xl bg-black text-yellow-500 text-2xl font-bold shadow-2xl border-2 border-yellow-500 hover:text-yellow-300 hover:border-yellow-300 "
-                        >
-                            Ask Jeff and Take Action
-                        </button>
+
+                        <Link to="/pricing-plan">
+                            <button
+                                type="button"
+                                className="px-14 md:px-28 lg:px-28 py-6 rounded-xl bg-black text-yellow-500 text-2xl font-bold shadow-2xl border-2 border-yellow-500 hover:text-yellow-300 hover:border-yellow-300"
+                            >
+                                Ask Jeff and Take Action
+                            </button>
+                        </Link>
+
                     </div>
 
 
 
                 </section>
 
-
-
-
-
             </main >
+
+            {/* Footer at the bottom */}
+            <Footer />
         </>
     );
 };
