@@ -27,7 +27,7 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   onClose,
   onConfirm,
   isLoading,
-  error
+  error,
 }) => {
   const [password, setPassword] = useState("");
 
@@ -47,7 +47,7 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
         <p className="text-gray-600 mb-6">
           Please enter your current password to save changes to your profile.
         </p>
-        
+
         <div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium mb-2">
@@ -64,13 +64,13 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
               disabled={isLoading}
             />
           </div>
-          
+
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
-          
+
           <div className="flex gap-4">
             <button
               type="button"
@@ -95,10 +95,10 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   );
 };
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ 
+const ProfileForm: React.FC<ProfileFormProps> = ({
   onSubmit,
   onCancel,
-  setDisplay // Add this parameter
+  setDisplay, // Add this parameter
 }) => {
   const [formData, setFormData] = useState<ProfileFormData>({
     fullName: "",
@@ -113,7 +113,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   const [pendingFormData, setPendingFormData] = useState<ProfileFormData | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
-  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -122,9 +125,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
   const getAuthToken = () => {
     // Get token from localStorage (adjust based on your token storage method)
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
-      return token
+      return token;
     }
     return null;
   };
@@ -134,24 +137,24 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     try {
       const token = getAuthToken();
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
       }
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/extract-user-data/', {
-        method: 'GET',
+      const response = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch user data');
+        throw new Error("Failed to fetch user data");
       }
 
       const data = await response.json();
-      
-      if (data.status === 'success' && data.user_data) {
+
+      if (data.status === "success" && data.user_data) {
         setFormData({
           fullName: data.user_data.full_name || "",
           phoneNumber: data.user_data.phone_number || "",
@@ -161,10 +164,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         });
       }
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error("Error fetching user data:", error);
       setNotification({
-        type: 'error',
-        message: 'Failed to load profile data. Please refresh the page.'
+        type: "error",
+        message: "Failed to load profile data. Please refresh the page.",
       });
     } finally {
       setIsLoading(false);
@@ -195,7 +198,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     try {
       const token = getAuthToken();
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("No authentication token found");
       }
 
       // Prepare data for backend
@@ -204,14 +207,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         phone_number: pendingFormData.phoneNumber,
         website_name: pendingFormData.companyName,
         // Add other fields as needed based on your backend model
-        password: password // Include password for verification
+        password: password, // Include password for verification
       };
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/profile/', {
-        method: 'PUT',
+      const response = await fetch("https://internship-pro.onrender.com/profile/", {
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updateData),
       });
@@ -220,20 +223,20 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Invalid password. Please try again.');
+          throw new Error("Invalid password. Please try again.");
         }
-        throw new Error(data.message || 'Failed to update profile');
+        throw new Error(data.message || "Failed to update profile");
       }
 
       // Success
       setNotification({
-        type: 'success',
-        message: 'Profile updated successfully!'
+        type: "success",
+        message: "Profile updated successfully!",
       });
-      
+
       setIsPasswordModalOpen(false);
       setPendingFormData(null);
-      
+
       // Call the onSubmit prop if provided
       if (onSubmit) {
         onSubmit(pendingFormData);
@@ -243,10 +246,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       setTimeout(() => {
         setNotification(null);
       }, 3000);
-
     } catch (error) {
-      console.error('Error updating profile:', error);
-      setPasswordError(error instanceof Error ? error.message : 'Failed to update profile. Please try again.');
+      console.error("Error updating profile:", error);
+      setPasswordError(
+        error instanceof Error ? error.message : "Failed to update profile. Please try again."
+      );
     } finally {
       setIsPasswordLoading(false);
     }
@@ -262,7 +266,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     if (onCancel) {
       onCancel();
     }
-    setDisplay('setting')
+    setDisplay("setting");
   };
 
   const handleConnectLinkedIn = () => {
@@ -271,7 +275,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   const handleBackClick = () => {
-      setDisplay('setting'); // Go back to settings
+    setDisplay("setting"); // Go back to settings
   };
 
   if (isLoading) {
@@ -287,40 +291,47 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   return (
     <>
       <div className="flex-1 pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
-        <div 
+        <div
           className="flex items-center gap-4 text-gray-600 text-2xl cursor-pointer mb-12"
           onClick={handleBackClick}
         >
           <div>
-            <svg 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="none" 
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="back-icon"
             >
-              <path d="M10.3636 12.4999L18 20.4999L15.8182 22.7856L6 12.4999L15.8182 2.21421L18 4.49991L10.3636 12.4999Z" fill="currentColor"></path>
+              <path
+                d="M10.3636 12.4999L18 20.4999L15.8182 22.7856L6 12.4999L15.8182 2.21421L18 4.49991L10.3636 12.4999Z"
+                fill="currentColor"
+              ></path>
             </svg>
           </div>
           <span>Back</span>
         </div>
-        
+
         <h1 className="text-3xl mb-10">Profile Information</h1>
 
         {notification && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            notification.type === 'success' 
-              ? 'bg-green-100 border border-green-300 text-green-700' 
-              : 'bg-red-100 border border-red-300 text-red-700'
-          }`}>
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              notification.type === "success"
+                ? "bg-green-100 border border-green-300 text-green-700"
+                : "bg-red-100 border border-red-300 text-red-700"
+            }`}
+          >
             {notification.message}
           </div>
         )}
 
         <div className="max-w-4xl">
           <div className="mb-10">
-            <label htmlFor="fullName" className="text-base font-semibold mb-3 block">Full Name*</label>
+            <label htmlFor="fullName" className="text-base font-semibold mb-3 block">
+              Full Name*
+            </label>
             <input
               id="fullName"
               type="text"
@@ -331,9 +342,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               required
             />
           </div>
-          
+
           <div className="mb-10">
-            <label htmlFor="phoneNumber" className="text-base font-semibold mb-3 block">Phone No*</label>
+            <label htmlFor="phoneNumber" className="text-base font-semibold mb-3 block">
+              Phone No*
+            </label>
             <input
               id="phoneNumber"
               type="tel"
@@ -344,9 +357,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               required
             />
           </div>
-          
+
           <div className="mb-10">
-            <label htmlFor="companyName" className="text-base font-semibold mb-3 block">Company Name</label>
+            <label htmlFor="companyName" className="text-base font-semibold mb-3 block">
+              Company Name
+            </label>
             <input
               id="companyName"
               type="text"
@@ -356,9 +371,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               onChange={(e) => handleChange("companyName", e.target.value)}
             />
           </div>
-          
+
           <div className="mb-10">
-            <label htmlFor="companyWebsite" className="text-base font-semibold mb-3 block">Company Website</label>
+            <label htmlFor="companyWebsite" className="text-base font-semibold mb-3 block">
+              Company Website
+            </label>
             <input
               id="companyWebsite"
               type="url"
@@ -368,9 +385,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               onChange={(e) => handleChange("companyWebsite", e.target.value)}
             />
           </div>
-          
+
           <div className="mb-10">
-            <label htmlFor="country" className="text-base font-semibold mb-3 block">Country*</label>
+            <label htmlFor="country" className="text-base font-semibold mb-3 block">
+              Country*
+            </label>
             <select
               id="country"
               className="w-full h-16 border text-base px-4 py-0 rounded-xl border-gray-300 focus:border-blue-500 focus:outline-none"
@@ -391,12 +410,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               <option value="BR">Brazil</option>
             </select>
           </div>
-          
+
           <div className="flex justify-between items-end mb-16">
             <div className="max-w-2xl">
               <div className="text-base font-semibold mb-3">LinkedIn Profile</div>
               <div className="text-base text-gray-700 leading-normal">
-                Connect your LinkedIn profile to verify your professional identity and enhance your credibility.
+                Connect your LinkedIn profile to verify your professional identity and enhance your
+                credibility.
               </div>
             </div>
             <button
@@ -407,7 +427,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               Connect LinkedIn
             </button>
           </div>
-          
+
           <div className="flex gap-12 max-sm:flex-col max-sm:gap-5">
             <button
               type="button"

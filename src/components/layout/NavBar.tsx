@@ -101,7 +101,6 @@
 //                 Grow Smarter. Exit Richer™️
 //               </span>
 //             </div>
-
 //             <div className="relative">
 //               <button
 //                 className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
@@ -216,9 +215,6 @@
 //           <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
 //         )}
 //       </div>
-
-//       {/* Spacer div to prevent content from going under navbar */}
-//       <div style={{ height: navbarHeight || "86px" }}></div>
 //     </>
 //   );
 // };
@@ -370,85 +366,155 @@ const NavBar: React.FC = () => {
             </a>
           </nav> */}
 
-          {isAuthenticated ? (
-            <div className="relative">
-              <button
-                className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                {user?.full_name ? getInitials(user.full_name) : "U"}
-              </button>
+          <div className="flex gap-6">
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  {user?.full_name ? getInitials(user.full_name) : "U"}
+                </button>
 
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
-                  <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                    <div className="font-medium truncate">{user?.full_name}</div>
-                    <div className="text-gray-500 truncate" title={user?.email}>
-                      {user?.email ? truncateEmail(user.email) : ""}
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
+                    <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                      <div className="font-medium truncate">{user?.full_name}</div>
+                      <div className="text-gray-500 truncate" title={user?.email}>
+                        {user?.email ? truncateEmail(user.email) : ""}
+                      </div>
                     </div>
+
+                    <button
+                      onClick={() => navigate("/coi")}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      COI
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/pricing-page")}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      Pricing Plan
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/proof")}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      Proof
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/about-us")}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      About Us
+                    </button>
+
+                    <button
+                      onClick={handleSettings}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      Settings
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Logout
+                    </button>
                   </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  className={`rounded text-white text-base w-[194px] bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
+                    location.pathname === "/auth" ? "invisible" : "visible"
+                  }`}
+                  onClick={() => {
+                    navigate("/auth");
+                  }}
+                >
+                  Register
+                </button>
 
-                  {/* <button
-                    onClick={handleSettings}
-                    className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Settings
-                  </button> */}
-
+                <div className="relative">
                   <button
-                    onClick={handleLogout}
-                    className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDropdown(!showDropdown);
+                    }}
                   >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Logout
+                    <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+                    <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+                    <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
                   </button>
+
+                  {showDropdown && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/coi");
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+                      >
+                        COI
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/pricing-plan");
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+                      >
+                        Pricing
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ) : (
-            <></>
-            // <button
-            //   className={`rounded text-white text-base w-[194px] bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
-            //     location.pathname === "/auth" ? "invisible" : "visible"
-            //   }`}
-            //   onClick={() => {
-            //     navigate("/auth");
-            //   }}
-            // >
-            //   Register
-            // </button>
-          )}
+              </>
+            )}
+          </div>
         </header>
 
         {/* Overlay to close dropdown when clicking outside */}
@@ -456,9 +522,6 @@ const NavBar: React.FC = () => {
           <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
         )}
       </div>
-
-      {/* Spacer div to prevent content from going under navbar */}
-      {/* <div style={{ height: navbarHeight || "86px" }}></div> */}
     </>
   );
 };

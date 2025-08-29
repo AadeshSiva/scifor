@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 
 // Types
 interface Payment {
@@ -27,16 +27,23 @@ interface BackButtonProps {
 
 const BackButton = ({ to }: BackButtonProps) => {
   return (
-    <div 
-      onClick={() => window.history.back()} 
+    <div
+      onClick={() => window.history.back()}
       className="flex items-center gap-[18px] cursor-pointer mb-[53px]"
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10.3636 12.4994L18 20.4994L15.8182 22.7852L6 12.4994L15.8182 2.21373L18 4.49943L10.3636 12.4994Z" fill="black"/>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M10.3636 12.4994L18 20.4994L15.8182 22.7852L6 12.4994L15.8182 2.21373L18 4.49943L10.3636 12.4994Z"
+          fill="black"
+        />
       </svg>
-      <span className="text-[#555] text-2xl font-medium max-sm:text-lg">
-        Back
-      </span>
+      <span className="text-[#555] text-2xl font-medium max-sm:text-lg">Back</span>
     </div>
   );
 };
@@ -53,34 +60,34 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatAmount = (amount: number, currency: string) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency.toUpperCase()
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency.toUpperCase(),
     }).format(amount);
   };
 
   const getStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status.toLowerCase()) {
-      case 'completed':
-      case 'succeeded':
+      case "completed":
+      case "succeeded":
         return `${baseClasses} bg-green-100 text-green-800`;
-      case 'failed':
+      case "failed":
         return `${baseClasses} bg-red-100 text-red-800`;
-      case 'refunded':
+      case "refunded":
         return `${baseClasses} bg-orange-100 text-orange-800`;
-      case 'pending':
-      case 'processing':
+      case "pending":
+      case "processing":
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
@@ -93,15 +100,12 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-medium text-black">Transaction Details</h2>
-            <button 
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl"
-            >
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
               ×
             </button>
           </div>
         </div>
-        
+
         <div className="p-6 space-y-6">
           {/* Payment Status */}
           <div className="flex items-center justify-between">
@@ -128,7 +132,9 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
             {payment.stripe_payment_intent_id && (
               <div>
                 <h3 className="text-sm font-medium text-gray-500 mb-2">PAYMENT INTENT ID</h3>
-                <p className="text-black font-mono text-sm break-all">{payment.stripe_payment_intent_id}</p>
+                <p className="text-black font-mono text-sm break-all">
+                  {payment.stripe_payment_intent_id}
+                </p>
               </div>
             )}
           </div>
@@ -169,23 +175,23 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
 
           {/* Actions */}
           <div className="flex gap-4 pt-4">
-            <button 
+            <button
               onClick={() => {
                 const receiptText = `
-PAYMENT RECEIPT
-===============
-Transaction ID: ${payment.stripe_session_id}
-Product: ${payment.product_name}
-Amount: ${formatAmount(payment.amount, payment.currency)}
-Date: ${formatDate(payment.created_at)}
-Customer: ${payment.customer_name}
-Status: ${payment.status.toUpperCase()}
-===============
-Thank you for your payment!
+                                      PAYMENT RECEIPT
+                                      ===============
+                                      Transaction ID: ${payment.stripe_session_id}
+                                      Product: ${payment.product_name}
+                                      Amount: ${formatAmount(payment.amount, payment.currency)}
+                                      Date: ${formatDate(payment.created_at)}
+                                      Customer: ${payment.customer_name}
+                                      Status: ${payment.status.toUpperCase()}
+                                      ===============
+                                      Thank you for your payment!
                 `;
-                const blob = new Blob([receiptText], { type: 'text/plain' });
+                const blob = new Blob([receiptText], { type: "text/plain" });
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
+                const a = document.createElement("a");
                 a.href = url;
                 a.download = `receipt-${payment.stripe_session_id}.txt`;
                 document.body.appendChild(a);
@@ -197,7 +203,7 @@ Thank you for your payment!
             >
               Download Receipt
             </button>
-            <button 
+            <button
               onClick={() => {
                 const invoiceText = `
 INVOICE
@@ -207,7 +213,7 @@ Transaction ID: ${payment.stripe_session_id}
 
 Bill To:
 ${payment.customer_name}
-${payment.company_name ? payment.company_name : ''}
+${payment.company_name ? payment.company_name : ""}
 
 Date: ${formatDate(payment.created_at)}
 
@@ -220,9 +226,9 @@ Status: ${payment.status.toUpperCase()}
 =======
 Thank you for your business!
                 `;
-                const blob = new Blob([invoiceText], { type: 'text/plain' });
+                const blob = new Blob([invoiceText], { type: "text/plain" });
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
+                const a = document.createElement("a");
                 a.href = url;
                 a.download = `invoice-${payment.stripe_session_id}.txt`;
                 document.body.appendChild(a);
@@ -250,42 +256,42 @@ interface PurchaseHistoryRowProps {
 const PurchaseHistoryRow = ({ payment, onViewDetails }: PurchaseHistoryRowProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
   const formatAmount = (amount: number, currency: string) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency.toUpperCase()
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency.toUpperCase(),
     }).format(amount);
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
-      case 'succeeded':
-        return 'text-green-600';
-      case 'failed':
-        return 'text-red-600';
-      case 'refunded':
-        return 'text-orange-600';
-      case 'pending':
-      case 'processing':
-        return 'text-yellow-600';
+      case "completed":
+      case "succeeded":
+        return "text-green-600";
+      case "failed":
+        return "text-red-600";
+      case "refunded":
+        return "text-orange-600";
+      case "pending":
+      case "processing":
+        return "text-yellow-600";
       default:
-        return 'text-gray-600';
+        return "text-gray-600";
     }
   };
 
   const getPaymentMethod = (status: string) => {
-    if (status === 'completed' || status === 'succeeded') {
-      return 'Credit Card';
+    if (status === "completed" || status === "succeeded") {
+      return "Credit Card";
     }
-    return 'Card';
+    return "Card";
   };
 
   const handleReceiptDownload = async (e: React.MouseEvent) => {
@@ -304,19 +310,18 @@ Status: ${payment.status.toUpperCase()}
 Thank you for your payment!
       `;
 
-      const blob = new Blob([receiptText], { type: 'text/plain' });
+      const blob = new Blob([receiptText], { type: "text/plain" });
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `receipt-${payment.stripe_session_id}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
-      console.error('Error downloading receipt:', error);
-      alert('Failed to download receipt. Please try again.');
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt. Please try again.");
     }
   };
 
@@ -331,7 +336,7 @@ Transaction ID: ${payment.stripe_session_id}
 
 Bill To:
 ${payment.customer_name}
-${payment.company_name ? payment.company_name : ''}
+${payment.company_name ? payment.company_name : ""}
 
 Date: ${formatDate(payment.created_at)}
 
@@ -345,19 +350,18 @@ Status: ${payment.status.toUpperCase()}
 Thank you for your business!
       `;
 
-      const blob = new Blob([invoiceText], { type: 'text/plain' });
+      const blob = new Blob([invoiceText], { type: "text/plain" });
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `invoice-${payment.stripe_session_id}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
-      console.error('Error downloading invoice:', error);
-      alert('Failed to download invoice. Please try again.');
+      console.error("Error downloading invoice:", error);
+      alert("Failed to download invoice. Please try again.");
     }
   };
 
@@ -375,26 +379,30 @@ Thank you for your business!
       <div className="w-[51px] text-black text-base font-normal leading-[17.6px] ml-[37px] max-md:w-auto">
         {formatAmount(payment.amount, payment.currency)}
       </div>
-      <div className={`w-[67px] text-base font-normal leading-[17.6px] ml-[46px] max-md:w-auto capitalize ${getStatusColor(payment.status)}`}>
+      <div
+        className={`w-[67px] text-base font-normal leading-[17.6px] ml-[46px] max-md:w-auto capitalize ${getStatusColor(
+          payment.status
+        )}`}
+      >
         {payment.status}
       </div>
       <div className="w-[110px] text-black text-base font-normal leading-[17.6px] text-center ml-[27px] max-md:w-auto">
         {getPaymentMethod(payment.status)}
       </div>
       <div className="flex gap-4 ml-[27px]">
-        <button 
+        <button
           onClick={handleReceiptDownload}
           className="border cursor-pointer w-[87px] p-2.5 border-solid border-black hover:bg-gray-100 transition-colors max-sm:text-sm max-sm:p-2"
         >
           Receipt
         </button>
-        <button 
+        <button
           onClick={handleInvoiceDownload}
           className="border cursor-pointer w-[83px] p-2.5 border-solid border-black hover:bg-gray-100 transition-colors max-sm:text-sm max-sm:p-2"
         >
           Invoice
         </button>
-        <button 
+        <button
           onClick={() => onViewDetails(payment)}
           className="border cursor-pointer w-[87px] p-2.5 border-solid border-black hover:bg-gray-100 transition-colors max-sm:text-sm max-sm:p-2"
         >
@@ -416,7 +424,7 @@ const LoadingSpinner = () => (
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
   <div className="text-center py-12">
     <p className="text-red-600 mb-4">{message}</p>
-    <button 
+    <button
       onClick={onRetry}
       className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
     >
@@ -434,7 +442,13 @@ const EmptyState = () => (
 );
 
 // Purchase History Table Component
-const PurchaseHistoryTable = ({ payments, loading, error, onRetry, onViewDetails }: {
+const PurchaseHistoryTable = ({
+  payments,
+  loading,
+  error,
+  onRetry,
+  onViewDetails,
+}: {
   payments: Payment[];
   loading: boolean;
   error: string | null;
@@ -471,13 +485,9 @@ const PurchaseHistoryTable = ({ payments, loading, error, onRetry, onViewDetails
         </div>
       </div>
       <div className="w-[984px] h-px bg-[#555] mb-8" />
-      
+
       {payments.map((payment) => (
-        <PurchaseHistoryRow
-          key={payment.id}
-          payment={payment}
-          onViewDetails={onViewDetails}
-        />
+        <PurchaseHistoryRow key={payment.id} payment={payment} onViewDetails={onViewDetails} />
       ))}
     </div>
   );
@@ -500,47 +510,46 @@ const PurchaseHistory = () => {
       setError(null);
 
       // Get auth token from localStorage
-      const token = localStorage.getItem('access_token');
-      
+      const token = localStorage.getItem("access_token");
+
       if (!token) {
-        throw new Error('Authentication token not found. Please log in again.');
+        throw new Error("Authentication token not found. Please log in again.");
       }
 
-      const response = await fetch('https://intern-project-final-1.onrender.com/user-payments/', {
-        method: 'GET',
+      const response = await fetch("https://internship-pro.onrender.com/user-payments/", {
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
         if (response.status === 401) {
           // Clear invalid token and redirect to login
-          localStorage.removeItem('access_token');
-          throw new Error('Session expired. Please log in again.');
+          localStorage.removeItem("access_token");
+          throw new Error("Session expired. Please log in again.");
         }
         if (response.status === 403) {
-          throw new Error('Access denied. Please check your permissions.');
+          throw new Error("Access denied. Please check your permissions.");
         }
         throw new Error(`Failed to fetch payments: ${response.status} ${response.statusText}`);
       }
 
       const data: PaymentResponse = await response.json();
-      console.log('Payment data received:', data);
-      
+      console.log("Payment data received:", data);
+
       // Ensure we have the expected data structure
       if (!data.payments || !Array.isArray(data.payments)) {
-        throw new Error('Invalid response format from server');
+        throw new Error("Invalid response format from server");
       }
 
       setPayments(data.payments);
       setUserPaidStatus(data.user_paid_status || false);
       setLastUpdated(new Date());
-      
     } catch (err) {
-      console.error('Error fetching payments:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load payment history');
+      console.error("Error fetching payments:", err);
+      setError(err instanceof Error ? err.message : "Failed to load payment history");
     } finally {
       setLoading(false);
     }
@@ -558,24 +567,27 @@ const PurchaseHistory = () => {
   }, [fetchPayments]);
 
   // Check for payment status updates - memoized to prevent infinite loops
-  const checkPaymentStatus = useCallback(async (sessionId: string) => {
-    try {
-      console.log('Checking payment status for:', sessionId);
-      
-      // Simulate status check
-      const currentPayment = payments.find(p => p.stripe_session_id === sessionId);
-      if (currentPayment && currentPayment.status === 'pending') {
-        // Simulate status change
-        const shouldUpdate = Math.random() > 0.7; // 30% chance of status change
-        if (shouldUpdate) {
-          console.log('Payment status changed, refreshing...');
-          await refreshPayments();
+  const checkPaymentStatus = useCallback(
+    async (sessionId: string) => {
+      try {
+        console.log("Checking payment status for:", sessionId);
+
+        // Simulate status check
+        const currentPayment = payments.find((p) => p.stripe_session_id === sessionId);
+        if (currentPayment && currentPayment.status === "pending") {
+          // Simulate status change
+          const shouldUpdate = Math.random() > 0.7; // 30% chance of status change
+          if (shouldUpdate) {
+            console.log("Payment status changed, refreshing...");
+            await refreshPayments();
+          }
         }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
       }
-    } catch (error) {
-      console.error('Error checking payment status:', error);
-    }
-  }, [payments, refreshPayments]);
+    },
+    [payments, refreshPayments]
+  );
 
   const handleViewDetails = useCallback((payment: Payment) => {
     setSelectedPayment(payment);
@@ -594,8 +606,8 @@ const PurchaseHistory = () => {
 
   // Set up intervals for pending payment checks - properly memoized
   useEffect(() => {
-    const pendingPayments = payments.filter(p => 
-      p.status === 'pending' || p.status === 'processing'
+    const pendingPayments = payments.filter(
+      (p) => p.status === "pending" || p.status === "processing"
     );
 
     if (pendingPayments.length === 0) {
@@ -604,8 +616,8 @@ const PurchaseHistory = () => {
 
     // Check pending payments every 30 seconds
     const pendingCheckInterval = setInterval(() => {
-      console.log('Checking status for pending payments...');
-      pendingPayments.forEach(payment => {
+      console.log("Checking status for pending payments...");
+      pendingPayments.forEach((payment) => {
         checkPaymentStatus(payment.stripe_session_id);
       });
     }, 30000);
@@ -618,8 +630,8 @@ const PurchaseHistory = () => {
   // General refresh interval - separate from pending checks
   useEffect(() => {
     // Only set up auto-refresh if there are no pending payments
-    const hasPendingPayments = payments.some(p => 
-      p.status === 'pending' || p.status === 'processing'
+    const hasPendingPayments = payments.some(
+      (p) => p.status === "pending" || p.status === "processing"
     );
 
     if (hasPendingPayments) {
@@ -628,7 +640,7 @@ const PurchaseHistory = () => {
 
     // Auto-refresh every 5 minutes for completed payments
     const refreshInterval = setInterval(() => {
-      console.log('Auto-refreshing payment history...');
+      console.log("Auto-refreshing payment history...");
       refreshPayments();
     }, 300000);
 
@@ -644,20 +656,20 @@ const PurchaseHistory = () => {
         const timeDiff = Date.now() - lastUpdated.getTime();
         // If page was hidden for more than 2 minutes, refresh
         if (timeDiff > 120000) {
-          console.log('Page was hidden for a while, refreshing payments...');
+          console.log("Page was hidden for a while, refreshing payments...");
           refreshPayments();
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [lastUpdated, refreshPayments]);
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <BackButton to="/" />
-      
+
       <div className="flex items-center justify-between mb-[50px]">
         <h1 className="text-black text-[32px] font-medium leading-[35.2px] max-sm:text-2xl">
           Purchase History
@@ -673,15 +685,20 @@ const PurchaseHistory = () => {
             disabled={isRefreshing}
             className="flex items-center gap-2 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <svg 
-              className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
             </svg>
-            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            {isRefreshing ? "Refreshing..." : "Refresh"}
           </button>
           {userPaidStatus && (
             <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
@@ -692,8 +709,8 @@ const PurchaseHistory = () => {
       </div>
 
       <div className="w-[948px] h-px bg-[#555] mb-[61px]" />
-      
-      <PurchaseHistoryTable 
+
+      <PurchaseHistoryTable
         payments={payments}
         loading={loading}
         error={error}
