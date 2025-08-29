@@ -17,28 +17,15 @@ const HeroSection: React.FC = () => {
         </h1>
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="w-full lg:w-1/2 flex justify-center">
+          <div className="w-full xl:w-1/2 flex justify-center">
             <div className="relative w-full max-w-lg">
               <div className="relative w-full max-w-lg">
                 <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
-                  {/* Thumbnail image that fills the square container */}
-                  <img
-                    src="https://i.imgur.com/kmZyPld.png"
-                    alt="Webinar Video Thumbnail"
-                    className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
-                  />
-                  {/* Play button overlay */}
-                  <button
-                    onClick={() =>
-                      window.open(
-                        "https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/view",
-                        "_blank"
-                      )
-                    }
-                    className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-4xl rounded-xl hover:bg-black/50 transition-colors"
-                  >
-                    ▶
-                  </button>
+                  <iframe
+                    src={`https://drive.google.com/file/d/1YLoXKNla2Yqr79ZqaHQakk6KDi8aGrYo/preview`}
+                    className="absolute top-[100px] left-0 w-full h-[300px] rounded-xl"
+                    allow="autoplay"
+                  ></iframe>
                 </div>
               </div>
             </div>
