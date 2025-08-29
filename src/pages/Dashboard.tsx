@@ -43,6 +43,7 @@ const tasks: Task[] = [
       "Upload important business documents to verify and validate your company profile. This increases trust and valuation potential.",
   },
 ];
+
 const Dashboard: React.FC = () => {
   const [completed, setCompleted] = useState<number[]>([]);
   const [activeTask, setActiveTask] = useState<Task | null>(tasks[0]);
@@ -70,61 +71,34 @@ const Dashboard: React.FC = () => {
           />
         </div>
         <nav className="flex-1 px-4 space-y-3 text-gray-700">
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <LayoutDashboard size={18} /> Dashboard
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <ClipboardList size={18} /> Brand Diagnostic
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <Calculator size={18} /> ROI Calculator
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <TrendingUp size={18} /> Exit Wealth Calculator
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <ClipboardList size={18} /> Brand Assets Checklist
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <MessageCircle size={18} /> Anonymous Group Chat
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <Bot size={18} /> AI Agent Chat
           </a>
         </nav>
 
         <div className="p-4 space-y-2">
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
             <Settings size={18} /> Settings
           </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600"
-          >
+          <a href="#" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
             <LogOut size={18} /> Log out
           </a>
         </div>
@@ -134,8 +108,7 @@ const Dashboard: React.FC = () => {
       <main className="flex-1 min-h-screen bg-gray-100 p-8 flex flex-col items-center">
         {/* Welcome Message */}
         <h1 className="text-2xl font-walbaum text-gray-700 mb-6">
-          Welcome to your Prospera dashboard,{" "}
-          <span className="italic">[first name]</span>
+          Welcome to your Prospera dashboard, <span className="italic">[first name]</span>
         </h1>
 
         <div className="w-full max-w-2xl space-y-6">
@@ -218,9 +191,7 @@ const Dashboard: React.FC = () => {
                 {activeTask && (
                   <>
                     <div>
-                      <h3 className="font-bold mb-2 text-black ">
-                        {activeTask.title}
-                      </h3>
+                      <h3 className="font-bold mb-2 text-black ">{activeTask.title}</h3>
                       <p>{activeTask.description}</p>
                     </div>
                     <button
