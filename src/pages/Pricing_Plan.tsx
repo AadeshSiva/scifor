@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { AuthForm } from "@/components/authok/AuthForm";
 import { useAuth } from "@/utils/AuthContext";
 import { Footer } from "@/components/Footer";
-import FAQSection from "./HomePage";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") ||
@@ -558,7 +557,6 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       )}
-      {/* <FAQSection /> */}
       <Footer />
     </section>
   );
