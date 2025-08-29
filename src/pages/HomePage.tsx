@@ -212,8 +212,7 @@ const PricingPlan: React.FC = () => {
     fontWeight: 300,
     fontStyle: "normal",
     fontSize: windowWidth < 640 ? "14px" : windowWidth < 768 ? "16px" : "18px",
-    lineHeight:
-      windowWidth < 640 ? "20px" : windowWidth < 768 ? "24px" : "28px",
+    lineHeight: windowWidth < 640 ? "20px" : windowWidth < 768 ? "24px" : "28px",
     letterSpacing: "0%",
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
@@ -243,8 +242,7 @@ const PricingPlan: React.FC = () => {
       'Linear Grotesk, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     fontWeight: 300,
     fontSize: windowWidth < 640 ? "18px" : windowWidth < 768 ? "20px" : "24px",
-    lineHeight:
-      windowWidth < 640 ? "28px" : windowWidth < 768 ? "36px" : "44px",
+    lineHeight: windowWidth < 640 ? "28px" : windowWidth < 768 ? "36px" : "44px",
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
   } as CSSProperties;
@@ -327,10 +325,8 @@ const PricingPlan: React.FC = () => {
     ...cardStyle,
     backgroundColor: "white",
     color: "#111827",
-    boxShadow:
-      "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-    WebkitBoxShadow:
-      "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+    WebkitBoxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
     border: "1px solid #e5e7eb",
   };
 
@@ -339,10 +335,8 @@ const PricingPlan: React.FC = () => {
       style={{
         minHeight: "100vh",
         backgroundColor: "#e5e7eb",
-        paddingTop:
-          windowWidth < 640 ? "16px" : windowWidth < 768 ? "32px" : "64px",
-        paddingBottom:
-          windowWidth < 640 ? "16px" : windowWidth < 768 ? "32px" : "64px",
+        paddingTop: windowWidth < 640 ? "16px" : windowWidth < 768 ? "32px" : "64px",
+        paddingBottom: windowWidth < 640 ? "16px" : windowWidth < 768 ? "32px" : "64px",
         paddingLeft: windowWidth < 640 ? "8px" : "16px",
         paddingRight: windowWidth < 640 ? "8px" : "16px",
       }}
@@ -352,8 +346,7 @@ const PricingPlan: React.FC = () => {
         <div
           style={{
             textAlign: "center",
-            marginBottom:
-              windowWidth < 640 ? "24px" : windowWidth < 768 ? "32px" : "64px",
+            marginBottom: windowWidth < 640 ? "24px" : windowWidth < 768 ? "32px" : "64px",
           }}
         >
           <h1
@@ -388,12 +381,7 @@ const PricingPlan: React.FC = () => {
                     : "60px",
                 color: "#374151",
                 textAlign: "center",
-                marginBottom:
-                  windowWidth < 640
-                    ? "16px"
-                    : windowWidth < 768
-                    ? "24px"
-                    : "48px",
+                marginBottom: windowWidth < 640 ? "16px" : windowWidth < 768 ? "24px" : "48px",
                 WebkitFontSmoothing: "antialiased",
                 MozOsxFontSmoothing: "grayscale",
               } as CSSProperties
@@ -420,23 +408,13 @@ const PricingPlan: React.FC = () => {
                     flexDirection: "column",
                     WebkitFlexDirection: "column",
                     msFlexDirection: "column",
-                    paddingTop:
-                      windowWidth < 640
-                        ? "12px"
-                        : windowWidth < 768
-                        ? "24px"
-                        : "32px",
+                    paddingTop: windowWidth < 640 ? "12px" : windowWidth < 768 ? "24px" : "32px",
                   } as CSSProperties
                 }
               >
                 <div
                   style={{
-                    marginBottom:
-                      windowWidth < 640
-                        ? "16px"
-                        : windowWidth < 768
-                        ? "24px"
-                        : "32px",
+                    marginBottom: windowWidth < 640 ? "16px" : windowWidth < 768 ? "24px" : "32px",
                   }}
                 >
                   <p
@@ -497,9 +475,7 @@ const PricingPlan: React.FC = () => {
                     >
                       <Logo />
                     </div>
-                    <span style={{ ...headerTextStyle, color: "#d1d5db" }}>
-                      Guest
-                    </span>
+                    <span style={{ ...headerTextStyle, color: "#d1d5db" }}>Guest</span>
                   </div>
                   <h2
                     style={{
@@ -519,11 +495,7 @@ const PricingPlan: React.FC = () => {
                       WebkitFlex: "1",
                       msFlex: "1",
                       marginBottom:
-                        windowWidth < 640
-                          ? "20px"
-                          : windowWidth < 768
-                          ? "28px"
-                          : "32px",
+                        windowWidth < 640 ? "20px" : windowWidth < 768 ? "28px" : "32px",
                     } as CSSProperties
                   }
                 >
@@ -540,11 +512,7 @@ const PricingPlan: React.FC = () => {
                             msFlexAlign: "start",
                             gap: "12px",
                             marginBottom:
-                              windowWidth < 640
-                                ? "12px"
-                                : windowWidth < 768
-                                ? "16px"
-                                : "20px",
+                              windowWidth < 640 ? "12px" : windowWidth < 768 ? "16px" : "20px",
                           } as CSSProperties
                         }
                       >
@@ -583,12 +551,7 @@ const PricingPlan: React.FC = () => {
                     {
                       border: `1px solid ${saffronColor}`,
                       borderRadius: "8px",
-                      minHeight:
-                        windowWidth < 640
-                          ? "50px"
-                          : windowWidth < 768
-                          ? "60px"
-                          : "70px",
+                      minHeight: windowWidth < 640 ? "50px" : windowWidth < 768 ? "60px" : "70px",
                       display: "flex",
                       WebkitDisplay: "flex",
                       flexDirection: "column",
@@ -604,10 +567,7 @@ const PricingPlan: React.FC = () => {
                       marginTop: "auto",
                       marginLeft: windowWidth < 640 ? "-4px" : "-8px",
                       marginRight: windowWidth < 640 ? "-4px" : "-8px",
-                      width:
-                        windowWidth < 640
-                          ? "calc(100% + 8px)"
-                          : "calc(100% + 16px)",
+                      width: windowWidth < 640 ? "calc(100% + 8px)" : "calc(100% + 16px)",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
                       WebkitTransition: "all 0.3s ease",
@@ -617,8 +577,7 @@ const PricingPlan: React.FC = () => {
                   }
                   onClick={handleLearnMoreClick}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(244, 164, 96, 0.1)";
+                    e.currentTarget.style.backgroundColor = "rgba(244, 164, 96, 0.1)";
                     e.currentTarget.style.borderColor = "#F4A460";
                   }}
                   onMouseOut={(e) => {
@@ -672,9 +631,7 @@ const PricingPlan: React.FC = () => {
                     >
                       <Logo />
                     </div>
-                    <span style={{ ...bottomBoxTextStyle, color: "#d1d5db" }}>
-                      Guest
-                    </span>
+                    <span style={{ ...bottomBoxTextStyle, color: "#d1d5db" }}>Guest</span>
                   </div>
                   <span
                     style={{
@@ -706,23 +663,13 @@ const PricingPlan: React.FC = () => {
                     flexDirection: "column",
                     WebkitFlexDirection: "column",
                     msFlexDirection: "column",
-                    paddingTop:
-                      windowWidth < 640
-                        ? "12px"
-                        : windowWidth < 768
-                        ? "24px"
-                        : "32px",
+                    paddingTop: windowWidth < 640 ? "12px" : windowWidth < 768 ? "24px" : "32px",
                   } as CSSProperties
                 }
               >
                 <div
                   style={{
-                    marginBottom:
-                      windowWidth < 640
-                        ? "16px"
-                        : windowWidth < 768
-                        ? "24px"
-                        : "32px",
+                    marginBottom: windowWidth < 640 ? "16px" : windowWidth < 768 ? "24px" : "32px",
                   }}
                 >
                   <p
@@ -783,9 +730,7 @@ const PricingPlan: React.FC = () => {
                     >
                       <LogoBlack />
                     </div>
-                    <span style={{ ...headerTextStyle, color: "#4b5563" }}>
-                      Member
-                    </span>
+                    <span style={{ ...headerTextStyle, color: "#4b5563" }}>Member</span>
                   </div>
                   <h2
                     style={{
@@ -806,11 +751,7 @@ const PricingPlan: React.FC = () => {
                       WebkitFlex: "1",
                       msFlex: "1",
                       marginBottom:
-                        windowWidth < 640
-                          ? "20px"
-                          : windowWidth < 768
-                          ? "28px"
-                          : "32px",
+                        windowWidth < 640 ? "20px" : windowWidth < 768 ? "28px" : "32px",
                     } as CSSProperties
                   }
                 >
@@ -827,11 +768,7 @@ const PricingPlan: React.FC = () => {
                             msFlexAlign: "start",
                             gap: "12px",
                             marginBottom:
-                              windowWidth < 640
-                                ? "12px"
-                                : windowWidth < 768
-                                ? "16px"
-                                : "20px",
+                              windowWidth < 640 ? "12px" : windowWidth < 768 ? "16px" : "20px",
                           } as CSSProperties
                         }
                       >
@@ -871,12 +808,7 @@ const PricingPlan: React.FC = () => {
                       backgroundColor: "black",
                       border: `1px solid ${saffronColor}`,
                       borderRadius: "8px",
-                      minHeight:
-                        windowWidth < 640
-                          ? "50px"
-                          : windowWidth < 768
-                          ? "60px"
-                          : "70px",
+                      minHeight: windowWidth < 640 ? "50px" : windowWidth < 768 ? "60px" : "70px",
                       display: "flex",
                       WebkitDisplay: "flex",
                       flexDirection: "column",
@@ -892,10 +824,7 @@ const PricingPlan: React.FC = () => {
                       marginTop: "auto",
                       marginLeft: windowWidth < 640 ? "-4px" : "-8px",
                       marginRight: windowWidth < 640 ? "-4px" : "-8px",
-                      width:
-                        windowWidth < 640
-                          ? "calc(100% + 8px)"
-                          : "calc(100% + 16px)",
+                      width: windowWidth < 640 ? "calc(100% + 8px)" : "calc(100% + 16px)",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
                       WebkitTransition: "all 0.3s ease",
@@ -960,9 +889,7 @@ const PricingPlan: React.FC = () => {
                     >
                       <Logo />
                     </div>
-                    <span style={{ ...bottomBoxTextStyle, color: "#d1d5db" }}>
-                      Member
-                    </span>
+                    <span style={{ ...bottomBoxTextStyle, color: "#d1d5db" }}>Member</span>
                   </div>
                   <span
                     style={{
@@ -988,14 +915,12 @@ const PricingPlan: React.FC = () => {
 // FAQ Section
 const faqs = [
   {
-    question:
-      "I already have a profitable business. Why should I care about PRSPERA?",
+    question: "I already have a profitable business. Why should I care about PRSPERA?",
     answer:
       "Because profit ≠ value. And value ≠ exit. 80% of businesses never sell. Not because they weren't profitable — but because they weren't transferable, defensible, or structured to be bought. You may be generating income. But if 84% of your value is intangible and unmanaged, the market won't pay for it when it counts. PRSPERA makes sure they do.",
   },
   {
-    question:
-      "Why do I need a platform to tell me what my team should already be doing?",
+    question: "Why do I need a platform to tell me what my team should already be doing?",
     answer:
       "Because your team wasn't hired, trained, or incentivized to build enterprise value. They're executing — not capitalizing. And statistically? 77% of them are disengaged. So yes — they're doing work, but they're not building value. PRSPERA gives you the structure, the tools, and the visibility to turn daily work into equity growth.",
   },
@@ -1052,7 +977,7 @@ const faqs = [
   },
 ];
 
-const FAQSection: React.FC = () => {
+export const FAQSection: React.FC = () => {
   const [openItems, setOpenItems] = useState<OpenItemsState>({});
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
@@ -1072,15 +997,13 @@ const FAQSection: React.FC = () => {
 
   const questionTextStyle: CSSProperties = {
     fontSize: windowWidth < 640 ? "16px" : windowWidth < 768 ? "18px" : "20px",
-    lineHeight:
-      windowWidth < 640 ? "24px" : windowWidth < 768 ? "28px" : "32px",
+    lineHeight: windowWidth < 640 ? "24px" : windowWidth < 768 ? "28px" : "32px",
     fontWeight: "600",
   };
 
   const answerTextStyle: CSSProperties = {
     fontSize: windowWidth < 640 ? "14px" : windowWidth < 768 ? "16px" : "18px",
-    lineHeight:
-      windowWidth < 640 ? "20px" : windowWidth < 768 ? "24px" : "28px",
+    lineHeight: windowWidth < 640 ? "20px" : windowWidth < 768 ? "24px" : "28px",
   };
 
   return (
@@ -1171,7 +1094,6 @@ const FAQSection: React.FC = () => {
 const HomePage: React.FC = () => (
   <div>
     <PricingPlan />
-    <FAQSection />
     <Footer />
   </div>
 );
