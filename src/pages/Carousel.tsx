@@ -87,12 +87,11 @@ export default function IcebergCarousel() {
       {/* Title */}
       <div className="text-center max-w-4xl mb-10 md:mb-12 px-4">
         <h2 className="text-2xl md:text-4xl font-walbaum leading-snug">
-          Six Icebergs Sink the EntrepreneurSHIP Every Day
+          Six Icebergs Sink <br /> the EntrepreneurSHIP Every Day
         </h2>
         <p className="mt-6 text-center text-white text-base md:text-lg font-light leading-relaxed">
-          Every one of these icebergs can quietly destroy value.
-          <br />
-          These are hidden forces leaders underestimate — until they hit.
+         Even profitable businesses are silently sinking. <br />
+These are the hidden forces dragging them under — long before they exit.
         </p>
       </div>
 
@@ -187,17 +186,17 @@ export default function IcebergCarousel() {
           <ChevronLeft
             size={28} // mobile
             className="sm:hidden"
-            color="yellow"
+            color="#FFBB1BBF"
           />
           <ChevronLeft
             size={36} // tablet
             className="hidden sm:block md:hidden"
-            color="yellow"
+            color="#FFBB1BBF"
           />
           <ChevronLeft
             size={48} // desktop
             className="hidden md:block"
-            color="yellow"
+            color="#FFBB1BBF"
           />
         </button>
 
@@ -205,9 +204,9 @@ export default function IcebergCarousel() {
           onClick={nextSlide}
           className=" absolute right-2 sm:right-6 md:right-10 lg:right-[15%] top-1/2 -translate-y-1/2 z-10 p-2 sm:p-3 md:p-4 rounded-full bg-black/40 hover:bg-black/60 transition"
         >
-          <ChevronRight size={28} className="sm:hidden" color="yellow" />
-          <ChevronRight size={36} className="hidden sm:block md:hidden" color="yellow" />
-          <ChevronRight size={48} className="hidden md:block" color="yellow" />
+          <ChevronRight size={28} className="sm:hidden" color="#FFBB1BBF" />
+          <ChevronRight size={36} className="hidden sm:block md:hidden" color="#FFBB1BBF" />
+          <ChevronRight size={48} className="hidden md:block" color="#FFBB1BBF" />
         </button>
       </div>
 
