@@ -92,7 +92,7 @@ const App = () => (
               }
             />{" "}
             <Route
-              path="/pricing-plan"
+              path="/pricing-page"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Pricing_Plan />

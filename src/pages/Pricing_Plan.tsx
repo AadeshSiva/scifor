@@ -51,9 +51,9 @@ const Pricing_Plan: React.FC = () => {
     if (!isAuthenticated) {
       window.location.href = "/auth?plan=guest";
     } else if (user?.paid) {
-      alert("You are already registered as a Member.");
+      window.location.href = "/dashboard";
     } else {
-      alert("You are already registered as a Guest User.");
+      window.location.href = "/dashboard";
     }
   };
 
@@ -61,8 +61,9 @@ const Pricing_Plan: React.FC = () => {
     if (!isAuthenticated) {
       window.location.href = "/auth?plan=member";
     } else if (user?.paid) {
-      alert("You are already registered as a Member.");
+      window.location.href = "/dashboard";
     } else {
+      alert("You are already registered as a Guest, proceeding to upgarde your plan.");
       window.location.href = "/payment";
     }
   };
