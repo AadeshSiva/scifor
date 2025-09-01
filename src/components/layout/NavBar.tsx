@@ -393,7 +393,7 @@ const NavBar: React.FC = () => {
                     </button>
 
                     <button
-                      onClick={() => navigate("/pricing-page")}
+                      onClick={() => navigate("/pricing-plan")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       Pricing Plan
@@ -492,6 +492,17 @@ const NavBar: React.FC = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          navigate("/proof");
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+                      >
+                        Proof
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
                           navigate("/coi");
                           setShowDropdown(false);
                         }}
@@ -499,6 +510,7 @@ const NavBar: React.FC = () => {
                       >
                         COI
                       </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -509,6 +521,7 @@ const NavBar: React.FC = () => {
                       >
                         Pricing
                       </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

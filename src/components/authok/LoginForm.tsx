@@ -474,7 +474,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
           alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
         } else {
-          navigate("/pricing-page");
+          navigate("/pricing-plan");
         }
       }
     }
