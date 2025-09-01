@@ -60,19 +60,19 @@ export default function Landing() {
     </h1>
 
     {/* Small subhead */}
-    <p className="mx-auto mt-6 max-w-[46ch] text-white/90 text-sm md:text-base leading-relaxed font-extralight " style={{ fontSize: "1.2rem" }}>
+    <p className="mx-auto mt-6 max-w-[46ch] text-white/90 text-sm md:text-base leading-relaxed font-extralight " style={{ fontSize: "1.2rem" , fontWeight: 300 }}>
       Since 2003, Jeff successfully <br /> operationalized the Unifying Philosophy (UPh
       <span style={{ fontSize: "1.8rem" }}>™</span> ) Strategy System TWICE.
     </p>
 
     {/* Lead paragraphs */}
-    <p className="mx-auto mt-10 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]">
+    <p className="mx-auto mt-10 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]" style={{ fontSize: "1.2rem" , fontWeight: 300 }}>
       His 20+ year journey inspired our 6 Step Course for entrepreneurs to Grow
       Smarter to Exit Richer.
     </p>
 
-    <p className="mx-auto mt-5 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]">
-      My interview with him captures his story in the context of these 6 Steps.
+    <p className="mx-auto mt-5 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]" style={{ fontSize: "1.2rem" , fontWeight: 300 }}>
+      My interview with him captures his story <br /> in the context of these 6 Steps.
     </p>
   </div>
   <br />
@@ -135,7 +135,7 @@ function Circle({ text, active }: CircleProps) {
   return (
     <div
       className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex justify-center items-center text-center text-[#FFBB1BBF] text-xs sm:text-sm p-2 cursor-pointer transition-colors duration-200
-      ${active ? "bg-white  text-[#000000e7] shadow-lg scale-110" : "bg-[#2b2f33] hover:bg-gray-700"}`}
+      ${active ? "bg-white  text-[#000000c5] shadow-lg scale-110" : "bg-[#2b2f33] hover:bg-gray-700"}`}
     >
       {text}
     </div>
@@ -143,6 +143,7 @@ function Circle({ text, active }: CircleProps) {
 }
 
 //Below code have Bigger Flower But its not responsive
+
 // import { useState } from "react";
 // import DropdownSection from "./LandingMiddle";
 // import StorySection from "./LandingTop";

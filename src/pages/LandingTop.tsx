@@ -364,16 +364,9 @@ export const StorySection: React.FC = () => {
         </p>
 
         {/* Video block */}
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-xl">
-            <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow">
-              <video
-                className="absolute inset-0 w-full h-full object-cover"
-                src={HeroVideo}
-                controls
-              />
-            </div>
-          </div>
+
+          <div className="flex justify-center">
+          <video className="rounded-xl" src={HeroVideo} controls></video>
         </div>
 
         <div className="mt-6">
