@@ -25,6 +25,7 @@ import CuratedPage from "./pages/CuratedPage"
 
 import Dashboard from "./pages/Dashboard";
 import ProofPage from "./pages/Proof";
+import AboutUs from "./pages/AboutUs";
 
 
 const queryClient = new QueryClient();
@@ -107,6 +108,14 @@ const App = () => (
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about-us"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <AboutUs />
                 </ProtectedRoute>
               }
             />

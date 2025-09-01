@@ -148,8 +148,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Combined Progress + Actions + Info in one Card */}
-          <div className="bg-white shadow-md rounded-lg p-6">
-            {/* Progress */}
+          {/* <div className="bg-white shadow-md rounded-lg p-6">
+            
             <div className="mb-4 flex justify-between text-sm items-center mx-40">
               <div className="w-full bg-gray-200 rounded-full h-2 mr-4">
                 <div
@@ -160,9 +160,9 @@ const Dashboard: React.FC = () => {
               <span>{progress}% Completed</span>
             </div>
 
-            {/* Two Column Layout */}
+
             <div className="grid grid-cols-2 gap-6">
-              {/* Checklist (Left) */}
+
               <div className="space-y-2 border-r pr-4">
                 {tasks.map((task) => (
                   <button
@@ -186,7 +186,6 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
 
-              {/* Dynamic Content (Right) */}
               <div className="bg-gray-50 rounded-md p-4 text-sm text-gray-600 flex flex-col justify-between">
                 {activeTask && (
                   <>
@@ -212,7 +211,7 @@ const Dashboard: React.FC = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </div>

@@ -977,7 +977,7 @@ const faqs = [
   },
 ];
 
-const FAQSection: React.FC = () => {
+export const FAQSection: React.FC = () => {
   const [openItems, setOpenItems] = useState<OpenItemsState>({});
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
@@ -1094,7 +1094,6 @@ const FAQSection: React.FC = () => {
 const HomePage: React.FC = () => (
   <div>
     <PricingPlan />
-    <FAQSection />
     <Footer />
   </div>
 );

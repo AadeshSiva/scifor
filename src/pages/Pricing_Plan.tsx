@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { AuthForm } from "@/components/authok/AuthForm";
 import { useAuth } from "@/utils/AuthContext";
+import { Footer } from "@/components/Footer";
+import { FAQSection } from "./HomePage";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
@@ -195,12 +197,10 @@ const Pricing_Plan: React.FC = () => {
         The World’s One and Only Fact-Based Platform to Maximize and Monetize Your Business Value –
         Tax Effectively – for All Invested.
       </h1>
-
       <h1 className="text-center text-4xl font-normal text-black font-walbaum mt-8">
         When 84%+ of your business value is more than the cost of membership, then your decision is
         clear.
       </h1>
-
       {/* Video and Message */}
       <div className="w-full flex flex-col md:flex-row lg:flex-row mt-14 px-4 gap-3">
         {/* Video Container */}
@@ -227,7 +227,6 @@ const Pricing_Plan: React.FC = () => {
           <p>-Harish Chauhan</p>
         </div>
       </div>
-
       {/* Guest & Member Section */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
         {/* Left */}
@@ -252,7 +251,6 @@ const Pricing_Plan: React.FC = () => {
           <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
             Only 33 Seats
           </p>
-
         </div>
 
         {/* Middle */}
@@ -351,8 +349,6 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       </div>
-
-
       {/* Service */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
         {/* Left */}
@@ -446,7 +442,6 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Main */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row mb-20 ">
         {/* Left */}
@@ -454,8 +449,9 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
-                }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
+                activeItem === item ? "bg-yellow-300 font-semibold" : ""
+              }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
@@ -508,7 +504,6 @@ const Pricing_Plan: React.FC = () => {
           </button>
         </div>
       </div>
-
       {authOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-[760px]">
@@ -523,6 +518,8 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       )}
+      <FAQSection />;
+      <Footer />
     </section>
   );
 };

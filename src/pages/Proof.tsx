@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, CSSProperties } from "react";
+import React, { ReactNode, useState, useEffect, CSSProperties, useLayoutEffect } from "react";
 import { Footer } from "@/components/Footer";
 import JoinBtn from "@/components/JoinBtn";
 
@@ -37,6 +37,13 @@ const TooltipItem = ({ children }: { children: React.ReactNode }) => {
   );
 };
 const ProofPage: React.FC = () => {
+  const [showVideo, setShowVideo] = useState(false);
+  // useLayoutEffect to prevent scroll animation
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+
   const jeffSectionStyle: CSSProperties = {
     width: "961px",
     height: "283px",
@@ -44,33 +51,33 @@ const ProofPage: React.FC = () => {
     textAlign: "center",
   };
 
-  return (
-    <>
-      {/* First Section - Undeniable Proof of Success */}
-      <div className="bg-gray-100 w-full">
-        <div className="w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-16 sm:py-20 md:py-24">
-          <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-walbaum font-light text-gray-800 mb-3">
-              Undeniable Proof
-            </h1>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-Bold font-walbaum text-gray-800 mb-6">
-              of Success.
-            </h2>
-            <p className=" text-gray-600 text-xl md:text-xl font-walbaum mb-12">
-              Jeff's success is a template for your success.
-            </p>
-            <div className="flex items-center justify-center bg-gray-100">
-              <div className="w-full lg:w-1/2 flex justify-center">
-                <div className="relative w-full max-w-lg">
-                  <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
-                    {/* Thumbnail image that fills the square container */}
-                    <img
+  // return (
+  //   <>
+  //     {/* First Section - Undeniable Proof of Success */}
+  //     <div className="bg-gray-100 w-full">
+  //       <div className="w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-16 sm:py-20 md:py-24">
+  //         <div className="max-w-7xl mx-auto text-center">
+  //           <h1 className="text-3xl md:text-4xl lg:text-5xl font-walbaum font-light text-gray-800 mb-3">
+  //             Undeniable Proof
+  //           </h1>
+  //           <h2 className="text-3xl md:text-4xl lg:text-5xl font-Bold font-walbaum text-gray-800 mb-6">
+  //             of Success.
+  //           </h2>
+  //           <p className=" text-gray-600 text-xl md:text-xl font-walbaum mb-12">
+  //             Jeff's success is a template for your success.
+  //           </p>
+  //           <div className="flex items-center justify-center bg-gray-100">
+  //             <div className="w-full lg:w-1/2 flex justify-center">
+  //               <div className="relative w-full max-w-lg">
+  //                 <div className="relative w-full max-w-lg pb-[100%] rounded-xl overflow-hidden">
+  {/* Thumbnail image that fills the square container */ }
+  {/* <img
                       src="https://i.imgur.com/kmZyPld.png"
                       alt="Webinar Video Thumbnail"
                       className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
                     />
 
-                    {/* Play Button Overlay */}
+                  
                     <button
                       onClick={() =>
                         window.open(
@@ -91,6 +98,88 @@ const ProofPage: React.FC = () => {
                         </svg>
                       </div>
                     </button>
+                  </div> */}
+
+
+  {/* 
+                  <JoinBtn page="/pricing-plan">JOIN PRSPERA</JoinBtn>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+  return (
+    <>
+      {/* First Section - Undeniable Proof of Success */}
+      <div className="bg-gray-100 w-full">
+        <div className="w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-16 sm:py-20 md:py-24">
+          <div className="max-w-7xl mx-auto text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-walbaum font-light text-gray-800 mb-3">
+              Undeniable Proof
+            </h1>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-Bold font-walbaum text-gray-800 mb-6">
+              of Success.
+            </h2>
+            <p className=" text-gray-600 text-xl md:text-xl font-walbaum mb-12">
+              Jeff's success is a template for your success.
+            </p>
+            <div className="flex items-center justify-center bg-gray-100">
+              <div className="w-full lg:w-3/4 flex justify-center">
+                <div className="relative w-full max-w-3xl">
+                  <div className="relative w-full max-w-3xl pb-[56.25%] rounded-xl overflow-hidden">
+                    {!showVideo ? (
+                      // Thumbnail with play button
+                      <>
+                        <img
+                          src="/assets/ProofThumbnail.png" 
+                          alt="Video Thumbnail"
+                          className="absolute top-0 left-0 w-full h-full object-cover object-center rounded-xl"
+                        />
+                        {/* Play Button Overlay */}
+                        <button
+                          //     onClick={() => setShowVideo(true)}
+                          //     className="absolute inset-0 flex items-center justify-center"
+                          //   >
+                          //     <div className="w-14 h-14 bg-black bg-opacity-60 rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all">
+                          //       <svg
+                          //         xmlns="http://www.w3.org/2000/svg"
+                          //         className="h-12 w-12 text-white"
+                          //         fill="currentColor"
+                          //         viewBox="0 0 24 24"
+                          //       >
+                          //         <path d="M8 5v14l11-7z" />
+                          //       </svg>
+                          //     </div>
+                          //   </button>
+                          // </>
+                          onClick={() => {
+                            // Open OneDrive video in new tab instead of embedding, Remove the below code and uncomment the above code  when embedding video.
+                            window.open("https://1drv.ms/v/c/b10a5de209baeefa/EYkSisNJTclIqUvXmKdyq9kBAZEgeLGNUxfJzeWbQ_PfIQ", "_blank");
+                          }}
+                          className="absolute inset-0 flex items-center justify-center"
+                        >
+                          <div className="w-14 h-14 bg-black bg-opacity-60 rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-12 w-12 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </button>
+                      </>
+                    ) : (
+                      // Video iframe
+                      <iframe
+                        src="https://onedrive.live.com/embed?cid=b10a5de209baeefa&resid=b10a5de209baeefa%21108&authkey=AKlL1xilSU2pS9c&em=2&wdAr=1.7777777777777777" //since the one drive link is not working we need to replace it with Gdrive link.
+                        className="absolute top-0 left-0 w-full h-full rounded-xl"
+                        allow="autoplay"
+                        title="Jeff's Success Story Video"
+                      ></iframe>
+                    )}
                   </div>
 
                   <JoinBtn page="/pricing-plan">JOIN PRSPERA</JoinBtn>
