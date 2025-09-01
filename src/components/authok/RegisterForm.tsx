@@ -501,7 +501,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   };
 
   const handleCloseClick = (): void => {
-    navigate("/pricing-plan");
+    navigate(-1);
   };
 
   const handlePhoneChange = (value: string): void => {
