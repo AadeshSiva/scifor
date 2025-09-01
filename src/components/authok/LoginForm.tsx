@@ -458,7 +458,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
 
   const handleLoginRedirect = async () => {
     const queryParams = new URLSearchParams(location.search);
-    const plan = queryParams.get("plan") || "guest";
+    const plan = queryParams.get("plan") || "";
 
     const status = await getUserStatus();
     if (status.authenticated) {
@@ -473,6 +473,8 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         } else if (plan === "member") {
           alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
+        } else {
+          navigate("/pricing-page");
         }
       }
     }
