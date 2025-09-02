@@ -18,7 +18,7 @@ const PaymentSuccess = () => {
 
       if (accessToken && session) {
         const response = await fetch(
-          `https://internship-pro.onrender.com/confirm-payment/?session_id=${session}`,
+          `http://31.97.117.28:8001/confirm-payment/?session_id=${session}`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
 
