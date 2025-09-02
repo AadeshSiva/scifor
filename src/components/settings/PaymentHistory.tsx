@@ -516,7 +516,7 @@ const PurchaseHistory = () => {
         throw new Error("Authentication token not found. Please log in again.");
       }
 
-      const response = await fetch("https://internship-pro.onrender.com/user-payments/", {
+      const response = await fetch("http://31.97.117.28:8001/user-payments/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

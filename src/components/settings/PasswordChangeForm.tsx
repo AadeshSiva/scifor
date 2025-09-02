@@ -76,7 +76,7 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
         return;
       }
 
-      const response = await fetch("https://internship-pro.onrender.com/change-password/", {
+      const response = await fetch("http://31.97.117.28:8001/change-password/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
