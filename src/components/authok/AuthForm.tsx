@@ -198,12 +198,14 @@ export function AuthForm({
   onSuccess,
   compact = false,
   onClose,
+  initialView = "register",
 }: {
   onSuccess?: (user?: any) => void;
   compact?: boolean;
   onClose?: () => void;
+  initialView?: "register" | "login";
 }) {
-  const [view, setView] = useState<"register" | "login">("register");
+  const [view, setView] = useState<"register" | "login">(initialView);
 
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
     compact ? (
