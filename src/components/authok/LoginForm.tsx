@@ -552,7 +552,8 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   };
 
   const handleRegisterClick = () => {
-    onSwitchToRegister();
+    navigate("/pricing-plan");
+    alert("Please first select a plan to register.");
   };
 
   const handleForgotPasswordSuccess = () => {
