@@ -34,7 +34,7 @@ const ForgotPasswordModal: React.FC<{
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = "http://31.97.117.28:8001";
+  const API_BASE_URL = "https://internship-pro.onrender.com";
 
   const resetForm = () => {
     setStep(1);
