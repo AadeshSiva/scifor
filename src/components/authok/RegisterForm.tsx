@@ -367,6 +367,20 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
 
     try {
       // Check if email already exists
+      async function makeApiCall<T>(url: string, body: any): Promise<T> {
+      const response = await fetch(url, {
+            method: "POST", 
+            headers: {
+                  "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body), 
+         });
+
+         if (!response.ok) {
+              throw new Error("API call failed");
+         }
+          return response.json();
+       }
       const checkData: CheckEmailResponse = await makeApiCall("/check_email_status/", {
         email: formData.email,
       });
