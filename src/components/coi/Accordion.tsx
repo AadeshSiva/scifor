@@ -281,7 +281,7 @@ const AccordionWithApi: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://internship-pro.onrender.com//category-statistics/");
+        const response = await fetch("http://31.97.117.28:8001//category-statistics/");
         const result = await response.json();
         console.log(result);
         setData(result);
