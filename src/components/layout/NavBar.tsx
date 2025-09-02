@@ -468,7 +468,7 @@ const NavBar: React.FC = () => {
                     location.pathname === "/auth" ? "invisible" : "visible"
                   }`}
                   onClick={() => {
-                    navigate("/auth");
+                    navigate("/auth?view=login");
                   }}
                 >
                   Login
