@@ -19,9 +19,9 @@ export default function Auth() {
           alt="Side Logo"
           className="w-[140px] h-[35px]"
         />
-        <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
+        {/* <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-40 font-linear">
           <span>Grow Smarter. <span className="font-bold">Exit Richer™</span></span>
-        </div>
+        </div> */}
       </div>
     </aside>
           <AuthForm />

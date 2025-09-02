@@ -268,9 +268,7 @@ const NavBar: React.FC = () => {
   const getNavLinkClasses = (path: string) => {
     const baseClasses =
       "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light";
-    const activeClasses = isActivePage(path)
-      ? "underline decoration-2 underline-offset-4"
-      : "";
+    const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
     return `${baseClasses} ${activeClasses}`;
   };
 
@@ -283,10 +281,7 @@ const NavBar: React.FC = () => {
   if (isLoading) {
     return (
       <>
-        <div
-          className="fixed top-0 left-0 right-0 z-10 w-full bg-white"
-          data-navbar
-        >
+        <div className="fixed top-0 left-0 right-0 z-10 w-full bg-white" data-navbar>
           <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-6 max-sm:p-5">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
@@ -371,7 +366,7 @@ const NavBar: React.FC = () => {
             </a>
           </nav> */}
 
-          <div className="flex gap-6">
+          <div className="flex gap-4">
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -384,13 +379,8 @@ const NavBar: React.FC = () => {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                      <div className="font-medium truncate">
-                        {user?.full_name}
-                      </div>
-                      <div
-                        className="text-gray-500 truncate"
-                        title={user?.email}
-                      >
+                      <div className="font-medium truncate">{user?.full_name}</div>
+                      <div className="text-gray-500 truncate" title={user?.email}>
                         {user?.email ? truncateEmail(user.email) : ""}
                       </div>
                     </div>
@@ -403,7 +393,7 @@ const NavBar: React.FC = () => {
                     </button>
 
                     <button
-                      onClick={() => navigate("/pricing-page")}
+                      onClick={() => navigate("/pricing-plan")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       Pricing Plan
@@ -473,16 +463,16 @@ const NavBar: React.FC = () => {
               </div>
             ) : (
               <>
-                {/* <button
-                  className={`rounded text-white text-base w-[194px] bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
+                <button
+                  className={`rounded text-white text-base bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
                     location.pathname === "/auth" ? "invisible" : "visible"
                   }`}
                   onClick={() => {
                     navigate("/auth");
                   }}
                 >
-                  Register
-                </button> */}
+                  Login
+                </button>
 
                 <div className="relative">
                   <button
@@ -502,6 +492,17 @@ const NavBar: React.FC = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          navigate("/proof");
+                          setShowDropdown(false);
+                        }}
+                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
+                      >
+                        Proof
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
                           navigate("/coi");
                           setShowDropdown(false);
                         }}
@@ -509,6 +510,7 @@ const NavBar: React.FC = () => {
                       >
                         COI
                       </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -519,6 +521,7 @@ const NavBar: React.FC = () => {
                       >
                         Pricing
                       </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -539,10 +542,7 @@ const NavBar: React.FC = () => {
 
         {/* Overlay to close dropdown when clicking outside */}
         {showDropdown && (
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setShowDropdown(false)}
-          />
+          <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
         )}
       </div>
     </>

@@ -134,8 +134,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
 
       const urlObj = new URL(urlToTest);
 
-      // Check if hostname ends with .com
-      return urlObj.hostname.toLowerCase().endsWith(".com");
+      // Make sure it has a valid hostname (e.g., no empty string, no spaces)
+      return !!urlObj.hostname && urlObj.hostname.includes(".");
     } catch {
       return false;
     }
@@ -171,7 +171,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       case "website_name":
         if (!value.trim()) return "Company website is required";
         if (!isValidWebsiteUrl(value.trim())) {
-          return "Please enter a valid website URL ending with .com (e.g., example.com or https://example.com)";
+          return "Please enter a valid website URL (ending with .com, .org, .io, .co, etc.)";
         }
         return undefined;
 
@@ -501,7 +501,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   };
 
   const handleCloseClick = (): void => {
-    navigate("/pricing-plan");
+    navigate(-1);
   };
 
   const handlePhoneChange = (value: string): void => {
