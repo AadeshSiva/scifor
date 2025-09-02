@@ -463,13 +463,11 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     const status = await getUserStatus();
     if (status.authenticated) {
       if (status.isMember) {
-        alert("You are already registered as a member.");
-        navigate("/confirmation-member");
+        navigate("/dashboard");
       } else {
         if (plan === "guest") {
           console.log(plan);
-          alert("You are already registered as a guest.");
-          navigate("/confirmation-guest");
+          navigate("/dashboard");
         } else if (plan === "member") {
           alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
