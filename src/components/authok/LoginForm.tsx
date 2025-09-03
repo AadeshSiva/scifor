@@ -34,7 +34,7 @@ const ForgotPasswordModal: React.FC<{
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = "https://internship-pro.onrender.com";
+  const API_BASE_URL = "http://31.97.117.28:8001";
 
   const resetForm = () => {
     setStep(1);
@@ -410,7 +410,7 @@ async function getUserStatus() {
   if (!token) return { authenticated: false, isMember: false };
 
   try {
-    const res = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+    const res = await fetch("http://31.97.117.28:8001/extract-user-data/", {
       headers: { ...authHeaders() },
     });
 
@@ -458,21 +458,21 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
 
   const handleLoginRedirect = async () => {
     const queryParams = new URLSearchParams(location.search);
-    const plan = queryParams.get("plan") || "guest";
+    const plan = queryParams.get("plan") || "";
 
     const status = await getUserStatus();
     if (status.authenticated) {
       if (status.isMember) {
-        alert("You are already registered as a member.");
-        navigate("/confirmation-member");
+        navigate("/dashboard");
       } else {
         if (plan === "guest") {
           console.log(plan);
-          alert("You are already registered as a guest.");
-          navigate("/confirmation-guest");
+          navigate("/dashboard");
         } else if (plan === "member") {
           alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
+        } else {
+          navigate("/pricing-plan");
         }
       }
     }
@@ -490,7 +490,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setError("");
 
     try {
-      const response = await fetch("https://internship-pro.onrender.com/login/", {
+      const response = await fetch("http://31.97.117.28:8001/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -530,6 +530,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseClick = (): void => {
+    navigate(-1);
   };
 
   const getCsrfToken = () => {
@@ -574,6 +578,17 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   return (
     <>
       <div className="flex flex-col gap-6">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleCloseClick}
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+            disabled={loading}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
         {error && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
             <AlertCircle size={16} />

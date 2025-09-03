@@ -24,8 +24,8 @@ import Landing from "./pages/Landing";
 import CuratedPage from "./pages/CuratedPage"
 
 import Dashboard from "./pages/Dashboard";
-import ProofPage from "./pages/Proof";
 import AboutUs from "./pages/AboutUs";
+import ProofPage from "./pages/Proof";
 
 
 const queryClient = new QueryClient();
@@ -189,6 +189,8 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
+
+
 );
 
 export default App;

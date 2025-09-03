@@ -49,20 +49,21 @@ const Pricing_Plan: React.FC = () => {
 
   const handleFreeClick = () => {
     if (!isAuthenticated) {
-      window.location.href = "/auth?plan=guest";
+      window.location.href = "/auth?plan=guest&view=register";
     } else if (user?.paid) {
-      alert("You are already registered as a Member.");
+      window.location.href = "/dashboard";
     } else {
-      alert("You are already registered as a Guest User.");
+      window.location.href = "/dashboard";
     }
   };
 
   const handlePaidClick = () => {
     if (!isAuthenticated) {
-      window.location.href = "/auth?plan=member";
+      window.location.href = "/auth?plan=member&view=register";
     } else if (user?.paid) {
-      alert("You are already registered as a Member.");
+      window.location.href = "/dashboard";
     } else {
+      alert("You are already registered as a Guest, proceeding to upgarde your plan.");
       window.location.href = "/payment";
     }
   };

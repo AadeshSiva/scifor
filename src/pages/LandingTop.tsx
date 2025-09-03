@@ -364,16 +364,9 @@ export const StorySection: React.FC = () => {
         </p>
 
         {/* Video block */}
+
         <div className="flex justify-center">
-          <div className="relative w-full max-w-xl">
-            <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow">
-              <video
-                className="absolute inset-0 w-full h-full object-cover"
-                src={HeroVideo}
-                controls
-              />
-            </div>
-          </div>
+          <video className="rounded-xl" src={HeroVideo} controls></video>
         </div>
 
         <div className="mt-6">
@@ -383,7 +376,8 @@ export const StorySection: React.FC = () => {
 
       {/* Jeff section */}
       <div className="max-w-6xl mx-auto mt-20 mb-40">
-        <div className="text-center mb-10">
+        {/* Titles */}
+        <div className="text-center mb-12">
           <h2 className="font-walbaum font-thin leading-tight text-[#EAEAEA] text-4xl md:text-5xl lg:text-6xl">
             Jeff’s dream came true.
           </h2>
@@ -392,70 +386,59 @@ export const StorySection: React.FC = () => {
           </h3>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-10">
+        {/* Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-x-16 gap-y-10">
           {/* Left image */}
-          <div className="w-full lg:w-1/2 mt-3 md:mt-4 lg:mt-6">
+          <div className="w-full lg:w-auto">
             <img
               src={WebinarImg}
               alt="Jeff Cullen"
-              className="w-full rounded-xl object-cover ransform translate-y-1 md:translate-y-2 lg:translate-y-3"
+              className="w-full rounded-xl object-cover"
             />
           </div>
 
           {/* Right copy */}
-          <div className="w-full lg:w-1/2">
-            {/* Title matches mock: large, thin serif */}
-            <h3 className="font-linear font-thin text-[#E3E3E3] leading-[1.1] text-[44px] md:text-[56px] lg:text-[64px] tracking-[0.01em] mb-4">
-  Jeff Cullen
-</h3>
+          <div className="w-full lg:max-w-[560px]">
+            <h3 className="font-linear font-thin text-[#E3E3E3] leading-[1.1] text-[44px] md:text-[56px] lg:text-[64px] tracking-[0.01em] mb-6">
+              Jeff Cullen
+            </h3>
 
-            {/* Body: clean sans, high contrast, comfy leading */}
-            <div className="font-linear text-[#F2F2F2] text-[17px] md:text-[18px] lg:text-[19px] leading-[1.8] space-y-4">
-              <p>Canadian Entrepreneur.</p>
-              <p>Founder. Former CEO of Rodair.</p>
-              <p>UPh<span style={{ fontSize: "1.8rem" }}>™</span> Global Ambassador</p>
-
+            <div className="font-linear font-thin text-[#F2F2F2] text-[17px] md:text-[18px] lg:text-[19px] leading-7 space-y-3">
+              <p className="leading-7">
+                Canadian Entrepreneur.<br />
+                Founder. Former CEO of Rodair.<br />
+                UPh<span style={{ fontSize: "1.8rem" }}>™</span> Global Ambassador
+              </p>
               <p>
                 Jeff and his team didn’t just build a company called Rodair — they created a business with marketable value —
-                driven by <span className="font-semibold text-white">Prosperity For All<span style={{ fontSize: "1.8rem" }}>™</span> </span>.
+                driven by <span className="font-semibold text-white">Prosperity For All<span style={{ fontSize: "1.8rem" }}>™</span></span>.
               </p>
 
-              <p className="font-semibold text-white">
-                Prosperity For All<span style={{ fontSize: "1.8rem" }}>™</span> 
+              <p className="leading-7">
+                <span className="font-semibold text-white">
+                  Prosperity For All
+                  <span style={{ fontSize: "1.8rem" }}>™</span>
+                </span><br />
+                This was not a slogan or mission statement. This was the DNA of their business
+                in 6 words or less — also known as their Unifying Philosophy (UPh
+                <span style={{ fontSize: "1.8rem" }}>™</span>).
+              </p>
+
+              <p className="leading-7">
+                Their UPh–powered business was an:<br />
+                <span className="pl-5">▪ award–winning (multiple business awards)</span><br />
+                <span className="pl-5">▪ High–margin (25% higher than industry)</span><br />
+                <span className="pl-5">▪ culture–led business (near perfect engagement)</span><br />
+                resulting in a <span className="font-semibold text-white">double–digit multiplier exit</span> that monetized,
+                <span className="font-semibold text-white"> intangible assets — tax efficiently</span>.
               </p>
               <p>
-                This was not a slogan or mission statement. This was the DNA of their business in 6 words or less — also known as their Unifying Philosophy
-                (UPh<span style={{ fontSize: "1.8rem" }}>™</span> ).
-              </p>
-
-              <p>Their UPh-powered business was an:</p>
-              <ul className="list-none space-y-2 pl-0">
-                <li>
-                  <span className="mr-3 text-white">▪</span>
-                  award–winning (multiple business awards)
-                </li>
-                <li>
-                  <span className="mr-3 text-white">▪</span>
-                  High–margin (25% higher than industry)
-                </li>
-                <li>
-                  <span className="mr-3 text-white">▪</span>
-                  culture–led business (near perfect engagement)
-                </li>
-              </ul>
-
-              <p>
-                resulting in a <span className="font-semibold text-white">double–digit multiplier exit</span> that
-                monetized, <span className="font-semibold text-white">intangible assets — tax efficiently</span>.
+                Rodair’s Prosperity For All became a world–first: the first UPh operationalized business that maximized enterprise
+                value via their intangible assets.
               </p>
 
               <p>
-                Rodair’s Prosperity For All became a world–first: the first UPh operationalized business that maximized
-                enterprise value via their intangible assets.
-              </p>
-
-              <p>
-                Their UPh<span style={{ fontSize: "1.8rem" }}>™</span>  remarkably monetized these intangible assets all tax effectively —
+                Their UPh<span style={{ fontSize: "1.8rem" }}>™</span> remarkably monetized these intangible assets all tax effectively —
                 creating generational wealth
               </p>
             </div>

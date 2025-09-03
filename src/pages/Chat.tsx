@@ -215,7 +215,7 @@ const Chat = () => {
         return false;
       }
 
-      const response = await fetch("https://internship-pro.onrender.com/api/token/refresh/", {
+      const response = await fetch("http://31.97.117.28:8001/api/token/refresh/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -256,7 +256,7 @@ const Chat = () => {
           return;
         }
 
-        const wsUrl = `wss://internship-pro.onrender.com/ws/chat/general/?token=${token}`;
+        const wsUrl = `wss://31.97.117.28:8001/ws/chat/general/?token=${token}`;
         console.log("Attempting to connect to:", wsUrl);
 
         ws = new WebSocket(wsUrl);
