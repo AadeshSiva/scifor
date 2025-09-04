@@ -1352,7 +1352,7 @@ const Payment: React.FC = () => {
 
       console.log("Sending to backend:", requestData);
 
-      const response = await fetch("http://31.97.117.28:8001/create-checkout-session/", {
+      const response = await fetch("https://internship-pro.onrender.com/create-checkout-session/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
