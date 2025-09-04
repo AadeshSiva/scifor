@@ -95,7 +95,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const API_BASE_URL = "https://internship-pro.onrender.com";
+  const API_BASE_URL = "https://internship-pro.onrender.com/";
 
   const { login } = useAuth();
   const navigate = useNavigate();
