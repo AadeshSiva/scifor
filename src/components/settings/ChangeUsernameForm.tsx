@@ -57,7 +57,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
   }>({});
 
   // API configuration
-  const API_BASE_URL = "https://internship-pro.onrender.com";
+  const API_BASE_URL = "https://api.prspera.com";
 
   const COLOR_OPTIONS = [
     "Red",
