@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     try {
-      const response = await fetch("http://31.97.117.28:8001/api/token/refresh/", {
+      const response = await fetch("https://internship-pro.onrender.com/api/token/refresh/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
