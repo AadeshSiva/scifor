@@ -410,7 +410,7 @@ async function getUserStatus() {
   if (!token) return { authenticated: false, isMember: false };
 
   try {
-    const res = await fetch("http://31.97.117.28:8001/extract-user-data/", {
+    const res = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
       headers: { ...authHeaders() },
     });
 
@@ -490,7 +490,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setError("");
 
     try {
-      const response = await fetch("http://31.97.117.28:8001/login/", {
+      const response = await fetch("https://internship-pro.onrender.com/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
