@@ -210,7 +210,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         password: password, // Include password for verification
       };
 
-      const response = await fetch("http://31.97.117.28:8001/profile/", {
+      const response = await fetch("https://internship-pro.onrender.com/profile/", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
