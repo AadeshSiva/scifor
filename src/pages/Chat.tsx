@@ -256,7 +256,7 @@ const Chat = () => {
           return;
         }
 
-        const wsUrl = `wss://internship-pro.onrender.com1/ws/chat/general/?token=${token}`;
+        const wsUrl = `wss://api.prspera.com/ws/chat/general/?token=${token}`;
         console.log("Attempting to connect to:", wsUrl);
 
         ws = new WebSocket(wsUrl);
