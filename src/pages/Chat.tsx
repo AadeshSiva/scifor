@@ -215,7 +215,7 @@ const Chat = () => {
         return false;
       }
 
-      const response = await fetch("https://internship-pro.onrender.com/api/token/refresh/", {
+      const response = await fetch("https://api.prspera.com/api/token/refresh/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
