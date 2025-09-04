@@ -34,7 +34,7 @@ const ForgotPasswordModal: React.FC<{
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const API_BASE_URL = "https://internship-pro.onrender.com";
+  const API_BASE_URL = "https://api.prspera.com";
 
   const resetForm = () => {
     setStep(1);
@@ -410,7 +410,7 @@ async function getUserStatus() {
   if (!token) return { authenticated: false, isMember: false };
 
   try {
-    const res = await fetch("https://internship-pro.onrender.com/extract-user-data/", {
+    const res = await fetch("https://api.prspera.com/extract-user-data/", {
       headers: { ...authHeaders() },
     });
 
@@ -490,7 +490,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setError("");
 
     try {
-      const response = await fetch("https://internship-pro.onrender.com/login/", {
+      const response = await fetch("https://api.prspera.com/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
