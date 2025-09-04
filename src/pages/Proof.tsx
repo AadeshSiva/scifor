@@ -480,7 +480,7 @@ const TooltipItem = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-const VIDEO_ID = "TEq8Fnhkza8";
+const VIDEO_ID = "97E191tyZjo";
 
 const ProofPage: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);

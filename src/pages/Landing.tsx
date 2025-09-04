@@ -3,6 +3,7 @@ import DropdownSection from "./LandingMiddle";
 import StorySection from "./LandingTop";
 import HomePage from "./HomePage";
 import Carousel from "./Carousel";
+
 interface CircleProps {
   text: string;
   active: boolean;
@@ -15,32 +16,32 @@ export default function Landing() {
     {
       heading: "Win before you begin",
       text: "Design Your Exit Like a Visionary, Not a Victim",
-      Url: "https://drive.google.com/file/d/1EKMfWT_eiiMl4xLFqQrmEkqa6clGmcug/preview",
+      Url: "https://www.youtube.com/embed/KzUnkneVE-4",
     },
     {
       heading: "Monetize the invisible",
       text: "Turn Your Hidden Assets into Transferable Wealth",
-      Url: "https://drive.google.com/file/d/11btStJ5NAHsFzZUEhUtoEkQpe5rRTSc_/preview",
+      Url: "https://www.youtube.com/embed/ZQs79JanXy8",
     },
     {
       heading: "Scale without sacrifice",
       text: "Build a Business That Runs and Grows Without You",
-      Url: "https://drive.google.com/file/d/14wTGE-ONeOVmRftVSr-dO8aJoiBZTR--/preview",
+      Url: "https://www.youtube.com/embed/FaTweAwjpmU",
     },
     {
       heading: "Perform under due diligence",
       text: "Stage Your Business Like a Premium Asset, Not a Project",
-      Url: "https://drive.google.com/file/d/1Dz1mnzqrDgsrL5He7whpIziGYmc6CnvA/preview",
+      Url: "https://www.youtube.com/embed/46SHEhoXfsU",
     },
     {
       heading: "Practice the exit – before it's real",
       text: "Rehearse the Deal So You Win Under Pressure",
-      Url: "https://drive.google.com/file/d/1d7ew7mXs3c19i4E3J3BndrzMHvfN_i1u/preview",
+      Url: "https://www.youtube.com/embed/-gL0wUnpt9I",
     },
     {
       heading: "Live a life of Pride not regret",
       text: "Leave a legacy ​of reverence,​not shame​",
-      Url: "https://drive.google.com/file/d/1x9lQkXldCgzqfWMc91BLVgX0ZFkx4cIq/preview",
+      Url: "https://www.youtube.com/embed/cFBsxNK-AjM",
     },
   ];
 
@@ -91,8 +92,10 @@ export default function Landing() {
                   src={circleinfodata[circleinfo].Url}
                   className="w-full h-full rounded-lg border border-gray-300"
                   title={circleinfodata[circleinfo].heading}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
-                  allow="fullscreen"
+                  referrerPolicy="strict-origin-when-cross-origin"
                 ></iframe>
               </div>
             </div>
@@ -134,10 +137,13 @@ export default function Landing() {
 function Circle({ text, active }: CircleProps) {
   return (
     <div
-      className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex justify-center items-center text-center text-[#FFBB1BBF] text-xs sm:text-sm p-2 cursor-pointer transition-colors duration-200
-      ${active ? "bg-white  text-[#000000c5] shadow-lg scale-110" : "bg-[#2b2f33] hover:bg-gray-700"}`}
+      className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex justify-center items-center text-center text-xs sm:text-sm p-2 transition-all duration-200 font-medium
+      ${active 
+        ? "bg-white text-black shadow-lg scale-110" 
+        : "bg-[#2b2f33] text-[#FFBB1BBF] hover:bg-gray-700"
+      }`}
     >
-      {text}
+      <span className="leading-tight">{text}</span>
     </div>
   );
 }
@@ -157,38 +163,40 @@ function Circle({ text, active }: CircleProps) {
 // export default function Landing() {
 //   const [circleinfo, setCircleinfo] = useState<number>(0);
 
-//   const circleinfodata = [
-//     {
-//       heading: "Win before you begin",
-//       text: "Design Your Exit Like a Visionary, Not a Victim",
-//       Url: "https://drive.google.com/file/d/1EKMfWT_eiiMl4xLFqQrmEkqa6clGmcug/preview",
-//     },
-//     {
-//       heading: "Monetize the invisible",
-//       text: "Turn Your Hidden Assets into Transferable Wealth",
-//       Url: "https://drive.google.com/file/d/11btStJ5NAHsFzZUEhUtoEkQpe5rRTSc_/preview",
-//     },
-//     {
-//       heading: "Scale without sacrifice",
-//       text: "Build a Business That Runs and Grows Without You",
-//       Url: "https://drive.google.com/file/d/14wTGE-ONeOVmRftVSr-dO8aJoiBZTR--/preview",
-//     },
-//     {
-//       heading: "Perform under due diligence",
-//       text: "Stage Your Business Like a Premium Asset, Not a Project",
-//       Url: "https://drive.google.com/file/d/1Dz1mnzqrDgsrL5He7whpIziGYmc6CnvA/preview",
-//     },
-//     {
-//       heading: "Practice the exit – before it's real",
-//       text: "Rehearse the Deal So You Win Under Pressure",
-//       Url: "https://drive.google.com/file/d/1d7ew7mXs3c19i4E3J3BndrzMHvfN_i1u/preview",
-//     },
-//     {
-//       heading: "Live a life of Pride not regret",
-//       text: "Leave a legacy ​of reverence,​not shame​",
-//       Url: "https://drive.google.com/file/d/1x9lQkXldCgzqfWMc91BLVgX0ZFkx4cIq/preview",
-//     },
-//   ];
+
+  // const circleinfodata = [
+  //   {
+  //     heading: "Win before you begin",
+  //     text: "Design Your Exit Like a Visionary, Not a Victim",
+  //     Url: "https://www.youtube.com/embed/KzUnkneVE-4",
+  //   },
+  //   {
+  //     heading: "Monetize the invisible",
+  //     text: "Turn Your Hidden Assets into Transferable Wealth",
+  //     Url: "https://www.youtube.com/embed/ZQs79JanXy8",
+  //   },
+  //   {
+  //     heading: "Scale without sacrifice",
+  //     text: "Build a Business That Runs and Grows Without You",
+  //     Url: "https://www.youtube.com/embed/FaTweAwjpmU",
+  //   },
+  //   {
+  //     heading: "Perform under due diligence",
+  //     text: "Stage Your Business Like a Premium Asset, Not a Project",
+  //     Url: "https://www.youtube.com/embed/46SHEhoXfsU",
+  //   },
+  //   {
+  //     heading: "Practice the exit – before it's real",
+  //     text: "Rehearse the Deal So You Win Under Pressure",
+  //     Url: "https://www.youtube.com/embed/-gL0wUnpt9I",
+  //   },
+  //   {
+  //     heading: "Live a life of Pride not regret",
+  //     text: "Leave a legacy ​of reverence,​not shame​",
+  //     Url: "https://www.youtube.com/embed/cFBsxNK-AjM",
+  //   },
+  // ];
+
 
 //   return (
 //     <>
