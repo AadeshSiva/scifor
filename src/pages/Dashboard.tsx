@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
       <main className="flex-1 min-h-screen bg-gray-100 p-8 flex flex-col items-center">
         {/* Welcome Message */}
         <h1 className="text-2xl font-walbaum text-gray-700 mb-6">
-          Welcome to your Prospera dashboard, <span className="italic">[first name]</span>
+          Welcome to your Prospera dashboard
         </h1>
 
         <div className="w-full max-w-2xl space-y-6">
@@ -116,24 +116,19 @@ const Dashboard: React.FC = () => {
           <div className="bg-white shadow-md rounded-lg p-6 px-16">
             <div className="divide-y divide-gray-200 text-gray-700">
               <div className="flex justify-between py-2">
-                <span className="font-light">Alias</span>
-                <span className="opacity-50">GrayShip123</span>
+                
               </div>
               <div className="flex justify-between py-2">
-                <span className="font-light">Name</span>
-                <span className="opacity-50">Mahesh Uda</span>
+                
               </div>
               <div className="flex justify-between py-2">
-                <span className="font-light">Company Email</span>
-                <span className="opacity-50">uadmahesh5@gmail.com</span>
+                
               </div>
               <div className="flex justify-between py-2">
-                <span className="font-light">Phone</span>
-                <span className="opacity-50">+1-234-+567-+89</span>
+                
               </div>
               <div className="flex justify-between py-2">
-                <span className="font-light">Country</span>
-                <span className="opacity-50">India</span>
+                
               </div>
             </div>
           </div>
