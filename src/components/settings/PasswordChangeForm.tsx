@@ -76,7 +76,7 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
         return;
       }
 
-      const response = await fetch("https://internship-pro.onrender.com/change-password/", {
+      const response = await fetch("https://api.prspera.com/change-password/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
