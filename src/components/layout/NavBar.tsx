@@ -1,226 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { useAuth } from "@/utils/AuthContext"; // Adjust path as needed
-
-// // Header Component
-// const NavBar: React.FC = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const { user, isAuthenticated, logout, isLoading } = useAuth();
-//   const [showDropdown, setShowDropdown] = useState(false);
-//   const [navbarHeight, setNavbarHeight] = useState(0);
-
-//   // New state for scroll-to-hide
-//   const [isVisible, setIsVisible] = useState(true);
-//   const [lastScrollY, setLastScrollY] = useState(0);
-
-//   // Create a spacer div to push content down
-//   useEffect(() => {
-//     const navbar = document.querySelector("[data-navbar]") as HTMLElement;
-//     if (navbar) {
-//       setNavbarHeight(navbar.offsetHeight);
-//     }
-//   }, [isLoading]);
-
-//   // Scroll-to-hide logic
-//   useEffect(() => {
-//     const controlNavbar = () => {
-//       if (typeof window !== "undefined") {
-//         if (window.scrollY > lastScrollY && window.scrollY > 100) {
-//           setIsVisible(false);
-//         } else {
-//           setIsVisible(true);
-//         }
-//         setLastScrollY(window.scrollY);
-//       }
-//     };
-//     window.addEventListener("scroll", controlNavbar);
-//     return () => {
-//       window.removeEventListener("scroll", controlNavbar);
-//     };
-//   }, [lastScrollY]);
-
-//   const handleLogout = () => {
-//     logout();
-//     setShowDropdown(false);
-//     navigate("/");
-//   };
-
-//   const handleSettings = () => {
-//     setShowDropdown(false);
-//     navigate("/chat", { state: { display: "setting" } });
-//   };
-
-//   const getInitials = (fullName: string) => {
-//     return fullName
-//       .split(" ")
-//       .map((name) => name.charAt(0).toUpperCase())
-//       .join("");
-//   };
-
-//   // Helper function to check if current path matches nav item
-//   const isActivePage = (path: string) => {
-//     return location.pathname === path;
-//   };
-
-//   // Helper function to get nav link classes
-//   const getNavLinkClasses = (path: string) => {
-//     const baseClasses =
-//       "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light";
-//     const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
-//     return `${baseClasses} ${activeClasses}`;
-//   };
-
-//   // Helper function to truncate email if too long
-//   const truncateEmail = (email: string, maxLength: number = 25) => {
-//     if (email.length <= maxLength) return email;
-//     return email.substring(0, maxLength) + "...";
-//   };
-
-//   if (isLoading) {
-//     return (
-//       <>
-//         <div
-//           className="fixed top-0 left-0 right-0 z-10 w-full bg-white"
-//           data-navbar
-//           style={{ display: isVisible ? "block" : "none" }}
-//         >
-//           <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-6 max-sm:p-5">
-//             <div
-//               className="flex items-center gap-4 cursor-pointer"
-//               onClick={() => {
-//                 navigate("/");
-//               }}
-//             >
-//               <img
-//                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-//                 alt="Prospera Logo"
-//                 className="w-[195px] h-[34px]"
-//               />
-//               <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-//                 Grow Smarter. Exit Richer™️
-//               </span>
-//             </div>
-//             <div className="relative">
-//               <button
-//                 className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
-//                 onClick={(e) => {
-//                   e.stopPropagation();
-//                   setShowDropdown(!showDropdown);
-//                 }}
-//               >
-//                 <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-//                 <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-//                 <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
-//               </button>
-//               {showDropdown && (
-//                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
-//                   <button
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       navigate("/coi");
-//                       setShowDropdown(false);
-//                     }}
-//                     className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-//                   >
-//                     COI
-//                   </button>
-//                   <button
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       navigate("/pricing-plan");
-//                       setShowDropdown(false);
-//                     }}
-//                     className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-//                   >
-//                     Pricing
-//                   </button>
-//                 </div>
-//               )}
-//             </div>
-//           </header>
-//         </div>
-//         <div style={{ height: navbarHeight || "86px" }}></div>
-//       </>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <div
-//         className="top-0 left-0 right-0 z-50 w-full bg-white"
-//         data-navbar
-//         style={{ display: isVisible ? "block" : "none", position: "relative" }}
-//       >
-//         <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-5 max-sm:p-5">
-//           <div
-//             className="flex items-center gap-4 cursor-pointer"
-//             onClick={() => {
-//               navigate("/");
-//             }}
-//           >
-//             <img
-//               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-//               alt="Prospera Logo"
-//               className="w-[195px] h-[34px]"
-//             />
-//             <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-//               Grow Smarter. Exit Richer™️
-//             </span>
-//           </div>
-
-//           {/* Hide existing nav links and user menu, replace with hamburger dropdown */}
-//           <div className="relative">
-//             <button
-//               className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//                 setShowDropdown(!showDropdown);
-//               }}
-//             >
-//               <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-//               <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-//               <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
-//             </button>
-
-//             {showDropdown && (
-//               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
-//                 <button
-//                   onClick={(e) => {
-//                     e.stopPropagation();
-//                     navigate("/coi");
-//                     setShowDropdown(false);
-//                   }}
-//                   className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-//                 >
-//                   COI
-//                 </button>
-//                 <button
-//                   onClick={(e) => {
-//                     e.stopPropagation();
-//                     navigate("/pricing-plan");
-//                     setShowDropdown(false);
-//                   }}
-//                   className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-//                 >
-//                   Pricing
-//                 </button>
-//               </div>
-//             )}
-//           </div>
-//         </header>
-
-//         {/* Overlay to close dropdown when clicking outside */}
-//         {showDropdown && (
-//           <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default NavBar;
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
@@ -232,38 +9,40 @@ const NavBar: React.FC = () => {
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [navbarHeight, setNavbarHeight] = useState(0);
-
-  // Create a spacer div to push content down
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1200);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   useEffect(() => {
     const navbar = document.querySelector("[data-navbar]") as HTMLElement;
     if (navbar) {
       setNavbarHeight(navbar.offsetHeight);
     }
   }, [isLoading]);
-
   const handleLogout = () => {
     logout();
     setShowDropdown(false);
     navigate("/");
   };
-
   const handleSettings = () => {
     setShowDropdown(false);
     navigate("/chat", { state: { display: "setting" } });
   };
-
   const getInitials = (fullName: string) => {
     return fullName
       .split(" ")
       .map((name) => name.charAt(0).toUpperCase())
       .join("");
   };
-
   // Helper function to check if current path matches nav item
   const isActivePage = (path: string) => {
     return location.pathname === path;
   };
-
   // Helper function to get nav link classes
   const getNavLinkClasses = (path: string) => {
     const baseClasses =
@@ -271,41 +50,17 @@ const NavBar: React.FC = () => {
     const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
     return `${baseClasses} ${activeClasses}`;
   };
-
   // Helper function to truncate email if too long
   const truncateEmail = (email: string, maxLength: number = 25) => {
     if (email.length <= maxLength) return email;
     return email.substring(0, maxLength) + "...";
   };
-
-  if (isLoading) {
-    return (
-      <>
-        <div className="fixed top-0 left-0 right-0 z-10 w-full bg-white" data-navbar>
-          <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-6 max-sm:p-5">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-              alt="Company Logo"
-              className="w-[195px] h-[34px] cursor-pointer"
-              onClick={() => {
-                navigate("/");
-              }}
-            />
-            <div className="w-[194px] h-12 bg-gray-200 animate-pulse rounded"></div>
-          </header>
-        </div>
-        {/* Spacer div to prevent content from going under navbar */}
-        <div style={{ height: "86px" }}></div>
-      </>
-    );
-  }
-
   return (
     <>
       <div className="z-50 w-full bg-white" data-navbar>
-        <header className="flex justify-between items-center shadow-[0_7px_5.4px_0_rgba(0,0,0,0.25)] bg-white px-[49px] py-5 max-sm:p-5">
+        <header className="flex justify-between items-center shadow-xl bg-white px-[49px] py-4 max-sm:p-4">
           <div
-            className="flex items-center gap-4 cursor-pointer"
+            className="flex items-center cursor-pointer"
             onClick={() => {
               navigate("/");
             }}
@@ -313,78 +68,36 @@ const NavBar: React.FC = () => {
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
               alt="Prospera Logo"
-              className="w-[195px] h-[34px]"
+              className="w-[190px] h-[30px]"
             />
             <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-              Grow Smarter. Exit Richer™️
+              Grow Smarter<span className="font-bold">.Exit Richer™️</span>
             </span>
           </div>
-
-          {/* <nav className="flex gap-20 max-md:gap-10 max-sm:hidden">
-            <a
-              onClick={() => {
-                navigate("/coi");
-              }}
-              className={getNavLinkClasses("/coi")}
-            >
-              COI
-            </a>
-            <a
-              onClick={() => {
-                navigate("/landing");
-              }}
-              className={getNavLinkClasses("/landing")}
-            >
-              WINNING
-            </a>
-            <a
-              onClick={() => {
-                navigate("/pricing-plan");
-              }}
-              className={getNavLinkClasses("/pricing-plan")}
-            >
-              PRICING
-            </a>
-            <a className="text-black text-xl font-linear font-light cursor-pointer hover:text-gray-600 transition-colors">
-              Free
-            </a>
-            <a
-              onClick={() => {
-                navigate("/join");
-              }}
-              className={getNavLinkClasses("/join")}
-            >
-              JOIN
-            </a>
-            <a
-              onClick={() => {
-                navigate("/chat");
-              }}
-              className={getNavLinkClasses("/chat")}
-            >
-              LIVE
-            </a>
-          </nav> */}
-
-          <div className="flex gap-4">
+          <div className="gap-4 relative">
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="flex flex-row items-center justify-center relative gap-4">
                 <button
-                  className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
+                  onClick={() => navigate("/dashboard")}
+                  className="flex items-center justify-center px-4 h-8 text-md  
+             text-white bg-gray-800 transition-colors rounded-md"
+                >
+                  Dashboard
+                </button>
+                <button
+                  className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   {user?.full_name ? getInitials(user.full_name) : "U"}
                 </button>
-
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
+                  <div className="absolute right-0 mt-[425px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
                       <div className="font-medium truncate">{user?.full_name}</div>
                       <div className="text-gray-500 truncate" title={user?.email}>
                         {user?.email ? truncateEmail(user.email) : ""}
                       </div>
                     </div>
-
                     <button
                       onClick={() => navigate("/coi")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -412,7 +125,12 @@ const NavBar: React.FC = () => {
                     >
                       About Us
                     </button>
-
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      Dashboard
+                    </button>
                     <button
                       onClick={handleSettings}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -438,7 +156,6 @@ const NavBar: React.FC = () => {
                       </svg>
                       Settings
                     </button>
-
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -463,84 +180,122 @@ const NavBar: React.FC = () => {
               </div>
             ) : (
               <>
-                <button
-                  className={`rounded text-white text-base bg-black p-4 py-2 hover:bg-gray-800 transition-colors ${
-                    location.pathname === "/auth" ? "invisible" : "visible"
-                  }`}
-                  onClick={() => {
-                    navigate("/auth?view=login");
-                  }}
-                >
-                  Login
-                </button>
-
-                <div className="relative">
-                  <button
-                    className="flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowDropdown(!showDropdown);
-                    }}
-                  >
-                    <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-                    <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
-                    <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
-                  </button>
-
-                  {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50 border">
+                {isMobile ? (
+                  <>
+                    <div className="relative">
                       <button
+                        className="flex flex-col justify-center items-center  w-10 h-10 focus:outline-none"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate("/proof");
-                          setShowDropdown(false);
+                          setShowDropdown(!showDropdown);
                         }}
-                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
                       >
-                        Proof
+                        <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+                        <span className="block w-6 h-0.5 bg-black mb-1 transition-all duration-300"></span>
+                        <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
                       </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate("/coi");
-                          setShowDropdown(false);
-                        }}
-                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-                      >
-                        COI
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate("/pricing-plan");
-                          setShowDropdown(false);
-                        }}
-                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-                      >
-                        Pricing
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate("/about-us");
-                          setShowDropdown(false);
-                        }}
-                        className="flex items-center w-full text-left px-4 py-3 text-lg text-black hover:bg-gray-100 transition-colors font-light"
-                      >
-                        About Us
-                      </button>
+                      {showDropdown && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-md z-50">
+                          <button
+                            onClick={() => {
+                              navigate("/proof");
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center w-full text-left mb-1 px-4 py-1 text-md text-black hover:bg-gray-400 bg-gray-100 transition-colors font-light"
+                          >
+                            Proof
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigate("/coi");
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center w-full text-left mb-1 px-4 py-1 text-md text-black hover:bg-gray-200 bg-gray-100 transition-colors font-light"
+                          >
+                            COI
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigate("/pricing-plan");
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center w-full text-left mb-1 px-4 py-1 text-mdg text-black hover:bg-gray-200 bg-gray-100 transition-colors font-light"
+                          >
+                            Pricing
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigate("/about-us");
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center w-full text-left mb-1 px-4 py-1 text-md text-black hover:bg-gray-200 bg-gray-100 transition-colors font-light"
+                          >
+                            About Us
+                          </button>
+                          {location.pathname !== "/auth" &&
+                            <button
+                              className="flex items-center justify-center w-full py-1 text-md hover:text-black hover:bg-gray-200 transition-colors font-light border text-white bg-black"
+                              onClick={() => navigate("/auth?view=login")}
+                            >
+                              <span className="text-md">Login</span>
+                            </button>
+                          }
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <div className="flex flex-row gap-4">
+                    <button
+                      onClick={() => {
+                        navigate("/proof");
+                        setShowDropdown(false);
+                      }}
+                      className="flex items-center justify-center w-24 h-8 text-lg text-black hover:bg-gray-300 transition-colors font-light border bg-gray-100"
+                    >
+                      <span className="text-md">Proof</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/coi");
+                        setShowDropdown(false);
+                      }}
+                      className="flex items-center justify-center w-24 h-8 text-lg text-black hover:bg-gray-300 transition-colors font-light border bg-gray-100"
+                    >
+                      <span className="text-md">COI</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/pricing-plan");
+                        setShowDropdown(false);
+                      }}
+                      className="flex items-center justify-center w-24 h-8 text-lg text-black hover:bg-gray-300 transition-colors font-light border bg-gray-100"
+                    >
+                      <span className="text-md">Pricing</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/about-us");
+                        setShowDropdown(false);
+                      }}
+                      className="flex items-center justify-center w-24 h-8 text-lg text-black hover:bg-gray-300 transition-colors font-light border bg-gray-100"
+                    >
+                      <span className="text-md">About Us</span>
+                    </button>
+                    {location.pathname !== "/auth" &&
+                      <button
+                        className="flex items-center justify-center w-24 h-8 text-lg hover:text-black hover:bg-gray-300 transition-colors font-light border text-white bg-black"
+                        onClick={() => navigate("/auth?view=login")}
+                      >
+                        <span className="text-md">Login</span>
+                      </button>
+                    }
+                  </div>
+                )}
               </>
             )}
           </div>
         </header>
-
-        {/* Overlay to close dropdown when clicking outside */}
         {showDropdown && (
           <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
         )}
@@ -548,5 +303,4 @@ const NavBar: React.FC = () => {
     </>
   );
 };
-
 export default NavBar;
