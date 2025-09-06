@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-
 interface User {
   id: string;
   email: string;
@@ -13,7 +12,6 @@ interface User {
   iswebinarformfilled: boolean;
   is_staff: boolean;
 }
-
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -22,9 +20,7 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
 }
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
