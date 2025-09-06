@@ -79,13 +79,13 @@ const NavBar: React.FC = () => {
               <div className="flex flex-row items-center justify-center relative gap-4">
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="flex items-center justify-center px-4 h-8 text-md  
+                  className="flex items-center justify-center px-4 h-10 text-md  
              text-white bg-gray-800 transition-colors rounded-md"
                 >
                   Dashboard
                 </button>
                 <button
-                  className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
+                  className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   {user?.full_name ? getInitials(user.full_name) : "U"}
@@ -284,7 +284,7 @@ const NavBar: React.FC = () => {
                     </button>
                     {location.pathname !== "/auth" &&
                       <button
-                        className="flex items-center justify-center w-24 h-8 text-lg hover:text-black hover:bg-gray-300 transition-colors font-light border text-white bg-black"
+                        className="flex items-center justify-center w-24 h-8 text-lg transition-colors font-light border text-white bg-black"
                         onClick={() => navigate("/auth?view=login")}
                       >
                         <span className="text-md">Login</span>
