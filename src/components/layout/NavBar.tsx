@@ -85,7 +85,7 @@ const NavBar: React.FC = () => {
                   </button>
                 )}
                 <button
-                  className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
+                  className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   {user?.full_name ? getInitials(user.full_name) : "U"}
