@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
-
 // Header Component
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
@@ -58,7 +57,7 @@ const NavBar: React.FC = () => {
   return (
     <>
       <div className="z-50 w-full bg-white" data-navbar>
-        <header className="flex justify-between items-center shadow-xl bg-white px-[49px] py-4 max-sm:p-4">
+        <header className="flex justify-between items-center shadow-xl bg-white px-[30px] py-3 max-sm:p-4">
           <div
             className="flex items-center cursor-pointer"
             onClick={() => {
@@ -75,15 +74,16 @@ const NavBar: React.FC = () => {
             </span>
           </div>
           <div className="gap-4 relative">
-            {isAuthenticated ? (
+            {isAuthenticated  ? (
               <div className="flex flex-row items-center justify-center relative gap-4">
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="flex items-center justify-center px-4 h-8 text-md  
-             text-white bg-gray-800 transition-colors rounded-md"
-                >
-                  Dashboard
-                </button>
+                {location.pathname !== "/dashboard" && (
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className="flex items-center justify-center px-3 h-7 text-md text-white bg-gray-800 transition-colors hover:bg-gray-700"
+                  >
+                    Dashboard
+                  </button>
+                )}
                 <button
                   className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
                   onClick={() => setShowDropdown(!showDropdown)}
@@ -91,7 +91,7 @@ const NavBar: React.FC = () => {
                   {user?.full_name ? getInitials(user.full_name) : "U"}
                 </button>
                 {showDropdown && (
-                  <div className="absolute right-0 mt-[425px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
+                  <div className="absolute right-0 mt-[375px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
                       <div className="font-medium truncate">{user?.full_name}</div>
                       <div className="text-gray-500 truncate" title={user?.email}>
@@ -125,12 +125,14 @@ const NavBar: React.FC = () => {
                     >
                       About Us
                     </button>
-                    <button
-                      onClick={() => navigate("/dashboard")}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                    >
-                      Dashboard
-                    </button>
+                    {location.pathname !== "/dashboard" && (
+                      <button
+                        onClick={() => navigate("/dashboard")}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      >
+                        Dashboard
+                      </button>
+                    )}
                     <button
                       onClick={handleSettings}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -195,7 +197,7 @@ const NavBar: React.FC = () => {
                         <span className="block w-6 h-0.5 bg-black transition-all duration-300"></span>
                       </button>
                       {showDropdown && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-md z-50">
+                        <div className="absolute right-0 mt-8 w-48 bg-white rounded-md shadow-md z-50">
                           <button
                             onClick={() => {
                               navigate("/proof");
@@ -234,7 +236,7 @@ const NavBar: React.FC = () => {
                           </button>
                           {location.pathname !== "/auth" &&
                             <button
-                              className="flex items-center justify-center w-full py-1 text-md hover:text-black hover:bg-gray-200 transition-colors font-light border text-white bg-black"
+                              className="flex items-center justify-center w-full py-1 text-md transition-colors font-light border text-white bg-black"
                               onClick={() => navigate("/auth?view=login")}
                             >
                               <span className="text-md">Login</span>
@@ -284,7 +286,7 @@ const NavBar: React.FC = () => {
                     </button>
                     {location.pathname !== "/auth" &&
                       <button
-                        className="flex items-center justify-center w-24 h-8 text-lg hover:text-black hover:bg-gray-300 transition-colors font-light border text-white bg-black"
+                        className="flex items-center justify-center w-24 h-8 text-lg transition-colors font-light border text-white bg-black"
                         onClick={() => navigate("/auth?view=login")}
                       >
                         <span className="text-md">Login</span>
