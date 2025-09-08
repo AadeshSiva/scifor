@@ -63,13 +63,13 @@ const Dashboard: React.FC = () => {
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md flex flex-col">
-        <div className="p-4 text-2xl font-bold text-gray-800">
+        {/* <div className="p-4 text-2xl font-bold text-gray-800">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
             alt="Prospera Logo"
             className="w-[195px] h-[34px]"
           />
-        </div>
+        </div> */}
         <nav className="flex-1 px-4 space-y-3 text-gray-700">
           <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
             <LayoutDashboard size={18} /> Dashboard

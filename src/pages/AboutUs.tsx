@@ -69,6 +69,7 @@ function MainContent() {
           <img
             src={About}
             alt="Jeff Cullen"
+            loading="lazy"
             className="w-full h-[550px] rounded-lg object-cover max-w-[450px]"
           />
         </div>

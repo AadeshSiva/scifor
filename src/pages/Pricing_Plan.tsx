@@ -240,6 +240,7 @@ const Pricing_Plan: React.FC = () => {
               className=" max-w-[240px] h-auto"
               src="/assets/jeff-webinar.jpg"
               alt="Jeff Webinar"
+              loading="lazy"
             />
           </div>
 
@@ -261,7 +262,7 @@ const Pricing_Plan: React.FC = () => {
           </h1>
           <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">Free</p>
 
-          <hr className="border-t-2 border-gray-400 mt-16" />
+          <hr className="border-t-2 border-gray-400  mt-16 ex_lg:mt-10 " />
 
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
