@@ -1,8 +1,6 @@
-// src/App.tsx
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-
 import {
   LayoutDashboard,
   ClipboardList,
@@ -22,6 +20,9 @@ type Task = {
   task1?: string;
   task2?: string;
   task3?: string;
+  button?: string;
+  button1?: string;
+  button2?: string;
 };
 
 const tasks: Task[] = [
@@ -30,6 +31,7 @@ const tasks: Task[] = [
     title: "Add Business Details",
     description: "Provide your business information to help us understand your business better. Adding accurate details allows us to guide you effectively in building, growing, and positioning your business for a higher valuation.",
     progress: 0,
+    button: "Add Details"
   },
   {
     id: 2,
@@ -37,6 +39,8 @@ const tasks: Task[] = [
     description:
       "You've successfully added your business details. Now, take the next step by booking a session with Harish to gain expert insights, refine your strategies, and explore new opportunities for growth.",
     progress: 20,
+    button1: "Book a Google Meet with Harish",
+    button2: "skip now"
   },
   {
     id: 3,
@@ -78,8 +82,8 @@ const tasks: Task[] = [
 
 const Dashboard: React.FC = () => {
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
-  const [Mobile, setMobile] = useState(false);
 
+  const [Mobile, setMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setMobile(window.innerWidth <= 768);
@@ -93,12 +97,10 @@ const Dashboard: React.FC = () => {
     const data = tasks.find(task => task.id === 1);
     setIdNeeded(data || null);
   };
-
   const handleBookwithHarishChauhan = () => {
     const data = tasks.find(task => task.id === 2);
     setIdNeeded(data || null);
   };
-
   const handleStrategicBusinessAsessment = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
@@ -149,7 +151,6 @@ const Dashboard: React.FC = () => {
           </div>
         </aside>
       )}
-
       {/* Main Content */}
       <main className="flex-1 flex bg-gray-100 h-[100%] p-8 flex-col items-center">
         <h1 className="text-2xl font-walbaum text-gray-700 mb-6">
@@ -177,7 +178,6 @@ const Dashboard: React.FC = () => {
               <div></div>
             </div>
           </div>
-
           {/* Membership Card */}
           <div className="bg-white text-lg shadow-md rounded-lg px-16 py-2 flex items-center justify-between">
             <span>Membership</span>
@@ -199,42 +199,38 @@ const Dashboard: React.FC = () => {
                 {IdNeeded?.id === 1 ? (
                   <button className="text-start text-sm w-64 py-2" onClick={handleAddBusinessDetails}>
                     <span className="flex flex-row">
-                      <div className="border-l border-gray-500 ml-1 h-8 w-2"></div>
-                      <span className="mt-1">
+                      <span className="mt-1 border-l border-gray-400">
                         <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
                         Add Business Details
                       </span>
                     </span>
                   </button>
                 ) : IdNeeded?.id === 2 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleAddBusinessDetails}>
-                    <span className="flex flex-row">
-                      <span className="mt-1">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                        Add Business Details
-                      </span>
+                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleAddBusinessDetails}>
+                    <span className="mt-1">
+                      <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
+                      Add Business Details
                     </span>
                   </button>
                 ) : (
-                  <button className="text-start text-sm w-64 border border-gray-300 py-2" onClick={handleAddBusinessDetails}>
-                    <span>
+                  <button className="text-start text-sm w-64 border border-gray-300 py-2  border border-gray-400" onClick={handleAddBusinessDetails}>
+                    <span className="mt-1">
                       <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                       Add Business Details
+                      Add Business Details
                     </span>
                   </button>
                 )}
                 {IdNeeded?.id === 2 ? (
                   <button className="text-start text-sm w-64 py-2" onClick={handleBookwithHarishChauhan}>
                     <span className="flex flex-row">
-                      <div className="border-l border-gray-500 ml-1 h-8 w-2"></div>
-                      <span className="mt-1">
+                      <span className="mt-1 border-l border-gray-400">
                         <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
                         Book with Harish Chauhan
                       </span>
                     </span>
                   </button>
                 ) : IdNeeded?.id === 3 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleBookwithHarishChauhan}>
+                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleBookwithHarishChauhan}>
                     <span className="flex flex-row">
                       <span className="mt-1">
                         <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
@@ -243,8 +239,8 @@ const Dashboard: React.FC = () => {
                     </span>
                   </button>
                 ) : (
-                  <button className="text-start text-sm w-64 border border-gray-300 py-2" onClick={handleBookwithHarishChauhan}>
-                    <span>
+                  <button className="text-start text-sm w-64 border border-gray-300 py-2 border border-gray-400" onClick={handleBookwithHarishChauhan}>
+                    <span className="mt-1">
                       <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
                       Book with Harish Chauhan
                     </span>
@@ -253,15 +249,14 @@ const Dashboard: React.FC = () => {
                 {IdNeeded?.id === 3 ? (
                   <button className="text-start text-sm w-64 py-2" onClick={handleStrategicBusinessAsessment}>
                     <span className="flex flex-row">
-                      <div className="border-l border-gray-500 ml-1 h-8 w-2"></div>
-                      <span className="mt-1">
+                      <span className="mt-1 border-l border-gray-400">
                         <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
                         Strategic Business Assessment
                       </span>
                     </span>
                   </button>
                 ) : IdNeeded?.id === 4 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleStrategicBusinessAsessment}>
+                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleStrategicBusinessAsessment}>
                     <span className="flex flex-row">
                       <span className="mt-1">
                         <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
@@ -270,17 +265,26 @@ const Dashboard: React.FC = () => {
                     </span>
                   </button>
                 ) : (
-                  <button className="text-start text-sm w-64 border border-gray-300 py-2" onClick={handleStrategicBusinessAsessment}>
-                    <span>
+                  <button className="text-start text-sm w-64 border border-gray-400 py-2" onClick={handleStrategicBusinessAsessment}>
+                    <span className="mt-1">
                       <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                     Strategic Business Assessment
+                      Strategic Business Assessment
                     </span>
                   </button>
                 )}
               </div>
               <div>
-                <div className="m-4"><strong className="text-md">{IdNeeded?.title || 'No Task Selected'}</strong></div>
-                <div className="m-4"><p className="text-sm border-b border-gray-400 pb-4">{IdNeeded?.description || ''}</p></div>
+                <div className="m-4">
+                  <p className="text-sm border-b border-gray-400 pb-4">{IdNeeded?.description || ''}</p>
+                  <div className="flex">
+                    {IdNeeded?.button && (
+                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button}</button>)}
+                    {IdNeeded?.button1 && (
+                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button1}</button>)}
+                    {IdNeeded?.button2 && (
+                      <button className="bg-gray-300 text-gray-400 m-2 rounded-md px-2 text-md">{IdNeeded?.button2}</button>)}
+                  </div>
+                </div>
                 {(IdNeeded?.task1 || IdNeeded?.task2 || IdNeeded?.task3) && (
                   <div className="flex flex-col text-xs mx-10 gap-2">
                     {IdNeeded?.task1 && (
@@ -292,7 +296,7 @@ const Dashboard: React.FC = () => {
                           </div>
                           <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
                         </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded hover:bg-blue-600 rounded-lg">
+                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
                           Take Assessment
                         </button>
                       </div>
@@ -306,7 +310,7 @@ const Dashboard: React.FC = () => {
                           </div>
                           <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
                         </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded hover:bg-blue-600 rounded-lg">
+                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
                           Take Assessment
                         </button>
                       </div>
@@ -320,7 +324,7 @@ const Dashboard: React.FC = () => {
                           </div>
                           <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
                         </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded hover:bg-blue-600 rounded-lg">
+                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
                           Take Assessment
                         </button>
                       </div>
