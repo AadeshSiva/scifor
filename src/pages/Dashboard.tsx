@@ -11,6 +11,8 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { PopupButton } from "react-calendly";
+import { useNavigate } from "react-router-dom";
 
 type Task = {
   id: number;
@@ -104,6 +106,33 @@ const Dashboard: React.FC = () => {
   const handleStrategicBusinessAsessment = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
+  };
+  const handleSkip = () => {
+    const data = tasks.find(task => task.id === 3);
+    setIdNeeded(data || null);
+  }
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+  const handleGoogleMeet = () => {
+    if ((window as any).Calendly) {
+      const popup = (window as any).Calendly.initPopupWidget({
+        url: "https://calendly.com/harishkc/30min",
+      });
+      const interval = setInterval(() => {
+        if (!document.querySelector(".calendly-overlay")) 
+          clearInterval(interval);
+          const data = tasks.find((task) => task.id === 3);
+          setIdNeeded(data);
+        },500);
+    }
   };
 
   return (
@@ -280,9 +309,16 @@ const Dashboard: React.FC = () => {
                     {IdNeeded?.button && (
                       <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button}</button>)}
                     {IdNeeded?.button1 && (
-                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button1}</button>)}
+                      <div className="App">
+                        <button
+                          className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md"
+                          onClick={handleGoogleMeet}
+                        >
+                          {IdNeeded.button1}
+                        </button>
+                      </div>)}
                     {IdNeeded?.button2 && (
-                      <button className="bg-gray-300 text-gray-400 m-2 rounded-md px-2 text-md">{IdNeeded?.button2}</button>)}
+                      <button className="bg-gray-300 text-gray-400 m-2 rounded-md px-2 text-md hover:bg-gray-400 hover:text-gray-500" onClick={handleSkip} >{IdNeeded?.button2}</button>)}
                   </div>
                 </div>
                 {(IdNeeded?.task1 || IdNeeded?.task2 || IdNeeded?.task3) && (
