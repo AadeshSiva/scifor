@@ -111,29 +111,23 @@ const Dashboard: React.FC = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
   }
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
   const handleGoogleMeet = () => {
     if ((window as any).Calendly) {
-      const popup = (window as any).Calendly.initPopupWidget({
+      (window as any).Calendly.initPopupWidget({
         url: "https://calendly.com/harishkc/30min",
       });
       const interval = setInterval(() => {
-        if (!document.querySelector(".calendly-overlay")) 
+        const popupClosed = !document.querySelector(".calendly-overlay");
+        if (popupClosed) {
           clearInterval(interval);
           const data = tasks.find((task) => task.id === 3);
           setIdNeeded(data);
-        },500);
+        }
+      }, 500);
+    } else {
+      console.error("Calendly script not loaded yet.");
     }
-  };
+  }
 
   return (
     <div className="flex relative mt-14 bg-gray-100 mx-auto">
@@ -310,11 +304,12 @@ const Dashboard: React.FC = () => {
                       <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button}</button>)}
                     {IdNeeded?.button1 && (
                       <div className="App">
-                        <button
-                          className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md"
-                          onClick={handleGoogleMeet}
-                        >
-                          {IdNeeded.button1}
+                        <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md" onClick={handleGoogleMeet}>
+                          <PopupButton
+                            url="https://calendly.com/harishkc/30min"
+                            rootElement={document.getElementById("root")}
+                            text={IdNeeded.button1}
+                          />
                         </button>
                       </div>)}
                     {IdNeeded?.button2 && (
