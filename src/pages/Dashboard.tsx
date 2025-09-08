@@ -111,6 +111,18 @@ const Dashboard: React.FC = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
   }
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+  
   const handleGoogleMeet = () => {
     if ((window as any).Calendly) {
       (window as any).Calendly.initPopupWidget({
@@ -118,6 +130,7 @@ const Dashboard: React.FC = () => {
       });
       const interval = setInterval(() => {
         const popupClosed = !document.querySelector(".calendly-overlay");
+        console.log(popupClosed)
         if (popupClosed) {
           clearInterval(interval);
           const data = tasks.find((task) => task.id === 3);
@@ -128,7 +141,6 @@ const Dashboard: React.FC = () => {
       console.error("Calendly script not loaded yet.");
     }
   }
-
   return (
     <div className="flex relative mt-14 bg-gray-100 mx-auto">
       {/* Sidebar */}
