@@ -23,6 +23,8 @@ import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import AboutUs from "./pages/AboutUs";
 import ProofPage from "./pages/Proof";
+import AddDetails from "./pages/AddDetails";
+
 
 const queryClient = new QueryClient();
 
@@ -34,9 +36,17 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <div className="fixed top-0 left-0 w-full z-50">
-            <NavBar />
+            {window.location.pathname !== '/businessdetails' && <NavBar />}
           </div>
           <Routes>
+            <Route
+              path="/businessdetails"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <AddDetails />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/otpverify"
               element={

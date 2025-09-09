@@ -49,10 +49,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       if (response.ok) {
         const userData = await response.json();
-        console.log(userData);
         return userData.user_data;
       } else {
         throw new Error("Failed to fetch user details");
