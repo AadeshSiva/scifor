@@ -228,57 +228,59 @@ const Pricing_Plan: React.FC = () => {
           <p>-Harish Chauhan</p>
         </div>
       </div>
-
       {/* Guest & Member Section */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
         {/* Left */}
         <div className="bg-gray-400 lg:w-[280px] md:w-[280px] ">
           <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
-          <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
+          {/* <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1> */}
 
-          {/* Image */}
           <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
             <img
               className=" max-w-[240px] h-auto"
               src="/assets/jeff-webinar.jpg"
               alt="Jeff Webinar"
-<<<<<<< HEAD
-              decoding="async"
-=======
               loading="lazy"
->>>>>>> 7c42c5b2ad4dccc46060ee29a2966b945c1d8f46
             />
           </div>
 
           <p className="pt-3 font-sans px-3 text-base text-center md:text-left lg:text-left">
-            Wednesday, August 20, 2025 <br />
+            {/* Wednesday, August 20, 2025 <br />
             10am est– 11am est Success Story <br />
-            11:15am est– 12:15pm est Q&A
+            11:15am est– 12:15pm est Q&A */}
+            Here's What Jeff Did
           </p>
 
-          <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
+          <div className="pb-10 flex justify-center">
+            <a href="/proof">
+              <button
+                className="
+        text-sm sm:text-base
+        bg-foreground border-2 border-[#DBA958] text-[#DBA958]
+        px-2 py-2 sm:px-3 sm:py-2 md:px-4 md:py-3
+        mt-6 sm:mt-10 md:mt-14
+        font-semibold rounded-lg
+        hover:bg-primary transition-colors duration-300
+      "
+              >
+                See Jeff’s 10X+ Multiple Exit Story
+              </button>
+            </a>
+          </div>
+
+          {/* <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
             Only 33 Seats
-          </p>
+          </p> */}
         </div>
-
 
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
+          <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
+            Guest Registration
+          </h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">Free</p>
 
-<<<<<<< HEAD
-          <div className="min-h-[140px] flex flex-col justify-center">
-            <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
-              Guest Registration
-            </h1>
-            <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4 pb-2">
-              Free
-            </p>
-          </div>
-
-          <hr className="border-t-2 border-gray-400 mt-6" />
-=======
           <hr className="border-t-2 border-gray-400  mt-16 ex_lg:mt-10 " />
->>>>>>> 7c42c5b2ad4dccc46060ee29a2966b945c1d8f46
 
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
@@ -316,17 +318,13 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
 
-
         {/* Right */}
         <div className="bg-white flex-1 min-w-[300px]">
-
-          <div className="min-h-[140px] flex flex-col justify-center">
-            <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
-            <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
-            <p className="text-center font-sans font-light px-2">
-              One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
-            </p>
-          </div>
+          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
+          <p className="text-center font-sans font-light px-2">
+            One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
+          </p>
 
           <hr className="border-t-2 border-black mt-6" />
 
@@ -371,8 +369,6 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       </div>
-
-
       {/* Service */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
         {/* Left */}
