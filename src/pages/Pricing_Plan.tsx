@@ -242,7 +242,11 @@ const Pricing_Plan: React.FC = () => {
               className=" max-w-[240px] h-auto"
               src="/assets/jeff-webinar.jpg"
               alt="Jeff Webinar"
+<<<<<<< HEAD
               decoding="async"
+=======
+              loading="lazy"
+>>>>>>> 7c42c5b2ad4dccc46060ee29a2966b945c1d8f46
             />
           </div>
 
@@ -261,6 +265,7 @@ const Pricing_Plan: React.FC = () => {
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
 
+<<<<<<< HEAD
           <div className="min-h-[140px] flex flex-col justify-center">
             <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
               Guest Registration
@@ -271,6 +276,9 @@ const Pricing_Plan: React.FC = () => {
           </div>
 
           <hr className="border-t-2 border-gray-400 mt-6" />
+=======
+          <hr className="border-t-2 border-gray-400  mt-16 ex_lg:mt-10 " />
+>>>>>>> 7c42c5b2ad4dccc46060ee29a2966b945c1d8f46
 
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
