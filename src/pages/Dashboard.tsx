@@ -83,6 +83,7 @@ const tasks: Task[] = [
 ];
 
 const Dashboard: React.FC = () => {
+  const navigate=useNavigate();
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
 
   const [Mobile, setMobile] = useState(false);
@@ -122,7 +123,7 @@ const Dashboard: React.FC = () => {
       document.body.removeChild(script);
     };
   }, []);
-  
+
   const handleGoogleMeet = () => {
     if ((window as any).Calendly) {
       (window as any).Calendly.initPopupWidget({
@@ -141,6 +142,16 @@ const Dashboard: React.FC = () => {
       console.error("Calendly script not loaded yet.");
     }
   }
+  const handleaddDetailButton=()=>{
+    navigate('/businessdetails')
+  }
+  const local=localStorage?.getItem("add-details")
+  useEffect(()=>{
+     if(local == "true"){
+      const data=tasks.find(task=>task.id===2);
+      setIdNeeded(data)
+     }
+  },[local])
   return (
     <div className="flex relative mt-14 bg-gray-100 mx-auto">
       {/* Sidebar */}
@@ -313,7 +324,7 @@ const Dashboard: React.FC = () => {
                   <p className="text-sm border-b border-gray-400 pb-4">{IdNeeded?.description || ''}</p>
                   <div className="flex">
                     {IdNeeded?.button && (
-                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md">{IdNeeded?.button}</button>)}
+                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md" onClick={handleaddDetailButton}>{IdNeeded?.button}</button>)}
                     {IdNeeded?.button1 && (
                       <div className="App">
                         <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md" onClick={handleGoogleMeet}>
