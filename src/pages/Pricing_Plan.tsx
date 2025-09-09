@@ -228,6 +228,7 @@ const Pricing_Plan: React.FC = () => {
           <p>-Harish Chauhan</p>
         </div>
       </div>
+
       {/* Guest & Member Section */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
         {/* Left */}
@@ -235,11 +236,13 @@ const Pricing_Plan: React.FC = () => {
           <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
           <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
 
+          {/* Image */}
           <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
             <img
               className=" max-w-[240px] h-auto"
               src="/assets/jeff-webinar.jpg"
               alt="Jeff Webinar"
+              decoding="async"
             />
           </div>
 
@@ -254,14 +257,20 @@ const Pricing_Plan: React.FC = () => {
           </p>
         </div>
 
+
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
-            Guest Registration
-          </h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">Free</p>
 
-          <hr className="border-t-2 border-gray-400 mt-16" />
+          <div className="min-h-[140px] flex flex-col justify-center">
+            <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
+              Guest Registration
+            </h1>
+            <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4 pb-2">
+              Free
+            </p>
+          </div>
+
+          <hr className="border-t-2 border-gray-400 mt-6" />
 
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
@@ -299,13 +308,17 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
 
+
         {/* Right */}
         <div className="bg-white flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
-          <p className="text-center font-sans font-light px-2">
-            One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
-          </p>
+
+          <div className="min-h-[140px] flex flex-col justify-center">
+            <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
+            <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
+            <p className="text-center font-sans font-light px-2">
+              One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
+            </p>
+          </div>
 
           <hr className="border-t-2 border-black mt-6" />
 
@@ -350,6 +363,8 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
       </div>
+
+
       {/* Service */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row ">
         {/* Left */}
@@ -450,9 +465,8 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
-                activeItem === item ? "bg-yellow-300 font-semibold" : ""
-              }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
+                }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
