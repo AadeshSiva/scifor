@@ -4,8 +4,34 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
+interface FormData {
+    businessName: string;
+    industry: string;
+    incorporationDate: string;
+    address1: string;
+    address2: string;
+    country: string;
+    growthStage: string[];
+    companySize: string;
+    department: string;
+    offerings: string;
+    companySuccessionPlan: string;
+    companyBusinessPlan: string;
+    revenues: string;
+    profits: string;
+    cashFlowPosition: string;
+    marketAwareness: string;
+    staffTurnaround: string;
+    rdProcess: string;
+    hrProcess: string;
+    salesProcess: string;
+    publicityAdvertisingPlan: string;
+    marketingStrategy: string;
+    culture: string;
+    departmentOther?: string;
+}
 const AddDetails: React.FC = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [date, setDate] = useState<string | null>(null);
     useEffect(() => {
         const today = new Date();
@@ -14,16 +40,108 @@ const AddDetails: React.FC = () => {
     }, []);
     const handleBackButton = () => {
         navigate('/dashboard');
-    }
-    const handleSubmitButton=()=>{
-        localStorage.setItem("add-details","true")
-    }
+    };
+    const [formData, setFormData] = useState<FormData>({
+        businessName: '',
+        industry: '',
+        incorporationDate: '',
+        address1: '',
+        address2: '',
+        country: '',
+        growthStage: [""],
+        companySize: '',
+        department: '',
+        offerings: '',
+        companySuccessionPlan: '',
+        companyBusinessPlan: '',
+        revenues: '',
+        profits: '',
+        cashFlowPosition: '',
+        marketAwareness: '',
+        staffTurnaround: '',
+        rdProcess: '',
+        hrProcess: '',
+        salesProcess: '',
+        publicityAdvertisingPlan: '',
+        marketingStrategy: '',
+        culture: ''
+    });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value, type } = e.target;
+        if (type === 'checkbox') {
+            const checkbox = e.target as HTMLInputElement;
+            const checked = checkbox.checked;
+            const checkboxValue = checkbox.value;
+            setFormData(prev => {
+                if (checked) {
+                    return {
+                        ...prev,
+                        growthStage: [...prev.growthStage, checkboxValue]
+                    };
+                } else {
+                    return {
+                        ...prev,
+                        growthStage: prev.growthStage.filter(item => item !== checkboxValue)
+                    };
+                }
+            });
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+    const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        setFormData(prev => ({
+            ...prev,
+            incorporationDate: formattedDate
+        }));
+    }, []);
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        localStorage.setItem("add-details", "true");
+        navigate('/dashboard');
+        console.log(formData)
+    };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = sessionStorage.getItem('access_token');
+                const response = await fetch('https://api.prspera.com/extract-user-data/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log('Data fetched successfully:', result);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData();
+    }, [formData]);
     return (
-        <div className="bg-gray-300 w-full h-full relative">
-            <header className="flex justify-between items-center px-16 py-2 bg-gray-100 w-full h-[5vh] fixed z-50 top-0 shadow-md">
+        <div className="bg-gray-300 min-h-screen">
+            <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
                 <div className="flex flex-row gap-4 items-center">
-                    <button className="text-blue-500" onClick={handleBackButton}>
-                        <FontAwesomeIcon icon={faArrowLeft} /> Back
+                    <button className="text-blue-500 flex items-center" onClick={handleBackButton}>
+                        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
                     </button>
                     <div className="flex flex-col">
                         <span className="text-md font-semibold">BUSINESS DETAILS</span>
@@ -33,199 +151,431 @@ const AddDetails: React.FC = () => {
                 <span className="text-sm">{date}</span>
             </header>
             <div className='pt-24 pb-12'>
-                <div className="w-4/5 mx-auto  bg-gray-200 shadow-md p-16">
-                    <form method='' className="space-y-6">
-                        <div className="w-full space-y-4">
-                            <div className="flex items-center">
-                                <label htmlFor="business-name" className="w-1/3 text-xl font-medium text-left">Business Name:</label>
-                                <input type="text" id="business-name" name="business-name" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                <div className="w-4/5 mx-auto bg-white shadow-md p-8 md:p-16 rounded-lg">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="space-y-6">
+                            <h2 className="text-2xl font-bold border-b pb-2">Basic Information</h2>
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="business-name" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Business Name:</label>
+                                <input
+                                    type="text"
+                                    id="business-name"
+                                    name="businessName"
+                                    value={formData.businessName}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <label htmlFor="industry" className="w-1/3 text-xl font-medium text-left">Industry:</label>
-                                <input type="text" id="industry" name="industry" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="industry" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Industry:</label>
+                                <input
+                                    type="text"
+                                    id="industry"
+                                    name="industry"
+                                    value={formData.industry}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <label htmlFor="incorporation-date" className="w-1/3 text-xl font-medium text-left">Company Incorporation Date:</label>
-                                <input type="date" id="incorporation-date" name="incorporation-date" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="incorporation-date" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Company Incorporation Date:</label>
+                                <input
+                                    type="date"
+                                    id="incorporation-date"
+                                    name="incorporationDate"
+                                    value={formData.incorporationDate}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <label htmlFor="address1" className="w-1/3 text-xl font-medium text-left">Address 1:</label>
-                                <input type="text" id="address1" name="address1" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="address1" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Address 1:</label>
+                                <input
+                                    type="text"
+                                    id="address1"
+                                    name="address1"
+                                    value={formData.address1}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <label htmlFor="address2" className="w-1/3 text-xl font-medium text-left">Address 2:</label>
-                                <input type="text" id="address2" name="address2" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="address2" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Address 2:</label>
+                                <input
+                                    type="text"
+                                    id="address2"
+                                    name="address2"
+                                    value={formData.address2}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <label htmlFor="country" className="w-1/3 text-xl font-medium text-left">Country:</label>
-                                <input type="text" id="country" name="country" className="w-2/3 border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200" />
+                            <div className="flex flex-col md:flex-row md:items-center mb-4">
+                                <label htmlFor="country" className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Country:</label>
+                                <input
+                                    type="text"
+                                    id="country"
+                                    name="country"
+                                    value={formData.country}
+                                    onChange={handleChange}
+                                    className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
                             </div>
                         </div>
-                        <div className='flex space-y-4'>
-                            <label className="block font-medium text-xl w-1/2 text-left">Stage of Growth:</label>
-                            <div className="flex flex-col flex-wrap justify-center gap-8 w-full">
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Start up</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="startup" className="mr-2 size-6" /></label>
+                        <div className="space-y-6">
+                            <h2 className="text-2xl font-bold border-b pb-2">Company Details</h2>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">Stage of Growth:</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                                    {[
+                                        "Start up",
+                                        "Growing",
+                                        "Mature",
+                                        "Recently acquired/merged",
+                                        "Turnaround",
+                                        "Crises",
+                                        "Pre-succession"
+                                    ].map(stage => (
+                                        <div key={stage} className='flex items-center'>
+                                            <input
+                                                type="checkbox"
+                                                id={`growth-${stage.replace(/\s+/g, '-')}`}
+                                                name="growthStage"
+                                                value={stage}
+                                                checked={formData.growthStage.includes(stage)}
+                                                onChange={handleChange}
+                                                className="mr-3 h-5 w-5"
+                                            />
+                                            <label htmlFor={`growth-${stage.replace(/\s+/g, '-')}`} className="text-lg">{stage}</label>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Growing</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="growing" className="mr-2 size-6" /></label>
-                                </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Mature</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="mature" className="mr-2 size-6" /></label>
-                                </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Recently acquired/merged</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="recently-acquired" className="mr-2 size-6"/></label>
-                                </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Turnaround</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="turnaround" className="mr-2 size-6" /></label>
-                                </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Crises</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="crises" className="mr-2 size-6"/></label>
-                                </div>
-                                <div className='flex items-center space-x-4'>
-                                    <span className='w-1/3 text-lg font-medium text-left'>Pre-succession</span>
-                                    <label className="flex items-center"><input type="checkbox" name="growth-stage" value="crises" className="mr-2 size-6"/></label>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">Company Size:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Small", "Medium", "Large", "Global"].map(size => (
+                                        <label key={size} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="companySize"
+                                                value={size}
+                                                checked={formData.companySize === size}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{size}</span>
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
-                        <div className='flex'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Company Size:</label>
-                            <div className="flex flex-wrap gap-4">
-                                <label className="flex items-center text-lg"><input type="radio" name="company-size" value="small" className="mr-2 size-6" />Small</label>
-                                <label className="flex items-center text-lg"><input type="radio" name="company-size" value="medium" className="mr-2 size-6" />Medium</label>
-                                <label className="flex items-center text-lg"><input type="radio" name="company-size" value="large" className="mr-2 size-6" />Large</label>
-                                <label className="flex items-center text-lg"><input type="radio" name="company-size" value="global" className="mr-2 size-6" />Global</label>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">Your Role:</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                                    {[
+                                        "Executive/Owner",
+                                        "Advertising",
+                                        "Operations",
+                                        "Customer Service",
+                                        "Publicity",
+                                        "Finance",
+                                        "Marketing",
+                                        "Sales",
+                                        "Technology",
+                                        "Other"
+                                    ].map(role => (
+                                        <label key={role} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="department"
+                                                value={role}
+                                                checked={formData.department === role}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{role}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {formData.department === "Other" && (
+                                <div className="flex flex-col md:flex-row md:items-center">
+                                    <label className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">Specify Role:</label>
+                                    <input
+                                        type="text"
+                                        name="departmentOther"
+                                        value={formData.departmentOther || ''}
+                                        onChange={handleChange}
+                                        className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                            )}
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">Offerings:</label>
+                                <div className="flex gap-6 w-full">
+                                    {["Products", "Services"].map(offering => (
+                                        <label key={offering} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="offerings"
+                                                value={offering}
+                                                checked={formData.offerings === offering}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{offering}</span>
+                                        </label>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                        <div className='space-y-4'>
-                            <label className="block font-medium mb-1 text-left text-xl">Your Role:</label>
-                            <div className="w-full flex flex-col space-y-4 items-center justify-center flex-wrap gap-4 text-left">
-                                <label className="w-1/3 flex items-center text-md"><input type="radio" name="department" value="executive" className="mr-2 size-6" />Executive/Owner</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="advertising" className="mr-2 size-6" />Advertising</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="operations" className="mr-2 size-6" />Operations</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="customer-service" className="mr-2 size-6" />Customer Service</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="publicity" className="mr-2 size-6" />Publicity</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="finance" className="mr-2 size-6" />Finance</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="marketing" className="mr-2 size-6" />Marketing</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="sales" className="mr-2 size-6" />Sales</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="technology" className="mr-2 size-6" />Technology</label>
-                                <label className="w-1/3  flex items-center text-md"><input type="radio" name="department" value="others" className="mr-2 size-6" />Others<input type="text" name="department" className="mr-2 bg-transparent border-b border-gray-600 outline-none ml-2" /></label>
+                        <div className="space-y-6">
+                            <h2 className="text-2xl font-bold border-b pb-2">Business Health</h2>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Company Succession Plan:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["EXISTS", "Not-Exist"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="companySuccessionPlan"
+                                                value={option}
+                                                checked={formData.companySuccessionPlan === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Company Business Plan:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["EXISTS", "Not-Exist"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="companyBusinessPlan"
+                                                value={option}
+                                                checked={formData.companyBusinessPlan === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Revenues (from last year):</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["UPWARDS", "DOWNWARDS", "UNCHANGED"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="revenues"
+                                                value={option}
+                                                checked={formData.revenues === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Profits (from last year):</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["UPWARDS", "DOWNWARDS", "UNCHANGED"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="profits"
+                                                value={option}
+                                                checked={formData.profits === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Cash Flow Position:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Weak", "Sufficient", "Strong"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="cashFlowPosition"
+                                                value={option}
+                                                checked={formData.cashFlowPosition === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Market Awareness:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Weak", "Sufficient", "Strong"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="marketAwareness"
+                                                value={option}
+                                                checked={formData.marketAwareness === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Staff Turnaround:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Weak", "Sufficient", "Strong"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="staffTurnaround"
+                                                value={option}
+                                                checked={formData.staffTurnaround === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">R&D Process:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Formal", "Informal"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="rdProcess"
+                                                value={option}
+                                                checked={formData.rdProcess === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">HR Process:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Formal", "Informal"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="hrProcess"
+                                                value={option}
+                                                checked={formData.hrProcess === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Sales Process:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Formal", "Informal"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="salesProcess"
+                                                value={option}
+                                                checked={formData.salesProcess === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Publicity/Advertising Plan:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Formal", "Informal"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="publicityAdvertisingPlan"
+                                                value={option}
+                                                checked={formData.publicityAdvertisingPlan === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">Marketing Strategy:</label>
+                                <div className="flex flex-wrap gap-6 w-full">
+                                    {["Formal", "Informal"].map(option => (
+                                        <label key={option} className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="marketingStrategy"
+                                                value={option}
+                                                checked={formData.marketingStrategy === option}
+                                                onChange={handleRadioChange}
+                                                className="mr-2 h-5 w-5"
+                                            />
+                                            <span className="text-lg">{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row'>
+                                <label htmlFor="culture" className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">Culture:</label>
+                                <textarea
+                                    id="culture"
+                                    value={formData.culture}
+                                    onChange={handleChange}
+                                    name="culture"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-32"
+                                    placeholder='In a few words, describe our company culture'
+                                />
                             </div>
                         </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Offerings:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="offerings" value="products" className="mr-2 size-6" />Products</label>
-                                <label className="flex items-center text-md"><input type="radio" name="offerings" value="services" className="mr-2 size-6" />Services</label>
-                            </div>
-                        </div>
-                         <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Company Succession Plan:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="company-succession-plan" value="EXISTS" className="mr-2 size-6" />EXISTS</label>
-                                <label className="flex items-center text-md"><input type="radio" name="company-succession-plan" value="Not-Exist" className="mr-2 size-6" />Not-Exist</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Company Business Plan:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="company-business-plan" value="EXISTS" className="mr-2 size-6" />EXISTS</label>
-                                <label className="flex items-center text-md"><input type="radio" name="company-business-plan" value="Not-Exist" className="mr-2 size-6" />Not-Exist</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Revenues (from last year):</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="revenues" value="UPWARDS" className="mr-2 size-6" />UPWARDS</label>
-                                <label className="flex items-center text-md"><input type="radio" name="revenues" value="DOWNWARDS" className="mr-2 size-6" />DOWNWARDS</label>
-                                 <label className="flex items-center text-md"><input type="radio" name="revenues" value="UNCHANGED" className="mr-2 size-6" />UNCHANGED</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Profits (from last year):</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="profits" value="UPWARDS" className="mr-2 size-6" />UPWARDS</label>
-                                <label className="flex items-center text-md"><input type="radio" name="profits" value="DOWNWARDS" className="mr-2 size-6" />DOWNWARDS</label>
-                                 <label className="flex items-center text-md"><input type="radio" name="profits" value="UNCHANGED" className="mr-2 size-6" />UNCHANGED</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Cash Flow Position:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="cash-flow-position" value="Weak" className="mr-2 size-6" />Weak</label>
-                                <label className="flex items-center text-md"><input type="radio" name="cash-flow-position" value="Sufficient" className="mr-2 size-6" />Sufficient</label>
-                                 <label className="flex items-center text-md"><input type="radio" name="cash-flow-position" value="Strong" className="mr-2 size-6" />Strong</label>
-                            </div>
-                        </div>
-                         <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Market Awareness:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="Market-Awareness" value="Weak" className="mr-2 size-6" />Weak</label>
-                                <label className="flex items-center text-md"><input type="radio" name="Market-Awareness" value="Sufficient" className="mr-2 size-6" />Sufficient</label>
-                                 <label className="flex items-center text-md"><input type="radio" name="Market-Awareness" value="Strong" className="mr-2 size-6" />Strong</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Staff Turnaround:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="Staff-Turnaround" value="Weak" className="mr-2 size-6" />Weak</label>
-                                <label className="flex items-center text-md"><input type="radio" name="Staff-Turnaround" value="Sufficient" className="mr-2 size-6" />Sufficient</label>
-                                 <label className="flex items-center text-md"><input type="radio" name="Staff-Turnaround" value="Strong" className="mr-2 size-6" />Strong</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">R&D Process:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="r&d-process" value="Formal" className="mr-2 size-6" />Formal</label>
-                                <label className="flex items-center text-md"><input type="radio" name="r&d-process" value="Informal" className="mr-2 size-6" />Informal</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">HR Process:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="hr-process" value="Formal" className="mr-2 size-6" />Formal</label>
-                                <label className="flex items-center text-md"><input type="radio" name="hr-process" value="Informal" className="mr-2 size-6" />Informal</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Sales Process:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="sales-process" value="Formal" className="mr-2 size-6" />Formal</label>
-                                <label className="flex items-center text-md"><input type="radio" name="sales-process" value="Informal" className="mr-2 size-6" />Informal</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Publicity/Advertising Plan:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="Publicity-Advertising-Plan" value="Formal" className="mr-2 size-6" />Formal</label>
-                                <label className="flex items-center text-md"><input type="radio" name="Publicity-Advertising-Plan" value="Informal" className="mr-2 size-6" />Informal</label>
-                            </div>
-                        </div>
-                        <div className='flex flex-row'>
-                            <label className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Marketing Strategy:</label>
-                            <div className="flex text-left space-x-4">
-                                <label className="flex items-center text-md"><input type="radio" name="Marketing-Strategy" value="Formal" className="mr-2 size-6" />Formal</label>
-                                <label className="flex items-center text-md"><input type="radio" name="Marketing-Strategy" value="Informal" className="mr-2 size-6" />Informal</label>
-                            </div>
-                        </div>
-                        <div className='flex'>
-                            <label htmlFor="culture" className="block font-medium mb-1 space-y-4 w-1/3 text-left text-xl">Culture:</label>
-                            <textarea id="culture" name="culture" className="w-1/3 border border-gray-400 bg-gray-300 rounded px-3 py-2 focus:ring focus:ring-blue-200" placeholder='In a few words, describe our company culture'></textarea>
-                        </div>
-
-                        <div className='w-full flex justify-center items-center'>
-                            <button type="submit" className="w-1/5 bg-black py-2 rounded-3xl border border-[#DBA958] text-[#DBA958]" onClick={handleSubmitButton}>Submit</button>
+                        <div className='w-full flex justify-center items-center pt-8'>
+                            <button
+                                type="submit"
+                                className="w-full md:w-1/3 bg-black py-3 rounded-3xl border border-[#DBA958] text-[#DBA958] font-bold hover:bg-[#DBA958] hover:text-black transition-colors"
+                            >
+                                Submit
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     );
-}
+};
 export default AddDetails;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleExclamation, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -83,10 +83,10 @@ const tasks: Task[] = [
 ];
 
 const Dashboard: React.FC = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
-
   const [Mobile, setMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setMobile(window.innerWidth <= 768);
@@ -95,35 +95,35 @@ const Dashboard: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
   const handleAddBusinessDetails = () => {
     const data = tasks.find(task => task.id === 1);
     setIdNeeded(data || null);
+    if (Mobile) setSidebarOpen(false);
   };
   const handleBookwithHarishChauhan = () => {
     const data = tasks.find(task => task.id === 2);
     setIdNeeded(data || null);
+    if (Mobile) setSidebarOpen(false);
   };
   const handleStrategicBusinessAsessment = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
+    if (Mobile) setSidebarOpen(false);
   };
   const handleSkip = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
+    if (Mobile) setSidebarOpen(false);
   }
-
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
     document.body.appendChild(script);
-
     return () => {
       document.body.removeChild(script);
     };
   }, []);
-
   const handleGoogleMeet = () => {
     if ((window as any).Calendly) {
       (window as any).Calendly.initPopupWidget({
@@ -131,7 +131,6 @@ const Dashboard: React.FC = () => {
       });
       const interval = setInterval(() => {
         const popupClosed = !document.querySelector(".calendly-overlay");
-        console.log(popupClosed)
         if (popupClosed) {
           clearInterval(interval);
           const data = tasks.find((task) => task.id === 3);
@@ -142,29 +141,39 @@ const Dashboard: React.FC = () => {
       console.error("Calendly script not loaded yet.");
     }
   }
-  const handleaddDetailButton=()=>{
-    navigate('/businessdetails')
+  const handleaddDetailButton = () => {
+    navigate('/businessdetails');
   }
-  const local=localStorage?.getItem("add-details")
-  useEffect(()=>{
-     if(local == "true"){
-      const data=tasks.find(task=>task.id===2);
-      setIdNeeded(data)
-     }
-  },[local])
+  const local = localStorage?.getItem("add-details");
+  useEffect(() => {
+    if (local == "true") {
+      const data = tasks.find(task => task.id === 2);
+      setIdNeeded(data);
+    }
+  }, [local]);
   return (
-    <div className="flex relative mt-14 bg-gray-100 mx-auto">
+    <div className="flex relative bg-gray-100 min-h-screen">
+      {/* Mobile Menu Button */}
+      {Mobile && (
+        <button
+          className="fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} className="text-gray-700" />
+        </button>
+      )}
       {/* Sidebar */}
-      {!Mobile && (
-        <aside className="fixed top-[65px] left-[8px] w-64 bg-white border border-gray-200 flex flex-col h-[calc(100vh-75px)] overflow-y-auto">
-          <div className="flex justify-center border-b p-4 text-2xl font-bold text-gray-800">
+      {(sidebarOpen || !Mobile) && (
+        <aside className={`fixed top-0 left-0 w-64 bg-white border border-gray-200 flex flex-col h-full overflow-y-auto z-40 
+          ${Mobile ? 'shadow-xl' : ''} transition-transform duration-300 ${Mobile && !sidebarOpen ? '-translate-x-full' : ''}`}>
+          <div className="flex justify-center border-b p-4 text-2xl font-bold text-gray-800 mt-14">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
               alt="Prospera Logo"
               className="w-[175px] h-[24px]"
             />
           </div>
-          <nav className="flex-1 px-4 space-y-3 text-gray-700">
+          <nav className="flex-1 px-4 space-y-3 text-gray-700 mt-4">
             <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <LayoutDashboard size={18} /> Dashboard
             </a>
@@ -187,7 +196,7 @@ const Dashboard: React.FC = () => {
               <Bot size={18} /> AI Agent Chat
             </a>
           </nav>
-          <div className="p-4 space-y-2">
+          <div className="p-4 space-y-2 mt-auto mb-8">
             <a href="#" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
               <Settings size={18} /> Settings
             </a>
@@ -198,136 +207,108 @@ const Dashboard: React.FC = () => {
         </aside>
       )}
       {/* Main Content */}
-      <main className="flex-1 flex bg-gray-100 h-[100%] p-8 flex-col items-center">
-        <h1 className="text-2xl font-walbaum text-gray-700 mb-6">
+      <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
+        <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
           Welcome to your Prospera dashboard
         </h1>
-        <div className="w-full max-w-2xl space-y-6">
+        <div className="w-full max-w-4xl mx-auto space-y-6">
           {/* Profile Info Card */}
-          <div className="bg-white shadow-md rounded-lg p-6 px-16">
+          <div className="bg-white shadow-md rounded-lg p-4 md:p-6">
             <div className="divide-y divide-gray-200 text-gray-700">
               <div className="flex justify-between py-2">
                 <span>Alias</span>
+                <span className="text-gray-400">Not provided</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Name</span>
+                <span className="text-gray-400">Not provided</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Company Email</span>
+                <span className="text-gray-400">Not provided</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Phone</span>
+                <span className="text-gray-400">Not provided</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Country</span>
+                <span className="text-gray-400">Not provided</span>
               </div>
-              <div></div>
             </div>
           </div>
           {/* Membership Card */}
-          <div className="bg-white text-lg shadow-md rounded-lg px-16 py-2 flex items-center justify-between">
-            <span>Membership</span>
-            <span className="text-lg text-gray-600">Guest Plan</span>
-            <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-12 py-1 rounded-lg hover:bg-primary transition-colors duration-300">
+          <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <span className="font-medium">Membership</span>
+            <span className="text-gray-600">Guest Plan</span>
+            <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-6 py-1 rounded-lg hover:bg-primary transition-colors duration-300 w-full md:w-auto">
               Upgrade Plan
             </button>
           </div>
           {/* Tasks Section */}
-          <div className="bg-white text-lg shadow-md rounded-lg py-2 flex flex-col mb-4 border-b border-gray-500">
-            <div className="flex justify-center w-full gap-4 items-center border-b border-gray-500 h-10">
-              <div className="w-96 h-4 bg-gray-200 rounded-lg overflow-hidden">
-                <div className="h-4 bg-gray-400 rounded-lg" style={{ width: `${IdNeeded?.progress || 0}%` }}></div>
+          <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mb-4">
+            <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 pb-4 mb-4 border-b border-gray-300">
+              <div className="w-full md:w-3/4 h-4 bg-gray-200 rounded-lg overflow-hidden">
+                <div className="h-4 bg-gray-400 rounded-lg transition-all duration-500" style={{ width: `${IdNeeded?.progress || 0}%` }}></div>
               </div>
-              <span>{`${IdNeeded?.progress || 0}% Completed`}</span>
+              <span className="text-sm md:text-base whitespace-nowrap">{`${IdNeeded?.progress || 0}% Completed`}</span>
             </div>
-            <div className="w-full flex justify-between">
-              <div className="flex flex-col justify-items-start mb-4 w-64">
-                {IdNeeded?.id === 1 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleAddBusinessDetails}>
-                    <span className="flex flex-row">
-                      <span className="mt-1 border-l border-gray-400">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                        Add Business Details
-                      </span>
-                    </span>
-                  </button>
-                ) : IdNeeded?.id === 2 ? (
-                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleAddBusinessDetails}>
-                    <span className="mt-1">
-                      <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                      Add Business Details
-                    </span>
-                  </button>
-                ) : (
-                  <button className="text-start text-sm w-64 border border-gray-300 py-2  border border-gray-400" onClick={handleAddBusinessDetails}>
-                    <span className="mt-1">
-                      <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                      Add Business Details
-                    </span>
-                  </button>
-                )}
-                {IdNeeded?.id === 2 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleBookwithHarishChauhan}>
-                    <span className="flex flex-row">
-                      <span className="mt-1 border-l border-gray-400">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                        Book with Harish Chauhan
-                      </span>
-                    </span>
-                  </button>
-                ) : IdNeeded?.id === 3 ? (
-                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleBookwithHarishChauhan}>
-                    <span className="flex flex-row">
-                      <span className="mt-1">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                        Book with Harish Chauhan
-                      </span>
-                    </span>
-                  </button>
-                ) : (
-                  <button className="text-start text-sm w-64 border border-gray-300 py-2 border border-gray-400" onClick={handleBookwithHarishChauhan}>
-                    <span className="mt-1">
-                      <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                      Book with Harish Chauhan
-                    </span>
-                  </button>
-                )}
-                {IdNeeded?.id === 3 ? (
-                  <button className="text-start text-sm w-64 py-2" onClick={handleStrategicBusinessAsessment}>
-                    <span className="flex flex-row">
-                      <span className="mt-1 border-l border-gray-400">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                        Strategic Business Assessment
-                      </span>
-                    </span>
-                  </button>
-                ) : IdNeeded?.id === 4 ? (
-                  <button className="text-start text-sm w-64 py-2 border border-gray-400" onClick={handleStrategicBusinessAsessment}>
-                    <span className="flex flex-row">
-                      <span className="mt-1">
-                        <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2 text-green-500" />
-                        Strategic Business Assessment
-                      </span>
-                    </span>
-                  </button>
-                ) : (
-                  <button className="text-start text-sm w-64 border border-gray-400 py-2" onClick={handleStrategicBusinessAsessment}>
-                    <span className="mt-1">
-                      <FontAwesomeIcon icon={faCircleCheck} className="pr-2 w-5 h-5 pl-2" />
-                      Strategic Business Assessment
-                    </span>
-                  </button>
-                )}
+            <div className="w-full flex flex-col md:flex-row gap-6">
+              {/* Task Navigation */}
+              <div className="flex flex-col w-full md:w-1/3 gap-2">
+                <button
+                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  onClick={handleAddBusinessDetails}
+                >
+                  <span className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      className={`mr-2 ${IdNeeded && IdNeeded.id > 1 ? 'text-green-500' : 'text-gray-400'}`}
+                    />
+                    Add Business Details
+                  </span>
+                </button>
+                <button
+                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 2 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  onClick={handleBookwithHarishChauhan}
+                >
+                  <span className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      className={`mr-2 ${IdNeeded && IdNeeded.id > 2 ? 'text-green-500' : 'text-gray-400'}`}
+                    />
+                    Book with Harish Chauhan
+                  </span>
+                </button>
+                <button
+                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded && IdNeeded.id >= 3 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  onClick={handleStrategicBusinessAsessment}
+                >
+                  <span className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      className={`mr-2 ${IdNeeded && IdNeeded.id > 3 ? 'text-green-500' : 'text-gray-400'}`}
+                    />
+                    Strategic Business Assessment
+                  </span>
+                </button>
               </div>
-              <div>
-                <div className="m-4">
-                  <p className="text-sm border-b border-gray-400 pb-4">{IdNeeded?.description || ''}</p>
-                  <div className="flex">
+              {/* Task Details */}
+              <div className="w-full md:w-2/3">
+                <div className="mb-4">
+                  <p className="text-sm md:text-base text-gray-700 pb-4">{IdNeeded?.description || ''}</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {IdNeeded?.button && (
-                      <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md" onClick={handleaddDetailButton}>{IdNeeded?.button}</button>)}
+                      <button
+                        className="bg-black text-[#DBA958] py-2 px-4 rounded-md text-sm md:text-base w-full sm:w-auto"
+                        onClick={handleaddDetailButton}
+                      >
+                        {IdNeeded.button}
+                      </button>
+                    )}
                     {IdNeeded?.button1 && (
                       <div className="App">
-                        <button className="bg-black text-[#DBA958] m-2 rounded-md px-2 text-md" onClick={handleGoogleMeet}>
+                        <button className="bg-black text-[#DBA958] m-2 rounded-md p-2 text-md" onClick={handleGoogleMeet}>
                           <PopupButton
                             url="https://calendly.com/harishkc/30min"
                             rootElement={document.getElementById("root")}
@@ -336,49 +317,46 @@ const Dashboard: React.FC = () => {
                         </button>
                       </div>)}
                     {IdNeeded?.button2 && (
-                      <button className="bg-gray-300 text-gray-400 m-2 rounded-md px-2 text-md hover:bg-gray-400 hover:text-gray-500" onClick={handleSkip} >{IdNeeded?.button2}</button>)}
+                      <button
+                        className="bg-gray-300 text-gray-600 px-4 h-10 mt-2 rounded-md text-sm md:text-base w-full sm:w-auto hover:bg-gray-400 transition-colors"
+                        onClick={handleSkip}
+                      >
+                        {IdNeeded.button2}
+                      </button>
+                    )}
                   </div>
                 </div>
                 {(IdNeeded?.task1 || IdNeeded?.task2 || IdNeeded?.task3) && (
-                  <div className="flex flex-col text-xs mx-10 gap-2">
+                  <div className="flex flex-col gap-3">
                     {IdNeeded?.task1 && (
-                      <div className="flex">
-                        <button className="flex justify-between items-center w-52 bg-gray-50 p-2 rounded hover:bg-gray-100">
-                          <div className="flex items-center">
-                            <FontAwesomeIcon icon={faCircleCheck} className="pr-2 text-green-500" />
-                            <span>{IdNeeded.task1}</span>
-                          </div>
-                          <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
-                        </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
+                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />
+                          <span className="text-sm">{IdNeeded.task1}</span>
+                        </div>
+                        <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
                           Take Assessment
                         </button>
                       </div>
                     )}
                     {IdNeeded?.task2 && (
-                      <div className="flex">
-                        <button className="flex justify-between items-center w-52 bg-gray-50 p-2 rounded hover:bg-gray-100">
-                          <div className="flex items-center">
-                            <FontAwesomeIcon icon={faCircleCheck} className="pr-2 text-green-500" />
-                            <span>{IdNeeded.task2}</span>
-                          </div>
-                          <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
-                        </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
+                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />
+                          <span className="text-sm">{IdNeeded.task2}</span>
+                        </div>
+                        <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
                           Take Assessment
                         </button>
                       </div>
                     )}
                     {IdNeeded?.task3 && (
-                      <div className="flex">
-                        <button className="flex justify-between items-center w-52 bg-gray-50 p-2 rounded hover:bg-gray-100">
-                          <div className="flex items-center">
-                            <FontAwesomeIcon icon={faCircleCheck} className="pr-2 text-green-500" />
-                            <span>{IdNeeded.task3}</span>
-                          </div>
-                          <FontAwesomeIcon icon={faCircleExclamation} className="text-gray-300" />
-                        </button>
-                        <button className="text-xs h-6 w-24 bg-[#141C24] text-[#DBA958] rounded rounded-lg">
+                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />
+                          <span className="text-sm">{IdNeeded.task3}</span>
+                        </div>
+                        <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
                           Take Assessment
                         </button>
                       </div>
@@ -388,9 +366,10 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-        </div >
-      </main >
-    </div >
+        </div>
+      </main>
+    </div>
   );
 };
+
 export default Dashboard;

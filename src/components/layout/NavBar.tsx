@@ -58,6 +58,7 @@ const NavBar: React.FC = () => {
     <>
       <div className="z-50 w-full bg-white" data-navbar>
         <header className="flex justify-between items-center shadow-xl bg-white px-[30px] py-3 max-sm:p-4">
+          {!isMobile ? (
           <div
             className="flex items-center cursor-pointer"
             onClick={() => {
@@ -72,7 +73,24 @@ const NavBar: React.FC = () => {
             <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
               Grow Smarter<span className="font-bold">.Exit Richer™️</span>
             </span>
+          </div> ):(
+            <div
+            className="flex items-center cursor-pointer ml-20"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+              alt="Prospera Logo"
+              className="w-[190px] h-[30px]"
+            />
+            <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+              Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+            </span>
           </div>
+          )
+          }
           <div className="gap-4 relative">
             {isAuthenticated  ? (
               <div className="flex flex-row items-center justify-center relative gap-4">
@@ -85,13 +103,13 @@ const NavBar: React.FC = () => {
                   </button>
                 )}
                 <button
-                  className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors"
+                  className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors mr-4"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   {user?.full_name ? getInitials(user.full_name) : "U"}
                 </button>
                 {showDropdown && (
-                  <div className="absolute right-0 mt-[375px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border">
+                  <div className="absolute right-0 mt-[375px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border mr-4">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
                       <div className="font-medium truncate">{user?.full_name}</div>
                       <div className="text-gray-500 truncate" title={user?.email}>
