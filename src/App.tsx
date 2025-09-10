@@ -24,6 +24,7 @@ import Dashboard from "./pages/Dashboard";
 import AboutUs from "./pages/AboutUs";
 import ProofPage from "./pages/Proof";
 import AddDetails from "./pages/AddDetails";
+import { useEffect } from "react";
 
 
 const queryClient = new QueryClient();
