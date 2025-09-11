@@ -29,6 +29,7 @@ import Coming from "./components/Coming/Coming";
 
 
 const queryClient = new QueryClient();
+const routes = ["branddiagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -38,65 +39,20 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <div className="fixed top-0 left-0 w-full z-50">
-           <NavBar />
+            <NavBar />
           </div>
           <Routes>
-            <Route
-              path="branddiagnostic"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="roicalculation"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="exitwealth"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-             <Route
-              path="brandassets"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="groupchat"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="aiagent"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="setting"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Coming />
-                </ProtectedRoute>
-              }
-            />
+            {routes.map((item, index) => (
+              <Route
+                key={index}
+                path={`/${item}`}
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <Coming />
+                  </ProtectedRoute>
+                }
+              />
+            ))}
             <Route
               path="/businessdetails"
               element={
