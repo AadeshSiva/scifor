@@ -47,7 +47,6 @@ const BrandAssignment: React.FC = () => {
   };
 
   const tasks: Task[] = [
-    // Section 1 - LEADERSHIP
     {
       id: 1,
       title: "SECTION 1 – LEADERSHIP",
@@ -98,7 +97,6 @@ const BrandAssignment: React.FC = () => {
       title: "SECTION 1 – LEADERSHIP",
       description: "10. Leadership and staff are proud of the company Brand and champion it sincerely.",
     },
-    // Section 2 - MESSAGE
     {
       id: 2,
       title: "SECTION 2 - MESSAGE",
@@ -149,7 +147,6 @@ const BrandAssignment: React.FC = () => {
       title: "SECTION 2 - MESSAGE",
       description: "10. The industry, our customers and prospects revere our Brand.",
     },
-    // Section 3 - OPERATIONS
     {
       id: 3,
       title: "SECTION 3 – OPERATIONS",
@@ -200,7 +197,6 @@ const BrandAssignment: React.FC = () => {
       title: "SECTION 3 – OPERATIONS",
       description: "10. The Brand and business philosophy are consistent inside and outside our business.",
     },
-    // Section 4 - BRAND ARTIFACTS
     {
       id: 4,
       title: "SECTION 4 – BRAND ARTIFACTS",
@@ -262,10 +258,10 @@ const BrandAssignment: React.FC = () => {
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
         <div className="flex items-center mb-2 md:mb-0">
           <button
-            className="flex items-center text-blue-600 hover:text-blue-800 mr-4"
+            className="flex items-center text-blue-600 hover:text-blue-800 mr-8"
             onClick={handleBackButton}
           >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back
           </button>
           <div>
             <h1 className="font-bold text-lg">BRAND DIAGNOSTIC ASSESSMENT</h1>
@@ -287,7 +283,6 @@ const BrandAssignment: React.FC = () => {
             </div>
           </div>
         </div>
-        {/* Assessment Table */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-h-screen">
@@ -308,7 +303,7 @@ const BrandAssignment: React.FC = () => {
               <tbody>
                 {currentTasks.map((task, index) => (
                   <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 h-4">
-                    <td className="p-2 text-sm">{task.description}</td>
+                    <td className="p-2 text-md">{task.description}</td>
                     {[1, 2, 3, 4, 5].map((value) => (
                       <td key={value} className="p-1 text-center">
                         <input
@@ -316,7 +311,7 @@ const BrandAssignment: React.FC = () => {
                           name={`s${currentSection}-q${index}`}
                           checked={ratings[`s${currentSection}-q${index}`] === value}
                           onChange={() => handleRatingChange(`s${currentSection}-q${index}`, value)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                          className="h-6 w-6 text-blue-600 focus:ring-blue-500"
                         />
                       </td>
                     ))}
@@ -326,8 +321,6 @@ const BrandAssignment: React.FC = () => {
 
             </table>
           </div>
-
-          {/* Navigation Buttons */}
           <div className="flex justify-between p-4 bg-gray-100">
             <button
               onClick={handlePrevSection}

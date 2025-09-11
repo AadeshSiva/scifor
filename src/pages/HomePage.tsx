@@ -966,9 +966,9 @@ const faqs = [
   },
   {
     question:
-      "How do I know who's advising me? Who built this? You'll be backed by a vetted network of:",
+      "How do I know who's advising me? Who built this?",
     answer:
-      "Ex-operators who exited 8- and 9-figure companies. M&A pros with $1B+ in closed deals. Tax and structuring experts who've saved founders millions. And the creators of PRSPERA — a platform built on real-world exit wins, not ivory tower theory. This isn't some guru course. This is execution infrastructure.",
+      "You'll be backed by a vetted network of Ex-operators who exited 8- and 9-figure companies. M&A pros with $1B+ in closed deals. Tax and structuring experts who've saved founders millions. And the creators of PRSPERA — a platform built on real-world exit wins, not ivory tower theory. This isn't some guru course. This is execution infrastructure.",
   },
   {
     question: "Can I cancel or get a refund?",
