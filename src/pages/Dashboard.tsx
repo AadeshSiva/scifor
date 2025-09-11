@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { PopupButton } from "react-calendly";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/utils/AuthContext";
+
 
 type Task = {
   id: number;
@@ -83,6 +85,7 @@ const tasks: Task[] = [
 ];
 
 const Dashboard: React.FC = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
   const [Mobile, setMobile] = useState(false);
@@ -151,9 +154,12 @@ const Dashboard: React.FC = () => {
       setIdNeeded(data);
     }
   }, [local]);
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
-      {/* Mobile Menu Button */}
       {Mobile && (
         <button
           className="fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md"
@@ -162,7 +168,6 @@ const Dashboard: React.FC = () => {
           <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} className="text-gray-700" />
         </button>
       )}
-      {/* Sidebar */}
       {(sidebarOpen || !Mobile) && (
         <aside className={`fixed top-0 left-0 w-64 bg-white border border-gray-200 flex flex-col h-full overflow-y-auto z-40 
           ${Mobile ? 'shadow-xl' : ''} transition-transform duration-300 ${Mobile && !sidebarOpen ? '-translate-x-full' : ''}`}>
@@ -177,36 +182,35 @@ const Dashboard: React.FC = () => {
             <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <LayoutDashboard size={18} /> Dashboard
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="branddiagnostic/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <ClipboardList size={18} /> Brand Diagnostic
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="roicalculation/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <Calculator size={18} /> ROI Calculator
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="exitwealth/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <TrendingUp size={18} /> Exit Wealth Calculator
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="brandassets/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <ClipboardList size={18} /> Brand Assets Checklist
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="groupchat/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <MessageCircle size={18} /> Anonymous Group Chat
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="aiagent/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <Bot size={18} /> AI Agent Chat
             </a>
           </nav>
           <div className="p-4 space-y-2 mt-auto mb-8">
-            <a href="#" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
+            <a href="setting/" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
               <Settings size={18} /> Settings
             </a>
-            <a href="#" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
+            <button className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600" onClick={handleLogout}>
               <LogOut size={18} /> Log out
-            </a>
+            </button>
           </div>
         </aside>
       )}
-      {/* Main Content */}
       <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
         <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
           Welcome to your Prospera dashboard
@@ -217,27 +221,26 @@ const Dashboard: React.FC = () => {
             <div className="divide-y divide-gray-200 text-gray-700">
               <div className="flex justify-between py-2">
                 <span>Alias</span>
-                <span className="text-gray-400">Not provided</span>
+                <span className="text-gray-400">{user.username}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Name</span>
-                <span className="text-gray-400">Not provided</span>
+                <span className="text-gray-400">{user.full_name}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Company Email</span>
-                <span className="text-gray-400">Not provided</span>
+                <span className="text-gray-400">{user.email}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Phone</span>
-                <span className="text-gray-400">Not provided</span>
+                <span className="text-gray-400">{user.phone_number}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Country</span>
-                <span className="text-gray-400">Not provided</span>
+                <span className="text-gray-400">Not Provided</span>
               </div>
             </div>
           </div>
-          {/* Membership Card */}
           <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="font-medium">Membership</span>
             <span className="text-gray-600">Guest Plan</span>
@@ -245,7 +248,6 @@ const Dashboard: React.FC = () => {
               Upgrade Plan
             </button>
           </div>
-          {/* Tasks Section */}
           <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mb-4">
             <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 pb-4 mb-4 border-b border-gray-300">
               <div className="w-full md:w-3/4 h-4 bg-gray-200 rounded-lg overflow-hidden">
@@ -254,7 +256,6 @@ const Dashboard: React.FC = () => {
               <span className="text-sm md:text-base whitespace-nowrap">{`${IdNeeded?.progress || 0}% Completed`}</span>
             </div>
             <div className="w-full flex flex-col md:flex-row gap-6">
-              {/* Task Navigation */}
               <div className="flex flex-col w-full md:w-1/3 gap-2">
                 <button
                   className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
@@ -293,7 +294,6 @@ const Dashboard: React.FC = () => {
                   </span>
                 </button>
               </div>
-              {/* Task Details */}
               <div className="w-full md:w-2/3">
                 <div className="mb-4">
                   <p className="text-sm md:text-base text-gray-700 pb-4">{IdNeeded?.description || ''}</p>
@@ -371,5 +371,4 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
 export default Dashboard;
