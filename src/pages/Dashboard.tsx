@@ -182,27 +182,27 @@ const Dashboard: React.FC = () => {
             <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <LayoutDashboard size={18} /> Dashboard
             </a>
-            <a href="/branddiagnostic/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/branddiagnostic" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <ClipboardList size={18} /> Brand Diagnostic
             </a>
-            <a href="/roicalculation/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/roicalculation" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <Calculator size={18} /> ROI Calculator
             </a>
-            <a href="/exitwealth/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/exitwealth" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <TrendingUp size={18} /> Exit Wealth Calculator
             </a>
-            <a href="/brandassets/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/brandassets" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <ClipboardList size={18} /> Brand Assets Checklist
             </a>
-            <a href="/groupchat/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/groupchat" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <MessageCircle size={18} /> Anonymous Group Chat
             </a>
-            <a href="/aiagent/" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/aiagent" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <Bot size={18} /> AI Agent Chat
             </a>
           </nav>
           <div className="p-4 space-y-2 mt-auto mb-8">
-            <a href="/setting/" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
+            <a href="/setting" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
               <Settings size={18} /> Settings
             </a>
             <button className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600" onClick={handleLogout}>
