@@ -1,4 +1,6 @@
-function Coming() {
+import React from "react";
+
+const Coming: React.FC=()=> {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-600 text-white space-y-4">
       <h1 className="text-4xl font-bold">Coming Soon</h1>
@@ -6,5 +8,4 @@ function Coming() {
     </div>
   );
 }
-
 export default Coming;
