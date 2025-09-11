@@ -193,8 +193,8 @@ const Pricing_Plan: React.FC = () => {
   };
 
   return (
-    <section className="bg-white h-auto ">
-      <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum mt-12 ">
+    <section className="bg-white h-auto mt-8">
+      <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum mt-16">
         The World’s One and Only Fact-Based Platform to Maximize and Monetize Your Business Value –
         Tax Effectively – for All Invested.
       </h1>
@@ -242,13 +242,6 @@ const Pricing_Plan: React.FC = () => {
               alt="Jeff Webinar"
             />
           </div>
-
-          <p className="pt-3 font-sans px-3 text-base text-center md:text-left lg:text-left">
-            Wednesday, August 20, 2025 <br />
-            10am est– 11am est Success Story <br />
-            11:15am est– 12:15pm est Q&A
-          </p>
-
           <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
             Only 33 Seats
           </p>
@@ -256,10 +249,10 @@ const Pricing_Plan: React.FC = () => {
 
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl text-white font-sans pt-4">
+          <h1 className="text-center text-xl lg:text-2xl text-white font-sans">
             Guest Registration
           </h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-4">Free</p>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">Free</p>
 
           <hr className="border-t-2 border-gray-400 mt-16" />
 

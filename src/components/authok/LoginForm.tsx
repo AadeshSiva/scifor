@@ -419,8 +419,6 @@ async function getUserStatus() {
     }
 
     const data = await res.json();
-    console.log(data);
-
     return {
       authenticated: true,
       isMember: data?.user_data.paid === true,
@@ -452,7 +450,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (error) setError("");
   };
 
@@ -466,13 +463,12 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         navigate("/dashboard");
       } else {
         if (plan === "guest") {
-          console.log(plan);
           navigate("/dashboard");
         } else if (plan === "member") {
           alert("Already registered as a guest. Proceeding to upgrade your plan.");
           navigate("/payment");
         } else {
-          navigate("/pricing-plan");
+          navigate("/dashboard");
         }
       }
     }

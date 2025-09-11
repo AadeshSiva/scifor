@@ -180,14 +180,7 @@ const Dashboard: React.FC = () => {
       {(sidebarOpen || !Mobile) && (
         <aside className={`fixed top-0 left-0 w-64 bg-white border border-gray-200 flex flex-col h-full overflow-y-auto z-40 
           ${Mobile ? 'shadow-xl' : ''} transition-transform duration-300 ${Mobile && !sidebarOpen ? '-translate-x-full' : ''}`}>
-          <div className="flex justify-center border-b p-4 text-2xl font-bold text-gray-800 mt-14">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-              alt="Prospera Logo"
-              className="w-[175px] h-[24px]"
-            />
-          </div>
-          <nav className="flex-1 px-4 space-y-3 text-gray-700 mt-4">
+          <nav className="flex-1 px-4 space-y-3 text-gray-700 mt-20">
             <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <LayoutDashboard size={18} /> Dashboard
             </a>
@@ -225,7 +218,6 @@ const Dashboard: React.FC = () => {
           Welcome to your Prospera dashboard
         </h1>
         <div className="w-full max-w-4xl mx-auto space-y-6">
-          {/* Profile Info Card */}
           <div className="bg-white shadow-md rounded-lg p-4 md:p-6">
             <div className="divide-y divide-gray-200 text-gray-700">
               <div className="flex justify-between py-2">

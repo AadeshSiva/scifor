@@ -21,10 +21,7 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
       className="mt-8 relative w-full max-w-3xl mx-auto border-[3px] border-[#DBA958] cursor-pointer"
     >
       <div className="flex items-center justify-between px-4 sm:px-6 md:px-8 my-4 sm:my-6">
-        {/* Left circle */}
         <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#FDFAF5]" />
-
-        {/* Center content */}
         <div className="text-center px-2 sm:px-4 flex-1">
           <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-[#595959] tracking-wide font-linear">
             <span className="font-normal mr-1">{id}.</span> CONFIDANTE
@@ -38,8 +35,6 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
             Click to learn more
           </span>
         </div>
-
-        {/* Right circle */}
         <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#F9F9F9] flex flex-col items-center justify-center text-gray-400 text-sm sm:text-base md:text-lg font-light relative overflow-hidden">
           <div className="flex-1 flex items-center justify-center">
             <span>68%</span>
@@ -49,8 +44,6 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
             <span className="text-xs sm:text-sm md:text-base">25-40%</span>
           </div>
         </div>
-
-        {/* Bottom arrow */}
         <div className="absolute -bottom-3 sm:-bottom-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] sm:border-l-[12px] border-r-[10px] sm:border-r-[12px] border-t-[14px] sm:border-t-[16px] border-l-transparent border-r-transparent border-t-[#DBA958]" />
       </div>
 
@@ -126,7 +119,6 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
           now. No consultants. No sales pitch. Just you and clarity — 24/7. Close your Exit Gap,
           privately, personally for FREE.
         </p>
-
         <button className="mx-auto text-lg sm:text-xl bg-black text-[#DBA958] px-6 sm:px-8 py-3 sm:py-4 mt-10 sm:mt-14 font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-300">
           Register For The Webinar
         </button>
@@ -138,53 +130,7 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
 function DropdownSection() {
   return (
     <div >
-      {/* <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white text-center px-4">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-          alt="PRSPERA Logo"
-          className="w-32 sm:w-40 my-5"
-        />
-
-        <h1 className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#0B0B0B] leading-tight max-w-4xl font-light">
-          The One and Only System
-          <br />
-          <span className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#000000] font-normal">
-            you need for building a business
-          </span>
-          <br />
-          <span className="font-walbaum text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#000000] font-normal">
-            with MARKETABLE VALUE.
-          </span>
-        </h1>
-
-        <p className="mt-6 text-base sm:text-lg md:text-xl lg:text-2xl font-linear font-thin max-w-3xl">
-          Your Exit Isn't a Moment. It's a Strategy.
-          <br />
-          And PRSPERA is Your System.
-        </p>
-
-        <a
-          href="#offerings"
-          className="mt-4 text-[#DBA958] font-semibold hover:underline font-linear text-lg sm:text-xl md:text-2xl"
-        >
-          Click offerings to learn more
-        </a>
-      </div> */}
-
-      {/* <div className="mt-12 sm:mt-20 space-y-4 sm:space-y-6">
-        <Dropdown id={1} />
-        <Dropdown id={2} />
-        <Dropdown id={3} />
-        <Dropdown id={4} />
-        <Dropdown id={5} />
-        <Dropdown id={6} />
-        <Dropdown id={7} />
-        <Dropdown id={8} />
-        <Dropdown id={9} />
-        <Dropdown id={10} />
-        <Dropdown id={11} />
-        <Dropdown id={12} />
-      </div> */}
+      
     </div>
   );
 }
