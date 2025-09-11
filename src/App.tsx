@@ -45,7 +45,7 @@ const App = () => (
               path="branddiagnostic"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -53,7 +53,7 @@ const App = () => (
               path="roicalculation"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -61,7 +61,7 @@ const App = () => (
               path="exitwealth"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -69,7 +69,7 @@ const App = () => (
               path="brandassets"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -77,7 +77,7 @@ const App = () => (
               path="groupchat"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -85,7 +85,7 @@ const App = () => (
               path="aiagent"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
@@ -93,7 +93,7 @@ const App = () => (
               path="setting"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Coming/>
+                  <Coming />
                 </ProtectedRoute>
               }
             />
