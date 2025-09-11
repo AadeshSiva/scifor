@@ -45,7 +45,7 @@ const App = () => (
             {routes.map((item, index) => (
               <Route
                 key={index}
-                path={`/${item}`}
+                path={`/${item}/*`}
                 element={
                   <ProtectedRoute requireAuth={false}>
                     <Coming />
@@ -54,7 +54,7 @@ const App = () => (
               />
             ))}
             <Route
-              path="/businessdetails"
+              path="/businessdetails/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <AddDetails />
@@ -62,7 +62,7 @@ const App = () => (
               }
             />
             <Route
-              path="/otpverify"
+              path="/otpverify/*"
               element={
                 <ProtectedRoute>
                   <OTPVerification />
@@ -70,7 +70,7 @@ const App = () => (
               }
             />
             <Route
-              path="/auth"
+              path="/auth/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Auth />
@@ -86,7 +86,7 @@ const App = () => (
               }
             />
             <Route
-              path="/chat"
+              path="/chat/*"
               element={
                 <ProtectedRoute>
                   <Chat />
@@ -102,7 +102,7 @@ const App = () => (
               }
             />
             <Route
-              path="/coi"
+              path="/coi/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <COI />
@@ -110,7 +110,7 @@ const App = () => (
               }
             />
             <Route
-              path="/proof"
+              path="/proof/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <ProofPage />
@@ -118,7 +118,7 @@ const App = () => (
               }
             />{" "}
             <Route
-              path="/pricing-plan"
+              path="/pricing-plan/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Pricing_Plan />
@@ -126,7 +126,7 @@ const App = () => (
               }
             />
             <Route
-              path="/meeting"
+              path="/meeting/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Index />
@@ -134,7 +134,7 @@ const App = () => (
               }
             />
             <Route
-              path="/about-us"
+              path="/about-us/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <AboutUs />
@@ -142,7 +142,7 @@ const App = () => (
               }
             />
             <Route
-              path="/article"
+              path="/article/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <ArticlePage />
@@ -150,7 +150,7 @@ const App = () => (
               }
             />
             <Route
-              path="/dashboard"
+              path="/dashboard/*"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Dashboard />
@@ -158,7 +158,7 @@ const App = () => (
               }
             />
             <Route
-              path="/payment"
+              path="/payment/*"
               element={
                 <ProtectedRoute>
                   <Payment />
@@ -166,7 +166,7 @@ const App = () => (
               }
             />
             <Route
-              path="/payment-success"
+              path="/payment-success/*"
               element={
                 <ProtectedRoute>
                   <PaymentSuccess />
@@ -174,7 +174,7 @@ const App = () => (
               }
             />
             <Route
-              path="/payment-cancelled"
+              path="/payment-cancelled/*"
               element={
                 <ProtectedRoute>
                   <PaymentCancelled />
@@ -182,7 +182,7 @@ const App = () => (
               }
             />
             <Route
-              path="/confirmation-guest"
+              path="/confirmation-guest/*"
               element={
                 <ProtectedRoute>
                   <ConfirmationGuest />
@@ -190,7 +190,7 @@ const App = () => (
               }
             />
             <Route
-              path="/confirmation-member"
+              path="/confirmation-member/*"
               element={
                 <ProtectedRoute>
                   <ConfirmationMember />
