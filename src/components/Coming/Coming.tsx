@@ -6,5 +6,4 @@ function Coming() {
     </div>
   );
 }
-
 export default Coming;
