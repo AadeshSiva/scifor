@@ -42,7 +42,7 @@ const App = () => (
           </div>
           <Routes>
             <Route
-              path="dashboard/branddiagnostic"
+              path="branddiagnostic"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -50,7 +50,7 @@ const App = () => (
               }
             />
             <Route
-              path="dashboard/roicalculation"
+              path="roicalculation"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -58,7 +58,7 @@ const App = () => (
               }
             />
             <Route
-              path="dashboard/exitwealth"
+              path="exitwealth"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -66,7 +66,7 @@ const App = () => (
               }
             />
              <Route
-              path="dashboard/brandassets"
+              path="brandassets"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -74,7 +74,7 @@ const App = () => (
               }
             />
             <Route
-              path="dashboard/groupchat"
+              path="groupchat"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -82,7 +82,7 @@ const App = () => (
               }
             />
             <Route
-              path="dashboard/aiagent"
+              path="aiagent"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
@@ -90,7 +90,7 @@ const App = () => (
               }
             />
             <Route
-              path="dashboard/setting"
+              path="setting"
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Coming/>
