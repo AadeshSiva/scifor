@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
-// Header Component
+
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,18 +38,15 @@ const NavBar: React.FC = () => {
       .map((name) => name.charAt(0).toUpperCase())
       .join("");
   };
-  // Helper function to check if current path matches nav item
   const isActivePage = (path: string) => {
     return location.pathname === path;
   };
-  // Helper function to get nav link classes
   const getNavLinkClasses = (path: string) => {
     const baseClasses =
       "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light";
     const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
     return `${baseClasses} ${activeClasses}`;
   };
-  // Helper function to truncate email if too long
   const truncateEmail = (email: string, maxLength: number = 25) => {
     if (email.length <= maxLength) return email;
     return email.substring(0, maxLength) + "...";
@@ -122,21 +119,18 @@ const NavBar: React.FC = () => {
                     >
                       COI
                     </button>
-
                     <button
                       onClick={() => navigate("/pricing-plan")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       Pricing Plan
                     </button>
-
                     <button
                       onClick={() => navigate("/proof")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     >
                       Proof
                     </button>
-
                     <button
                       onClick={() => navigate("/about-us")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"

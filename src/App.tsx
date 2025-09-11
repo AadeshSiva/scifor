@@ -25,6 +25,7 @@ import AboutUs from "./pages/AboutUs";
 import ProofPage from "./pages/Proof";
 import AddDetails from "./pages/AddDetails";
 import { useEffect } from "react";
+import Coming from "./components/Coming/Coming";
 
 
 const queryClient = new QueryClient();
@@ -37,9 +38,65 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <div className="fixed top-0 left-0 w-full z-50">
-            {window.location.pathname !== '/businessdetails' && <NavBar />}
+           <NavBar />
           </div>
           <Routes>
+            <Route
+              path="dashboard/branddiagnostic"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/roicalculation"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/exitwealth"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="dashboard/brandassets"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/groupchat"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/aiagent"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="dashboard/setting"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Coming/>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/businessdetails"
               element={
