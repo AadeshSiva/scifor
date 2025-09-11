@@ -26,6 +26,7 @@ import ProofPage from "./pages/Proof";
 import AddDetails from "./pages/AddDetails";
 import { useEffect } from "react";
 import Coming from "./pages/Coming";
+import BrandAssignment from "./components/assignment/brandassignment";
 
 
 const queryClient = new QueryClient();
@@ -53,6 +54,14 @@ const App = () => (
                 }
               />
             ))}
+            <Route
+             path="/brandassignment"
+             element={
+              <ProtectedRoute>
+                <BrandAssignment/>
+              </ProtectedRoute>
+             }
+            />
             <Route
               path="/businessdetails/*"
               element={

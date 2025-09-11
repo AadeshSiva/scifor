@@ -158,6 +158,9 @@ const Dashboard: React.FC = () => {
     logout();
     navigate("/");
   };
+  const handleassignment1=()=>{
+    navigate("/brandassignment")
+  }
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
       {Mobile && (
@@ -334,7 +337,7 @@ const Dashboard: React.FC = () => {
                           <FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />
                           <span className="text-sm">{IdNeeded.task1}</span>
                         </div>
-                        <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
+                        <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment1}>
                           Take Assessment
                         </button>
                       </div>
