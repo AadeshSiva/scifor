@@ -15,7 +15,6 @@ import { PopupButton } from "react-calendly";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
 
-
 type Task = {
   id: number;
   title: string;
@@ -28,6 +27,7 @@ type Task = {
   button1?: string;
   button2?: string;
 };
+
 
 const tasks: Task[] = [
   {
@@ -158,14 +158,17 @@ const Dashboard: React.FC = () => {
     logout();
     navigate("/");
   };
-  const handleassignment1=()=>{
+  const handleassignment1 = () => {
     navigate("/brandassignment")
   }
-  const handleassignment2=()=>{
+  const handleassignment2 = () => {
     navigate("/roiassignment")
   }
-  const handleassignment3=()=>{
+  const handleassignment3 = () => {
     navigate("/branddiagonist")
+  }
+  const handleUpgrade = () => {
+    navigate("/payment")
   }
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
@@ -242,13 +245,14 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="font-medium">Membership</span>
-            <span className="text-gray-600">Guest Plan</span>
-            <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-6 py-1 rounded-lg hover:bg-primary transition-colors duration-300 w-full md:w-auto">
-              Upgrade Plan
-            </button>
-          </div>
+          {!user.paid && (
+            <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+              <span className="font-medium">Membership</span>
+              <span className="text-gray-600">Guest Plan</span>
+              <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-6 py-1 rounded-lg hover:bg-primary transition-colors duration-300 w-full md:w-auto" onClick={handleUpgrade}>
+                Upgrade Plan
+              </button>
+            </div>)}
           <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mb-4">
             <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 pb-4 mb-4 border-b border-gray-300">
               <div className="w-full md:w-3/4 h-4 bg-gray-200 rounded-lg overflow-hidden">

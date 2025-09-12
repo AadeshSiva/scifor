@@ -9,31 +9,30 @@ import OTPVerification from "./pages/OtpVerification";
 import Chat from "./pages/Chat";
 import COI from "./pages/COI";
 import Pricing_Plan from "./pages/Pricing_Plan";
-import Payment from "./pages/PaymentPage";
-import Auth from "./pages/Auth";
+import Payment from "./components/paymentSystem/PaymentPage";
+import Auth from "./components/authok/Auth";
 import NavBar from "./components/layout/NavBar";
 import ProtectedRoute from "./utils/ProtectedRoutes";
-import PaymentSuccess from "./pages/PymentSuccess";
+import PaymentSuccess from "./components/paymentSystem/PymentSuccess";
 import Index from "./components/join/meeting";
 import ArticlePage from "./pages/ArticlePage";
-import PaymentCancelled from "./pages/PaymentCancelled";
-import ConfirmationGuest from "./pages/confirmationGuestPage";
-import ConfirmationMember from "./pages/confirmationMemberPage";
+import PaymentCancelled from "./components/paymentSystem/PaymentCancelled";
+import ConfirmationGuest from "./components/paymentSystem/confirmationGuestPage";
+import ConfirmationMember from "./components/paymentSystem/confirmationMemberPage";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import AboutUs from "./pages/AboutUs";
 import ProofPage from "./pages/Proof";
 import AddDetails from "./pages/AddDetails";
-import { useEffect } from "react";
 import Coming from "./pages/Coming";
 import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
 import BrandDiagonist from "./components/assignment/BrandDiagonist";
 
 
+
 const queryClient = new QueryClient();
 const routes = ["branddiagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>

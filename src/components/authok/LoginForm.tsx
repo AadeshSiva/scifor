@@ -12,18 +12,15 @@ import {
   Mail,
   Lock,
 } from "lucide-react";
-
 interface LoginFormProps {
   onSwitchToRegister: () => void;
 }
-
-// Forgot Password Modal Component - Updated to match change username flow
 const ForgotPasswordModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }> = ({ isOpen, onClose, onSuccess }) => {
-  const [step, setStep] = useState(1); // 1: email, 2: otp, 3: new password
+  const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -33,9 +30,7 @@ const ForgotPasswordModal: React.FC<{
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
   const API_BASE_URL = "https://api.prspera.com";
-
   const resetForm = () => {
     setStep(1);
     setEmail("");
@@ -47,22 +42,18 @@ const ForgotPasswordModal: React.FC<{
     setShowNewPassword(false);
     setShowConfirmPassword(false);
   };
-
   const handleClose = () => {
     resetForm();
     onClose();
   };
-
   const sendOTP = async () => {
     if (!email.trim()) {
       setErrorMessage("Email is required");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/forgot-password-send-otp/`, {
         method: "POST",
@@ -71,9 +62,7 @@ const ForgotPasswordModal: React.FC<{
         },
         body: JSON.stringify({ email: email.trim() }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("OTP sent to your email");
         setTimeout(() => {
@@ -89,17 +78,14 @@ const ForgotPasswordModal: React.FC<{
       setIsLoading(false);
     }
   };
-
   const verifyOTP = async () => {
     if (!otp.trim()) {
       setErrorMessage("OTP is required");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/verify-otp/`, {
         method: "POST",
@@ -111,9 +97,7 @@ const ForgotPasswordModal: React.FC<{
           otp: otp.trim(),
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("OTP verified successfully");
         setTimeout(() => {
@@ -129,27 +113,22 @@ const ForgotPasswordModal: React.FC<{
       setIsLoading(false);
     }
   };
-
   const resetPassword = async () => {
     if (!newPassword || !confirmPassword) {
       setErrorMessage("Both password fields are required");
       return;
     }
-
     if (newPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
-
     if (newPassword.length < 6) {
       setErrorMessage("Password must be at least 6 characters long");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password/`, {
         method: "POST",
@@ -161,9 +140,7 @@ const ForgotPasswordModal: React.FC<{
           new_password: newPassword,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("Password reset successfully!");
         setTimeout(() => {
@@ -179,7 +156,6 @@ const ForgotPasswordModal: React.FC<{
       setIsLoading(false);
     }
   };
-
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -187,13 +163,10 @@ const ForgotPasswordModal: React.FC<{
       setSuccessMessage("");
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-3">
             {step > 1 && (
@@ -219,25 +192,19 @@ const ForgotPasswordModal: React.FC<{
             <X size={20} />
           </button>
         </div>
-
-        {/* Content */}
         <div className="p-6">
-          {/* Messages */}
           {successMessage && (
             <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4">
               <CheckCircle size={20} />
               <span>{successMessage}</span>
             </div>
           )}
-
           {errorMessage && (
             <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4">
               <AlertCircle size={20} />
               <span>{errorMessage}</span>
             </div>
           )}
-
-          {/* Step 1: Email */}
           {step === 1 && (
             <div className="space-y-4">
               <p className="text-gray-600 text-sm mb-4">
@@ -265,8 +232,6 @@ const ForgotPasswordModal: React.FC<{
               </div>
             </div>
           )}
-
-          {/* Step 2: OTP */}
           {step === 2 && (
             <div className="space-y-4">
               <p className="text-gray-600 text-sm mb-4">
@@ -296,8 +261,6 @@ const ForgotPasswordModal: React.FC<{
               </button>
             </div>
           )}
-
-          {/* Step 3: New Password */}
           {step === 3 && (
             <div className="space-y-4">
               <p className="text-gray-600 text-sm mb-4">Create a new password for your account.</p>
@@ -330,7 +293,6 @@ const ForgotPasswordModal: React.FC<{
                   </button>
                 </div>
               </div>
-
               <div>
                 <label htmlFor="confirmPassword" className="block text-gray-800 font-medium mb-2">
                   Confirm Password
@@ -362,8 +324,6 @@ const ForgotPasswordModal: React.FC<{
             </div>
           )}
         </div>
-
-        {/* Footer */}
         <div className="flex justify-end gap-3 p-6 border-t">
           <button
             onClick={handleClose}
@@ -396,28 +356,22 @@ const ForgotPasswordModal: React.FC<{
     </div>
   );
 };
-
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
-
 const authHeaders = () => {
   const token = getAccessToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
-
 async function getUserStatus() {
   const token = getAccessToken();
   if (!token) return { authenticated: false, isMember: false };
-
   try {
     const res = await fetch("https://api.prspera.com/extract-user-data/", {
       headers: { ...authHeaders() },
     });
-
     if (!res.ok) {
       return { authenticated: false, isMember: false };
     }
-
     const data = await res.json();
     return {
       authenticated: true,
@@ -428,14 +382,20 @@ async function getUserStatus() {
     return { authenticated: false, isMember: false };
   }
 }
-
-// Main Login Form Component
-export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
+export default function LoginForm({
+  onSwitchToRegister,
+  onSuccess,
+  onClose
+}: {
+  onSwitchToRegister: () => void;
+  onSuccess?: (user?: any) => void;
+  onClose?: () => void;
+}) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
   });
-  const [rememberMe, setRememberMe] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -443,7 +403,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -452,11 +411,9 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     }));
     if (error) setError("");
   };
-
   const handleLoginRedirect = async () => {
     const queryParams = new URLSearchParams(location.search);
     const plan = queryParams.get("plan") || "";
-
     const status = await getUserStatus();
     if (status.authenticated) {
       if (status.isMember) {
@@ -473,18 +430,14 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       }
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!formData.identifier || !formData.password) {
       setError("Please fill in all required fields");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       const response = await fetch("https://api.prspera.com/login/", {
         method: "POST",
@@ -495,27 +448,11 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         body: JSON.stringify({
           identifier: formData.identifier,
           password: formData.password,
-          remember_me: rememberMe,
         }),
       });
-
       const data = await response.json();
-
       if (data.status === "success") {
-        // Use the auth context login function
-        await login(data.tokens, rememberMe);
-
-        // Store remember me preference if needed
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-          localStorage.setItem("userIdentifier", formData.identifier);
-        } else {
-          localStorage.removeItem("rememberMe");
-          localStorage.removeItem("userIdentifier");
-        }
-
-        console.log("Login successful:", data.message);
-
+        await login(data.tokens);
         await handleLoginRedirect();
       } else {
         setError(data.message || "Login failed");
@@ -527,11 +464,9 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       setLoading(false);
     }
   };
-
   const handleCloseClick = (): void => {
     navigate(-1);
   };
-
   const getCsrfToken = () => {
     const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
@@ -542,36 +477,17 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     }
     return "";
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const handleRegisterClick = () => {
     navigate("/pricing-plan");
     alert("Please first select a plan to register.");
   };
-
   const handleForgotPasswordSuccess = () => {
     setError("");
-    // Optionally show a success message
     console.log("Password reset completed successfully!");
   };
-
-  // Load remember me preference on component mount
-  React.useEffect(() => {
-    const rememberedUser = localStorage.getItem("userIdentifier");
-    const shouldRemember = localStorage.getItem("rememberMe") === "true";
-
-    if (shouldRemember && rememberedUser) {
-      setFormData((prev) => ({
-        ...prev,
-        identifier: rememberedUser,
-      }));
-      setRememberMe(true);
-    }
-  }, []);
-
   return (
     <>
       <div className="flex flex-col gap-6">
@@ -585,14 +501,12 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             <X size={20} />
           </button>
         </div>
-
         {error && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
             <AlertCircle size={16} />
             <span>{error}</span>
           </div>
         )}
-
         <div className="flex flex-col gap-3">
           <div className="text-base text-black flex items-center gap-1">
             <span>Email or Username</span>
@@ -608,7 +522,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             autoComplete="username"
           />
         </div>
-
         <div className="flex flex-col gap-3">
           <div className="text-base text-black flex items-center gap-1">
             <span>Password</span>
@@ -634,20 +547,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             </button>
           </div>
         </div>
-
-        {/* Remember Me and Forgot Password */}
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded focus:ring-black focus:ring-2"
-              disabled={loading}
-            />
-            <span className="text-sm text-gray-700">Remember me</span>
-          </label>
-
           <button
             type="button"
             onClick={() => setShowForgotPassword(true)}
@@ -657,7 +557,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             Forgot Password?
           </button>
         </div>
-
         <button
           type="button"
           onClick={handleSubmit}
@@ -673,7 +572,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             "Login"
           )}
         </button>
-
         <div className="text-center text-lg italic text-gray-500 mt-6">
           <span>Don't have an account? </span>
           <span
@@ -684,8 +582,6 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
           </span>
         </div>
       </div>
-
-      {/* Forgot Password Modal */}
       <ForgotPasswordModal
         isOpen={showForgotPassword}
         onClose={() => setShowForgotPassword(false)}

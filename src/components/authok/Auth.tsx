@@ -1,11 +1,9 @@
 import { AuthForm } from "@/components/authok/AuthForm";
 import { useLocation } from "react-router-dom";
-
 export default function Auth() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const view = params.get("view") === "login" ? "login" : "register";
-
   return (
     <>
       <link
