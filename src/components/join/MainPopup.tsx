@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PhoneInput  from "@/components/ui/PhoneInput";
+import PhoneInput  from "@/components/authok/PhoneInput";
 import { CloseButton } from "@/components/ui/CloseButton";
 
 const Index: React.FC = () => {

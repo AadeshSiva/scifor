@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import  PhoneInput  from "@/components/ui/PhoneInput";
+import  PhoneInput  from "@/components/authok/PhoneInput";
 
 interface PauseModalProps {
   isOpen: boolean;

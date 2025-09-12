@@ -28,18 +28,13 @@ export const useAuth = () => {
   }
   return context;
 };
-
 interface AuthProviderProps {
   children: ReactNode;
 }
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const isAuthenticated = !!user;
-
-  // Get user details from backend
   const fetchUserDetails = async (accessToken: string): Promise<User | null> => {
     try {
       const response = await fetch("https://api.prspera.com/extract-user-data/", {
@@ -60,7 +55,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return null;
     }
   };
-
   // Login function
   const login = async (tokens: { access: string; refresh: string }) => {
     try {
@@ -76,49 +70,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logout();
     }
   };
-
   // Logout function
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setUser(null);
   };
-
   // Update user data
   const updateUser = (userData: Partial<User>) => {
     setUser((prev) => (prev ? { ...prev, ...userData } : null));
   };
-
-  // Check authentication status on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
       const accessToken = localStorage.getItem("access_token");
-
       if (accessToken) {
         const userData = await fetchUserDetails(accessToken);
         if (userData) {
           setUser(userData);
         } else {
-          // Token might be expired, try refresh
           await tryRefreshToken();
         }
       }
-
       setIsLoading(false);
     };
-
     checkAuthStatus();
   }, []);
 
-  // Try to refresh token
   const tryRefreshToken = async () => {
     const refreshToken = localStorage.getItem("refresh_token");
-
     if (!refreshToken) {
       logout();
       return;
     }
-
     try {
       const response = await fetch("https://api.prspera.com/api/token/refresh/", {
         method: "POST",
@@ -127,11 +110,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         },
         body: JSON.stringify({ refresh: refreshToken }),
       });
-
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("access_token", data.access);
-
         const userData = await fetchUserDetails(data.access);
         if (userData) {
           setUser(userData);
@@ -144,7 +125,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       logout();
     }
   };
-
   const value: AuthContextType = {
     user,
     isAuthenticated,
@@ -153,6 +133,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
   };
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

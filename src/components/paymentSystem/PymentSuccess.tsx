@@ -7,45 +7,39 @@ const PaymentSuccess = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(5);
   const [isUpdating, setIsUpdating] = useState(true);
-  const [userType, setUserType] = useState<UserType>("member"); // default
-
+  const [userType, setUserType] = useState<UserType>("member"); 
   const confirmPayment = useCallback(async () => {
     try {
       const accessToken =
         sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
       const session = new URLSearchParams(window.location.search).get("session_id");
       setSessionId(session);
-
       if (accessToken && session) {
         const response = await fetch(
           `https://api.prspera.com/confirm-payment/?session_id=${session}`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
-
         if (response.ok) {
           const data = await response.json();
           const amount = Number(data?.amount ?? 0);
           const paid = data?.user_paid || data?.status === "paid" || amount > 0;
           setUserType(paid && amount >= 797 ? "member" : "guest");
         } else {
-          setUserType("member");
+          setUserType("guest");
         }
       } else {
-        // Missing tokens or session → fallback
-        setUserType("member");
+        setUserType("guest");
       }
     } catch (e) {
       console.error("Error confirming payment:", e);
-      setUserType("member");
+      setUserType("guest");
     } finally {
       setIsUpdating(false);
     }
   }, []);
-
   useEffect(() => {
     confirmPayment();
   }, [confirmPayment]);
-
   useEffect(() => {
     if (isUpdating) return;
     const t = setInterval(() => {
@@ -61,7 +55,6 @@ const PaymentSuccess = () => {
     }, 1000);
     return () => clearInterval(t);
   }, [isUpdating, userType]);
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="max-w-md w-full">
@@ -118,5 +111,4 @@ const PaymentSuccess = () => {
     </div>
   );
 };
-
 export default PaymentSuccess;

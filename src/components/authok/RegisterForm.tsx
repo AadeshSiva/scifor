@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
-import { PasswordInput } from "@/components/ui/PasswordInput";
-import PhoneInput from "@/components/ui/PhoneInput";
+import { PasswordInput } from "@/components/authok/PasswordInput";
+import PhoneInput from "@/components/authok/PhoneInput";
 
-// Define interfaces for type safety
 interface FormData {
   full_name: string;
   email: string;
@@ -13,7 +12,6 @@ interface FormData {
   phone_number: string;
   website_name: string;
 }
-
 interface FormErrors {
   full_name?: string;
   email?: string;
@@ -24,7 +22,6 @@ interface FormErrors {
   general?: string;
   otp?: string;
 }
-
 interface FieldTouched {
   full_name: boolean;
   email: boolean;
@@ -33,13 +30,11 @@ interface FieldTouched {
   phone_number: boolean;
   website_name: boolean;
 }
-
 interface CheckEmailResponse {
   user_exists: boolean;
   message: string;
   paid: boolean;
 }
-
 interface RegisterResponse {
   status: string;
   message: string;
@@ -48,19 +43,24 @@ interface RegisterResponse {
     refresh: string;
   };
 }
-
 interface OtpResponse {
   status: string;
   message: string;
 }
-
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
   onSuccess?: (user?: any) => void;
   onClose?: () => void;
 }
-
-export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Element {
+export function RegisterForm({
+  onSwitchToLogin,
+  onSuccess,
+  onClose
+}: {
+  onSwitchToLogin: () => void;
+  onSuccess?: (user?: any) => void;
+  onClose?: () => void;
+}): JSX.Element {
   const [formData, setFormData] = useState<FormData>({
     full_name: "",
     email: "",
@@ -69,8 +69,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     phone_number: "",
     website_name: "",
   });
-
-  // Track which fields have been touched/interacted with
   const [fieldTouched, setFieldTouched] = useState<FieldTouched>({
     full_name: false,
     email: false,
@@ -79,28 +77,21 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     phone_number: false,
     website_name: false,
   });
-
   const location = useLocation();
-
   const getPlan = () => {
     const params = new URLSearchParams(location.search);
     return params.get("plan") || "guest";
   };
-
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const [timer, setTimer] = useState<number>(300); // 5 minutes in seconds
+  const [timer, setTimer] = useState<number>(300);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [otpLoading, setOtpLoading] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
   const API_BASE_URL = "https://api.prspera.com";
-
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  // Timer effect for OTP countdown
   useEffect(() => {
     let countdown: NodeJS.Timeout;
     if (showOtpModal && timer > 0) {
@@ -114,44 +105,33 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         });
       }, 1000);
     }
-
     return () => {
       if (countdown) clearInterval(countdown);
     };
   }, [showOtpModal, timer]);
-
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
-
   const isValidWebsiteUrl = (url: string): boolean => {
     try {
-      // Add protocol if missing
       const urlToTest =
         url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
-
       const urlObj = new URL(urlToTest);
-
-      // Make sure it has a valid hostname (e.g., no empty string, no spaces)
       return !!urlObj.hostname && urlObj.hostname.includes(".");
     } catch {
       return false;
     }
   };
-
-  // Validate individual field
   const validateField = (name: keyof FormData, value: string): string | undefined => {
     switch (name) {
       case "full_name":
         return !value.trim() ? "Full name is required" : undefined;
-
       case "email":
         if (!value.trim()) return "Email is required";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Please enter a valid email address";
         return undefined;
-
       case "password":
         if (!value) return "Password is required";
         if (value.length < 6) return "Password must be at least 6 characters";
@@ -159,39 +139,28 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           return "Password must contain at least 1 letter, 1 number, and 1 special character";
         }
         return undefined;
-
       case "confirmPassword":
         if (!value) return "Please confirm your password";
         if (formData.password !== value) return "Passwords do not match";
         return undefined;
-
       case "phone_number":
         return !value ? "Phone number is required" : undefined;
-
       case "website_name":
         if (!value.trim()) return "Company website is required";
         if (!isValidWebsiteUrl(value.trim())) {
           return "Please enter a valid website URL (ending with .com, .org, .io, .co, etc.)";
         }
         return undefined;
-
       default:
         return undefined;
     }
   };
-
-  // Handle field blur (when user leaves the field)
   const handleFieldBlur = (fieldName: keyof FormData): void => {
-    // Mark field as touched
     setFieldTouched((prev) => ({
       ...prev,
       [fieldName]: true,
     }));
-
-    // Get the current field value
     const fieldValue = formData[fieldName];
-
-    // For password confirmation, we need special handling
     let error;
     if (fieldName === "confirmPassword") {
       if (!fieldValue) {
@@ -202,13 +171,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     } else {
       error = validateField(fieldName, fieldValue);
     }
-
     setErrors((prev) => ({
       ...prev,
       [fieldName]: error,
     }));
-
-    // When password field is blurred, also validate confirm password if it's been touched
     if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
       const confirmPasswordError =
         formData.password !== formData.confirmPassword ? "Passwords do not match" : undefined;
@@ -218,25 +184,19 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       }));
     }
   };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     const fieldName = name as keyof FormData;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    // Clear error when user starts typing
     if (errors[fieldName]) {
       setErrors((prev) => ({
         ...prev,
         [name]: undefined,
       }));
     }
-
-    // Handle password matching validation during typing
     if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
       const confirmPasswordError =
         value !== formData.confirmPassword ? "Passwords do not match" : undefined;
@@ -245,7 +205,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         confirmPassword: confirmPasswordError,
       }));
     }
-
     if (fieldName === "confirmPassword" && fieldTouched.confirmPassword) {
       const confirmPasswordError =
         formData.password !== value ? "Passwords do not match" : undefined;
@@ -255,36 +214,26 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       }));
     }
   };
-
   const handleOtpChange = (index: number, value: string): void => {
     if (value.length <= 1) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      // Auto-focus next input
       if (value !== "" && index < 5) {
         inputRefs.current[index + 1]?.focus();
       }
-
-      // Clear OTP error when user starts typing
       if (errors.otp) {
         setErrors((prev) => ({ ...prev, otp: undefined }));
       }
     }
   };
-
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
-    // If backspace is pressed and current field is empty, focus previous field
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
-
   const validateForm = (): FormErrors => {
     const newErrors: FormErrors = {};
-
-    // Validate all fields
     Object.keys(formData).forEach((key) => {
       const fieldName = key as keyof FormData;
       const error = validateField(fieldName, formData[fieldName]);
@@ -292,10 +241,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         newErrors[fieldName] = error;
       }
     });
-
     return newErrors;
   };
-
   const getCsrfToken = (): string => {
     const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
@@ -306,12 +253,9 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
     }
     return "";
   };
-
-  // Enhanced API call with better error handling
   const makeApiCall = async (endpoint: string, payload: any): Promise<any> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
-
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
@@ -321,16 +265,12 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
-        // credentials: "include",
       });
-
       clearTimeout(timeoutId);
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
-
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
@@ -342,11 +282,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       throw error;
     }
   };
-
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-
-    // Mark all fields as touched
     setFieldTouched({
       full_name: true,
       email: true,
@@ -355,35 +292,28 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       phone_number: true,
       website_name: true,
     });
-
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     setLoading(true);
     setErrors({});
-
     try {
-      // Check if email already exists
       const checkData: CheckEmailResponse = await makeApiCall("/check_email_status/", {
         email: formData.email,
       });
       if (checkData.user_exists) {
         console.log(checkData);
         setErrors({
-          email: `${
-            checkData.paid
-              ? "Email already registered as a Member in Prspera. Please log in."
-              : "Email already registered as a Guest in Prespera. Please log in."
-          }`,
+          email: `${checkData.paid
+            ? "Email already registered as a Member in Prspera. Please log in."
+            : "Email already registered as a Guest in Prespera. Please log in."
+            }`,
         });
         setLoading(false);
         return;
       }
-
-      // Send OTP for email verification BEFORE registration
       await sendOtp();
     } catch (error) {
       console.error("Pre-registration error:", error);
@@ -394,13 +324,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       setLoading(false);
     }
   };
-
   const sendOtp = async (): Promise<void> => {
     try {
       const otpData: OtpResponse = await makeApiCall("/send_email_otp/", {
         email: formData.email,
       });
-
       if (otpData.status !== "success") {
         throw new Error(otpData.message || "Failed to send OTP");
       }
@@ -408,39 +336,30 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       setErrors({
         general: error instanceof Error ? error.message : "Failed to send OTP. Please try again.",
       });
-      // still open modal so user can press "Resend"
     } finally {
       setShowOtpModal(true);
       setTimer(300);
       setOtp(["", "", "", "", "", ""]);
     }
   };
-
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-
     const otpCode = otp.join("");
     if (!otpCode || otpCode.length !== 6) {
       setErrors({ otp: "Please enter the complete 6-digit OTP" });
       return;
     }
-
     setOtpLoading(true);
     setErrors({});
-
     try {
-      // First verify OTP
       const verifyData: OtpResponse = await makeApiCall("/verify_email_otp/", {
         email: formData.email,
         otp: otpCode,
       });
-
       if (verifyData.status !== "success") {
         setErrors({ otp: verifyData.message });
         return;
       }
-
-      // OTP verified successfully, now register the user
       const registerPayload = {
         email: formData.email,
         password: formData.password,
@@ -450,22 +369,12 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         no_linkedin: true,
         came_from_plan: getPlan(),
       };
-
-      console.log("Sending registration payload:", {
-        ...registerPayload,
-        password: "[REDACTED]",
-      });
-
       const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
-
       if (registerData.status === "success") {
-        // Store tokens using the auth context
         if (registerData.tokens) {
           await login(registerData.tokens);
-          console.log("Registration successful with tokens:", registerData.message);
+          console.log(registerData.tokens)
         }
-
-        // Redirect based on plan
         const plan = getPlan();
         if (plan === "guest") {
           navigate("/confirmation-guest");
@@ -474,9 +383,9 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         }
       } else {
         setErrors({ otp: registerData.message });
+        console.log(registerData.status)
       }
     } catch (error) {
-      console.error("OTP verification or registration error:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -486,7 +395,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       setOtpLoading(false);
     }
   };
-
   const resendOtp = async (): Promise<void> => {
     setOtpLoading(true);
     try {
@@ -498,40 +406,33 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
       setOtpLoading(false);
     }
   };
-
   const handleCloseClick = (): void => {
     navigate(-1);
   };
-
   const handlePhoneChange = (value: string): void => {
     setFormData((prev) => ({ ...prev, phone_number: value }));
-
-    // Clear phone number error when user starts typing
     if (errors.phone_number) {
       setErrors((prev) => ({ ...prev, phone_number: undefined }));
     }
   };
-
   const handlePhoneBlur = (): void => {
     setFieldTouched((prev) => ({ ...prev, phone_number: true }));
-
     const error = validateField("phone_number", formData.phone_number);
     setErrors((prev) => ({
       ...prev,
       phone_number: error,
     }));
   };
-
-  //remove cold start of BAckend
+  const handleHiddenValue = () => {
+    setShowOtpModal(false)
+  }
   useEffect(() => {
     fetch(`${API_BASE_URL}/health`, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(
-      () => {}
+      () => { }
     );
   }, []);
-
   return (
     <div className="flex flex-col gap-4">
-      {/* Close icon for registration popup */}
       <div className="flex justify-end">
         <button
           type="button"
@@ -549,13 +450,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           </svg>
         </button>
       </div>
-
       {errors.general && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           {errors.general}
         </div>
       )}
-
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Full Name</span>
@@ -565,11 +464,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           type="text"
           name="full_name"
           placeholder="Enter your full name"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.full_name
-              ? "border-red-500 focus:border-red-500"
-              : "border-gray-400 focus:border-black"
-          }`}
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.full_name
+            ? "border-red-500 focus:border-red-500"
+            : "border-gray-400 focus:border-black"
+            }`}
           value={formData.full_name}
           onChange={handleInputChange}
           onBlur={() => handleFieldBlur("full_name")}
@@ -580,7 +478,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.full_name}</span>
         )}
       </div>
-
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Company Email ID</span>
@@ -590,11 +487,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           type="email"
           name="email"
           placeholder="Enter your company email ID"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.email
-              ? "border-red-500 focus:border-red-500"
-              : "border-gray-400 focus:border-black"
-          }`}
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.email
+            ? "border-red-500 focus:border-red-500"
+            : "border-gray-400 focus:border-black"
+            }`}
           value={formData.email}
           onChange={handleInputChange}
           onBlur={() => handleFieldBlur("email")}
@@ -605,7 +501,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.email}</span>
         )}
       </div>
-
       <div className="flex gap-5 max-sm:flex-col max-sm:gap-4">
         <div className="flex-1">
           <PasswordInput
@@ -638,21 +533,16 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           />
         </div>
       </div>
-
       <div className="text-xs text-gray-500 italic -mt-3">
         Minimum 6 characters | At least 1 special character | At least 1 letter and 1 number
       </div>
-
       <div className="flex flex-col gap-3">
         <PhoneInput
           value={formData.phone_number}
           onChange={handlePhoneChange}
-          onBlur={handlePhoneBlur}
           error={fieldTouched.phone_number ? errors.phone_number : undefined}
-          disabled={loading}
         />
       </div>
-
       <div className="flex flex-col gap-3">
         <div className="text-base text-black flex items-center gap-1">
           <span>Company Website</span>
@@ -662,11 +552,10 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           type="text"
           name="website_name"
           placeholder="Enter your Company website URL (e.g., example.com)"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
-            errors.website_name
-              ? "border-red-500 focus:border-red-500"
-              : "border-gray-400 focus:border-black"
-          }`}
+          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.website_name
+            ? "border-red-500 focus:border-red-500"
+            : "border-gray-400 focus:border-black"
+            }`}
           value={formData.website_name}
           onChange={handleInputChange}
           onBlur={() => handleFieldBlur("website_name")}
@@ -677,7 +566,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           <span className="text-red-500 text-sm">{errors.website_name}</span>
         )}
       </div>
-
       <button
         type="button"
         onClick={handleSubmit}
@@ -712,7 +600,6 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
           "Register"
         )}
       </button>
-
       <div className="text-center text-lg italic text-gray-500 mt-6">
         <span>Already have an account? </span>
         <span className="text-black cursor-pointer hover:underline" onClick={onSwitchToLogin}>
@@ -720,28 +607,24 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps): JSX.Elemen
         </span>
       </div>
 
-      {/* Enhanced OTP Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
+            <button className="w-full text-right" onClick={handleHiddenValue}>X</button>
             <h2 className="text-center text-3xl font-bold mb-6">OTP Verification</h2>
-
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
             </p>
-
             <p className="text-center mb-8 text-gray-600">
               Please check your inbox (and spam/junk folder just in case)
               <br />
               and enter the code below to complete your registration.
             </p>
-
             {errors.otp && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
                 {errors.otp}
               </div>
             )}
-
             <form onSubmit={handleOtpSubmit}>
               <div className="flex justify-center gap-2 mb-6">
                 {otp.map((digit, index) => (
