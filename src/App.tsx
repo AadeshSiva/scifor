@@ -29,8 +29,6 @@ import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
 import BrandDiagonist from "./components/assignment/BrandDiagonist";
 
-
-
 const queryClient = new QueryClient();
 const routes = ["branddiagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
 const App = () => (

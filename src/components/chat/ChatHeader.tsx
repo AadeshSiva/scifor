@@ -1,6 +1,4 @@
-
 import React from 'react';
-
 export const ChatHeader: React.FC = () => {
   return (
     <header className="flex items-center justify-between px-8 py-4 border-b border-[rgba(158,158,158,0.3)]">

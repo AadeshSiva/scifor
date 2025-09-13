@@ -7,7 +7,6 @@ interface FormData {
   phone: string;
   privacy: boolean;
 }
-
 interface CountryCode {
   code: string;
   country: string;
@@ -15,14 +14,12 @@ interface CountryCode {
   digits: number;
   format?: string;
 }
-
 interface RegistrationFormProps {
   onSubmit: (formData: FormData) => void;
   loading: boolean;
   error: string;
   initialData?: FormData;
 }
-
 const countryCodes: CountryCode[] = [
   { code: '+1', country: 'United States', flag: '🇺🇸', digits: 10 },
   { code: '+1', country: 'Canada', flag: '🇨🇦', digits: 10 },
@@ -89,13 +86,9 @@ const countryCodes: CountryCode[] = [
   { code: '+90', country: 'Turkey', flag: '🇹🇷', digits: 10 },
   { code: '+972', country: 'Israel', flag: '🇮🇱', digits: 9 }
 ];
-
 const detectCountryCode = async (): Promise<string> => {
   try {
-    // Try to get user's timezone first
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
-    // Map common timezones to country codes
     const timezoneToCountryCode: { [key: string]: string } = {
       'America/New_York': '+1',
       'America/Chicago': '+1',
@@ -167,13 +160,9 @@ const detectCountryCode = async (): Promise<string> => {
       'Europe/Istanbul': '+90',
       'Asia/Jerusalem': '+972'
     };
-
-    // Check if timezone maps to a country code
     if (timezoneToCountryCode[timezone]) {
       return timezoneToCountryCode[timezone];
     }
-
-    // Fallback: try to get location via IP (using a free service)
     const response = await fetch('https://ipapi.co/json/');
     if (response.ok) {
       const data = await response.json();
@@ -185,11 +174,8 @@ const detectCountryCode = async (): Promise<string> => {
   } catch (error) {
     console.log('Could not detect country code:', error);
   }
-  
-  // Default fallback
   return '+1';
 };
-
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit,
   loading,
@@ -203,33 +189,25 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     phone: '',
     privacy: false
   });
-
   const [selectedCountryCode, setSelectedCountryCode] = useState('+1');
   const [websiteError, setWebsiteError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [countrySearchTerm, setCountrySearchTerm] = useState('');
-
   const filteredCountries = countryCodes.filter(country => 
     country.country.toLowerCase().includes(countrySearchTerm.toLowerCase()) ||
     country.code.includes(countrySearchTerm)
   );
-
-  // Initialize form data if provided
   useEffect(() => {
     const initializeForm = async () => {
       if (initialData) {
         setFormData(initialData);
       }
-      
-      // Auto-detect country code on component mount
       const detectedCode = await detectCountryCode();
       setSelectedCountryCode(detectedCode);
     };
-    
     initializeForm();
   }, [initialData]);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isCountryDropdownOpen && !(event.target as Element).closest('.relative')) {
@@ -237,17 +215,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         setCountrySearchTerm('');
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isCountryDropdownOpen]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-    
     if (name === 'website') {
       setFormData(prev => ({
         ...prev,
@@ -257,26 +232,21 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       if (websiteError) {
         setWebsiteError('');
       }
-  
     } else if (name === 'phone') {
       const digitsOnly = value.replace(/\D/g, '');
       const selectedCountry = countryCodes.find(country => country.code === selectedCountryCode);
       const maxDigits = selectedCountry?.digits || 10;
-      
       const limitedValue = digitsOnly.slice(0, maxDigits);
-      
       setFormData(prev => ({
         ...prev,
         [name]: limitedValue
       }));
-      
       if (phoneError) {
         setPhoneError('');
       }
     } else if (name === 'countryCode') {
       setSelectedCountryCode(value);
       setPhoneError('');
-      // Don't clear the phone field here - let it be handled separately
     } else {
       setFormData(prev => ({
         ...prev,
@@ -284,12 +254,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       }));
     }
   };
-
   const handleWebsiteBlur = () => {
     if (formData.website) {
       const domainPattern = /\.[a-zA-Z]{2,}$/;
-      const hasValidDomain = domainPattern.test(formData.website);
-      
+      const hasValidDomain = domainPattern.test(formData.website);      
       if (!hasValidDomain) {
         setWebsiteError('Website should include a valid domain extension (e.g., .com, .org, .net, etc.)');
       } else {
@@ -299,30 +267,22 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       setWebsiteError('');
     }
   };
-
   const handlePhoneBlur = () => {
     const selectedCountry = countryCodes.find(country => country.code === selectedCountryCode);
-    const maxDigits = selectedCountry?.digits || 10;
-    
+    const maxDigits = selectedCountry?.digits || 10;    
     if (formData.phone && formData.phone.length !== maxDigits) {
       setPhoneError(`Phone number should be exactly ${maxDigits} digits for ${selectedCountry?.country || 'selected country'}`);
     } else {
       setPhoneError('');
     }
   };
-
   const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    console.log('Form submit called', { formData, loading }); // Debug log
-    
-    // Prevent double submission
+    e.preventDefault();  
+    console.log('Form submit called', { formData, loading }); 
     if (loading) {
       console.log('Already loading, returning');
       return;
     }
-    
-    // Validate required fields
     if (!formData.fullName?.trim() || !formData.email?.trim() || !formData.phone?.trim()) {
       console.log('Required fields missing', {
         fullName: formData.fullName,
@@ -331,44 +291,33 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       });
       return;
     }
-    
     if (!formData.privacy) {
       console.log('Privacy not accepted');
       return;
     }
-    
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email.trim())) {
       console.log('Invalid email');
       return;
     }
-    
-    // Website validation
     if (formData.website && websiteError) {
       console.log('Website error exists');
       return;
     }
-    
-    // Phone validation
     if (phoneError) {
       console.log('Phone error exists');
       return;
     }
-  
     console.log('All validations passed, submitting');
     const submitData = { ...formData };
     console.log(submitData)
     onSubmit(submitData);
   };;
-
   return (
     <div className="sticky top-[86px] w-full max-w-sm bg-white p-8 px-3 rounded-3xl border-4 border-gray-300 shadow-lg flex-shrink-0 self-start">
       <h2 className="text-[#2B2B2B] text-center tracking-wide mb-6 font-walbaum fill-white">
         WIN a Private Webinar and Q&A with Jeff
       </h2>
-      
-      {/* Features List */}
       <div className="space-y-3 mb-6 pl-2">
         {[
           'Exited with Double-Digit Multiples',
@@ -384,17 +333,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
         ))}
       </div>
-      
       <div className="text-gray-800 text-center text-sm font-semibold mb-6 rounded-lg font-walbaum">
         *11am EST, May 22/25 - Only 33 Spots Available
       </div>
-      
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
           {error}
         </div>
       )}
-      
       <form onSubmit={handleFormSubmit} className="space-y-1 font-linear">
         <div>
           <label className="block text-black text-sm font-medium mb-2">Full Name</label>
@@ -407,8 +353,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             required
           />
-        </div>
-        
+        </div>        
         <div>
           <label className="block text-black text-sm font-medium mb-2">Business Email</label>
           <input
@@ -420,8 +365,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             className="w-full h-10 border border-gray-400 text-sm px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             required
           />
-        </div>
-        
+        </div>        
         <div>
           <label className="block text-black text-sm font-medium mb-2">Business Website</label>
           <input
@@ -438,8 +382,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
           {websiteError && (
             <p className="text-red-500 text-xs mt-1">{websiteError}</p>
           )}
-        </div>
-        
+        </div>      
         <div>
           <label className="block text-black text-sm font-medium mb-2">Phone Number</label>
           <div className="flex gap-2">
@@ -456,7 +399,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
               {isCountryDropdownOpen && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-60 overflow-hidden w-52">
                   <div className="p-2 border-b">
@@ -479,7 +421,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             setIsCountryDropdownOpen(false);
                             setCountrySearchTerm('');
                             setPhoneError('');
-                            // Remove the phone clearing from here too
                           }}
                           className="w-full px-3 py-2 text-left text-xs hover:bg-gray-100 flex items-center gap-2"
                         >
@@ -514,7 +455,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </div>
           </div>
         </div>
-        
         <div className="flex items-start gap-3 py-4 items-center">
           <input
             type="checkbox"
@@ -529,7 +469,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             I agree to opt-in and accept the privacy policy.
           </label>
         </div>
-        
         <button
   type="submit"
   disabled={websiteError !== '' || phoneError !== '' || loading}
@@ -541,5 +480,4 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     </div>
   );
 };
-
 export default RegistrationForm;

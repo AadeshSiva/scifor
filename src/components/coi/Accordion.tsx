@@ -6,18 +6,15 @@ interface Statistic {
   context: string;
   url: string;
 }
-
 interface ResearchPoint {
   name: string;
   statistics: Statistic[];
 }
-
 interface Category {
   category: string;
   category_url?: string;
   research_points: ResearchPoint[];
 }
-
 interface LongAccordionProps {
   data?: Category[];
   className?: string;
@@ -26,24 +23,15 @@ interface LongAccordionProps {
 const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = "" }) => {
   const [openSection, setOpenSection] = useState<string>("0-0"); // Only one section open at a time
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-
   const navbarRef = useRef<HTMLDivElement>(null);
-
-  // Toggle section open/close - only one can be open at a time
   const handleSectionToggle = (sectionId: string) => {
     setOpenSection(openSection === sectionId ? "" : sectionId);
   };
-
-  // Handle category selection
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
-    // Always reset to first item when category changes
     setOpenSection("0-0");
   };
-
-  // Handle PDF opening in new tab
   const handleOpenPdf = (url: string) => {
-    // Convert Google Drive URL to preview URL if needed
     let viewUrl = url;
     const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
     if (driveMatch && !url.includes("/view")) {
@@ -52,8 +40,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
     }
     window.open(viewUrl, "_blank");
   };
-
-  // Handle PDF download
   const handleDownloadPdf = (url: string) => {
     const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
     if (driveMatch) {
@@ -61,12 +47,9 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
       const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
       window.open(downloadUrl, "_blank");
     } else {
-      // Fallback to regular URL
       window.open(url, "_blank");
     }
   };
-
-  // Get the first URL from research point statistics
   const getFirstUrl = (researchPoint: ResearchPoint): string => {
     for (const stat of researchPoint.statistics) {
       if (stat.url && stat.url.trim() !== "") {
@@ -75,42 +58,30 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
     }
     return "";
   };
-
-  // Filter data based on selected category
   const filteredData =
     selectedCategory === "All"
       ? data
       : data.filter((category) => category.category === selectedCategory);
-
-  // Generate unique ID for sections - FIXED: Use filtered array indices
   const generateId = (filteredCategoryIndex: number, researchIndex: number) => {
     return `${filteredCategoryIndex}-${researchIndex}`;
   };
-
-  // Calculate continuous serial numbers - FIXED: Use filtered data for calculation
   const getSerialNumber = (categoryIndex: number, researchIndex: number) => {
     let serialNumber = 1;
-
     for (let i = 0; i < categoryIndex; i++) {
       serialNumber += filteredData[i].research_points.length;
     }
     serialNumber += researchIndex;
-
     return serialNumber;
   };
-
-  // Set first item as open when filtered data changes
   useEffect(() => {
     if (filteredData.length > 0 && filteredData[0].research_points.length > 0) {
       setOpenSection("0-0");
     } else {
       setOpenSection("");
     }
-  }, [selectedCategory]); // Changed dependency to selectedCategory
-
+  }, [selectedCategory]); 
   return (
     <div className={`w-full flex flex-col gap-7 ${className}`}>
-      {/* Sticky Category Navigation - Responsive layout */}
       <div
         ref={navbarRef}
         className="top-[86px] z-10 bg-[#F5F5F5] px-4 sm:px-6 lg:px-8 py-4 border border-gray-500 shadow-lg rounded-lg"
@@ -127,8 +98,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
           >
             All
           </button>
-
-          {/* Category buttons */}
           {data.map((category, index) => (
             <button
               key={index}
@@ -144,19 +113,15 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
           ))}
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="mx-auto border border-gray-400 rounded-lg overflow-hidden min-w-[100%]">
         {filteredData.map((category, categoryIndex) => (
           <div key={categoryIndex}>
-            {/* Research Points */}
             <div className="overflow-hidden shadow-lg">
               {category.research_points.map((researchPoint, researchIndex) => {
                 const sectionId = generateId(categoryIndex, researchIndex);
                 const isOpen = openSection === sectionId;
                 const serialNumber = getSerialNumber(categoryIndex, researchIndex);
                 const firstUrl = getFirstUrl(researchPoint);
-
                 return (
                   <div key={researchIndex} className="bg-white">
                     <button
@@ -186,20 +151,16 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                         />
                       </svg>
                     </button>
-
                     {isOpen && (
                       <div className="border-t border-gray-200">
                         <div className="bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
-                          {/* Action buttons positioned at the top right like in the image */}
                           <div className="flex justify-end mb-4">
                             {firstUrl && (
                               <div className="flex gap-2">
-                                {/* View PDF Button matching the blue teal design */}
                                 <button
                                   onClick={() => handleOpenPdf(firstUrl)}
                                   className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1B7A9B] text-white text-sm font-medium rounded-md hover:bg-[#145F7A] transition-colors duration-200 whitespace-nowrap"
                                 >
-                                  {/* PDF Icon */}
                                   <div className="w-4 h-4 bg-red-600 rounded-sm flex items-center justify-center">
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
                                       <path d="M2 2h8v8H2V2zm1 1v6h6V3H3zm2 2h2v1H5V5zm0 2h3v1H5V7z" />
@@ -207,8 +168,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                                   </div>
                                   <span>View PDF</span>
                                 </button>
-
-                                {/* Download Button matching the gray design */}
                                 <button
                                   onClick={() => handleDownloadPdf(firstUrl)}
                                   className="flex items-center justify-center gap-2 mr-6 px-4 py-2 bg-gray-200 text-[#1B7A9B] text-sm font-medium rounded-md hover:bg-gray-300 transition-colors duration-200 whitespace-nowrap"
@@ -219,8 +178,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                               </div>
                             )}
                           </div>
-
-                          {/* Bullet points with reduced spacing */}
                           <div className="text-gray-600 text-sm sm:text-base leading-relaxed space-y-2">
                             {researchPoint.statistics.map((stat, statIndex) => (
                               <div key={statIndex} className="flex items-start gap-2">
@@ -241,8 +198,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
           </div>
         ))}
       </div>
-
-      {/* Sample Data Display */}
       {data.length === 0 && (
         <div className="max-w-6xl mx-auto p-8 text-center text-gray-500">
           <p className="text-lg mb-4">
@@ -277,7 +232,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
 const AccordionWithApi: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -292,7 +246,6 @@ const AccordionWithApi: React.FC = () => {
         setLoading(false);
       }
     };
-
     const setSampleData = () => {
       setData([
         {
@@ -867,10 +820,8 @@ const AccordionWithApi: React.FC = () => {
         },
       ]);
     };
-
     fetchData();
   }, []);
-
   if (loading) {
     return (
       <div className="w-full max-w-6xl mx-auto p-8 text-center">
@@ -878,8 +829,6 @@ const AccordionWithApi: React.FC = () => {
       </div>
     );
   }
-
   return <LongAccordion data={data} />;
 };
-
 export default AccordionWithApi;

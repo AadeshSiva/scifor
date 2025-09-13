@@ -6,21 +6,17 @@ import { FAQSection } from "./HomePage";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
-
 const Pricing_Plan: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>("CROSSCHECK");
-
   // Auth modal + flow state
   const [authOpen, setAuthOpen] = useState(false);
   const [initialTab] = useState<"login" | "register">("register");
   const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(null);
   const [busy, setBusy] = useState(false);
   const { user, isAuthenticated } = useAuth();
-
   useEffect(() => {
     if (!authOpen) return;
     let stopped = false;
-
     const check = async () => {
       if (stopped) return;
       const token = getAccessToken();

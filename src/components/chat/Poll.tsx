@@ -1,18 +1,14 @@
-
 import React, { useState, FormEvent } from 'react';
-
 interface PollOption {
   id: string;
   text: string;
 }
-
 interface PollFormData {
   question: string;
   options: PollOption[];
   allowMultipleAnswers: boolean;
   deadline?: Date;
 }
-
 export default function Index() {
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [polls, setPolls] = useState<PollFormData[]>([]);
@@ -24,21 +20,18 @@ export default function Index() {
     ],
     allowMultipleAnswers: false,
   });
-
   const handleAddOption = () => {
     setFormData(prev => ({
       ...prev,
       options: [...prev.options, { id: String(Date.now()), text: '' }]
     }));
   };
-
   const handleRemoveOption = (id: string) => {
     setFormData(prev => ({
       ...prev,
       options: prev.options.filter(opt => opt.id !== id)
     }));
   };
-
   const handleUpdateOption = (id: string, text: string) => {
     setFormData(prev => ({
       ...prev,
@@ -47,7 +40,6 @@ export default function Index() {
       )
     }));
   };
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (formData.question.trim() === '') {
@@ -73,7 +65,6 @@ export default function Index() {
       allowMultipleAnswers: false,
     });
   };
-
   const handleCancel = () => {
     setShowPollCreator(false);
     setFormData({
@@ -85,11 +76,9 @@ export default function Index() {
       allowMultipleAnswers: false,
     });
   };
-
   return (
     <main className="min-h-screen bg-gray-100 p-4 flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-8 text-center">Poll Creator</h1>
-
       {showPollCreator ? (
         <section className="relative z-10">
           <form
@@ -98,7 +87,6 @@ export default function Index() {
             role="dialog"
             aria-labelledby="poll-creator-title"
           >
-            {/* Header */}
             <header>
               <div className="flex h-11 items-center w-full box-border bg-neutral-100 pt-3 pb-[11px] px-6 max-sm:pt-3 max-sm:pb-[11px] max-sm:px-4">
                 <button 
@@ -114,10 +102,7 @@ export default function Index() {
                 </button>
               </div>
             </header>
-
-            {/* Main Content */}
             <main className="p-6 max-sm:p-4">
-              {/* Question */}
               <div className="mb-6">
                 <label className="text-black text-xs font-medium block mb-2">
                   Question
@@ -135,8 +120,6 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-
-              {/* Options */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-[9px]">
                   <span className="text-black text-xs font-medium">Options</span>
@@ -179,8 +162,6 @@ export default function Index() {
                   </div>
                 ))}
               </div>
-
-              {/* Settings */}
               <div className="mb-6">
                 <div className="flex justify-between items-center h-[34px] mb-3">
                   <div className="flex flex-col gap-[5px]">
@@ -218,7 +199,6 @@ export default function Index() {
                   </div>
                   <button
                     onClick={() => {
-                      // Implement deadline picker functionality
                     }}
                     type="button"
                     className="h-6 px-2 rounded border border-[#9E9E9E] text-[#9E9E9E] text-[8px] flex items-center gap-2"
@@ -231,8 +211,6 @@ export default function Index() {
                 </div>
               </div>
             </main>
-
-            {/* Footer */}
             <footer>
               <div className="flex h-[45px] justify-between items-center shadow-[0px_-1px_3px_0px_rgba(0,0,0,0.25)] absolute w-full box-border bg-neutral-100 pt-[9px] pb-2 px-6 border-t-[rgba(158,158,158,0.40)] border-t border-solid left-0 bottom-0 max-sm:pt-[9px] max-sm:pb-2 max-sm:px-4">
                 <button
@@ -262,7 +240,6 @@ export default function Index() {
           >
             Create New Poll
           </button>
-
           {polls.length > 0 && (
             <div className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Your Polls</h2>

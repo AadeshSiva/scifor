@@ -255,7 +255,7 @@ export function RegisterForm({
   };
   const makeApiCall = async (endpoint: string, payload: any): Promise<any> => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
@@ -304,7 +304,6 @@ export function RegisterForm({
         email: formData.email,
       });
       if (checkData.user_exists) {
-        console.log(checkData);
         setErrors({
           email: `${checkData.paid
             ? "Email already registered as a Member in Prspera. Please log in."
@@ -337,6 +336,7 @@ export function RegisterForm({
         general: error instanceof Error ? error.message : "Failed to send OTP. Please try again.",
       });
     } finally {
+      setLoading(true)
       setShowOtpModal(true);
       setTimer(300);
       setOtp(["", "", "", "", "", ""]);
@@ -360,6 +360,13 @@ export function RegisterForm({
         setErrors({ otp: verifyData.message });
         return;
       }
+      const plan = getPlan();
+      let came_plan=false
+        if (plan === "guest") {
+          came_plan=false
+        } else if (plan === "paid" || plan === "member") {
+          came_plan=true
+      }
       const registerPayload = {
         email: formData.email,
         password: formData.password,
@@ -367,23 +374,23 @@ export function RegisterForm({
         phone_number: formData.phone_number,
         website_name: formData.website_name,
         no_linkedin: true,
-        came_from_plan: getPlan(),
+        came_from_plan:came_plan,
       };
       const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
       if (registerData.status === "success") {
         if (registerData.tokens) {
           await login(registerData.tokens);
-          console.log(registerData.tokens)
         }
         const plan = getPlan();
         if (plan === "guest") {
           navigate("/confirmation-guest");
+          setLoading(true)
         } else if (plan === "paid" || plan === "member") {
           navigate("/payment");
+          setLoading(true)
         }
       } else {
         setErrors({ otp: registerData.message });
-        console.log(registerData.status)
       }
     } catch (error) {
       const errorMessage =
@@ -432,6 +439,8 @@ export function RegisterForm({
     );
   }, []);
   return (
+    <>
+    {!showOtpModal ? (
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
         <button
@@ -606,8 +615,8 @@ export function RegisterForm({
           Login
         </span>
       </div>
-
-      {showOtpModal && (
+      </div>
+      ) : (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
             <button className="w-full text-right" onClick={handleHiddenValue}>X</button>
@@ -641,14 +650,12 @@ export function RegisterForm({
                   />
                 ))}
               </div>
-
               <div className="text-center mb-6">
                 <span className="text-gray-600">Time remaining: </span>
                 <span className={`font-semibold ${timer <= 60 ? "text-red-500" : "text-black"}`}>
                   {formatTime(timer)}
                 </span>
               </div>
-
               <button
                 type="submit"
                 className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
@@ -682,7 +689,6 @@ export function RegisterForm({
                   "Verify OTP & Register"
                 )}
               </button>
-
               <div className="text-center mt-4">
                 {timer === 0 ? (
                   <button
@@ -703,6 +709,6 @@ export function RegisterForm({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

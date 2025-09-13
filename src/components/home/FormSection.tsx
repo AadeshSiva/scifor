@@ -3,7 +3,6 @@ import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PremiumPopup } from "../coi/premiumPopup";
-
 const countries = [
   { code: "+1", flag: "🇺🇸", name: "United States", phoneLength: 10 },
   { code: "+1", flag: "🇨🇦", name: "Canada", phoneLength: 10 },
@@ -82,20 +81,17 @@ const countries = [
   { code: "+216", flag: "🇹🇳", name: "Tunisia", phoneLength: 8 },
   { code: "+213", flag: "🇩🇿", name: "Algeria", phoneLength: 9 },
 ];
-
 const PhoneInputDropdown = ({ onPhoneChange, error }) => {
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [phoneError, setPhoneError] = useState("");
-
   const filteredCountries = countries.filter(
     (country) =>
       country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       country.code.includes(searchTerm)
   );
-
   useEffect(() => {
     const detectCountry = async () => {
       try {
@@ -105,10 +101,7 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
           "https://api.ipify.org?format=json", // This will need additional processing
           "https://ipinfo.io/country",
         ];
-
         let countryCode = null;
-
-        // Try the first service (ipapi.co)
         try {
           const response = await fetch(services[0]);
           if (response.ok) {
@@ -118,8 +111,6 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
         } catch (error) {
           console.log("Primary service failed, trying fallback...");
         }
-
-        // If first service fails, try ipinfo.io
         if (!countryCode) {
           try {
             const response = await fetch(services[2]);
@@ -131,8 +122,6 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
             console.log("Fallback service also failed");
           }
         }
-
-        // Enhanced country matching logic
         if (countryCode) {
           const countryMap = {
             US: { code: "+1", name: "United States" },
@@ -183,15 +172,12 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
             IR: { code: "+98", name: "Iran" },
             IL: { code: "+972", name: "Israel" },
           };
-
           const mappedCountry = countryMap[countryCode];
           if (mappedCountry) {
-            // Find the exact country in the countries array
             const detectedCountry = countries.find(
               (country) =>
                 country.code === mappedCountry.code && country.name === mappedCountry.name
             );
-
             if (detectedCountry) {
               console.log("Detected country:", detectedCountry.name);
               setSelectedCountry(detectedCountry);
@@ -201,59 +187,43 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
         }
       } catch (error) {
         console.log("Country detection failed:", error);
-        // Silently fail and keep default country (United States)
       }
     };
-
     detectCountry();
   }, [onPhoneChange]);
-
   const validatePhoneNumber = (number, country) => {
     if (!number) {
       setPhoneError("Phone number is required");
       return false;
     }
-
     const expectedLength = country.phoneLength;
     if (number.length !== expectedLength) {
       setPhoneError(`Phone number should be ${expectedLength} digits for ${country.name}`);
       return false;
     }
-
     setPhoneError("");
     return true;
   };
-
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
     setIsDropdownOpen(false);
     setSearchTerm("");
-
-    // Clear any existing errors when country changes
     setPhoneError("");
-
     onPhoneChange(country.code + phoneNumber);
   };
-
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
     setPhoneNumber(value);
-
-    // Clear error when user starts typing again
     if (phoneError) {
       setPhoneError("");
     }
-
     onPhoneChange(selectedCountry.code + value);
   };
-
   const handlePhoneNumberBlur = () => {
-    // Only validate when user leaves the input field
     if (phoneNumber) {
       validatePhoneNumber(phoneNumber, selectedCountry);
     }
   };
-
   return (
     <div className="mb-3">
       <label className="text-black text-xs font-medium block mb-1">Phone Number</label>
@@ -280,7 +250,6 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
               />
             </svg>
           </button>
-
           {isDropdownOpen && (
             <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-hidden">
               <div className="p-2 border-b border-gray-200">
@@ -309,7 +278,6 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
             </div>
           )}
         </div>
-
         <input
           type="tel"
           placeholder={`Enter ${selectedCountry.phoneLength}-digit phone number`}
@@ -327,8 +295,6 @@ const PhoneInputDropdown = ({ onPhoneChange, error }) => {
     </div>
   );
 };
-
-// Form Data Type
 type FormData = {
   fullName: string;
   businessEmail: string;
@@ -336,13 +302,10 @@ type FormData = {
   phoneNumber: string;
   agreeToTerms: boolean;
 };
-
 type PasswordData = {
   password: string;
   confirmPassword: string;
 };
-
-// Password Popup Component
 const PasswordPopup: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -356,9 +319,7 @@ const PasswordPopup: React.FC<{
     watch,
   } = useForm<PasswordData>();
   const password = watch("password");
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
@@ -368,7 +329,6 @@ const PasswordPopup: React.FC<{
             ×
           </button>
         </div>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
@@ -385,7 +345,6 @@ const PasswordPopup: React.FC<{
               <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
           </div>
-
           <div>
             <label className="block text-sm font-medium mb-1">Confirm Password</label>
             <input
@@ -401,7 +360,6 @@ const PasswordPopup: React.FC<{
               <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
             )}
           </div>
-
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
@@ -426,8 +384,6 @@ const PasswordPopup: React.FC<{
     </div>
   );
 };
-
-// OTP Verification Popup
 const OTPPopup: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -438,7 +394,6 @@ const OTPPopup: React.FC<{
 }> = ({ isOpen, onClose, onVerify, onResend, email, isSubmitting }) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length !== 6) {
@@ -448,9 +403,7 @@ const OTPPopup: React.FC<{
     setError("");
     onVerify(otp);
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
@@ -460,11 +413,9 @@ const OTPPopup: React.FC<{
             ×
           </button>
         </div>
-
         <p className="text-gray-600 mb-4">
           We've sent a 6-digit verification code to <strong>{email}</strong>
         </p>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Enter OTP</label>
@@ -503,7 +454,6 @@ const OTPPopup: React.FC<{
     </div>
   );
 };
-
 export const FormSection: React.FC = () => {
   const {
     register,
@@ -523,7 +473,6 @@ export const FormSection: React.FC = () => {
   const { login } = useAuth();
   const { isAuthenticated, isLoading, user, updateUser } = useAuth();
   const [websiteError, setWebsiteError] = useState("");
-
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
       if (user.iswebinarformfilled) {
@@ -531,7 +480,6 @@ export const FormSection: React.FC = () => {
       }
     }
   }, [isLoading, isAuthenticated, user, user?.iswebinarformfilled]);
-
   const setWebinarFormFilled = async (email: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/set-webinar-form-filled-by-email/`, {
@@ -541,10 +489,8 @@ export const FormSection: React.FC = () => {
         },
         body: JSON.stringify({ email }),
       });
-
       const result = await response.json();
       if (response.ok) {
-        // Update user data immediately in auth context
         updateUser({ iswebinarformfilled: true });
       } else {
         console.error("Failed to set webinar form filled:", result.message);
@@ -553,67 +499,44 @@ export const FormSection: React.FC = () => {
       console.error("Error setting webinar form filled:", error);
     }
   };
-
   const validateWebsiteUrl = async (url) => {
-    if (!url) return true; // Optional field
-
-    // Clean and format URL
+    if (!url) return true;
     let cleanUrl = url.trim().toLowerCase();
-
-    // Add protocol if missing
     if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
       cleanUrl = "https://" + cleanUrl;
     }
-
-    // Basic URL format validation
     const urlPattern =
       /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
     if (!urlPattern.test(cleanUrl)) {
       return "Please enter a valid website URL (e.g., example.com)";
     }
-
     try {
-      // Extract domain from URL
       const urlObj = new URL(cleanUrl);
       const domain = urlObj.hostname.replace(/^www\./, "");
-
-      // Check if domain exists by making a DNS lookup simulation
-      // Using a public DNS API to check domain existence
       const response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`, {
         method: "GET",
         headers: {
           Accept: "application/json",
         },
       });
-
       if (!response.ok) {
         return "Unable to verify domain. Please check the URL.";
       }
-
       const dnsData = await response.json();
-
-      // Check if DNS resolution was successful
       if (dnsData.Status !== 0 || !dnsData.Answer || dnsData.Answer.length === 0) {
         return "This domain does not exist. Please enter a valid website URL.";
       }
-
       return true;
     } catch (error) {
       return "Please enter a valid website URL format.";
     }
   };
-
   const handleWebsiteChange = async (e) => {
     const value = e.target.value;
     setValue("businessWebsite", value);
-
-    // Clear previous error
     setWebsiteError("");
-
-    // Only validate if there's a value and it looks like a complete domain
     if (value && value.includes(".")) {
-      // Debounce validation to avoid too many API calls
       clearTimeout(window.websiteValidationTimeout);
       window.websiteValidationTimeout = setTimeout(async () => {
         const validation = await validateWebsiteUrl(value);
@@ -622,37 +545,29 @@ export const FormSection: React.FC = () => {
         } else {
           setWebsiteError("");
         }
-      }, 1000); // Wait 1 second after user stops typing
+      }, 1000); 
     }
   };
-
   const fetchVideos = async () => {
     try {
       setIsLoadingVideos(true);
-      // Replace with your actual video IDs
       const videoIds = ["123456789", "987654321"]; // Add your Vimeo video IDs here
-
       const videoPromises = videoIds.map(async (videoId) => {
         try {
-          // Try public video first
           const publicResponse = await fetch(`${API_BASE_URL}/fetch_public_video/${videoId}/`);
           if (publicResponse.ok) {
             return await publicResponse.json();
           }
-
-          // If public fails, try unlisted
           const unlistedResponse = await fetch(`${API_BASE_URL}/fetch_unlisted_video/${videoId}/`);
           if (unlistedResponse.ok) {
             return await unlistedResponse.json();
           }
-
           return null;
         } catch (error) {
           console.error(`Error fetching video ${videoId}:`, error);
           return null;
         }
       });
-
       const videoResults = await Promise.all(videoPromises);
       const validVideos = videoResults.filter((video) => video !== null);
       setVideos(validVideos);
@@ -662,15 +577,10 @@ export const FormSection: React.FC = () => {
       setIsLoadingVideos(false);
     }
   };
-
   useEffect(() => {
     fetchVideos();
   }, []);
-
-  // API Base URL - adjust this to your backend URL
   const API_BASE_URL = "https://api.prspera.com";
-
-  // Load form data from localStorage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem("webinarFormData");
     if (savedData) {
@@ -687,30 +597,23 @@ export const FormSection: React.FC = () => {
       }
     }
   }, [setValue]);
-
-  // Popup reminder interval
   useEffect(() => {
     const savedData = localStorage.getItem("webinarFormData");
     if (savedData && !isRegistered && !popupDismissed) {
       const interval = setInterval(() => {
         setShowPasswordPopup(true);
-      }, 30000); // Show popup every 30 seconds
-
+      }, 30000);
       return () => clearInterval(interval);
     }
   }, [isRegistered, popupDismissed]);
-
   const onFormSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-
     try {
       if (isAuthenticated && user) {
-        // User is authenticated, just set webinar form as filled
         await setWebinarFormFilled(user.email);
         setShowPasswordPopup(true);
         setUserEmail(user.email);
       } else {
-        // User is not authenticated, register first
         const registerData = {
           email: data.businessEmail,
           password: "temp_password_123456",
@@ -719,7 +622,6 @@ export const FormSection: React.FC = () => {
           website_name: data.businessWebsite,
           no_linkedin: true,
         };
-
         const response = await fetch(`${API_BASE_URL}/register/`, {
           method: "POST",
           headers: {
@@ -727,15 +629,11 @@ export const FormSection: React.FC = () => {
           },
           body: JSON.stringify(registerData),
         });
-
         const result = await response.json();
-
         if (result.tokens) {
           await login(result.tokens);
         }
-
         if (response.ok || result.user_exists) {
-          // Set webinar form as filled after registration
           await setWebinarFormFilled(data.businessEmail);
           setUserEmail(data.businessEmail);
           setShowPasswordPopup(true);
@@ -750,15 +648,11 @@ export const FormSection: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
   const handlePremiumUnlock = () => {
     setShowPremiumPopup(false);
-    // Show the regular form after premium popup
   };
-
   const updateUserPassword = async (newPassword: string) => {
     setIsSubmitting(true);
-
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password/`, {
         method: "POST",
@@ -770,12 +664,9 @@ export const FormSection: React.FC = () => {
           new_password: newPassword,
         }),
       });
-
       const result = await response.json();
-
       if (response.ok) {
         setShowPasswordPopup(false);
-        // Send OTP for email verification
         await sendEmailOTP(userEmail);
       } else {
         alert(result.error || "Failed to set password");
@@ -787,20 +678,15 @@ export const FormSection: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
   const handlePasswordSubmit = async (passwordData: PasswordData) => {
     if (passwordData.password === "" && passwordData.confirmPassword === "") {
-      // User clicked "Verify Later" - close popup and show success
       setShowPasswordPopup(false);
       alert("Registration successful! You can set your password later.");
       localStorage.removeItem("webinarFormData");
       return;
     }
-
-    // User provided password - update it using reset password endpoint
     await updateUserPassword(passwordData.password);
   };
-
   const sendEmailOTP = async (email: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/send_email_otp/`, {
@@ -810,9 +696,7 @@ export const FormSection: React.FC = () => {
         },
         body: JSON.stringify({ email }),
       });
-
       const result = await response.json();
-
       if (response.ok) {
         setShowOTPPopup(true);
       } else {
@@ -828,10 +712,8 @@ export const FormSection: React.FC = () => {
       alert("Failed to send OTP. Please try again.");
     }
   };
-
   const verifyOTP = async (otp: string) => {
     setIsSubmitting(true);
-
     try {
       const response = await fetch(`${API_BASE_URL}/verify_email_otp/`, {
         method: "POST",
@@ -843,9 +725,7 @@ export const FormSection: React.FC = () => {
           otp: otp,
         }),
       });
-
       const result = await response.json();
-
       if (response.ok) {
         alert("Email verified successfully! Registration complete.");
         setShowOTPPopup(false);
@@ -861,17 +741,13 @@ export const FormSection: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
   const handlePasswordPopupClose = () => {
     setShowPasswordPopup(false);
     setPopupDismissed(true);
-
-    // Reset dismissal after 5 minutes
     setTimeout(() => {
       setPopupDismissed(false);
     }, 300000);
   };
-
   if (!isLoading && isAuthenticated && user && user.iswebinarformfilled && showPremiumPopup) {
     return (
       <div className="flex justify-center items-start gap-8 -mb-20 mt-10">
@@ -888,12 +764,10 @@ export const FormSection: React.FC = () => {
             </iframe>
           </div>
         </div>
-
         <PremiumPopup onUnlockAccess={handlePremiumUnlock} />
       </div>
     );
   }
-
   return (
     <>
       <div className="flex justify-center items-start gap-8 -mb-20 mt-10">
@@ -910,7 +784,6 @@ export const FormSection: React.FC = () => {
             </iframe>
           </div>
         </div>
-
         <div className="bg-white rounded-xl border-2 border-gray-300 p-6 w-full max-w-md shadow-sm">
           <h3 className="text-gray-800 text-[17px] font-semibold text-center mb-4 font-walbaum">
             {" "}
@@ -954,7 +827,6 @@ export const FormSection: React.FC = () => {
                 aria-invalid={errors.fullName ? "true" : "false"}
               />
             </div>
-
             <div className="flex gap-4 mb-3">
               <div className="flex flex-col w-1/2">
                 <label className="text-black text-xs font-medium mb-1">Business Email</label>
@@ -966,7 +838,6 @@ export const FormSection: React.FC = () => {
                   aria-invalid={errors.businessEmail ? "true" : "false"}
                 />
               </div>
-
               <div className="flex flex-col w-1/2">
                 <label className="text-black text-xs font-medium mb-1">Business Website</label>
                 <input
@@ -983,13 +854,11 @@ export const FormSection: React.FC = () => {
                 {websiteError && <p className="text-red-500 text-xs mt-1">{websiteError}</p>}
               </div>
             </div>
-
             <PhoneInputDropdown
               onPhoneChange={(fullNumber) => setValue("phoneNumber", fullNumber)}
               error={errors.phoneNumber}
               register={register}
             />
-
             <div className="flex items-center gap-2 mb-6">
               <input
                 type="checkbox"
@@ -1002,7 +871,6 @@ export const FormSection: React.FC = () => {
                 I agree to opt-in and accept the privacy policy.
               </label>
             </div>
-
             <button
               type="submit"
               disabled={isSubmitting}
@@ -1013,16 +881,12 @@ export const FormSection: React.FC = () => {
           </form>
         </div>
       </div>
-
-      {/* Password Popup */}
       <PasswordPopup
         isOpen={showPasswordPopup}
         onClose={handlePasswordPopupClose}
         onSubmit={handlePasswordSubmit}
         isSubmitting={isSubmitting}
       />
-
-      {/* OTP Popup */}
       <OTPPopup
         isOpen={showOTPPopup}
         onClose={() => setShowOTPPopup(false)}

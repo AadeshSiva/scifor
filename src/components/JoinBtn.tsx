@@ -2,16 +2,14 @@ import { useNavigate } from "react-router-dom";
 
 const JoinBtn = ({ children, page }) => {
   const navigate = useNavigate();
-
   const handleClick = () => {
     navigate(page);
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "auto", // no smooth scrolling
-    }); // scroll to top after navigation
+      behavior: "auto", 
+    });
   };
-
   return (
     <button
       onClick={handleClick}
@@ -28,5 +26,4 @@ const JoinBtn = ({ children, page }) => {
     </button>
   );
 };
-
 export default JoinBtn;
