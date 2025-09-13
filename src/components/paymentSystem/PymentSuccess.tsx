@@ -23,7 +23,7 @@ const PaymentSuccess = () => {
           const data = await response.json();
           const amount = Number(data?.amount ?? 0);
           const paid = data?.user_paid || data?.status === "paid" || amount > 0;
-          setUserType(paid && amount >= 797 ? "member" : "guest");
+          setUserType(paid && amount >0 ? "member" : "guest");
         } else {
           setUserType("guest");
         }
