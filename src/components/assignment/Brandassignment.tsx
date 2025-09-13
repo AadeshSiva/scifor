@@ -2,50 +2,40 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 interface Task {
   id: number;
   title: string;
   description: string;
 }
-
 const BrandAssignment: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string>('');
   const [currentSection, setCurrentSection] = useState<number>(1);
   const [ratings, setRatings] = useState<Record<string, number>>({});
-
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
-
   const handleRatingChange = (questionId: string, value: number) => {
     setRatings(prev => ({ ...prev, [questionId]: value }));
   };
-
   const handleNextSection = () => {
     if (currentSection < 4) {
       setCurrentSection(prev => prev + 1);
     }
   };
-
   const handlePrevSection = () => {
     if (currentSection > 1) {
       setCurrentSection(prev => prev - 1);
     }
   };
-
   const handleBackButton = () => {
     navigate('/dashboard');
   };
-
   const handleSubmit = () => {
-    console.log("Assessment submitted", ratings);
     alert("Assessment submitted successfully!");
   };
-
   const tasks: Task[] = [
     {
       id: 1,
@@ -248,11 +238,9 @@ const BrandAssignment: React.FC = () => {
       description: "10. Our company's internal and external Branding artifacts unify how employees and customers experience our company.",
     },
   ];
-
   const currentTasks = tasks.filter(task => task.id === currentSection);
   const sectionTitles = [...new Set(tasks.map(task => task.title))];
   const currentTitle = sectionTitles[currentSection - 1] || "";
-
   return (
     <div className="min-h-screen bg-gray-100 ">
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
@@ -318,7 +306,6 @@ const BrandAssignment: React.FC = () => {
                   </tr>
                 ))}
               </tbody>
-
             </table>
           </div>
           <div className="flex justify-between p-4 bg-gray-100">
@@ -330,7 +317,6 @@ const BrandAssignment: React.FC = () => {
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
             </button>
-
             {currentSection === 4 ? (
               <button
                 onClick={handleSubmit}
@@ -354,5 +340,4 @@ const BrandAssignment: React.FC = () => {
     </div>
   );
 };
-
 export default BrandAssignment;
