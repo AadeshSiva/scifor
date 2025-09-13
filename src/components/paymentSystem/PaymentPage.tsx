@@ -6,7 +6,6 @@ interface BillingFormData {
   email: string;
   companyName: string;
 }
-
 const Payment: React.FC = () => {
   const { user } = useAuth();
   const [billingInfo] = useState<BillingFormData>({
@@ -23,7 +22,6 @@ const Payment: React.FC = () => {
     price: 179700,
     description: "Seats available for 50 members",
   };
-
   useEffect(() => {
     let cancelled = false;
     const setupStripeElements = async (stripeInstance: any) => {
@@ -156,7 +154,6 @@ const Payment: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Payment Summary Section */}
           <div className="w-full lg:w-2/5">
             <section className="bg-white rounded-2xl shadow-lg p-6 md:p-8 sticky top-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Plan Details</h2>
@@ -169,7 +166,6 @@ const Payment: React.FC = () => {
                   </span>
                   <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
                 </div>
-                {/* Features List */}
                 <div className="bg-blue-50 p-4 rounded-lg mb-6">
                   <h4 className="font-medium text-blue-800 mb-2">This plan includes:</h4>
                   <ul className="space-y-2">
@@ -321,5 +317,4 @@ const Payment: React.FC = () => {
     </div>
   );
 };
-
 export default Payment;
