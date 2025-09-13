@@ -1,48 +1,29 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useAuth } from "@/utils/AuthContext";
 
 interface BillingFormData {
   fullName: string;
   email: string;
   companyName: string;
 }
-interface BankAccountData {
-  accountNumber: string;
-  routingNumber: string;
-  accountType: "checking" | "savings";
-  accountHolderName: string;
-  upiId?: string;
-}
-interface ValidationErrors {
-  fullName?: string;
-  email?: string;
-  accountNumber?: string;
-  routingNumber?: string;
-  accountHolderName?: string;
-  upiId?: string;
-  payment?: string;
-}
+
 const Payment: React.FC = () => {
- 
-  const [billingInfo, setBillingInfo] = useState<BillingFormData>({
-    fullName: "",
-    email: "",
+  const { user } = useAuth();
+  const [billingInfo] = useState<BillingFormData>({
+    fullName: user.full_name,
+    email: user.email,
     companyName: "",
   });
-
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<ValidationErrors>({});
   const [stripe, setStripe] = useState<any>(null);
-  const [elements, setElements] = useState<any>(null);
-  const [stripeLoading, setStripeLoading] = useState(true);
-  const [cardReady, setCardReady] = useState(false);
   const cardMountRef = useRef<HTMLDivElement | null>(null);
   const cardElementRef = useRef<any>(null);
-
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 1,
+    price: 179700,
     description: "Seats available for 50 members",
   };
+
   useEffect(() => {
     let cancelled = false;
     const setupStripeElements = async (stripeInstance: any) => {
@@ -63,7 +44,6 @@ const Payment: React.FC = () => {
         },
       });
       if (cancelled) return;
-      setElements(elementsInstance);
       const cardEl = elementsInstance.create("card", {
         style: {
           base: {
@@ -75,17 +55,6 @@ const Payment: React.FC = () => {
           invalid: { color: "#ef4444", iconColor: "#ef4444" },
         },
         hidePostalCode: true,
-      });
-      cardEl.on("change", (event: any) => {
-        if (event.error) {
-          setErrors((prev) => ({ ...prev, payment: event.error.message }));
-        } else {
-          setErrors((prev) => ({ ...prev, payment: undefined }));
-        }
-      });
-      cardEl.on("ready", () => {
-        setCardReady(true);
-        setStripeLoading(false);
       });
       cardElementRef.current = cardEl;
       const mountCard = () => {
@@ -104,7 +73,6 @@ const Payment: React.FC = () => {
     };
     const initializeStripe = async () => {
       try {
-        setStripeLoading(true);
         if ((window as any).Stripe) {
           const s = (window as any).Stripe(
             "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
@@ -123,21 +91,11 @@ const Payment: React.FC = () => {
             await setupStripeElements(s);
           } catch (error) {
             console.error("Failed to initialize Stripe:", error);
-            setErrors({ payment: "Failed to load payment system. Please refresh the page." });
-            setStripeLoading(false);
           }
-        };
-        script.onerror = () => {
-          setErrors({
-            payment: "Failed to load payment system. Please check your internet connection.",
-          });
-          setStripeLoading(false);
         };
         document.head.appendChild(script);
       } catch (error) {
         console.error("Error initializing Stripe:", error);
-        setErrors({ payment: "Payment system initialization failed." });
-        setStripeLoading(false);
       }
     };
     initializeStripe();
@@ -151,10 +109,8 @@ const Payment: React.FC = () => {
   const getAuthToken = (): string | null => localStorage.getItem("access_token") || sessionStorage.getItem("access_token") || null;
   const processPayment = async () => {
     try {
-      setErrors({});
       const token = getAuthToken();
       if (!token) {
-        setErrors({ payment: "Authentication required. Please log in again." });
         return;
       }
       setIsLoading(true);
@@ -192,89 +148,178 @@ const Payment: React.FC = () => {
     } catch (err) {
       console.error("Payment processing error:", err);
       const msg = err instanceof Error ? err.message : "An unexpected error occurred";
-      setErrors({ payment: msg });
     } finally {
       setIsLoading(false);
     }
   };
- return (
-    <div className="lg:pl-8">
-      <section className="sticky top-8">
-        <h2 className="text-3xl font-bold text-black mb-6">Plan Details</h2>
-        <div className="border border-gray-400 rounded-2xl p-8 mb-6">
-          <div className="mb-8">
-            <h3 className="text-2xl text-black mb-2">{planDetails.name}</h3>
-            <div className="mb-8">
-              <span className="text-4xl font-bold text-black">
-                ${planDetails.price / 100}
-              </span>
-              <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8 mt-16">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Payment Summary Section */}
+          <div className="w-full lg:w-2/5">
+            <section className="bg-white rounded-2xl shadow-lg p-6 md:p-8 sticky top-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Plan Details</h2>
+              <div className="mb-8">
+                <h3 className="text-2xl text-gray-900 mb-2">{planDetails.name}</h3>
+                <p className="text-gray-600 mb-4">{planDetails.description}</p>
+                <div className="mb-8">
+                  <span className="text-4xl font-bold text-gray-900">
+                    ${planDetails.price / 100}
+                  </span>
+                  <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
+                </div>
+                {/* Features List */}
+                <div className="bg-blue-50 p-4 rounded-lg mb-6">
+                  <h4 className="font-medium text-blue-800 mb-2">This plan includes:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">Lifetime access</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">All premium features</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">Priority support</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">Exclusive content</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>           
+              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                <span className="text-lg font-medium text-gray-600">Total</span>
+                <span className="text-2xl font-bold text-gray-900">${planDetails.price / 100}</span>
+              </div>
+              <button
+                onClick={processPayment}
+                disabled={isLoading}
+                className="w-full bg-gray-900 text-white text-lg font-medium py-4 px-6 rounded-xl hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 mt-6 flex items-center justify-center"
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  `Pay $${planDetails.price / 100}`
+                )}
+              </button>
+              <div className="text-center text-sm text-gray-500 mt-4">
+                <p>By completing this purchase, you agree to our</p>
+                <p>
+                  <a href="#" className="underline hover:text-gray-700 transition-colors">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="underline hover:text-gray-700 transition-colors">
+                    Privacy Policy
+                  </a>
+                </p>
+              </div>
+            </section>
+            <div className="text-center text-sm text-gray-500 mt-6">
+              <p className="flex items-center justify-center gap-2 bg-white p-3 rounded-lg shadow-sm">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-green-500 flex-shrink-0"
+                >
+                  <path
+                    d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                Secure payment powered by industry-leading encryption
+              </p>
             </div>
           </div>
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-            <span className="text-lg font-medium text-gray-600">Total</span>
-            <span className="text-2xl font-bold text-black">${planDetails.price / 100}</span>
-          </div>
-          <button
-            onClick={processPayment}
-            className="w-full bg-black text-white text-lg font-medium py-4 px-6 rounded-xl hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-6"
-          >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Processing...
-              </span>
-            ) : (
-              `Pay $${planDetails.price / 100}`
-            )}
-          </button>
-          <div className="text-center text-sm text-gray-500 mt-4">
-            <p>By completing this purchase, you agree to our</p>
-            <p>
-              <a href="#" className="underline hover:text-gray-700">
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a href="#" className="underline hover:text-gray-700">
-                Privacy Policy
-              </a>
-            </p>
+          <div className="w-full lg:w-3/5">
+            <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Billing Information</h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    value={user.full_name}
+                    readOnly
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-gray-50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    value={user.email}
+                    readOnly
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-gray-50"
+                  />
+                </div> 
+                <div>
+                  <p className="text-xs text-gray-500 mt-2">Your payment details are encrypted and processed securely</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-blue-50 rounded-2xl p-6 mt-6">
+              <h3 className="text-lg font-semibold text-blue-800 mb-3">What happens next?</h3>
+              <ul className="space-y-2 text-blue-700">
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Immediate access to all features after payment</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Lifetime membership with no recurring fees</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Downloadable invoice for your records</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div className="text-center text-sm text-gray-500">
-          <p className="flex items-center justify-center gap-2">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
-                fill="currentColor"
-              />
-            </svg>
-            Secure payment powered by industry-leading encryption
-          </p>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };
+
 export default Payment;
