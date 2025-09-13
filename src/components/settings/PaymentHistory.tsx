@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-
 // Types
 interface Payment {
   id: number;
@@ -14,12 +13,10 @@ interface Payment {
   stripe_payment_intent_id?: string;
   email?: string;
 }
-
 interface PaymentResponse {
   payments: Payment[];
   user_paid_status: boolean;
 }
-
 // Back Button Component
 interface BackButtonProps {
   to: string;
@@ -47,17 +44,14 @@ const BackButton = ({ to }: BackButtonProps) => {
     </div>
   );
 };
-
 // Transaction Details Modal Component
 interface TransactionDetailsModalProps {
   payment: Payment | null;
   isOpen: boolean;
   onClose: () => void;
 }
-
 const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetailsModalProps) => {
   if (!isOpen || !payment) return null;
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -68,14 +62,12 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
       minute: "2-digit",
     });
   };
-
   const formatAmount = (amount: number, currency: string) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency.toUpperCase(),
     }).format(amount);
   };
-
   const getStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status.toLowerCase()) {
@@ -93,7 +85,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
         return `${baseClasses} bg-gray-100 text-gray-800`;
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -105,7 +96,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
             </button>
           </div>
         </div>
-
         <div className="p-6 space-y-6">
           {/* Payment Status */}
           <div className="flex items-center justify-between">
@@ -114,7 +104,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
             </span>
           </div>
-
           {/* Amount */}
           <div className="flex items-center justify-between">
             <span className="text-lg font-medium text-black">Amount</span>
@@ -122,7 +111,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               {formatAmount(payment.amount, payment.currency)}
             </span>
           </div>
-
           {/* Transaction Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -138,13 +126,11 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               </div>
             )}
           </div>
-
           {/* Product Info */}
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">PRODUCT</h3>
             <p className="text-black text-lg">{payment.product_name}</p>
           </div>
-
           {/* Customer Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -158,7 +144,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               </div>
             )}
           </div>
-
           {/* Email */}
           {payment.email && (
             <div>
@@ -166,7 +151,6 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               <p className="text-black">{payment.email}</p>
             </div>
           )}
-
           {/* Date */}
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">TRANSACTION DATE</h3>
@@ -210,19 +194,14 @@ INVOICE
 =======
 Invoice Number: INV-${payment.id}-${Date.now()}
 Transaction ID: ${payment.stripe_session_id}
-
 Bill To:
 ${payment.customer_name}
 ${payment.company_name ? payment.company_name : ""}
-
 Date: ${formatDate(payment.created_at)}
-
 Item: ${payment.product_name}
 Amount: ${formatAmount(payment.amount, payment.currency)}
-
 Total: ${formatAmount(payment.amount, payment.currency)}
 Status: ${payment.status.toUpperCase()}
-
 =======
 Thank you for your business!
                 `;
@@ -246,13 +225,11 @@ Thank you for your business!
     </div>
   );
 };
-
 // Purchase History Row Component
 interface PurchaseHistoryRowProps {
   payment: Payment;
   onViewDetails: (payment: Payment) => void;
 }
-
 const PurchaseHistoryRow = ({ payment, onViewDetails }: PurchaseHistoryRowProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -262,14 +239,12 @@ const PurchaseHistoryRow = ({ payment, onViewDetails }: PurchaseHistoryRowProps)
       year: "numeric",
     });
   };
-
   const formatAmount = (amount: number, currency: string) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency.toUpperCase(),
     }).format(amount);
   };
-
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
@@ -286,14 +261,12 @@ const PurchaseHistoryRow = ({ payment, onViewDetails }: PurchaseHistoryRowProps)
         return "text-gray-600";
     }
   };
-
   const getPaymentMethod = (status: string) => {
     if (status === "completed" || status === "succeeded") {
       return "Credit Card";
     }
     return "Card";
   };
-
   const handleReceiptDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -309,7 +282,6 @@ Status: ${payment.status.toUpperCase()}
 ===============
 Thank you for your payment!
       `;
-
       const blob = new Blob([receiptText], { type: "text/plain" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -324,7 +296,6 @@ Thank you for your payment!
       alert("Failed to download receipt. Please try again.");
     }
   };
-
   const handleInvoiceDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -333,23 +304,17 @@ INVOICE
 =======
 Invoice Number: INV-${payment.id}-${Date.now()}
 Transaction ID: ${payment.stripe_session_id}
-
 Bill To:
 ${payment.customer_name}
 ${payment.company_name ? payment.company_name : ""}
-
 Date: ${formatDate(payment.created_at)}
-
 Item: ${payment.product_name}
 Amount: ${formatAmount(payment.amount, payment.currency)}
-
 Total: ${formatAmount(payment.amount, payment.currency)}
 Status: ${payment.status.toUpperCase()}
-
 =======
 Thank you for your business!
       `;
-
       const blob = new Blob([invoiceText], { type: "text/plain" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -364,7 +329,6 @@ Thank you for your business!
       alert("Failed to download invoice. Please try again.");
     }
   };
-
   return (
     <div className="flex items-center h-10 mb-6 max-md:flex-col max-md:items-start max-md:gap-2.5 max-sm:text-sm cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
       <div className="w-[183px] text-black text-base font-normal leading-[17.6px] max-md:w-auto">
@@ -412,14 +376,12 @@ Thank you for your business!
     </div>
   );
 };
-
 // Loading Component
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center py-12">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
   </div>
 );
-
 // Error Component
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
   <div className="text-center py-12">
@@ -432,7 +394,6 @@ const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => vo
     </button>
   </div>
 );
-
 // Empty State Component
 const EmptyState = () => (
   <div className="text-center py-12">
@@ -440,7 +401,6 @@ const EmptyState = () => (
     <p className="text-gray-500">Your payment history will appear here once you make a purchase.</p>
   </div>
 );
-
 // Purchase History Table Component
 const PurchaseHistoryTable = ({
   payments,
@@ -458,7 +418,6 @@ const PurchaseHistoryTable = ({
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} onRetry={onRetry} />;
   if (payments.length === 0) return <EmptyState />;
-
   return (
     <div className="purchase-history-table">
       <div className="flex items-center h-5 mb-6 max-md:flex-col max-md:items-start max-md:gap-2.5 max-sm:text-sm">
@@ -485,14 +444,12 @@ const PurchaseHistoryTable = ({
         </div>
       </div>
       <div className="w-[984px] h-px bg-[#555] mb-8" />
-
       {payments.map((payment) => (
         <PurchaseHistoryRow key={payment.id} payment={payment} onViewDetails={onViewDetails} />
       ))}
     </div>
   );
 };
-
 // Main Purchase History Component
 const PurchaseHistory = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -503,19 +460,16 @@ const PurchaseHistory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
   // Memoize the fetch function to prevent unnecessary re-renders
   const fetchPayments = useCallback(async () => {
     try {
       setError(null);
-
       // Get auth token from localStorage
       const token = localStorage.getItem("access_token");
 
       if (!token) {
         throw new Error("Authentication token not found. Please log in again.");
       }
-
       const response = await fetch("https://api.prspera.com/user-payments/", {
         method: "GET",
         headers: {
@@ -523,7 +477,6 @@ const PurchaseHistory = () => {
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         if (response.status === 401) {
           // Clear invalid token and redirect to login
@@ -535,15 +488,12 @@ const PurchaseHistory = () => {
         }
         throw new Error(`Failed to fetch payments: ${response.status} ${response.statusText}`);
       }
-
       const data: PaymentResponse = await response.json();
       console.log("Payment data received:", data);
-
       // Ensure we have the expected data structure
       if (!data.payments || !Array.isArray(data.payments)) {
         throw new Error("Invalid response format from server");
       }
-
       setPayments(data.payments);
       setUserPaidStatus(data.user_paid_status || false);
       setLastUpdated(new Date());
@@ -554,7 +504,6 @@ const PurchaseHistory = () => {
       setLoading(false);
     }
   }, []); // Empty dependency array since this function doesn't depend on any state
-
   // Real-time refresh function
   const refreshPayments = useCallback(async () => {
     try {
@@ -565,13 +514,11 @@ const PurchaseHistory = () => {
       setIsRefreshing(false);
     }
   }, [fetchPayments]);
-
   // Check for payment status updates - memoized to prevent infinite loops
   const checkPaymentStatus = useCallback(
     async (sessionId: string) => {
       try {
         console.log("Checking payment status for:", sessionId);
-
         // Simulate status check
         const currentPayment = payments.find((p) => p.stripe_session_id === sessionId);
         if (currentPayment && currentPayment.status === "pending") {
@@ -588,32 +535,26 @@ const PurchaseHistory = () => {
     },
     [payments, refreshPayments]
   );
-
   const handleViewDetails = useCallback((payment: Payment) => {
     setSelectedPayment(payment);
     setIsModalOpen(true);
   }, []);
-
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedPayment(null);
   }, []);
-
   // Initial load - only runs once
   useEffect(() => {
     fetchPayments();
   }, [fetchPayments]);
-
   // Set up intervals for pending payment checks - properly memoized
   useEffect(() => {
     const pendingPayments = payments.filter(
       (p) => p.status === "pending" || p.status === "processing"
     );
-
     if (pendingPayments.length === 0) {
       return; // No pending payments, no need to set up intervals
     }
-
     // Check pending payments every 30 seconds
     const pendingCheckInterval = setInterval(() => {
       console.log("Checking status for pending payments...");
@@ -621,34 +562,28 @@ const PurchaseHistory = () => {
         checkPaymentStatus(payment.stripe_session_id);
       });
     }, 30000);
-
     return () => {
       clearInterval(pendingCheckInterval);
     };
   }, [payments, checkPaymentStatus]); // Only re-run when payments array changes
-
   // General refresh interval - separate from pending checks
   useEffect(() => {
     // Only set up auto-refresh if there are no pending payments
     const hasPendingPayments = payments.some(
       (p) => p.status === "pending" || p.status === "processing"
     );
-
     if (hasPendingPayments) {
       return; // Don't set up general refresh if we have pending payments
     }
-
     // Auto-refresh every 5 minutes for completed payments
     const refreshInterval = setInterval(() => {
       console.log("Auto-refreshing payment history...");
       refreshPayments();
     }, 300000);
-
     return () => {
       clearInterval(refreshInterval);
     };
   }, [payments, refreshPayments]);
-
   // Handle page visibility change - refresh when user comes back to page
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -661,15 +596,12 @@ const PurchaseHistory = () => {
         }
       }
     };
-
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [lastUpdated, refreshPayments]);
-
   return (
     <div className="max-w-6xl mx-auto p-6">
       <BackButton to="/" />
-
       <div className="flex items-center justify-between mb-[50px]">
         <h1 className="text-black text-[32px] font-medium leading-[35.2px] max-sm:text-2xl">
           Purchase History
@@ -707,9 +639,7 @@ const PurchaseHistory = () => {
           )}
         </div>
       </div>
-
       <div className="w-[948px] h-px bg-[#555] mb-[61px]" />
-
       <PurchaseHistoryTable
         payments={payments}
         loading={loading}
@@ -717,7 +647,6 @@ const PurchaseHistory = () => {
         onRetry={fetchPayments}
         onViewDetails={handleViewDetails}
       />
-
       <TransactionDetailsModal
         payment={selectedPayment}
         isOpen={isModalOpen}
@@ -726,5 +655,4 @@ const PurchaseHistory = () => {
     </div>
   );
 };
-
 export default PurchaseHistory;

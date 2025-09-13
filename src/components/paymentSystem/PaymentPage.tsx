@@ -19,7 +19,7 @@ const Payment: React.FC = () => {
   const cardElementRef = useRef<any>(null);
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 100,
+    price: 179700,
     description: "Seats available for 50 members",
   };
   useEffect(() => {
@@ -121,7 +121,7 @@ const Payment: React.FC = () => {
           companyName: billingInfo.companyName,
         },
       };
-      const response = await fetch("https://api.prspera.com/create-checkout-session/", {
+      const response = await fetch("https://api.prspera.com/api/create-checkout-session/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

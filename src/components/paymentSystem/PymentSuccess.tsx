@@ -1,8 +1,6 @@
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
-
 type UserType = "guest" | "member";
-
 const PaymentSuccess = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(5);
@@ -10,8 +8,7 @@ const PaymentSuccess = () => {
   const [userType, setUserType] = useState<UserType>("member"); 
   const confirmPayment = useCallback(async () => {
     try {
-      const accessToken =
-        sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+      const accessToken =sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
       const session = new URLSearchParams(window.location.search).get("session_id");
       setSessionId(session);
       if (accessToken && session) {
@@ -23,7 +20,7 @@ const PaymentSuccess = () => {
           const data = await response.json();
           const amount = Number(data?.amount ?? 0);
           const paid = data?.user_paid || data?.status === "paid" || amount > 0;
-          setUserType(paid && amount >0 ? "member" : "guest");
+          setUserType(paid && amount > 0 ? "member" : "guest");
         } else {
           setUserType("guest");
         }
