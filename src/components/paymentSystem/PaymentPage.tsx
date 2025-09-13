@@ -56,7 +56,7 @@ const Payment: React.FC = () => {
   ];
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 179700,
+    price: 100,
     description: "Seats available for 50 members",
   };
   useEffect(() => {
