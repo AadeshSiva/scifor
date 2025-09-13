@@ -1,13 +1,9 @@
-
 import React, { useState } from 'react';
-
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
 }
-
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -15,7 +11,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
       setMessage('');
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="bg-neutral-100 flex items-center gap-5 p-4 border-t border-[rgba(158,158,158,0.5)]">
       <button
@@ -29,7 +24,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
           className="w-6 h-6"
         />
       </button>
-
       <div className="bg-white border flex items-center gap-4 flex-1 px-6 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
         <img
           src="https://cdn.builder.io/api/v1/image/assets/57222bbc81684d2091cbea74e310342f/e4cae3bf31c9e7be9eedcf6724f1aa2ea68c799e?placeholderIfAbsent=true"
@@ -44,7 +38,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
           className="text-[#555] text-sm w-full bg-transparent outline-none"
         />
       </div>
-
       <button
         type="submit"
         className="w-7 h-7 flex-shrink-0"

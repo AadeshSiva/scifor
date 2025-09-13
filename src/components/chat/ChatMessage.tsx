@@ -1,12 +1,10 @@
 import React from 'react';
-
 interface ChatMessageProps {
   message: string;
   sender: string;
   time: string;
   isSent?: boolean;
 }
-
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message, sender, time, isSent = false }) => {
   return (
     <div className="flex flex-col">

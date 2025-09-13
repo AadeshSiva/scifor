@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 
-// Calendar Header Component
 interface CalendarHeaderProps {
   month: string;
   year: number;
   onPrevMonth: () => void;
   onNextMonth: () => void;
 }
-
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   month,
   year,
@@ -41,15 +39,12 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     </header>
   );
 };
-
-// Calendar Grid Component
 interface CalendarGridProps {
   selectedDate: number;
   onDateSelect: (date: number) => void;
   currentMonth: number;
   currentYear: number;
 }
-
 const CalendarGrid: React.FC<CalendarGridProps> = ({
   selectedDate,
   onDateSelect,
@@ -57,26 +52,19 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   currentYear
 }) => {
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month, 0).getDate();
   };
-  
   const getFirstDayOfMonth = (month: number, year: number) => {
     const firstDay = new Date(year, month - 1, 1).getDay();
     return firstDay === 0 ? 6 : firstDay - 1;
   };
-  
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-  
   const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
   const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
   const daysInPrevMonth = getDaysInMonth(prevMonth, prevYear);
-  
   const calendarDays = [];
-  
-  // Previous month's trailing days
   for (let i = firstDay - 1; i >= 0; i--) {
     calendarDays.push({
       day: daysInPrevMonth - i,
@@ -84,8 +72,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       isPrevMonth: true
     });
   }
-  
-  // Current month's days
   for (let day = 1; day <= daysInMonth; day++) {
     calendarDays.push({
       day,
@@ -93,8 +79,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       isPrevMonth: false
     });
   }
-  
-  // Next month's leading days
   const remainingCells = 42 - calendarDays.length;
   for (let day = 1; day <= remainingCells; day++) {
     calendarDays.push({
@@ -103,15 +87,12 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       isPrevMonth: false
     });
   }
-  
   const weeks = [];
   for (let i = 0; i < calendarDays.length; i += 7) {
     weeks.push(calendarDays.slice(i, i + 7));
   }
-
   const today = new Date();
   const isCurrentMonthAndYear = currentMonth === today.getMonth() + 1 && currentYear === today.getFullYear();
-
   return (
     <div className="flex min-h-[326px] w-full max-w-[311px] flex-col overflow-hidden items-center text-base text-[rgba(179,179,179,1)] font-normal justify-between mt-11 max-md:mt-10">
       <div className="flex w-[285px] max-w-full items-center gap-4 overflow-hidden text-lg text-black font-semibold justify-between">
@@ -126,7 +107,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           </div>
         ))}
       </div>
-      
       {weeks.slice(0, 6).map((week, weekIndex) => (
         <div
           key={weekIndex}
@@ -138,7 +118,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             const isSelected = dateObj.isCurrentMonth && dateObj.day === selectedDate;
             const isClickable = dateObj.isCurrentMonth;
             const isToday = isCurrentMonthAndYear && dateObj.isCurrentMonth && dateObj.day === today.getDate();
-            
             let textColor = 'text-[rgba(179,179,179,1)]';
             if (dateObj.isCurrentMonth) {
               if (dateObj.day >= 21 && dateObj.day <= 25) {
@@ -151,7 +130,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             } else if (!dateObj.isPrevMonth) {
               textColor = 'text-[rgba(179,179,179,1)]';
             }
-            
             return (
               <button
                 key={`${weekIndex}-${dayIndex}`}
@@ -175,8 +153,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     </div>
   );
 };
-
-// Calendar Widget Component
 interface CalendarWidgetProps {
   selectedDate: number;
   onDateSelect: (date: number) => void;
@@ -184,7 +160,6 @@ interface CalendarWidgetProps {
   currentYear: number;
   onMonthChange: (month: number, year: number) => void;
 }
-
 const CalendarWidget: React.FC<CalendarWidgetProps> = ({
   selectedDate,
   onDateSelect,
@@ -196,7 +171,6 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-
   const handlePrevMonth = () => {
     if (currentMonth === 1) {
       onMonthChange(12, currentYear - 1);
@@ -204,7 +178,6 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
       onMonthChange(currentMonth - 1, currentYear);
     }
   };
-
   const handleNextMonth = () => {
     if (currentMonth === 12) {
       onMonthChange(1, currentYear + 1);
@@ -212,7 +185,6 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
       onMonthChange(currentMonth + 1, currentYear);
     }
   };
-
   return (
     <section className="bg-[rgba(217,217,217,1)] flex grow flex-col items-stretch whitespace-nowrap text-center w-full py-[70px] max-md:mt-[27px]">
       <header className="flex justify-center">
@@ -222,7 +194,6 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
           className="aspect-[5.68] object-contain w-[205px] max-w-full"
         />
       </header>
-      
       <div className="flex w-full flex-col items-center mt-[43px] max-md:mt-10">
         <CalendarHeader
           month={monthNames[currentMonth - 1]}
@@ -230,7 +201,6 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
         />
-        
         <CalendarGrid
           selectedDate={selectedDate}
           onDateSelect={onDateSelect}
@@ -241,15 +211,12 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({
     </section>
   );
 };
-
-// Time Slot Component
 interface TimeSlotProps {
   time: string;
   isSelected: boolean;
   onSelect: () => void;
   isAvailable: boolean;
 }
-
 const TimeSlot: React.FC<TimeSlotProps> = ({ time, isSelected, onSelect, isAvailable }) => {
   return (
     <button
@@ -268,14 +235,11 @@ const TimeSlot: React.FC<TimeSlotProps> = ({ time, isSelected, onSelect, isAvail
     </button>
   );
 };
-
-// Meeting Scheduler Component
 interface MeetingSchedulerProps {
   selectedDate: number;
   currentMonth: number;
   currentYear: number;
 }
-
 const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
   selectedDate,
   currentMonth,
@@ -286,36 +250,26 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  
   const durations = ['15 mins', '30 mins', '45 mins', '60 mins'];
   const timeSlots = ['3:00 pm', '3:30 pm', '4:00 pm', '4:30 pm', '5:00 pm'];
-  
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-  
   const currentMonthName = monthNames[currentMonth - 1];
-  
-  // Simulate availability - some slots might be unavailable
   const getAvailability = (time: string) => {
     if (selectedDate === 15 && time === '4:00 pm') return false;
     if (selectedDate === 20 && time === '3:30 pm') return false;
     return true;
   };
-
-  // Get CSRF token from Django
   const getCSRFToken = () => {
     const csrfCookie = document.cookie
       .split('; ')
       .find(row => row.startsWith('csrftoken='));
     return csrfCookie ? csrfCookie.split('=')[1] : '';
   };
-
-  // Convert 12-hour time to 24-hour format for backend
   const convertTo24Hour = (time12: string): string => {
     const [time, modifier] = time12.split(' ');
-    // eslint-disable-next-line prefer-const
     let [hours, minutes] = time.split(':');
     if (hours === '12') {
       hours = '00';
@@ -325,55 +279,40 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
     }
     return `${hours}:${minutes}`;
   };
-
-  // Extract duration number from string
   const getDurationMinutes = (duration: string): number => {
     return parseInt(duration.split(' ')[0]);
   };
-
   const handleConfirmBooking = async () => {
     if (!selectedTime || !selectedDuration) {
       setErrorMessage('Please select both time and duration');
       setBookingStatus('error');
       return;
     }
-
     setIsLoading(true);
     setBookingStatus('idle');
     setErrorMessage('');
-
     try {
-      // Format date for backend (YYYY-MM-DD)
       const formattedDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${selectedDate.toString().padStart(2, '0')}`;
-      
-      // Convert time to 24-hour format
       const formattedTime = convertTo24Hour(selectedTime);
-      
-      // Get duration in minutes
       const durationMinutes = getDurationMinutes(selectedDuration);
-
       const requestData = {
         date: formattedDate,
         time: formattedTime,
         duration: durationMinutes,
-        timezone: 'UTC +05:30' // You can make this dynamic based on user selection
+        timezone: 'UTC +05:30' 
       };
-
       const response = await fetch('/api/create-meeting/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCSRFToken(),
         },
-        credentials: 'same-origin', // Include cookies for authentication
+        credentials: 'same-origin', 
         body: JSON.stringify(requestData)
       });
-
       const data = await response.json();
-
       if (response.ok && data.success) {
         setBookingStatus('success');
-        // Reset form after successful booking
         setTimeout(() => {
           setSelectedTime('');
           setBookingStatus('idle');
@@ -389,7 +328,6 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
       setIsLoading(false);
     }
   };
-
   return (
     <section className="flex w-full flex-col self-stretch items-stretch text-base text-black font-normal my-auto max-md:mt-10">
       <header>
@@ -413,19 +351,16 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
           ))}
         </select>
       </div>
-
       <div className="mt-[43px] max-md:mt-10">
         <h3 className="text-xl font-semibold tracking-[0.2px] text-center">
           What time works best?
-        </h3>
-        
+        </h3>    
         <p className="text-lg tracking-[0.18px] max-md:mr-2.5 mt-2">
           <span className="font-light">Showing times for</span>{' '}
           <span className="font-medium tracking-[0.36px]">
             {currentMonthName} {selectedDate}, {currentYear}
           </span>
-        </p>
-        
+        </p> 
         <div className="flex items-stretch gap-2.5 text-lg text-center mt-3.5 max-md:mr-[5px]">
           <div className="grow">
             UTC +05:30 New Delhi, Mumbai
@@ -435,8 +370,7 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
             alt="Timezone icon"
             className="aspect-[0.96] object-contain w-[23px] shrink-0"
           />
-        </div>
-        
+        </div>     
         <div className="mt-2.5">
           {timeSlots.map((time, index) => (
             <TimeSlot
@@ -448,8 +382,6 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
             />
           ))}
         </div>
-        
-        {/* Booking Confirmation Section */}
         {selectedTime && bookingStatus === 'idle' && (
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-center text-blue-800">
@@ -468,8 +400,6 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
             </button>
           </div>
         )}
-
-        {/* Success Message */}
         {bookingStatus === 'success' && (
           <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
             <div className="text-center text-green-800">
@@ -484,8 +414,6 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
             </div>
           </div>
         )}
-
-        {/* Error Message */}
         {bookingStatus === 'error' && (
           <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <div className="text-center text-red-800">
@@ -505,23 +433,18 @@ const MeetingScheduler: React.FC<MeetingSchedulerProps> = ({
     </section>
   );
 };
-
-// Main Index Component
 export default function Index() {
   const [selectedDate, setSelectedDate] = useState(20);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
   const handleMonthChange = (month: number, year: number) => {
     setCurrentMonth(month);
     setCurrentYear(year);
     setSelectedDate(1);
   };
-
   const handleDateSelect = (date: number) => {
     setSelectedDate(date);
   };
-
   return (
     <main className="bg-white flex flex-col overflow-hidden items-center justify-center px-[70px] py-[201px] max-md:px-5 max-md:py-[100px] min-h-screen">
       <div className="bg-[rgba(182,182,182,1)] w-[643px] max-w-full pr-[21px] rounded-lg max-md:pr-5">
@@ -535,7 +458,6 @@ export default function Index() {
               onMonthChange={handleMonthChange}
             />
           </div>
-          
           <div className="w-[45%] ml-5 max-md:w-full max-md:ml-0">
             <MeetingScheduler
               selectedDate={selectedDate}
@@ -545,7 +467,6 @@ export default function Index() {
           </div>
         </div>
       </div>
-      
       <footer className="mt-8 text-center text-gray-600">
         <p>Select a date and time to schedule your meeting</p>
       </footer>

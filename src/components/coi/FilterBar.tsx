@@ -8,12 +8,10 @@ const filterOptions = [
   { id: "path", label: "Choosing the Right Exit Path" },
   { id: "market", label: "Market, Timing & Advisors" },
 ];
-
 interface FilterButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean;
   children: React.ReactNode;
 }
-
 const FilterButton: React.FC<FilterButtonProps> = ({
   isActive = false,
   children,
@@ -39,12 +37,10 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     </button>
   );
 };
-
 interface FilterBarProps {
   activeFilter: string;
   onFilterChange: (filterId: string) => void;
 }
-
 export const FilterBar: React.FC<FilterBarProps> = ({ activeFilter, onFilterChange }) => {
   return (
     <nav

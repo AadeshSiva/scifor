@@ -1,10 +1,7 @@
-
 import React from 'react';
-
 interface SidebarProps {
   userName: string;
 }
-
 export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
   return (
     <nav className="flex flex-col h-full text-xl text-black font-semibold bg-neutral-100 overflow-hidden">
@@ -18,7 +15,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           Welcome {userName} 👋
         </div>
       </div>
-      
       <div className="bg-white flex items-center gap-[7px] px-6 py-3.5">
         <img
           src="https://cdn.builder.io/api/v1/image/assets/57222bbc81684d2091cbea74e310342f/60755bcb802b09767a2545870d77e77b69c19046?placeholderIfAbsent=true"
@@ -29,7 +25,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           Anonymous Group Chat
         </div>
       </div>
-
       <div className="flex-1 overflow-y-auto">
         {Array(10).fill(null).map((_, index) => (
           <div key={index} className="bg-neutral-100 flex items-center gap-2.5 pl-6 pr-2.5 py-3.5">
@@ -46,7 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           </div>
         ))}
       </div>
-
       <div className="mt-auto">
         <div className="flex items-center gap-3 font-normal whitespace-nowrap pl-6 py-3">
           <img
@@ -56,7 +50,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           />
           <div>Home</div>
         </div>
-        
         <div className="flex items-center gap-[7px] whitespace-nowrap pl-6 py-3.5">
           <img
             src="https://cdn.builder.io/api/v1/image/assets/57222bbc81684d2091cbea74e310342f/9a9a9175193c7b712664e43f419a6b7636f26735?placeholderIfAbsent=true"
