@@ -15,7 +15,6 @@ const ROIassignment: React.FC = () => {
     const [currentSection, setCurrentSection] = useState<number>(1);
     const [date, setDate] = useState<string | null>(null);
     const [ratings, setRatings] = useState<Record<string, number>>({});
-    const [subtotals, setSubtotals] = useState<Record<string, number>>({});
     const [sectionTotal, setSectionTotal] = useState<number>(0);
     const tasks: Task[] = [
         {
@@ -234,7 +233,6 @@ const ROIassignment: React.FC = () => {
             });
             newSubtotals[`task-${taskIndex}`] = subtotal;
         });
-        setSubtotals(newSubtotals);
         const sectionTasks = tasks.filter(task => task.id === currentSection);
         let total = 0;
         sectionTasks.forEach((task, taskIndex) => {
@@ -255,7 +253,9 @@ const ROIassignment: React.FC = () => {
             setCurrentSection(prev => prev - 1);
         }
     };
-    const handleSubmit = () => {
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        sessionStorage.setItem("assign-2", "true");
         navigate('/dashboard');
     };
     const handleRatingChange = (taskIndex: number, questionIndex: number, value: number) => {

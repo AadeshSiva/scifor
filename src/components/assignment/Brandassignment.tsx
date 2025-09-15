@@ -34,11 +34,15 @@ const BrandAssignment: React.FC = () => {
   const handleBackButton = () => {
     setPopup(true);
   };
-  const handleSubmit = () => {
-    navigate('/dashboard')
+  const handleSubmit = (e:React.FormEvent) => {
+    e.preventDefault();
+    sessionStorage.setItem("assign-1", "true");
+    navigate('/dashboard');
   };
-  const handleSaveButton = () => {
-   navigate('/dashboard')
+  const handleSaveButton = (e:React.FormEvent) => {
+    e.preventDefault();
+    sessionStorage.setItem("assign-1", "true");
+    navigate('/dashboard');
   }
   const handlecancelbutton = () => {
     setPopup(false)
