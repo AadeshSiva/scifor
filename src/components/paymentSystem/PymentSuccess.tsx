@@ -11,11 +11,12 @@ const PaymentSuccess = () => {
       const accessToken =sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
       const session = new URLSearchParams(window.location.search).get("session_id");
       setSessionId(session);
-      if (accessToken && session) {
+      if (accessToken) {
         const response = await fetch(
-          `https://api.prspera.com/confirm-payment/?session_id=${session}`,
+          `https://api.prspera.com/payment-status/?session_id=${sessionId}`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
+        console.log(response)
         if (response.ok) {
           const data = await response.json();
           const amount = Number(data?.amount ?? 0);
@@ -29,7 +30,6 @@ const PaymentSuccess = () => {
       }
     } catch (e) {
       console.error("Error confirming payment:", e);
-      setUserType("guest");
     } finally {
       setIsUpdating(false);
     }

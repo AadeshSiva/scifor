@@ -12,6 +12,7 @@ const BrandAssignment: React.FC = () => {
   const [date, setDate] = useState<string>('');
   const [currentSection, setCurrentSection] = useState<number>(1);
   const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [popup, setPopup] = useState<boolean>(false);
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
@@ -31,11 +32,20 @@ const BrandAssignment: React.FC = () => {
     }
   };
   const handleBackButton = () => {
-    navigate('/dashboard');
+    setPopup(true);
   };
   const handleSubmit = () => {
-    alert("Assessment submitted successfully!");
+    navigate('/dashboard')
   };
+  const handleSaveButton = () => {
+   navigate('/dashboard')
+  }
+  const handlecancelbutton = () => {
+    setPopup(false)
+  }
+  const handlenotsave = () => {
+    navigate('/dashboard')
+  }
   const tasks: Task[] = [
     {
       id: 1,
@@ -252,18 +262,20 @@ const BrandAssignment: React.FC = () => {
             <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back
           </button>
           <div>
-            <h1 className="font-bold text-lg">BRAND DIAGNOSTIC ASSESSMENT</h1>
+            <h1 className="font-bold text-md">BRAND DIAGNOSTIC ASSESSMENT</h1>
             <p className="text-xs text-gray-600">Evaluate your brand's health and growth potential.</p>
           </div>
         </div>
-        <span className="text-sm text-gray-600">{date}</span>
+        <span><p className='text-md'>{date}</p></span>
       </header>
-      <div className="mt-16">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-400 text-white p-4">
-          <h2 className="font-bold text-lg mb-2 md:mb-0">{currentTitle}</h2>
+      {!popup ? (<div className="pt-16 w-[100vw]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-400 text-black p-4">
+          <h2 className="font-bold text-lg">
+            {currentTitle}
+          </h2>
           <div className="flex items-center space-x-2">
-            <span className="text-sm">Progress: {currentSection}/4</span>
-            <div className="w-24 h-2 bg-blue-600 rounded-full">
+            <span className="text-md">Progress: {currentSection}/4</span>
+            <div className="w-24 h-3 bg-blue-600 rounded-full">
               <div
                 className="h-full bg-white rounded-full transition-all duration-300"
                 style={{ width: `${(currentSection / 4) * 100}%` }}
@@ -271,16 +283,16 @@ const BrandAssignment: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="bg-gray-200 border border-gray-300 shadow-md rounded-lg">
           <div className="overflow-x-auto">
-            <table className="w-full min-h-screen">
+            <table className="w-full h-[80vh] border border-gray-400">
               <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="w-2/3 p-4 text-left text-md">Question</th>
+                <tr className="bg-gray-200 text-gray-700 border border-gray-300 shadow-md">
+                  <th className="w-2/3 p-4 text-left text-md"></th>
                   {["Strongly Disagree", "Disagree", "Don't Know", "Agree", "Strongly Agree"].map((header, index) => (
-                    <th key={index} className="p-2 text-center">
-                      <div className="flex items-center justify-center h-10">
-                        <span className="whitespace-nowrap font-semibold text-md">
+                    <th key={index} className="p-2 text-center border border-gray-300 w-8">
+                      <div className="flex items-center justify-center h-10 border-b">
+                        <span className="flex text-center font-semibold text-md">
                           {header}
                         </span>
                       </div>
@@ -290,10 +302,10 @@ const BrandAssignment: React.FC = () => {
               </thead>
               <tbody>
                 {currentTasks.map((task, index) => (
-                  <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 h-4">
-                    <td className="p-2 text-md">{task.description}</td>
+                  <tr key={index} className="border-b border-gray-500 h-4 bg-gray-400">
+                    <td className="px-6 text-md border border-gray-500 h-4">{task.description}</td>
                     {[1, 2, 3, 4, 5].map((value) => (
-                      <td key={value} className="p-1 text-center">
+                      <td key={value} className="p-1 text-center border border-gray-300 w-6 bg-gray-100 shadow-md h-4">
                         <input
                           type="radio"
                           name={`s${currentSection}-q${index}`}
@@ -308,11 +320,11 @@ const BrandAssignment: React.FC = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between p-4 bg-gray-100">
+          <div className="flex justify-between p-2 bg-gray-100">
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 1}
-              className={`flex items-center px-4 py-2 rounded ${currentSection === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-700'}`}
+              className={`flex items-center px-4 py-2 rounded text-md ${currentSection === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-700'}`}
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
@@ -320,7 +332,7 @@ const BrandAssignment: React.FC = () => {
             {currentSection === 4 ? (
               <button
                 onClick={handleSubmit}
-                className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-md"
               >
                 Submit
                 <FontAwesomeIcon icon={faCheckCircle} className="ml-2" />
@@ -328,7 +340,7 @@ const BrandAssignment: React.FC = () => {
             ) : (
               <button
                 onClick={handleNextSection}
-                className="flex items-center px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                className="flex items-center px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 text-md"
               >
                 Next
                 <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
@@ -336,7 +348,37 @@ const BrandAssignment: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </div>) : (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+          <div className="w-[35vw] h-[30vh] bg-gray-500 p-8 flex flex-col space-y-4 rounded-lg overflow-hidden">
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl">You have unsaved changes.</h1>
+              <h1 className="text-2xl">Do you want to save them</h1>
+              <h1 className="text-2xl">before leaving?</h1>
+            </div>
+            <div className="flex justify-center gap-4 mt-auto">
+              <button
+                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                onClick={handleSaveButton}
+              >
+                Save
+              </button>
+              <button
+                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                onClick={handlenotsave}
+              >
+                Don't Save
+              </button>
+              <button
+                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                onClick={handlecancelbutton}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
