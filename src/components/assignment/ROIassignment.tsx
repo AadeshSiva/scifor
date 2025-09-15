@@ -339,13 +339,6 @@ const ROIassignment: React.FC = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    <tr className="bg-gray-200 font-semibold">
-                                        <td className="px-6 py-4 text-md border-r border-gray-500">{task.subtotal}</td>
-                                        <td className="px-6 py-4 text-md text-right">Total:</td>
-                                        <td className="px-6 py-4 text-md">
-                                            {formatCurrency(subtotals[`task-${tasks.indexOf(task)}`] || 0)}
-                                        </td>
-                                    </tr>
                                 </React.Fragment>
                             ))}
                             <tr className="bg-blue-200 font-bold">
@@ -360,7 +353,7 @@ const ROIassignment: React.FC = () => {
                     </table>
                 </div>
             </div>
-            <div className="flex justify-between p-4 bg-gray-100 fixed bottom-0 w-full">
+            <div className="flex justify-between p-4 bg-gray-100 bottom-0 w-full">
                 <button
                     onClick={handlePrevSection}
                     disabled={currentSection === 1}
