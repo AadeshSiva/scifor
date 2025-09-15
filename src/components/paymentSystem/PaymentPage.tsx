@@ -19,7 +19,7 @@ const Payment: React.FC = () => {
   const cardElementRef = useRef<any>(null);
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 179700,
+    price: 100,
     description: "Seats available for 50 members",
   };
   useEffect(() => {
@@ -145,7 +145,6 @@ const Payment: React.FC = () => {
       }
     } catch (err) {
       console.error("Payment processing error:", err);
-      const msg = err instanceof Error ? err.message : "An unexpected error occurred";
     } finally {
       setIsLoading(false);
     }

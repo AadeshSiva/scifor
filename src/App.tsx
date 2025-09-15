@@ -27,10 +27,10 @@ import AddDetails from "./pages/AddDetails";
 import Coming from "./pages/Coming";
 import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
-import BrandDiagonist from "./components/assignment/BrandDiagonist";
+import BrandDiagonist from "./components/assignment/BrandDiagnostic";
 
 const queryClient = new QueryClient();
-const routes = ["branddiagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
+const routes = ["brand-diagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -70,7 +70,7 @@ const App = () => (
              }
             />
             <Route
-             path="/branddiagonist"
+             path="/brand-diagnostic"
              element={
               <ProtectedRoute>
                 <BrandDiagonist/>
