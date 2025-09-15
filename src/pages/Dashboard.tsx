@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
     navigate("/roiassignment")
   }
   const handleassignment3 = () => {
-    navigate("/branddiagonist")
+    navigate("/brand-diagnostic")
   }
   const handleUpgrade = () => {
     navigate("/payment")
