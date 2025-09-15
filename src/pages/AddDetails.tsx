@@ -99,20 +99,11 @@ const AddDetails: React.FC = () => {
             [name]: value
         }));
     };
-    useEffect(() => {
-        const today = new Date();
-        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        setFormData(prev => ({
-            ...prev,
-            incorporationDate: formattedDate
-        }));
-    }, []);
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = (e:React.FormEvent) => {
         e.preventDefault();
-        localStorage.setItem("add-details", "true");
+        sessionStorage.setItem("add-details", "true");
         navigate('/dashboard');
-        console.log(formData)
-    };
+    }
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -152,7 +143,7 @@ const AddDetails: React.FC = () => {
             </header>
             <div className='pt-24 pb-12'>
                 <div className="w-4/5 mx-auto bg-white shadow-md p-8 md:p-16 rounded-lg">
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form className="space-y-8">
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold border-b pb-2">Basic Information</h2>
                             <div className="flex flex-col md:flex-row md:items-center mb-4">
@@ -566,6 +557,7 @@ const AddDetails: React.FC = () => {
                         </div>
                         <div className='w-full flex justify-center items-center pt-8'>
                             <button
+                                onClick={handleFormSubmit}
                                 type="submit"
                                 className="w-full md:w-1/3 bg-black py-3 rounded-3xl border border-[#DBA958] text-[#DBA958] font-bold hover:bg-[#DBA958] hover:text-black transition-colors"
                             >
