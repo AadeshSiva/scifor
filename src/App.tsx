@@ -4,10 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./utils/AuthContext";
-import NotFound from "./pages/NotFound";
-import OTPVerification from "./pages/OtpVerification";
-import Chat from "./pages/Chat";
-import COI from "./pages/COI";
+import NotFound from "./components/extras/NotFound";
 import Pricing_Plan from "./pages/Pricing_Plan";
 import Payment from "./components/paymentSystem/PaymentPage";
 import Auth from "./components/authok/Auth";
@@ -20,17 +17,20 @@ import PaymentCancelled from "./components/paymentSystem/PaymentCancelled";
 import ConfirmationGuest from "./components/paymentSystem/confirmationGuestPage";
 import ConfirmationMember from "./components/paymentSystem/confirmationMemberPage";
 import Landing from "./pages/Landing";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./components/dashboard/Dashboard";
 import AboutUs from "./pages/AboutUs";
 import ProofPage from "./pages/Proof";
-import AddDetails from "./pages/AddDetails";
-import Coming from "./pages/Coming";
+import AddDetails from "./components/paymentSystem/AddDetails";
+import Coming from "./components/extras/Coming";
 import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
 import BrandDiagonist from "./components/assignment/BrandDiagnostic";
+import OTPVerification from "./components/authok/OtpVerification";
+import Chat from "./components/chat/Chat";
+import COI from "./components/coi/COI";
 
 const queryClient = new QueryClient();
-const routes = ["brand-diagnostic", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
+const routes = ["brand-diagnostic-details", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -54,28 +54,28 @@ const App = () => (
               />
             ))}
             <Route
-             path="/brandassignment"
-             element={
-              <ProtectedRoute>
-                <BrandAssignment/>
-              </ProtectedRoute>
-             }
+              path="/brandassignment"
+              element={
+                <ProtectedRoute>
+                  <BrandAssignment />
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/roiassignment"
-             element={
-              <ProtectedRoute>
-                <ROIassignment/>
-              </ProtectedRoute>
-             }
+              path="/roiassignment"
+              element={
+                <ProtectedRoute>
+                  <ROIassignment />
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/brand-diagnostic"
-             element={
-              <ProtectedRoute>
-                <BrandDiagonist/>
-              </ProtectedRoute>
-             }
+              path="/brand-diagnostic"
+              element={
+                <ProtectedRoute>
+                  <BrandDiagonist />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/businessdetails/*"

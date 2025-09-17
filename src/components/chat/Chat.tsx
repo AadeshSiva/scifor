@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import Setting from "@/pages/Settings";
 import ProfileForm from "@/components/settings/ProfileForm";
 import { PasswordChangeForm } from "@/components/settings/PasswordChangeForm";
 import EmailSettings from "@/components/settings/EmailSettings";
@@ -24,6 +23,7 @@ import PinnedMessages from "@/components/chat/PinnedMessage";
 // import VideoPopup from "@/components/video/VideoPopup";
 import PurchaseHistory from "@/components/settings/PaymentHistory";
 import { useLocation } from "react-router-dom";
+import Setting from "../settings/Settings";
 
 const filterAbusiveContent = async (text) => {
   try {
@@ -979,7 +979,9 @@ const Chat = () => {
                 setDisplay("setting");
               }}
             >
-              <Settings />
+              <Setting setDisplay={function (view: string): void {
+                throw new Error("Function not implemented.");
+              } }/>
               <div className="font-linear">Settings</div>
             </div>
           </div>

@@ -204,7 +204,7 @@ const Dashboard: React.FC = () => {
             <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <LayoutDashboard size={18} /> Dashboard
             </a>
-            <a href="/brand-diagnostic" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a href="/brand-diagnostic-details" className="flex items-center gap-3 py-2 hover:text-yellow-600">
               <ClipboardList size={18} /> Brand Diagnostic
             </a>
             <a href="/roicalculation" className="flex items-center gap-3 py-2 hover:text-yellow-600">
