@@ -3,6 +3,7 @@ import { AuthForm } from "@/components/authok/AuthForm";
 import { useAuth } from "@/utils/AuthContext";
 import { Footer } from "@/components/Footer";
 import { FAQSection } from "./HomePage";
+import JoinBtn from "@/components/JoinBtn";
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
@@ -224,24 +225,26 @@ const Pricing_Plan: React.FC = () => {
           <p>-Harish Chauhan</p>
         </div>
       </div>
-      {/* Guest & Member Section */}
-      <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
-        {/* Left */}
-        <div className="bg-gray-400 lg:w-[280px] md:w-[280px] ">
-          <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
-          <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
+            {/* Guest & Member Section */}
+<div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
+  {/* Left */}
+  <div className="bg-gray-400 lg:w-[280px] md:w-[280px]">
+    <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
+    <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
 
-          <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
-            <img
-              className=" max-w-[240px] h-auto"
-              src="/assets/jeff-webinar.jpg"
-              alt="Jeff Webinar"
-            />
-          </div>
-          <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
-            Only 33 Seats
-          </p>
-        </div>
+    <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
+      <img
+        className="max-w-[240px] h-auto"
+        src="/assets/jeff-webinar.jpg"
+        alt="Jeff Webinar"
+      />
+    </div>
+    
+    <p className="font-linear font-thin text-xl mt-10 text-center">Here's What Jeff Did</p>
+    <div className="flex justify-center mt-4 pb-10">
+      <JoinBtn page="/proof">See Jeff's 10X+ Multiple Exit Story</JoinBtn>
+    </div>
+  </div>
 
         {/* Middle */}
         <div className="bg-black flex-1 min-w-[300px]">
