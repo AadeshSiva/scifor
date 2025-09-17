@@ -5,7 +5,6 @@ import { Check } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-
 const HeroSection: React.FC = () => {
     const {user} = useAuth()
     return (
@@ -56,7 +55,6 @@ const HeroSection: React.FC = () => {
     </section>
     );
   };
-
 const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
     const steps = [
         { id: 1, name: "1. Endgame" },
@@ -66,7 +64,6 @@ const StepsSection: React.FC<{ videos?: any[] }> = ({ videos = [] }) => {
         { id: 5, name: "5. Moment(s) of Truth" },
         { id: 6, name: "6. Pride" }
       ];
-
   return (
     <section className="w-full flex flex-col items-center">
       <div className="bg-white w-screen py-12 ">

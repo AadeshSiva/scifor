@@ -76,7 +76,6 @@ function MainContent() {
     </main>
   );
 }
-
 // Footer Section
 const Footer: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0);

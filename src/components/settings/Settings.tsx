@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
-import { BackIcon } from "../components/ui/icons";
+import { BackIcon } from "../ui/icons";
 
 interface ProfileInfo {
   name: string;
@@ -78,7 +78,7 @@ const BasicInfoCard = ({
         className="flex items-center gap-[18px] cursor-pointer mb-[50px]"
         onClick={() => setDisplay("chat")}
       >
-        <BackIcon />
+        <BackIcon/>
         <div className="text-[#555] text-2xl">Back</div>
       </div>
 
