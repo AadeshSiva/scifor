@@ -220,7 +220,7 @@ const ROIassignment: React.FC = () => {
     const currentIssue = sectionIssue[currentSection - 1] || "";
     useEffect(() => {
         const today = new Date();
-        const formattedDate = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+        const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         setDate(formattedDate);
     }, []);
     useEffect(() => {

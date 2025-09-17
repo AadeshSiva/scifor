@@ -7,8 +7,18 @@ const NavBar: React.FC = () => {
   const location = useLocation();
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [navbarHeight, setNavbarHeight] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [dashboardMobile, setDashboard] = useState<boolean>(false);
+  const urldashboard = window.location.pathname
+  useEffect(() => {
+    if (urldashboard == '/dashboard') {
+      setDashboard(true)
+    }
+    else {
+      setDashboard(false)
+    }
+  }, [urldashboard])
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1200);
@@ -17,12 +27,6 @@ const NavBar: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  useEffect(() => {
-    const navbar = document.querySelector("[data-navbar]") as HTMLElement;
-    if (navbar) {
-      setNavbarHeight(navbar.offsetHeight);
-    }
-  }, [isLoading]);
   const handleLogout = () => {
     logout();
     setShowDropdown(false);
@@ -38,15 +42,6 @@ const NavBar: React.FC = () => {
       .map((name) => name.charAt(0).toUpperCase())
       .join("");
   };
-  const isActivePage = (path: string) => {
-    return location.pathname === path;
-  };
-  const getNavLinkClasses = (path: string) => {
-    const baseClasses =
-      "text-black text-xl cursor-pointer hover:text-gray-600 transition-colors font-linear font-light";
-    const activeClasses = isActivePage(path) ? "underline decoration-2 underline-offset-4" : "";
-    return `${baseClasses} ${activeClasses}`;
-  };
   const truncateEmail = (email: string, maxLength: number = 25) => {
     if (email.length <= maxLength) return email;
     return email.substring(0, maxLength) + "...";
@@ -56,48 +51,78 @@ const NavBar: React.FC = () => {
       <div className="z-50 w-full bg-white" data-navbar>
         <header className="flex justify-between items-center shadow-xl bg-white px-[30px] py-3 max-sm:p-4">
           {!isMobile ? (
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-              alt="Prospera Logo"
-              className="w-[190px] h-[30px]"
-            />
-            <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-              Grow Smarter<span className="font-bold">.Exit Richer™️</span>
-            </span>
-          </div> ):(
             <div
-            className="flex items-center cursor-pointer ml-20"
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-              alt="Prospera Logo"
-              className="w-[190px] h-[30px]"
-            />
-            <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-              Grow Smarter<span className="font-bold">.Exit Richer™️</span>
-            </span>
-          </div>
-          )
+              className="flex cursor-pointer"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+                alt="Prospera Logo"
+                className="w-[190px] h-[30px]"
+              />
+              <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+                Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+              </span>
+            </div>
+          ) :
+            (
+              <>
+                {dashboardMobile ? (
+                  <div
+                    className="flex cursor-pointer ml-24"
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                  >
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+                      alt="Prospera Logo"
+                      className="w-[190px] h-[30px]"
+                    />
+                    <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+                      Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    className="flex cursor-pointer"
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                  >
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+                      alt="Prospera Logo"
+                      className="w-[190px] h-[30px]"
+                    />
+                    <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+                      Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+                    </span>
+                  </div>
+                )
+                }
+              </>
+            )
           }
           <div className="gap-4 relative">
-            {isAuthenticated  ? (
+            {isAuthenticated ? (
               <div className="flex flex-row items-center justify-center relative gap-4">
-                {location.pathname !== "/dashboard" && (
-                  <button
-                    onClick={() => navigate("/dashboard")}
-                    className="flex items-center justify-center px-3 h-7 text-md text-white bg-gray-800 transition-colors hover:bg-gray-700"
-                  >
-                    Dashboard
-                  </button>
+                {(location.pathname !== "/dashboard") && (
+                  <>
+                    {
+                      !isMobile &&
+                      (
+                        <button
+                          onClick={() => navigate("/dashboard")}
+                          className="flex items-center justify-center px-3 h-7 text-md text-white bg-gray-800 transition-colors hover:bg-gray-700"
+                        >
+                          Dashboard
+                        </button>
+                      )
+                    }
+                  </>
                 )}
                 <button
                   className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-lg font-semibold hover:bg-gray-800 transition-colors mr-4"
