@@ -15,7 +15,7 @@ const BrandAssignment: React.FC = () => {
   const [popup, setPopup] = useState<boolean>(false);
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
   const handleRatingChange = (questionId: string, value: number) => {
@@ -34,12 +34,12 @@ const BrandAssignment: React.FC = () => {
   const handleBackButton = () => {
     setPopup(true);
   };
-  const handleSubmit = (e:React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("assign-1", "true");
     navigate('/dashboard');
   };
-  const handleSaveButton = (e:React.FormEvent) => {
+  const handleSaveButton = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("assign-1", "true");
     navigate('/dashboard');
@@ -50,6 +50,15 @@ const BrandAssignment: React.FC = () => {
   const handlenotsave = () => {
     navigate('/dashboard')
   }
+  useEffect(() => {
+    if (window.location.pathname === "/") {
+      window.addEventListener('beforeunload', function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+      });
+    }
+  })
+
   const tasks: Task[] = [
     {
       id: 1,

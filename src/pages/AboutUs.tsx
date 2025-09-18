@@ -1,4 +1,4 @@
-import NavBar from "@/components/layout/NavBar";
+import NavBar from "@/components/Navbar/NavBar";
 import About from "../../public/assets/AboutUs.png";
 import React, { useState, useEffect, CSSProperties, MouseEvent } from "react";
 import { HiOutlineMail } from "react-icons/hi";

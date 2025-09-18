@@ -235,7 +235,10 @@ const Dashboard: React.FC = () => {
       )}
       <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
         <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
-          Welcome to your Prospera dashboard
+          <div className="flex flex-col text-center"> 
+            <span>Welcome to your Prspera dashboard,</span>
+            <span>[{user.full_name}]</span>
+          </div>
         </h1>
         <div className="w-full max-w-4xl mx-auto space-y-6">
           <div className="bg-white shadow-md rounded-lg p-4 md:p-6">

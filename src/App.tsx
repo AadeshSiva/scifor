@@ -8,7 +8,7 @@ import NotFound from "./components/extras/NotFound";
 import Pricing_Plan from "./pages/Pricing_Plan";
 import Payment from "./components/paymentSystem/PaymentPage";
 import Auth from "./components/authok/Auth";
-import NavBar from "./components/layout/NavBar";
+import NavBar from "./components/Navbar/NavBar";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import PaymentSuccess from "./components/paymentSystem/PymentSuccess";
 import Index from "./components/join/meeting";
@@ -121,7 +121,7 @@ const App = () => (
               path="/"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Landing />
+                 <Landing />
                 </ProtectedRoute>
               }
             />
