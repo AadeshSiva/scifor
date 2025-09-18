@@ -3,7 +3,7 @@ import { AuthForm } from "@/components/authok/AuthForm";
 import { useAuth } from "@/utils/AuthContext";
 import { Footer } from "@/components/Footer";
 import { FAQSection } from "./HomePage";
-import JoinBtn from "@/components/JoinBtn";
+
 
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
@@ -64,6 +64,10 @@ const Pricing_Plan: React.FC = () => {
       window.location.href = "/payment";
     }
   };
+
+  const handleproofbtn =()=>{
+    window.location.href="/proof"
+  }
 
   const menuItems: string[] = [
     "CROSSCHECK",
@@ -242,7 +246,8 @@ const Pricing_Plan: React.FC = () => {
     
     <p className="font-linear font-thin text-xl mt-10 text-center">Here's What Jeff Did</p>
     <div className="flex justify-center mt-4 pb-10">
-      <JoinBtn page="/proof">See Jeff's 10X+ Multiple Exit Story</JoinBtn>
+      <button onClick={handleproofbtn} className=" text-base sm:text-md md:text-md p-2
+        bg-foreground border-2 border-[#DBA958] text-[#DBA958] rounded-md font-semibold">See Jeff's 10X+ Multiple Exit Story</button>
     </div>
   </div>
 
