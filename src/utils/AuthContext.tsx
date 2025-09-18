@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 interface User {
+  role: string;
   price: ReactNode;
   id: string;
   email: string;

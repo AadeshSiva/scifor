@@ -1,22 +1,27 @@
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "@/utils/AuthContext";
+
 type UserType = "guest" | "member";
+
 const PaymentSuccess = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(5);
   const [isUpdating, setIsUpdating] = useState(true);
-  const [userType, setUserType] = useState<UserType>("member"); 
+  const [userType, setUserType] = useState<UserType>("member");
+  const {user}=useAuth();
+
   const confirmPayment = useCallback(async () => {
     try {
-      const accessToken =sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+      const accessToken = localStorage.getItem("access_token");
       const session = new URLSearchParams(window.location.search).get("session_id");
       setSessionId(session);
-      if (accessToken) {
+      if (accessToken && session) {
         const response = await fetch(
-          `https://api.prspera.com/payment-status/?session_id=${sessionId}`,
+          `https://api.prspera.com/payment-status/?session_id=${session}`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
-        console.log(response)
+
         if (response.ok) {
           const data = await response.json();
           const amount = Number(data?.amount ?? 0);
@@ -30,28 +35,32 @@ const PaymentSuccess = () => {
       }
     } catch (e) {
       console.error("Error confirming payment:", e);
+      setUserType("guest");
     } finally {
       setIsUpdating(false);
     }
   }, []);
+
   useEffect(() => {
     confirmPayment();
   }, [confirmPayment]);
+
   useEffect(() => {
     if (isUpdating) return;
-    const t = setInterval(() => {
+    const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          clearInterval(t);
+          clearInterval(timer);
           window.location.href =
-            userType === "member" ? "/confirmation-member" : "/confirmation-guest";
+            user.role === "paid_user" ? "/confirmation-member" : "/confirmation-guest";
           return 0;
         }
         return prev - 1;
       });
-    }, 1000);
-    return () => clearInterval(t);
+    }, 1000); 
+    return () => clearInterval(timer);
   }, [isUpdating, userType]);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="max-w-md w-full">
@@ -77,7 +86,7 @@ const PaymentSuccess = () => {
                     Confirmed
                   </div>
                   <p className="text-gray-700 font-medium mb-1">
-                    Redirecting to your {userType === "member" ? "Member" : "Guest"} Confirmation
+                    Redirecting to your {user.role === "paid_user" ? "Member" : "Guest"} Confirmation
                   </p>
                   <p className="text-gray-500 text-sm mb-4">in {countdown} seconds</p>
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
@@ -108,4 +117,5 @@ const PaymentSuccess = () => {
     </div>
   );
 };
+
 export default PaymentSuccess;

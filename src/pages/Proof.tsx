@@ -49,7 +49,7 @@ const ProofPage: React.FC = () => {
   }, []);
   return (
     <>
-      <div className="bg-gray-100 w-full">
+      <div className="bg-gray-100 w-full pt-6">
         <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-12 sm:py-16 md:py-20">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-walbaum font-light text-gray-800 mb-2 sm:mb-3">
