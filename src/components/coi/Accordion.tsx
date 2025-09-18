@@ -19,7 +19,6 @@ interface LongAccordionProps {
   data?: Category[];
   className?: string;
 }
-
 const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = "" }) => {
   const [openSection, setOpenSection] = useState<string>("0-0"); // Only one section open at a time
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -153,7 +152,17 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                     </button>
                     {isOpen && (
                       <div className="border-t border-gray-200">
-                        <div className="bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
+                        <div className="flex gap-4 bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
+                          <div className="text-gray-600 text-sm sm:text-base leading-relaxed space-y-2">
+                            {researchPoint.statistics.map((stat, statIndex) => (
+                              <div key={statIndex} className="flex items-start gap-2">
+                                <div className="flex-shrink-0 mt-1">
+                                  <Dot size={20} className="text-gray-600" />
+                                </div>
+                                <span className="flex-1 leading-relaxed">{stat.context}</span>
+                              </div>
+                            ))}
+                          </div>
                           <div className="flex justify-end mb-4">
                             {firstUrl && (
                               <div className="flex gap-2">
@@ -178,16 +187,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                               </div>
                             )}
                           </div>
-                          <div className="text-gray-600 text-sm sm:text-base leading-relaxed space-y-2">
-                            {researchPoint.statistics.map((stat, statIndex) => (
-                              <div key={statIndex} className="flex items-start gap-2">
-                                <div className="flex-shrink-0 mt-1">
-                                  <Dot size={20} className="text-gray-600" />
-                                </div>
-                                <span className="flex-1 leading-relaxed">{stat.context}</span>
-                              </div>
-                            ))}
-                          </div>
                         </div>
                       </div>
                     )}
@@ -205,24 +204,6 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
             <code className="bg-gray-100 px-2 py-1 rounded text-sm">/category-list</code>
           </p>
           <p className="text-sm mb-4">Expected data structure:</p>
-          <pre className="text-left bg-gray-100 p-4 rounded text-xs overflow-auto max-w-full">
-            {`[
-  {
-    "category": "Category Name",
-    "research_points": [
-      {
-        "name": "Research Point Name",
-        "statistics": [
-          {
-            "context": "Statistic context text",
-            "url": "https://drive.google.com/file/d/..."
-          }
-        ]
-      }
-    ]
-  }
-]`}
-          </pre>
         </div>
       )}
     </div>

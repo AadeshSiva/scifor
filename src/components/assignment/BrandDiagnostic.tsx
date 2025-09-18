@@ -8,12 +8,10 @@ interface Question {
     text: string;
     section: string;
 }
-
 const BrandDiagnostic: React.FC = () => {
     const navigate = useNavigate();
     const [date, setDate] = useState<string | null>(null);
     const [responses, setResponses] = useState<Record<string, string>>({});
-
     useEffect(() => {
         const today = new Date();
         const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;

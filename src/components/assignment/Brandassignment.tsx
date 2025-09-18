@@ -21,6 +21,7 @@ const BrandAssignment: React.FC = () => {
   const handleRatingChange = (questionId: string, value: number) => {
     setRatings(prev => ({ ...prev, [questionId]: value }));
   };
+  console.log(ratings)
   const handleNextSection = () => {
     if (currentSection < 4) {
       setCurrentSection(prev => prev + 1);
@@ -325,6 +326,7 @@ const BrandAssignment: React.FC = () => {
                           checked={ratings[`s${currentSection}-q${index}`] === value}
                           onChange={() => handleRatingChange(`s${currentSection}-q${index}`, value)}
                           className="h-6 w-6 text-blue-600 focus:ring-blue-500"
+                          required
                         />
                       </td>
                     ))}
@@ -362,28 +364,28 @@ const BrandAssignment: React.FC = () => {
           </div>
         </div>
       </div>) : (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
-          <div className="w-[35vw] h-[30vh] bg-gray-500 p-8 flex flex-col space-y-4 rounded-lg overflow-hidden">
-            <div className="text-center space-y-2">
-              <h1 className="text-2xl">You have unsaved changes.</h1>
-              <h1 className="text-2xl">Do you want to save them</h1>
-              <h1 className="text-2xl">before leaving?</h1>
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
+          <div className="w-full max-w-md bg-gray-100 p-6 flex flex-col space-y-6 rounded-lg shadow-xl">
+            <div className="text-center space-y-3">
+              <h1 className="text-xl font-semibold text-gray-800">You have unsaved changes.</h1>
+              <h1 className="text-xl font-semibold text-gray-800">Do you want to save them</h1>
+              <h1 className="text-xl font-semibold text-gray-800">before leaving?</h1>
             </div>
-            <div className="flex justify-center gap-4 mt-auto">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
-                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleSaveButton}
               >
                 Save
               </button>
               <button
-                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
                 onClick={handlenotsave}
               >
                 Don't Save
               </button>
               <button
-                className="rounded-lg bg-black text-white px-6 py-2 hover:bg-gray-800"
+                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
                 onClick={handlecancelbutton}
               >
                 Cancel
