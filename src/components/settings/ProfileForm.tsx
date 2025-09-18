@@ -140,7 +140,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://31.97.117.28:8001/extract-user-data/", {
+      const response = await fetch("https://api.prspera.com/extract-user-data/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
