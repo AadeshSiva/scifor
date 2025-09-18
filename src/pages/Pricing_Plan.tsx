@@ -3,12 +3,10 @@ import { AuthForm } from "@/components/authok/AuthForm";
 import { useAuth } from "@/utils/AuthContext";
 import { Footer } from "@/components/Footer";
 import { FAQSection } from "./HomePage";
-
 const getAccessToken = () =>
   sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
 const Pricing_Plan: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>("CROSSCHECK");
-  // Auth modal + flow state
   const [authOpen, setAuthOpen] = useState(false);
   const [initialTab] = useState<"login" | "register">("register");
   const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(null);
@@ -31,18 +29,11 @@ const Pricing_Plan: React.FC = () => {
       }
       setTimeout(check, 500);
     };
-
     check();
     return () => {
       stopped = true;
     };
   }, [authOpen, selectedPlan]);
-
-  const openAuth = (plan: "guest" | "member") => {
-    setSelectedPlan(plan);
-    setAuthOpen(true);
-  };
-
   const handleFreeClick = () => {
     if (!isAuthenticated) {
       window.location.href = "/auth?plan=guest&view=register";
@@ -52,7 +43,6 @@ const Pricing_Plan: React.FC = () => {
       window.location.href = "/dashboard";
     }
   };
-
   const handlePaidClick = () => {
     if (!isAuthenticated) {
       window.location.href = "/auth?plan=member&view=register";
@@ -63,7 +53,12 @@ const Pricing_Plan: React.FC = () => {
       window.location.href = "/payment";
     }
   };
-
+  const handleproofbtn = () => {
+    window.location.href = "/proof"
+  }
+  const handleCurrentClick = () => {
+    window.location.href = '/dashboard'
+  }
   const menuItems: string[] = [
     "CROSSCHECK",
     "CONFIDANTE",
@@ -79,23 +74,19 @@ const Pricing_Plan: React.FC = () => {
     "CLOUT",
     "PRSPERA COMPLETE​",
   ];
-
   const messages1: { [key: string]: string | string[] } = {
     CROSSCHECK: [
       "Each month, one Guest member will be selected by lottery to enjoy the benefits of Crosscheck feature for a month.  Use this opportunity to find the street value of your business and getting access to multiple M&A firms vying for your attention, in the process.",
       "",
     ],
-
     CONFIDANTE: [
       "Welcome to the World’s First and Only Proprietary GPT on Maximizing Monetizable Value, Tax Effectively – For All Invested. ",
       "Use this GPT to help you 24/7 to learn, direct and strategize how to Grow Smarter by maximizing value correctly so that you protect and capitalize on the years of value you built to exit richer.​",
       "You get the exact same features as paid members.",
     ],
-
     "CONCIERGE (for members only)": [
       " You get to choose what you'd like to have in your concierge service should you decide to upgrade your PRSPERA account to be a Member.  Each month, the most frequently ranked topic will be chosen and presented by the Concierge – giving free members a sample of our Concierge service.",
     ],
-
     COURSE: [
       "Audit and submit questions and thoughts about the curriculum -  ",
       "Configure the course to what you need – in the future you will get free video overviews of each module – pick the order in which you would be interested in learning about  ",
@@ -189,8 +180,8 @@ const Pricing_Plan: React.FC = () => {
   };
 
   return (
-    <section className="bg-white h-auto mt-8">
-      <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum mt-16">
+    <section className="bg-white h-auto">
+      <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum pt-20">
         The World’s One and Only Fact-Based Platform to Maximize and Monetize Your Business Value –
         Tax Effectively – for All Invested.
       </h1>
@@ -198,9 +189,7 @@ const Pricing_Plan: React.FC = () => {
         When 84%+ of your business value is more than the cost of membership, then your decision is
         clear.
       </h1>
-      {/* Video and Message */}
       <div className="w-full flex flex-col md:flex-row lg:flex-row mt-14 px-4 gap-3">
-        {/* Video Container */}
         <div className="w-full lg:w-1/2 flex justify-center">
           <div className="relative w-full max-w-lg">
             <video
@@ -212,8 +201,6 @@ const Pricing_Plan: React.FC = () => {
             ></video>
           </div>
         </div>
-
-        {/* Text Container */}
         <div className="w-full h-auto md:space-y-3 lg:space-y-4 text-left text-lg lg:text-xl font-walbaum text-gray-700 leading-relaxed">
           <p>“Most entrepreneurs fail not because their business wasn’t profitable enough.</p>
           <p>
@@ -227,20 +214,23 @@ const Pricing_Plan: React.FC = () => {
       {/* Guest & Member Section */}
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
         {/* Left */}
-        <div className="bg-gray-400 lg:w-[280px] md:w-[280px] ">
+        <div className="bg-gray-400 lg:w-[280px] md:w-[280px]">
           <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
           <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
 
           <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
             <img
-              className=" max-w-[240px] h-auto"
+              className="max-w-[240px] h-auto"
               src="/assets/jeff-webinar.jpg"
               alt="Jeff Webinar"
             />
           </div>
-          <p className="pt-2 font-sans px-3 font-semibold text-lg text-center md:text-left lg:text-left pb-10  ">
-            Only 33 Seats
-          </p>
+
+          <p className="font-linear font-thin text-xl mt-10 text-center">Here's What Jeff Did</p>
+          <div className="flex justify-center mt-4 pb-10">
+            <button onClick={handleproofbtn} className=" text-base sm:text-md md:text-md p-2
+        bg-foreground border-2 border-[#DBA958] text-[#DBA958] rounded-md font-semibold">See Jeff's 10X+ Multiple Exit Story</button>
+          </div>
         </div>
 
         {/* Middle */}
@@ -439,9 +429,8 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
-                activeItem === item ? "bg-yellow-300 font-semibold" : ""
-              }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
+                }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
@@ -462,14 +451,15 @@ const Pricing_Plan: React.FC = () => {
               <p className="text-base">{messages1[activeItem]}</p>
             )}
           </div>
-
-          <button
-            onClick={handleFreeClick}
-            disabled={busy}
-            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
-          >
-            {busy ? "Please wait..." : "Register for Free"}
-          </button>
+          {(user?.role !== "paid_user" && user?.role !== "guest") && (
+            <button
+              onClick={handleFreeClick}
+              disabled={busy}
+              className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
+            >
+              {busy ? "Please wait..." : "Register for Free"}
+            </button>
+          )}
         </div>
 
         {/* Right */}
@@ -485,13 +475,23 @@ const Pricing_Plan: React.FC = () => {
               <p className="text-base">{messages2[activeItem]}</p>
             )}
           </div>
-          <button
-            onClick={handlePaidClick}
-            disabled={busy}
-            className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60"
-          >
-            {busy ? "Please wait..." : "$1797 USD"}
-          </button>
+          {user?.role !== "paid_user" ? (
+            <button
+              onClick={handlePaidClick}
+              disabled={busy}
+              className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60 cursor-pointer"
+            >
+              {busy ? "Please wait..." : "$1797 USD"}
+            </button>
+          ) : (
+            <button
+              onClick={handleCurrentClick}
+              disabled={busy}
+              className="h-[50px] w-full border-2 border-yellow-600 bg-black text-lg font-medium text-yellow-600 mt-4 self-center disabled:opacity-60 cursor-pointer"
+            >
+              {busy ? "Please wait..." : "Current Plan"}
+            </button>
+          )}
         </div>
       </div>
       {authOpen && (

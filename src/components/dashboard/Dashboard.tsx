@@ -187,6 +187,7 @@ const Dashboard: React.FC = () => {
   const handleUpgrade = () => {
     navigate("/payment")
   }
+  console.log(user)
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
       {Mobile && (
