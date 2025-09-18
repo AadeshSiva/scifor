@@ -11,7 +11,6 @@ import Auth from "./components/authok/Auth";
 import NavBar from "./components/Navbar/NavBar";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import PaymentSuccess from "./components/paymentSystem/PymentSuccess";
-import Index from "./components/join/meeting";
 import ArticlePage from "./pages/ArticlePage";
 import PaymentCancelled from "./components/paymentSystem/PaymentCancelled";
 import ConfirmationGuest from "./components/paymentSystem/confirmationGuestPage";
@@ -146,14 +145,6 @@ const App = () => (
               element={
                 <ProtectedRoute requireAuth={false}>
                   <Pricing_Plan />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/meeting/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Index />
                 </ProtectedRoute>
               }
             />
