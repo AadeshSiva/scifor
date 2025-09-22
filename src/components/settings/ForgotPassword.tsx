@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   X,
   Mail,
@@ -10,10 +11,8 @@ import {
   CheckCircle,
   Loader2,
 } from "lucide-react";
-
-// Add these new state variables to your existing ChangeUsernameForm component
 const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
-  const [step, setStep] = useState(1); // 1: email, 2: otp, 3: new password
+  const [step, setStep] = useState(1); 
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -23,9 +22,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
   const API_BASE_URL = "https://api.prspera.com";
-
   const resetForm = () => {
     setStep(1);
     setEmail("");
@@ -37,21 +34,17 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
     setShowNewPassword(false);
     setShowConfirmPassword(false);
   };
-
   const handleClose = () => {
     resetForm();
     onClose();
   };
-
   const sendOTP = async () => {
     if (!email.trim()) {
       setErrorMessage("Email is required");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/forgot-password-send-otp/`, {
         method: "POST",
@@ -61,9 +54,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
         },
         body: JSON.stringify({ email: email.trim() }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("OTP sent to your email");
         setStep(2);
@@ -76,16 +67,13 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(false);
     }
   };
-
   const verifyOTP = async () => {
     if (!otp.trim()) {
       setErrorMessage("OTP is required");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/verify-otp/`, {
         method: "POST",
@@ -98,9 +86,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           otp: otp.trim(),
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("OTP verified successfully");
         setStep(3);
@@ -113,26 +99,21 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(false);
     }
   };
-
   const resetPassword = async () => {
     if (!newPassword || !confirmPassword) {
       setErrorMessage("Both password fields are required");
       return;
     }
-
     if (newPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
-
     if (newPassword.length < 6) {
       setErrorMessage("Password must be at least 6 characters long");
       return;
     }
-
     setIsLoading(true);
     setErrorMessage("");
-
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password/`, {
         method: "POST",
@@ -145,9 +126,7 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           new_password: newPassword,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setSuccessMessage("Password reset successfully!");
         setTimeout(() => {
@@ -163,8 +142,9 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(false);
     }
   };
-
+   const navigate=useNavigate()
   const handleBack = () => {
+    navigate('/setting')
     if (step > 1) {
       setStep(step - 1);
       setErrorMessage("");
@@ -380,5 +360,4 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
     </div>
   );
 };
-
 export default ForgotPasswordPopups;

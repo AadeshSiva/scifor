@@ -14,6 +14,7 @@ import {
 import { PopupButton } from "react-calendly";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
+
 type Task = {
   id: number;
   title: string;
@@ -87,6 +88,7 @@ const Dashboard: React.FC = () => {
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
   const [Mobile, setMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [settingenabled, setSettingEnabled] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setMobile(window.innerWidth <= 768);
@@ -187,7 +189,12 @@ const Dashboard: React.FC = () => {
   const handleUpgrade = () => {
     navigate("/payment")
   }
-  console.log(user)
+  const handleSettingPage = () => {
+    setSettingEnabled(true)
+  }
+  const handleDashboard = () => {
+    setSettingEnabled(false)
+  }
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
       {Mobile && (
@@ -202,7 +209,7 @@ const Dashboard: React.FC = () => {
         <aside className={`fixed top-0 left-0 w-64 bg-white border border-gray-200 flex flex-col h-full overflow-y-auto z-40 
           ${Mobile ? 'shadow-xl' : ''} transition-transform duration-300 ${Mobile && !sidebarOpen ? '-translate-x-full' : ''}`}>
           <nav className="flex-1 px-4 space-y-3 text-gray-700 mt-20">
-            <a href="#" className="flex items-center gap-3 py-2 hover:text-yellow-600">
+            <a className="flex items-center gap-3 py-2 hover:text-yellow-600 cursor-pointer" onClick={handleDashboard}>
               <LayoutDashboard size={18} /> Dashboard
             </a>
             <a href="/brand-diagnostic-details" className="flex items-center gap-3 py-2 hover:text-yellow-600">
@@ -225,7 +232,7 @@ const Dashboard: React.FC = () => {
             </a>
           </nav>
           <div className="p-4 space-y-2 mt-auto mb-8">
-            <a href="/setting" className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600">
+            <a onClick={handleSettingPage} className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600 cursor-pointer">
               <Settings size={18} /> Settings
             </a>
             <button className="flex items-center gap-3 py-2 text-gray-600 hover:text-yellow-600" onClick={handleLogout}>
@@ -234,184 +241,189 @@ const Dashboard: React.FC = () => {
           </div>
         </aside>
       )}
-      <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
-        <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
-          <div className="flex flex-col text-center"> 
-            <span>Welcome to your Prspera dashboard,</span>
-            <span>[{user.full_name}]</span>
-          </div>
-        </h1>
-        <div className="w-full max-w-4xl mx-auto space-y-6">
-          <div className="bg-white shadow-md rounded-lg p-4 md:p-6">
-            <div className="divide-y divide-gray-200 text-gray-700">
-              <div className="flex justify-between py-2">
-                <span>Alias</span>
-                <span className="text-gray-400">{user.username}</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span>Name</span>
-                <span className="text-gray-400">{user.full_name}</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span>Company Email</span>
-                <span className="text-gray-400">{user.email}</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span>Phone</span>
-                <span className="text-gray-400">{user.phone_number}</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span>Country</span>
-                <span className="text-gray-400">Not Provided</span>
-              </div>
+      {!settingenabled &&
+        <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
+          <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
+            <div className="flex flex-col text-center">
+              <span>Welcome to your Prspera dashboard,</span>
+              <span>[{user.full_name}]</span>
             </div>
-          </div>
-          {!user.paid && (
-            <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-              <span className="font-medium">Membership</span>
-              <span className="text-gray-600">Guest Plan</span>
-              <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-6 py-1 rounded-lg hover:bg-primary transition-colors duration-300 w-full md:w-auto" onClick={handleUpgrade}>
-                Upgrade Plan
-              </button>
-            </div>)}
-          <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mb-4">
-            <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 pb-4 mb-4 border-b border-gray-300">
-              <div className="w-full md:w-3/4 h-4 bg-gray-200 rounded-lg overflow-hidden">
-                <div className="h-4 bg-gray-400 rounded-lg transition-all duration-500" style={{ width: `${IdNeeded?.progress || 0}%` }}></div>
-              </div>
-              <span className="text-sm md:text-base whitespace-nowrap">{`${IdNeeded?.progress || 0}% Completed`}</span>
-            </div>
-            <div className="w-full flex flex-col md:flex-row gap-6">
-              <div className="flex flex-col w-full md:w-1/3 gap-2">
-                <button
-                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                >
-                  <span className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={faCircleCheck}
-                      className={`mr-2 ${IdNeeded && IdNeeded.id > 1 ? 'text-green-500' : 'text-gray-400'}`}
-                    />
-                    Add Business Details
-                  </span>
-                </button>
-                <button
-                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 2 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                >
-                  <span className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={faCircleCheck}
-                      className={`mr-2 ${IdNeeded && IdNeeded.id > 2 ? 'text-green-500' : 'text-gray-400'}`}
-                    />
-                    Book with Harish Chauhan
-                  </span>
-                </button>
-                <button
-                  className={`text-start text-sm p-3 rounded-lg border ${IdNeeded && IdNeeded.id >= 3 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                >
-                  <span className="flex items-center">
-                    <FontAwesomeIcon
-                      icon={faCircleCheck}
-                      className={`mr-2 ${IdNeeded && IdNeeded.id > 3 ? 'text-green-500' : 'text-gray-400'}`}
-                    />
-                    Strategic Business Assessment
-                  </span>
-                </button>
-              </div>
-              <div className="w-full md:w-2/3">
-                <div className="mb-4">
-                  <p className="text-sm md:text-base text-gray-700 pb-4">{IdNeeded?.description || ''}</p>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    {IdNeeded?.button && (
-                      <button
-                        className="bg-black text-[#DBA958] py-2 px-4 rounded-md text-sm md:text-base w-full sm:w-auto"
-                        onClick={handleaddDetailButton}
-                      >
-                        {IdNeeded.button}
-                      </button>
-                    )}
-                    {IdNeeded?.button1 && (
-                      <div className="App">
-                        <button className="bg-black text-[#DBA958] m-2 rounded-md p-2 text-md" onClick={handleGoogleMeet}>
-                          <PopupButton
-                            url="https://calendly.com/harishkc/30min"
-                            rootElement={document.getElementById("root")}
-                            text={IdNeeded.button1}
-                          />
-                        </button>
-                      </div>)}
-                    {IdNeeded?.button2 && (
-                      <button
-                        className="bg-gray-300 text-gray-600 px-4 h-10 mt-2 rounded-md text-sm md:text-base w-full sm:w-auto hover:bg-gray-400 transition-colors"
-                        onClick={handleSkip}
-                      >
-                        {IdNeeded.button2}
-                      </button>
-                    )}
-                  </div>
+          </h1>
+          <div className="w-full max-w-4xl mx-auto space-y-6">
+            <div className="bg-white shadow-md rounded-lg p-4 md:p-6">
+              <div className="divide-y divide-gray-200 text-gray-700">
+                <div className="flex justify-between py-2">
+                  <span>Alias</span>
+                  <span className="text-gray-400">{user.username}</span>
                 </div>
-                {(IdNeeded?.task1 || IdNeeded?.task2 || IdNeeded?.task3) && (
-                  <div className="flex flex-col gap-3">
-                    {IdNeeded?.task1 && (
-                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
-                        <div className="flex items-center">
-                          {(IdNeeded.id == 4 || IdNeeded.id == 5 || IdNeeded.id == 6) && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
-                          <span className="text-sm">{IdNeeded.task1}</span>
-                        </div>
-                        {
-                          IdNeeded.id == 4 || IdNeeded.id == 5 || IdNeeded.id == 6 ? (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
-                              View Result
-                            </button>
-                          ) : (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment1}>
-                              Take Assessment
-                            </button>
-                          )}
-                      </div>
-                    )}
-                    {IdNeeded?.task2 && (
-                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
-                        <div className="flex items-center">
-                          {(IdNeeded.id == 5 || IdNeeded.id == 6) && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
-                          <span className="text-sm">{IdNeeded.task2}</span>
-                        </div>
-                        {
-                          IdNeeded.id == 5 || IdNeeded.id == 6 ? (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
-                              View Result
-                            </button>
-                          ) : (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment2}>
-                              Take Assessment
-                            </button>
-                          )}
-                      </div>
-                    )}
-                    {IdNeeded?.task3 && (
-                      <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
-                        <div className="flex items-center">
-                          {IdNeeded.id == 6 && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
-                          <span className="text-sm">{IdNeeded.task3}</span>
-                        </div>
-                        {
-                          IdNeeded.id == 6 ? (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
-                              View Result
-                            </button>
-                          ) : (
-                            <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment3}>
-                              Take Assessment
-                            </button>
-                          )}
-                      </div>
-                    )}
+                <div className="flex justify-between py-2">
+                  <span>Name</span>
+                  <span className="text-gray-400">{user.full_name}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span>Company Email</span>
+                  <span className="text-gray-400">{user.email}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span>Phone</span>
+                  <span className="text-gray-400">{user.phone_number}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span>Country</span>
+                  <span className="text-gray-400">Not Provided</span>
+                </div>
+              </div>
+            </div>
+            {!user.paid && (
+              <div className="bg-white text-md md:text-lg shadow-md rounded-lg p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <span className="font-medium">Membership</span>
+                <span className="text-gray-600">Guest Plan</span>
+                <button className="bg-foreground border-2 border-[#DBA958] text-[#DBA958] px-6 py-1 rounded-lg hover:bg-primary transition-colors duration-300 w-full md:w-auto" onClick={handleUpgrade}>
+                  Upgrade Plan
+                </button>
+              </div>)}
+            <div className="bg-white shadow-md rounded-lg p-4 flex flex-col mb-4">
+              <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4 pb-4 mb-4 border-b border-gray-300">
+                <div className="w-full md:w-3/4 h-4 bg-gray-200 rounded-lg overflow-hidden">
+                  <div className="h-4 bg-gray-400 rounded-lg transition-all duration-500" style={{ width: `${IdNeeded?.progress || 0}%` }}></div>
+                </div>
+                <span className="text-sm md:text-base whitespace-nowrap">{`${IdNeeded?.progress || 0}% Completed`}</span>
+              </div>
+              <div className="w-full flex flex-col md:flex-row gap-6">
+                <div className="flex flex-col w-full md:w-1/3 gap-2">
+                  <button
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  >
+                    <span className="flex items-center">
+                      <FontAwesomeIcon
+                        icon={faCircleCheck}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 1 ? 'text-green-500' : 'text-gray-400'}`}
+                      />
+                      Add Business Details
+                    </span>
+                  </button>
+                  <button
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 2 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  >
+                    <span className="flex items-center">
+                      <FontAwesomeIcon
+                        icon={faCircleCheck}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 2 ? 'text-green-500' : 'text-gray-400'}`}
+                      />
+                      Book with Harish Chauhan
+                    </span>
+                  </button>
+                  <button
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded && IdNeeded.id >= 3 ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                  >
+                    <span className="flex items-center">
+                      <FontAwesomeIcon
+                        icon={faCircleCheck}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 3 ? 'text-green-500' : 'text-gray-400'}`}
+                      />
+                      Strategic Business Assessment
+                    </span>
+                  </button>
+                </div>
+                <div className="w-full md:w-2/3">
+                  <div className="mb-4">
+                    <p className="text-sm md:text-base text-gray-700 pb-4">{IdNeeded?.description || ''}</p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      {IdNeeded?.button && (
+                        <button
+                          className="bg-black text-[#DBA958] py-2 px-4 rounded-md text-sm md:text-base w-full sm:w-auto"
+                          onClick={handleaddDetailButton}
+                        >
+                          {IdNeeded.button}
+                        </button>
+                      )}
+                      {IdNeeded?.button1 && (
+                        <div className="App">
+                          <button className="bg-black text-[#DBA958] m-2 rounded-md p-2 text-md" onClick={handleGoogleMeet}>
+                            <PopupButton
+                              url="https://calendly.com/harishkc/30min"
+                              rootElement={document.getElementById("root")}
+                              text={IdNeeded.button1}
+                            />
+                          </button>
+                        </div>)}
+                      {IdNeeded?.button2 && (
+                        <button
+                          className="bg-gray-300 text-gray-600 px-4 h-10 mt-2 rounded-md text-sm md:text-base w-full sm:w-auto hover:bg-gray-400 transition-colors"
+                          onClick={handleSkip}
+                        >
+                          {IdNeeded.button2}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                )}
+                  {(IdNeeded?.task1 || IdNeeded?.task2 || IdNeeded?.task3) && (
+                    <div className="flex flex-col gap-3">
+                      {IdNeeded?.task1 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                          <div className="flex items-center">
+                            {(IdNeeded.id == 4 || IdNeeded.id == 5 || IdNeeded.id == 6) && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
+                            <span className="text-sm">{IdNeeded.task1}</span>
+                          </div>
+                          {
+                            IdNeeded.id == 4 || IdNeeded.id == 5 || IdNeeded.id == 6 ? (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
+                                View Result
+                              </button>
+                            ) : (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment1}>
+                                Take Assessment
+                              </button>
+                            )}
+                        </div>
+                      )}
+                      {IdNeeded?.task2 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                          <div className="flex items-center">
+                            {(IdNeeded.id == 5 || IdNeeded.id == 6) && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
+                            <span className="text-sm">{IdNeeded.task2}</span>
+                          </div>
+                          {
+                            IdNeeded.id == 5 || IdNeeded.id == 6 ? (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
+                                View Result
+                              </button>
+                            ) : (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment2}>
+                                Take Assessment
+                              </button>
+                            )}
+                        </div>
+                      )}
+                      {IdNeeded?.task3 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-50 p-3 rounded-lg gap-2">
+                          <div className="flex items-center">
+                            {IdNeeded.id == 6 && (<FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-green-500" />)}
+                            <span className="text-sm">{IdNeeded.task3}</span>
+                          </div>
+                          {
+                            IdNeeded.id == 6 ? (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap">
+                                View Result
+                              </button>
+                            ) : (
+                              <button className="text-xs bg-[#141C24] text-[#DBA958] py-1 px-3 rounded whitespace-nowrap" onClick={handleassignment3}>
+                                Take Assessment
+                              </button>
+                            )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      }
+        {settingenabled &&
+          <div></div>
+        }
     </div>
   );
 };

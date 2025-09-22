@@ -27,9 +27,16 @@ import BrandDiagonist from "./components/assignment/BrandDiagnostic";
 import OTPVerification from "./components/authok/OtpVerification";
 import Chat from "./components/chat/Chat";
 import COI from "./components/coi/COI";
+import Setting from "./components/settings/Settings";
+import ProfileForm from "./components/settings/ProfileForm";
+import ChangeUsernameForm from "./components/settings/ChangeUsernameForm";
+import EmailSettings from "./components/settings/EmailSettings";
+import { PasswordChangeForm } from "./components/settings/PasswordChangeForm";
+import PurchaseHistory from "./components/settings/PaymentHistory";
+
 
 const queryClient = new QueryClient();
-const routes = ["brand-diagnostic-details", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent", "setting"]
+const routes = ["brand-diagnostic-details", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent"]
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -120,7 +127,7 @@ const App = () => (
               path="/"
               element={
                 <ProtectedRoute requireAuth={false}>
-                 <Landing />
+                  <Landing />
                 </ProtectedRoute>
               }
             />
@@ -211,6 +218,54 @@ const App = () => (
                   <ConfirmationMember />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/setting"
+              element={
+                <ProtectedRoute>
+                    <Setting/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+             path="/profileView"
+             element={
+              <ProtectedRoute>
+                <ProfileForm/>
+              </ProtectedRoute>
+             }
+            />
+            <Route
+             path="/usernameView"
+             element={
+              <ProtectedRoute>
+                <ChangeUsernameForm/>
+              </ProtectedRoute>
+             }
+            />
+            <Route
+             path="/emailView"
+             element={
+              <ProtectedRoute>
+                <EmailSettings/>
+              </ProtectedRoute>
+             }
+            />
+            <Route
+             path="/passwordView"
+             element={
+              <ProtectedRoute>
+               <PasswordChangeForm/>
+              </ProtectedRoute>
+             }
+            />
+            <Route
+             path="/historyView"
+             element={
+              <ProtectedRoute>
+                <PurchaseHistory/>
+              </ProtectedRoute>
+             }
             />
           </Routes>
         </BrowserRouter>

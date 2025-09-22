@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-// Types
+import { useNavigate } from "react-router-dom";
+import { BackIcon } from "../ui/icons";
 interface Payment {
   id: number;
   amount: number;
@@ -17,34 +18,6 @@ interface PaymentResponse {
   payments: Payment[];
   user_paid_status: boolean;
 }
-// Back Button Component
-interface BackButtonProps {
-  to: string;
-}
-
-const BackButton = ({ to }: BackButtonProps) => {
-  return (
-    <div
-      onClick={() => window.history.back()}
-      className="flex items-center gap-[18px] cursor-pointer mb-[53px]"
-    >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M10.3636 12.4994L18 20.4994L15.8182 22.7852L6 12.4994L15.8182 2.21373L18 4.49943L10.3636 12.4994Z"
-          fill="black"
-        />
-      </svg>
-      <span className="text-[#555] text-2xl font-medium max-sm:text-lg">Back</span>
-    </div>
-  );
-};
-// Transaction Details Modal Component
 interface TransactionDetailsModalProps {
   payment: Payment | null;
   isOpen: boolean;
@@ -97,21 +70,18 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
           </div>
         </div>
         <div className="p-6 space-y-6">
-          {/* Payment Status */}
           <div className="flex items-center justify-between">
             <span className="text-lg font-medium text-black">Status</span>
             <span className={getStatusBadge(payment.status)}>
               {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
             </span>
           </div>
-          {/* Amount */}
           <div className="flex items-center justify-between">
             <span className="text-lg font-medium text-black">Amount</span>
             <span className="text-2xl font-bold text-black">
               {formatAmount(payment.amount, payment.currency)}
             </span>
           </div>
-          {/* Transaction Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-2">TRANSACTION ID</h3>
@@ -126,12 +96,10 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               </div>
             )}
           </div>
-          {/* Product Info */}
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">PRODUCT</h3>
             <p className="text-black text-lg">{payment.product_name}</p>
           </div>
-          {/* Customer Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-2">CUSTOMER NAME</h3>
@@ -144,20 +112,16 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
               </div>
             )}
           </div>
-          {/* Email */}
           {payment.email && (
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-2">EMAIL</h3>
               <p className="text-black">{payment.email}</p>
             </div>
           )}
-          {/* Date */}
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">TRANSACTION DATE</h3>
             <p className="text-black">{formatDate(payment.created_at)}</p>
           </div>
-
-          {/* Actions */}
           <div className="flex gap-4 pt-4">
             <button
               onClick={() => {
@@ -225,7 +189,6 @@ Thank you for your business!
     </div>
   );
 };
-// Purchase History Row Component
 interface PurchaseHistoryRowProps {
   payment: Payment;
   onViewDetails: (payment: Payment) => void;
@@ -376,13 +339,11 @@ Thank you for your business!
     </div>
   );
 };
-// Loading Component
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center py-12">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
   </div>
 );
-// Error Component
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
   <div className="text-center py-12">
     <p className="text-red-600 mb-4">{message}</p>
@@ -394,14 +355,12 @@ const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => vo
     </button>
   </div>
 );
-// Empty State Component
 const EmptyState = () => (
   <div className="text-center py-12">
     <p className="text-gray-600 text-lg mb-4">No payment history found</p>
     <p className="text-gray-500">Your payment history will appear here once you make a purchase.</p>
   </div>
 );
-// Purchase History Table Component
 const PurchaseHistoryTable = ({
   payments,
   loading,
@@ -450,7 +409,6 @@ const PurchaseHistoryTable = ({
     </div>
   );
 };
-// Main Purchase History Component
 const PurchaseHistory = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -460,13 +418,10 @@ const PurchaseHistory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  // Memoize the fetch function to prevent unnecessary re-renders
   const fetchPayments = useCallback(async () => {
     try {
       setError(null);
-      // Get auth token from localStorage
       const token = localStorage.getItem("access_token");
-
       if (!token) {
         throw new Error("Authentication token not found. Please log in again.");
       }
@@ -479,7 +434,6 @@ const PurchaseHistory = () => {
       });
       if (!response.ok) {
         if (response.status === 401) {
-          // Clear invalid token and redirect to login
           localStorage.removeItem("access_token");
           throw new Error("Session expired. Please log in again.");
         }
@@ -503,27 +457,23 @@ const PurchaseHistory = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // Empty dependency array since this function doesn't depend on any state
-  // Real-time refresh function
+  }, []);
   const refreshPayments = useCallback(async () => {
     try {
       setIsRefreshing(true);
-      setLoading(false); // Don't show main loading spinner for refresh
+      setLoading(false);
       await fetchPayments();
     } finally {
       setIsRefreshing(false);
     }
   }, [fetchPayments]);
-  // Check for payment status updates - memoized to prevent infinite loops
   const checkPaymentStatus = useCallback(
     async (sessionId: string) => {
       try {
         console.log("Checking payment status for:", sessionId);
-        // Simulate status check
         const currentPayment = payments.find((p) => p.stripe_session_id === sessionId);
         if (currentPayment && currentPayment.status === "pending") {
-          // Simulate status change
-          const shouldUpdate = Math.random() > 0.7; // 30% chance of status change
+          const shouldUpdate = Math.random() > 0.7;
           if (shouldUpdate) {
             console.log("Payment status changed, refreshing...");
             await refreshPayments();
@@ -543,19 +493,16 @@ const PurchaseHistory = () => {
     setIsModalOpen(false);
     setSelectedPayment(null);
   }, []);
-  // Initial load - only runs once
   useEffect(() => {
     fetchPayments();
   }, [fetchPayments]);
-  // Set up intervals for pending payment checks - properly memoized
   useEffect(() => {
     const pendingPayments = payments.filter(
       (p) => p.status === "pending" || p.status === "processing"
     );
     if (pendingPayments.length === 0) {
-      return; // No pending payments, no need to set up intervals
+      return;
     }
-    // Check pending payments every 30 seconds
     const pendingCheckInterval = setInterval(() => {
       console.log("Checking status for pending payments...");
       pendingPayments.forEach((payment) => {
@@ -565,17 +512,14 @@ const PurchaseHistory = () => {
     return () => {
       clearInterval(pendingCheckInterval);
     };
-  }, [payments, checkPaymentStatus]); // Only re-run when payments array changes
-  // General refresh interval - separate from pending checks
+  }, [payments, checkPaymentStatus]);
   useEffect(() => {
-    // Only set up auto-refresh if there are no pending payments
     const hasPendingPayments = payments.some(
       (p) => p.status === "pending" || p.status === "processing"
     );
     if (hasPendingPayments) {
-      return; // Don't set up general refresh if we have pending payments
+      return;
     }
-    // Auto-refresh every 5 minutes for completed payments
     const refreshInterval = setInterval(() => {
       console.log("Auto-refreshing payment history...");
       refreshPayments();
@@ -584,12 +528,10 @@ const PurchaseHistory = () => {
       clearInterval(refreshInterval);
     };
   }, [payments, refreshPayments]);
-  // Handle page visibility change - refresh when user comes back to page
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && lastUpdated) {
         const timeDiff = Date.now() - lastUpdated.getTime();
-        // If page was hidden for more than 2 minutes, refresh
         if (timeDiff > 120000) {
           console.log("Page was hidden for a while, refreshing payments...");
           refreshPayments();
@@ -599,9 +541,16 @@ const PurchaseHistory = () => {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [lastUpdated, refreshPayments]);
+  const navigate = useNavigate()
+  const handleBackClick = () => {
+    navigate('/setting')
+  }
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <BackButton to="/" />
+    <div className="max-w-6xl mx-auto p-6 pt-24">
+      <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={handleBackClick}>
+        <BackIcon />
+        <div className="text-gray-600 text-2xl">Back</div>
+      </div>
       <div className="flex items-center justify-between mb-[50px]">
         <h1 className="text-black text-[32px] font-medium leading-[35.2px] max-sm:text-2xl">
           Purchase History

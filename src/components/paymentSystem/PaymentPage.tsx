@@ -19,7 +19,7 @@ const Payment: React.FC = () => {
   const cardElementRef = useRef<any>(null);
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 100,
+    price: 179700,
     description: "Seats available for 50 members",
   };
   useEffect(() => {

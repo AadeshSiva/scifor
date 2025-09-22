@@ -92,7 +92,6 @@ const AddDetails: React.FC = () => {
             }));
         }
     };
-    console.log(formData)
     const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
