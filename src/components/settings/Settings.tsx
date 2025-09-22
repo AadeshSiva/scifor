@@ -1,251 +1,66 @@
-import React, { useState, useEffect } from "react";
-import { ChevronRight } from "lucide-react";
-import { BackIcon } from "../ui/icons";
+import { BackButton } from "@/components/ui/BackButton";
+import { useAuth } from "@/utils/AuthContext";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface ProfileInfo {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-}
-
-interface UserData {
-  id: number;
-  email: string;
-  full_name: string;
-  phone_number: string;
-  website_name: string;
-  linkedin_url: string;
-  no_linkedin: boolean;
-  email_verified: boolean;
-  username: string;
-  is_active: boolean;
-  date_joined: string;
-  last_login: string;
-}
-
-interface SettingProps {
-  setDisplay: (view: string) => void;
-}
-
-// InfoRow Component
-const InfoRow = ({
-  title,
-  value,
-  onClick,
-  isLoading = false,
-}: {
-  title: string;
-  value: string;
-  onClick: () => void;
-  isLoading?: boolean;
-}) => {
+const Setting: React.FC = ()=>{
+  const [mobileView, setMobileView] = useState<Boolean>(false);
+  const navigate = useNavigate()
+  const handleProfleView = () => {
+    navigate('/profileView')
+  }
+  const handleUsernameView = () => {
+    navigate('/usernameView')
+  }
+  const handleEmailIdView = () => {
+    navigate('/emailView')
+  }
+  const handlePasswordView = () => {
+    navigate('/passwordView')
+  }
+  const handleHistoryView = () => {
+    navigate('/historyView')
+  }
+  const { user } = useAuth();
   return (
-    <div
-      className="flex items-center relative p-[30px] border-b-[rgba(158,158,158,0.5)] border-b border-solid max-md:p-[25px] max-sm:flex-col max-sm:items-start max-sm:p-5 cursor-pointer hover:bg-neutral-200"
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-    >
-      <div className="text-lg text-black flex-1 max-md:text-base max-sm:mb-2">{title}</div>
-      <div className="text-sm text-[#555] font-medium mr-10 max-md:text-[13px] max-md:mr-[30px] max-sm:mb-2">
-        {isLoading ? <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div> : value}
-      </div>
-      <div className="absolute text-black right-[30px] max-sm:-translate-y-2/4 max-sm:top-2/4">
-        <ChevronRight size={24} />
-      </div>
-    </div>
-  );
-};
-
-// BasicInfoCard Component
-const BasicInfoCard = ({
-  profileInfo,
-  setDisplay,
-  isLoading,
-  error,
-}: {
-  profileInfo: ProfileInfo;
-  setDisplay: (view: string) => void;
-  isLoading: boolean;
-  error: string | null;
-}) => {
-  const { name, username, email, password } = profileInfo;
-
-  return (
-    <section className="max-w-[1200px] mx-auto my-0 p-10 max-md:max-w-[991px] max-md:p-5 max-sm:max-w-screen-sm max-sm:p-[15px]">
-      <div
-        className="flex items-center gap-[18px] cursor-pointer mb-[50px]"
-        onClick={() => setDisplay("chat")}
-      >
-        <BackIcon/>
-        <div className="text-[#555] text-2xl">Back</div>
-      </div>
-
-      <h1 className="text-[32px] text-black mb-10 max-md:text-[28px] max-md:mb-[30px] max-sm:text-2xl max-sm:mb-5">
-        Basic Information
-      </h1>
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-          {error}
-        </div>
-      )}
-
-      <div className="overflow-hidden bg-neutral-100 rounded-2xl border-2 border-solid border-[rgba(158,158,158,0.5)]">
-        <InfoRow
-          title="Profile Information"
-          value={name}
-          onClick={() => setDisplay("profile")}
-          isLoading={isLoading}
-        />
-        <InfoRow
-          title="Change Username"
-          value={username}
-          onClick={() => setDisplay("username")}
-          isLoading={isLoading}
-        />
-        <InfoRow
-          title="Change Email ID"
-          value={email}
-          onClick={() => setDisplay("email")}
-          isLoading={isLoading}
-        />
-        <InfoRow
-          title="Change Password"
-          value={password}
-          onClick={() => setDisplay("password")}
-          isLoading={isLoading}
-        />
-        <InfoRow
-          title="Purchase History"
-          value={""}
-          onClick={() => setDisplay("history")}
-          isLoading={isLoading}
-        />
-      </div>
-    </section>
-  );
-};
-
-// Main Setting Component
-const Setting: React.FC<SettingProps> = ({ setDisplay }) => {
-  const [profileInfo, setProfileInfo] = useState<ProfileInfo>({
-    name: "Loading...",
-    username: "Loading...",
-    email: "Loading...",
-    password: "••••••••", // Masked password for security
-  });
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Function to get JWT token from localStorage
-  const getAuthToken = (): string | null => {
-    try {
-      // Try to get token from localStorage
-      const token = localStorage.getItem("access_token") || localStorage.getItem("accessToken");
-      if (token) return token;
-
-      // Try to get from sessionStorage as fallback
-      return sessionStorage.getItem("access_token") || sessionStorage.getItem("accessToken");
-    } catch (error) {
-      console.error("Error accessing token from storage:", error);
-      return null;
-    }
-  };
-
-  // Function to fetch user data
-  const fetchUserData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const token = getAuthToken();
-      if (!token) {
-        throw new Error("No authentication token found. Please login again.");
-      }
-
-      const response = await fetch("https://api.prspera.com/extract-user-data/", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Session expired. Please login again.");
+    <>
+      <div>
+        {!mobileView &&
+          <div className="flex flex-col mt-16 w-full min-h-screen justify-center items-center overflow-hidden">
+            <div className="flex flex-col w-1/2 h-[80vh] justify-left items-left p-4 gap-8">
+              <div>
+                <span><BackButton /></span>
+              </div>
+              <div className="flex justify-left items-left">
+                <span className="text-2xl items-left">Basic Information</span>
+              </div>
+              <div className="flex flex-col h-[60vh] w-[50vw]">
+                <button className="flex justify-between border border-gray-500 p-6 rounded-t-lg bg-gray-200" onClick={handleProfleView}>
+                  <span>Profile Information</span>
+                  <span>{user?.full_name}<span className="ml-4">{'>'}</span> </span>
+                </button>
+                <button className="flex justify-between border border-gray-500 p-6 bg-gray-200" onClick={handleUsernameView}>
+                  <span>Change Username</span>
+                  <span>{user.username} <span className="ml-4">{'>'}</span></span>
+                </button>
+                <button className="flex justify-between border border-gray-500 p-6 bg-gray-200" onClick={handleEmailIdView}>
+                  <span>Change Email ID</span>
+                  <span>{user.email}<span className="ml-4">{'>'}</span></span>
+                </button>
+                <button className="flex justify-between border border-gray-500 p-6 bg-gray-200" onClick={handlePasswordView}>
+                  <span>Change Password</span>
+                  <span>. . . . . . <span className="ml-4">{'>'}</span></span>
+                </button>
+                <button className="flex justify-between border border-gray-500 p-6 rounded-b-lg bg-gray-200 w-full" onClick={handleHistoryView}>
+                  <span>Purchase History</span>
+                  <span className="ml-4">{'>'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         }
-        throw new Error(`Failed to fetch user data: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.status === "success" && data.user_data) {
-        const userData: UserData = data.user_data;
-
-        setProfileInfo({
-          name: userData.full_name || "Not provided",
-          username: userData.username || "Not set",
-          email: userData.email || "Not provided",
-          password: "••••••••", // Always masked for security
-        });
-      } else {
-        throw new Error(data.message || "Failed to load user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      setError(error instanceof Error ? error.message : "Failed to load user data");
-
-      // Set fallback values on error
-      setProfileInfo({
-        name: "Unable to load",
-        username: "Unable to load",
-        email: "Unable to load",
-        password: "••••••••",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch user data on component mount
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  // Retry function for manual refresh
-  const handleRetry = () => {
-    fetchUserData();
-  };
-
-  return (
-    <main className="flex-1 bg-white">
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet"
-      />
-      <BasicInfoCard
-        profileInfo={profileInfo}
-        setDisplay={setDisplay}
-        isLoading={isLoading}
-        error={error}
-      />
-
-      {error && (
-        <div className="max-w-[1200px] mx-auto px-10 max-md:px-5 max-sm:px-[15px]">
-          <button
-            onClick={handleRetry}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
-          >
-            Retry Loading Data
-          </button>
-        </div>
-      )}
-    </main>
+      </div>
+    </>
   );
 };
-
 export default Setting;

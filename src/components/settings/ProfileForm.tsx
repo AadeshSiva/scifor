@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { BackIcon } from "../ui/icons";
 
 interface ProfileFormProps {
   onSubmit?: (data: ProfileFormData) => void;
   onCancel?: () => void;
-  setDisplay?: (display: string) => void; // Add this line
+  setDisplay?: (display: string) => void;
 }
-
 interface ProfileFormData {
   fullName: string;
   phoneNumber: string;
@@ -13,7 +14,6 @@ interface ProfileFormData {
   companyWebsite: string;
   country: string;
 }
-
 interface PasswordConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,7 +21,6 @@ interface PasswordConfirmationModalProps {
   isLoading: boolean;
   error: string | null;
 }
-
 const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   isOpen,
   onClose,
@@ -30,16 +29,13 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   error,
 }) => {
   const [password, setPassword] = useState("");
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password.trim()) {
       onConfirm(password);
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
@@ -47,7 +43,6 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
         <p className="text-gray-600 mb-6">
           Please enter your current password to save changes to your profile.
         </p>
-
         <div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium mb-2">
@@ -64,13 +59,11 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
               disabled={isLoading}
             />
           </div>
-
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
-
           <div className="flex gap-4">
             <button
               type="button"
@@ -94,11 +87,10 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
     </div>
   );
 };
-
 const ProfileForm: React.FC<ProfileFormProps> = ({
   onSubmit,
   onCancel,
-  setDisplay, // Add this parameter
+  setDisplay,
 }) => {
   const [formData, setFormData] = useState<ProfileFormData>({
     fullName: "",
@@ -107,7 +99,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     companyWebsite: "",
     country: "",
   });
-
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<ProfileFormData | null>(null);
@@ -117,21 +108,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     type: "success" | "error";
     message: string;
   } | null>(null);
-
-  // Fetch user data on component mount
   useEffect(() => {
     fetchUserData();
   }, []);
-
   const getAuthToken = () => {
-    // Get token from localStorage (adjust based on your token storage method)
     const token = localStorage.getItem("access_token");
     if (token) {
       return token;
     }
     return null;
   };
-
   const fetchUserData = async () => {
     setIsLoading(true);
     try {
@@ -139,7 +125,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       if (!token) {
         throw new Error("No authentication token found");
       }
-
       const response = await fetch("https://api.prspera.com/extract-user-data/", {
         method: "GET",
         headers: {
@@ -147,20 +132,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
-
       const data = await response.json();
-
       if (data.status === "success" && data.user_data) {
         setFormData({
           fullName: data.user_data.full_name || "",
           phoneNumber: data.user_data.phone_number || "",
-          companyName: data.user_data.website_name || "", // Assuming website_name is company name
+          companyName: data.user_data.website_name || "",
           companyWebsite: data.user_data.website_name || "",
-          country: data.user_data.country || "", // Add country field to your backend if not present
+          country: data.user_data.country || "",
         });
       }
     } catch (error) {
@@ -173,43 +155,33 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       setIsLoading(false);
     }
   };
-
   const handleChange = (field: keyof ProfileFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Store the form data and open password confirmation modal
     setPendingFormData(formData);
     setIsPasswordModalOpen(true);
     setPasswordError(null);
   };
-
   const handlePasswordConfirm = async (password: string) => {
     if (!pendingFormData) return;
-
     setIsPasswordLoading(true);
     setPasswordError(null);
-
     try {
       const token = getAuthToken();
       if (!token) {
         throw new Error("No authentication token found");
       }
-
-      // Prepare data for backend
       const updateData = {
         full_name: pendingFormData.fullName,
         phone_number: pendingFormData.phoneNumber,
         website_name: pendingFormData.companyName,
-        // Add other fields as needed based on your backend model
-        password: password, // Include password for verification
+        password: password,
       };
-
       const response = await fetch("https://api.prspera.com/profile/", {
         method: "PUT",
         headers: {
@@ -218,30 +190,24 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         },
         body: JSON.stringify(updateData),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error("Invalid password. Please try again.");
         }
         throw new Error(data.message || "Failed to update profile");
       }
-
       // Success
       setNotification({
         type: "success",
         message: "Profile updated successfully!",
-      });
-
+      })
       setIsPasswordModalOpen(false);
       setPendingFormData(null);
-
       // Call the onSubmit prop if provided
       if (onSubmit) {
         onSubmit(pendingFormData);
       }
-
       // Auto-hide success notification after 3 seconds
       setTimeout(() => {
         setNotification(null);
@@ -255,79 +221,52 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       setIsPasswordLoading(false);
     }
   };
-
   const handlePasswordModalClose = () => {
     setIsPasswordModalOpen(false);
     setPendingFormData(null);
     setPasswordError(null);
   };
-
   const handleCancel = () => {
     if (onCancel) {
       onCancel();
     }
     setDisplay("setting");
   };
-
   const handleConnectLinkedIn = () => {
-    // LinkedIn connection logic would go here
     console.log("Connecting to LinkedIn...");
   };
-
+  const navigate = useNavigate()
   const handleBackClick = () => {
-    setDisplay("setting"); // Go back to settings
+    navigate('/setting')
   };
-
   if (isLoading) {
     return (
-      <div className="flex-1 pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
+      <div className="flex pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
         <div className="flex items-center justify-center h-64">
           <div className="text-lg">Loading profile data...</div>
         </div>
       </div>
     );
   }
-
   return (
     <>
-      <div className="flex-1 pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
-        <div
-          className="flex items-center gap-4 text-gray-600 text-2xl cursor-pointer mb-12"
-          onClick={handleBackClick}
-        >
-          <div>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="back-icon"
-            >
-              <path
-                d="M10.3636 12.4999L18 20.4999L15.8182 22.7856L6 12.4999L15.8182 2.21421L18 4.49991L10.3636 12.4999Z"
-                fill="currentColor"
-              ></path>
-            </svg>
-          </div>
-          <span>Back</span>
-        </div>
-
-        <h1 className="text-3xl mb-10">Profile Information</h1>
-
+      <div className="flex flex-col pt-24 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32 justify-center items-center">
         {notification && (
           <div
-            className={`mb-6 p-4 rounded-lg ${
-              notification.type === "success"
-                ? "bg-green-100 border border-green-300 text-green-700"
-                : "bg-red-100 border border-red-300 text-red-700"
-            }`}
+            className={`mb-6 p-4 rounded-lg ${notification.type === "success"
+              ? "bg-green-100 border border-green-300 text-green-700"
+              : "bg-red-100 border border-red-300 text-red-700"
+              }`}
           >
             {notification.message}
           </div>
         )}
-
         <div className="max-w-4xl">
+          <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={handleBackClick}>
+            <BackIcon />
+            <div className="text-gray-600 text-2xl">Back</div>
+          </div>
+          <h1 className="text-3xl mb-10">Profile Information</h1>
           <div className="mb-10">
             <label htmlFor="fullName" className="text-base font-semibold mb-3 block">
               Full Name*
@@ -342,7 +281,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               required
             />
           </div>
-
           <div className="mb-10">
             <label htmlFor="phoneNumber" className="text-base font-semibold mb-3 block">
               Phone No*
@@ -357,7 +295,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               required
             />
           </div>
-
           <div className="mb-10">
             <label htmlFor="companyName" className="text-base font-semibold mb-3 block">
               Company Name
@@ -371,7 +308,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               onChange={(e) => handleChange("companyName", e.target.value)}
             />
           </div>
-
           <div className="mb-10">
             <label htmlFor="companyWebsite" className="text-base font-semibold mb-3 block">
               Company Website
@@ -385,7 +321,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               onChange={(e) => handleChange("companyWebsite", e.target.value)}
             />
           </div>
-
           <div className="mb-10">
             <label htmlFor="country" className="text-base font-semibold mb-3 block">
               Country*
@@ -410,7 +345,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               <option value="BR">Brazil</option>
             </select>
           </div>
-
           <div className="flex justify-between items-end mb-16">
             <div className="max-w-2xl">
               <div className="text-base font-semibold mb-3">LinkedIn Profile</div>
@@ -446,7 +380,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           </div>
         </div>
       </div>
-
       <PasswordConfirmationModal
         isOpen={isPasswordModalOpen}
         onClose={handlePasswordModalClose}
@@ -457,5 +390,4 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     </>
   );
 };
-
 export default ProfileForm;

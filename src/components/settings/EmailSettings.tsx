@@ -1,26 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { BackIcon } from "../ui/icons";
-
+import { useNavigate } from "react-router-dom";
 interface EmailSettingsProps {
   setDisplay?: (display: string) => void;
 }
-
 interface EmailData {
   email: string;
   verified: boolean;
 }
-
 interface UserData {
   user_data: {
     email: string;
   };
 }
-
 interface PasswordAction {
   type: "remove" | "makePrimary";
   email: string;
 }
-
 const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
   const [emails, setEmails] = useState<EmailData[]>([]);
   const [primaryEmail, setPrimaryEmail] = useState<string>("");
@@ -35,19 +31,17 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
   const [success, setSuccess] = useState<string>("");
   const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(null);
 
-  // Get auth token from localStorage or wherever you store it
+  const navigate = useNavigate()
   const getAuthToken = (): string => {
     return localStorage.getItem("access_token") || "";
   };
 
   const onBack = () => {
-    setDisplay("setting");
+    navigate("/setting");
   };
-
-  // API call helper
   const apiCall = async (url: string, method: string = "GET", data?: any): Promise<any> => {
     const token = getAuthToken();
-    const response = await fetch("https://api.prspera.com" + url, {
+    const response = await fetch(`https://api.prspera.com${url}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -55,21 +49,16 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       },
       body: data ? JSON.stringify(data) : undefined,
     });
-
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || errorData.message || "API call failed");
     }
-
     return response.json();
   };
-
-  // Load emails on component mount
   useEffect(() => {
     loadEmails();
     loadUserProfile();
   }, []);
-
   const loadEmails = async (): Promise<void> => {
     try {
       const data: EmailData[] = await apiCall("/list-company-emails/");
@@ -78,7 +67,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       console.error("Failed to load emails:", err);
     }
   };
-
   const loadUserProfile = async (): Promise<void> => {
     try {
       const data: UserData = await apiCall("/extract-user-data/");
@@ -87,16 +75,13 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       console.error("Failed to load user profile:", err);
     }
   };
-
   const handleAddEmail = async (): Promise<void> => {
     if (!newEmail) {
       setError("Please enter an email address");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       await apiCall("/send-email-otp/", "POST", { email: newEmail });
       setSuccess("OTP sent to your email");
@@ -109,16 +94,13 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       setLoading(false);
     }
   };
-
   const handleVerifyOtp = async (): Promise<void> => {
     if (!otp) {
       setError("Please enter the OTP");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       await apiCall("/verify-email-otp/", "POST", {
         email: newEmail,
@@ -128,7 +110,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       setShowOtpModal(false);
       setNewEmail("");
       setOtp("");
-      loadEmails(); // Refresh the email list
+      loadEmails();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
@@ -136,16 +118,13 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       setLoading(false);
     }
   };
-
   const handlePasswordAction = async (): Promise<void> => {
     if (!password || !passwordAction) {
       setError("Please enter your password");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       if (passwordAction.type === "remove") {
         await apiCall("/remove-email/", "POST", {
@@ -161,11 +140,10 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
         setSuccess("Primary email updated successfully!");
         setPrimaryEmail(passwordAction.email);
       }
-
       setShowPasswordModal(false);
       setPassword("");
       setPasswordAction(null);
-      loadEmails(); // Refresh the email list
+      loadEmails();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
@@ -173,13 +151,11 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       setLoading(false);
     }
   };
-
   const openPasswordModal = (type: "remove" | "makePrimary", email: string): void => {
     setPasswordAction({ type, email });
     setShowPasswordModal(true);
     setError("");
   };
-
   const closeAllModals = (): void => {
     setShowAddEmailModal(false);
     setShowOtpModal(false);
@@ -191,15 +167,12 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
     setSuccess("");
     setPasswordAction(null);
   };
-
   const handleResendCode = async (): Promise<void> => {
     if (!newEmail) return;
-
     setLoading(true);
     setError("");
-
     try {
-      await apiCall("/send-email-otp/", "POST", { email: newEmail });
+      await apiCall("/send_email_otp/", "POST", { email: newEmail });
       setSuccess("OTP resent to your email");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
@@ -208,38 +181,29 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
       setLoading(false);
     }
   };
-
   const handleChangeEmail = (): void => {
     setShowOtpModal(false);
     setShowAddEmailModal(true);
     setOtp("");
     setError("");
   };
-
   return (
-    <section className="p-10 px-16">
-      <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={onBack}>
-        <BackIcon />
-        <div className="text-gray-600 text-2xl">Back</div>
-      </div>
-
+    <div className="flex flex-col w-full min-h-screen p-10 justify-center items-center align-center">
       <div>
+        <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={onBack}>
+          <BackIcon />
+          <div className="text-gray-600 text-2xl">Back</div>
+        </div>
         <h1 className="text-4xl text-gray-800 mb-10">Company Email ID</h1>
-
-        {/* Success Message */}
         {success && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
             {success}
           </div>
         )}
-
-        {/* Primary Email */}
         <div className="mb-10">
           <h2 className="text-xl text-gray-800 mb-2">Primary Email</h2>
           <p className="text-base text-black">{primaryEmail}</p>
         </div>
-
-        {/* Secondary Emails */}
         {emails.length > 0 && (
           <div className="mb-10">
             <h2 className="text-xl text-gray-800 mb-4">Secondary Email</h2>
@@ -269,7 +233,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
             )}
           </div>
         )}
-
         <div className="flex gap-12 max-sm:flex-col max-sm:gap-4">
           <button
             className="text-white text-base cursor-pointer bg-black px-16 py-5 rounded-xl border-none max-sm:w-full hover:bg-gray-800"
@@ -285,13 +248,10 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
           </button>
         </div>
       </div>
-
-      {/* Add Email Modal */}
       {showAddEmailModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-2xl w-96 mx-4">
             <h3 className="text-xl font-medium mb-6 text-center">Enter New Email ID</h3>
-
             <input
               type="email"
               placeholder="Enter your new email id"
@@ -300,17 +260,14 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
               className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-blue-500"
               disabled={loading}
             />
-
             <p className="text-sm text-gray-600 mb-6 text-center">
               We'll send a verification code to this email id
             </p>
-
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                 {error}
               </div>
             )}
-
             <div className="flex gap-4">
               <button
                 onClick={handleAddEmail}
@@ -330,8 +287,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
           </div>
         </div>
       )}
-
-      {/* OTP Verification Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-2xl w-96 mx-4">
@@ -345,7 +300,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
             >
               Change Email
             </button>
-
             <input
               type="text"
               placeholder="Enter 6-digit code"
@@ -355,7 +309,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
               maxLength={6}
               disabled={loading}
             />
-
             <div className="text-center mb-6">
               <button
                 onClick={handleResendCode}
@@ -365,13 +318,11 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
                 {loading ? "Resending..." : "Resend Code"}
               </button>
             </div>
-
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                 {error}
               </div>
             )}
-
             <div className="flex gap-4 mb-4">
               <button
                 onClick={handleVerifyOtp}
@@ -388,15 +339,12 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
                 Cancel
               </button>
             </div>
-
             <p className="text-xs text-gray-500 text-center">
               Didn't receive the code? Check your spam folder or try resending.
             </p>
           </div>
         </div>
       )}
-
-      {/* Password Confirmation Modal */}
       {showPasswordModal && passwordAction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg max-w-md w-full mx-4">
@@ -415,7 +363,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
                 {error}
               </div>
             )}
-
             <input
               type="password"
               placeholder="Enter your password"
@@ -424,16 +371,14 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
               className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
               disabled={loading}
             />
-
             <div className="flex gap-4">
               <button
                 onClick={handlePasswordAction}
                 disabled={loading}
-                className={`flex-1 text-white py-3 rounded disabled:opacity-50 ${
-                  passwordAction.type === "remove"
+                className={`flex-1 text-white py-3 rounded disabled:opacity-50 ${passwordAction.type === "remove"
                     ? "bg-black hover:bg-black"
                     : "bg-black hover:bg-black"
-                }`}
+                  }`}
               >
                 {loading ? "Processing..." : "Confirm"}
               </button>
@@ -448,8 +393,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 };
-
 export default EmailSettings;

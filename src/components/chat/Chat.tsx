@@ -1,8 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import ProfileForm from "@/components/settings/ProfileForm";
-import { PasswordChangeForm } from "@/components/settings/PasswordChangeForm";
-import EmailSettings from "@/components/settings/EmailSettings";
-import ChangeUsernameForm from "@/components/settings/ChangeUsernameForm";
 import {
   AlertCircle,
   Calendar,
@@ -60,12 +56,15 @@ const filterAbusiveContent = async (text) => {
 };
 
 interface Message {
+  isPoll: any;
+  pollData: any;
   id: number;
   sender: string;
   text: string;
   time: string;
   isUser: boolean;
   replyTo?: Message | null;
+  isAi:boolean;
 }
 
 interface PollOption {
@@ -397,7 +396,7 @@ const Chat = () => {
         break;
 
       case "poll_message":
-        setMessages((prev) => {
+        setMessages( (prev) => {
           const exists = prev.some((msg) => msg.id === data.poll.message_id);
           if (!exists) {
             return [...prev, formatBackendPoll(data.poll)];
@@ -566,6 +565,8 @@ const Chat = () => {
           }),
           isUser: false,
           isAi: true,
+          isPoll: undefined,
+          pollData: undefined
         },
       ]);
     } else {
@@ -930,7 +931,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="bg-white min-h-[calc(100vh-86px)] flex overflow-hidden">
+    <div className="bg-white min-h-[calc(100vh)] flex overflow-hidden pt-12">
       {/* Sidebar */}
       {showSidebar && (
         <nav
@@ -979,9 +980,6 @@ const Chat = () => {
                 setDisplay("setting");
               }}
             >
-              <Setting setDisplay={function (view: string): void {
-                throw new Error("Function not implemented.");
-              } }/>
               <div className="font-linear">Settings</div>
             </div>
           </div>
@@ -1547,19 +1545,7 @@ const Chat = () => {
                     <ChartNoAxesColumn className="rotate-90" size={18} strokeWidth={3} />
                     <p className="text-xs sm:text-sm hidden sm:block">Poll</p>
                   </button>
-                ) : null}
-
-                {/* <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
-                  <Sticker stroke="#555" size={22} className="flex-shrink-0" />
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    className="text-[#555] text-sm w-full bg-transparent outline-none flex-1"
-                  />
-                </div> */}
-
+                ) : null}        
                 <div className="bg-white border flex items-center gap-2 sm:gap-3 flex-1 px-3 sm:px-5 mx-2 sm:mx-8 py-3 rounded-full border-[rgba(158,158,158,0.4)]">
                   <button
                     type="button"
@@ -1568,12 +1554,6 @@ const Chat = () => {
                         setShowPremiumPopup(true);
                         return;
                       }
-                      // Optional: keep polls admin-only. If you want everyone to create polls, remove this block.
-                      // if (!isAdmin) {
-                      //   alert("Only admins can create polls");
-                      //   return;
-                      // }
-
                       setShowPollCreator(true);
                     }}
                     className="flex items-center justify-center p-1 rounded-full hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-black/20"
@@ -1582,7 +1562,6 @@ const Chat = () => {
                   >
                     <Sticker stroke="#555" size={22} className="flex-shrink-0" />
                   </button>
-
                   <input
                     type="text"
                     value={message}
@@ -1591,7 +1570,6 @@ const Chat = () => {
                     className="text-[#555] text-sm w-full bg-transparent outline-none flex-1"
                   />
                 </div>
-
                 <button
                   type="submit"
                   disabled={!message.trim()}
@@ -1642,7 +1620,6 @@ const Chat = () => {
                           </button>
                         </div>
                       </header>
-
                       {/* Main Content */}
                       <main className="p-6 space-y-6">
                         {/* Question */}
@@ -1668,7 +1645,6 @@ const Chat = () => {
                             </div>
                           </div>
                         </div>
-
                         {/* Options */}
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
@@ -1681,7 +1657,6 @@ const Chat = () => {
                               + Add option
                             </button>
                           </div>
-
                           <div className="space-y-3">
                             {pollFormData.options.map((option, index) => (
                               <div key={option.id} className="flex items-center gap-3">
@@ -1722,7 +1697,6 @@ const Chat = () => {
                             ))}
                           </div>
                         </div>
-
                         {/* Settings */}
                         <div className="border-t border-gray-200 pt-6">
                           <div className="flex items-center justify-between">
@@ -1759,7 +1733,6 @@ const Chat = () => {
                           </div>
                         </div>
                       </main>
-
                       {/* Footer */}
                       <footer className="bg-gray-50 border-t border-gray-200 px-6 py-4">
                         <div className="flex justify-between gap-3">
