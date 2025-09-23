@@ -3,6 +3,8 @@ import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, Loader2, Check, X } f
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordPopups from "./ForgotPassword";
 import { BackIcon } from "../ui/icons";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
 interface FormData {
   usernameColor: string;
   usernameObject: string;
@@ -350,8 +352,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     setDisplay("setting");
   };
   const navigate = useNavigate()
+  const ctx=useContext(UserContext)
   const handleBackClick = () => {
-    navigate('/setting')
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
   };
   const getPreviewUsername = () => {
     const { usernameColor, usernameObject, usernameNum } = formData;

@@ -11,8 +11,10 @@ import {
   CheckCircle,
   Loader2,
 } from "lucide-react";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
 const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -142,9 +144,11 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(false);
     }
   };
-   const navigate=useNavigate()
+  const navigate = useNavigate()
+  const ctx = useContext(UserContext)
   const handleBack = () => {
-    navigate('/setting')
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
     if (step > 1) {
       setStep(step - 1);
       setErrorMessage("");

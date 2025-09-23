@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { BackButton } from "@/components/ui/BackButton";
 import ForgotPasswordPopups from "./ForgotPassword";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
 interface ValidationErrors {
   currentPassword?: string;
   newPassword?: string;
@@ -113,8 +115,10 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
     }, 5000);
   };
   const navigate=useNavigate();
+  const ctx=useContext(UserContext)
   const handleBack = (): void => {
-    navigate('/setting')
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
   };
   const EyeIcon: React.FC = () => (
     <svg

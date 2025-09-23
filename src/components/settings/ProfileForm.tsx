@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BackIcon } from "../ui/icons";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
 
 interface ProfileFormProps {
   onSubmit?: (data: ProfileFormData) => void;
@@ -236,9 +238,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     console.log("Connecting to LinkedIn...");
   };
   const navigate = useNavigate()
+
+  const ctx = useContext(UserContext)
   const handleBackClick = () => {
-    navigate('/setting')
-  };
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
+  }
   if (isLoading) {
     return (
       <div className="flex pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
