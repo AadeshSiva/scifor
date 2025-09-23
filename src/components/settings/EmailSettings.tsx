@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BackIcon } from "../ui/icons";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
+
 interface EmailSettingsProps {
   setDisplay?: (display: string) => void;
 }
@@ -31,13 +34,16 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
   const [success, setSuccess] = useState<string>("");
   const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(null);
 
+
   const navigate = useNavigate()
   const getAuthToken = (): string => {
     return localStorage.getItem("access_token") || "";
   };
 
-  const onBack = () => {
-    navigate("/setting");
+  const ctx=useContext(UserContext)
+  const HandleBackClick = () => {
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
   };
   const apiCall = async (url: string, method: string = "GET", data?: any): Promise<any> => {
     const token = getAuthToken();
@@ -190,7 +196,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
   return (
     <div className="flex flex-col w-full min-h-screen p-10 justify-center items-center align-center">
       <div>
-        <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={onBack}>
+        <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={HandleBackClick}>
           <BackIcon />
           <div className="text-gray-600 text-2xl">Back</div>
         </div>
@@ -242,7 +248,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
           </button>
           <button
             className="text-black border text-base cursor-pointer px-16 py-5 rounded-xl border-solid border-black max-sm:w-full hover:bg-gray-50"
-            onClick={onBack}
+            onClick={HandleBackClick}
           >
             Cancel
           </button>
@@ -376,8 +382,8 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ setDisplay }) => {
                 onClick={handlePasswordAction}
                 disabled={loading}
                 className={`flex-1 text-white py-3 rounded disabled:opacity-50 ${passwordAction.type === "remove"
-                    ? "bg-black hover:bg-black"
-                    : "bg-black hover:bg-black"
+                  ? "bg-black hover:bg-black"
+                  : "bg-black hover:bg-black"
                   }`}
               >
                 {loading ? "Processing..." : "Confirm"}

@@ -33,6 +33,7 @@ import ChangeUsernameForm from "./components/settings/ChangeUsernameForm";
 import EmailSettings from "./components/settings/EmailSettings";
 import { PasswordChangeForm } from "./components/settings/PasswordChangeForm";
 import PurchaseHistory from "./components/settings/PaymentHistory";
+import UserContextProvider from "./components/settings/Context/UserContextProvider";
 
 
 const queryClient = new QueryClient();
@@ -45,7 +46,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <div className="fixed top-0 left-0 w-full z-50">
-            <NavBar />
+              <NavBar />
           </div>
           <Routes>
             {routes.map((item, index) => (
@@ -175,7 +176,9 @@ const App = () => (
               path="/dashboard/*"
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <Dashboard />
+                  <UserContextProvider>
+                    <Dashboard />
+                  </UserContextProvider>
                 </ProtectedRoute>
               }
             />
@@ -223,49 +226,61 @@ const App = () => (
               path="/setting"
               element={
                 <ProtectedRoute>
-                    <Setting/>
+                  <UserContextProvider>
+                    <Setting />
+                  </UserContextProvider>
                 </ProtectedRoute>
               }
             />
             <Route
-             path="/profileView"
-             element={
-              <ProtectedRoute>
-                <ProfileForm/>
-              </ProtectedRoute>
-             }
+              path="/profileView"
+              element={
+                <ProtectedRoute>
+                  <UserContextProvider>
+                    <ProfileForm />
+                  </UserContextProvider>
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/usernameView"
-             element={
-              <ProtectedRoute>
-                <ChangeUsernameForm/>
-              </ProtectedRoute>
-             }
+              path="/usernameView"
+              element={
+                <ProtectedRoute>
+                  <UserContextProvider>
+                    <ChangeUsernameForm />
+                  </UserContextProvider>
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/emailView"
-             element={
-              <ProtectedRoute>
-                <EmailSettings/>
-              </ProtectedRoute>
-             }
+              path="/emailView"
+              element={
+                <ProtectedRoute>
+                  <UserContextProvider>
+                    <EmailSettings />
+                  </UserContextProvider>
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/passwordView"
-             element={
-              <ProtectedRoute>
-               <PasswordChangeForm/>
-              </ProtectedRoute>
-             }
+              path="/passwordView"
+              element={
+                <ProtectedRoute>
+                  <UserContextProvider>
+                    <PasswordChangeForm />
+                  </UserContextProvider>
+                </ProtectedRoute>
+              }
             />
             <Route
-             path="/historyView"
-             element={
-              <ProtectedRoute>
-                <PurchaseHistory/>
-              </ProtectedRoute>
-             }
+              path="/historyView"
+              element={
+                <ProtectedRoute>
+                  <UserContextProvider>
+                    <PurchaseHistory />
+                  </UserContextProvider>
+                </ProtectedRoute>
+              }
             />
           </Routes>
         </BrowserRouter>

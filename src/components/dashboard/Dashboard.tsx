@@ -7,13 +7,17 @@ import {
   Calculator,
   TrendingUp,
   MessageCircle,
-  Bot,
   Settings,
+  Bot,
   LogOut,
 } from "lucide-react";
 import { PopupButton } from "react-calendly";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/utils/AuthContext";
+import Setting from "../settings/Settings";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
+
 
 type Task = {
   id: number;
@@ -89,6 +93,7 @@ const Dashboard: React.FC = () => {
   const [Mobile, setMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingenabled, setSettingEnabled] = useState(false);
+  const ctx=useContext(UserContext)
   useEffect(() => {
     const handleResize = () => {
       setMobile(window.innerWidth <= 768);
@@ -97,6 +102,7 @@ const Dashboard: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  console.log(user)
   const handleSkip = () => {
     const data = tasks.find(task => task.id === 3);
     setIdNeeded(data || null);
@@ -189,12 +195,17 @@ const Dashboard: React.FC = () => {
   const handleUpgrade = () => {
     navigate("/payment")
   }
-  const handleSettingPage = () => {
-    setSettingEnabled(true)
+  const handleSettingPage = (e) => {
+    e.preventDefault()
+    ctx.setEnabledSetting(true)
+    ctx?.setUrl(window.location.pathname)
   }
   const handleDashboard = () => {
-    setSettingEnabled(false)
+    ctx.setEnabledSetting(false)
   }
+  useEffect(()=>{
+    ctx.setEnabledSetting(ctx.enabledSetting)
+  },[])
   return (
     <div className="flex relative bg-gray-100 min-h-screen">
       {Mobile && (
@@ -241,7 +252,7 @@ const Dashboard: React.FC = () => {
           </div>
         </aside>
       )}
-      {!settingenabled &&
+      {!ctx.enabledSetting &&
         <main className={`flex-1 bg-gray-100 min-h-screen p-4 md:p-8 ${Mobile ? 'ml-0' : 'ml-64'}`}>
           <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
             <div className="flex flex-col text-center">
@@ -270,7 +281,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="flex justify-between py-2">
                   <span>Country</span>
-                  <span className="text-gray-400">Not Provided</span>
+                  <span className="text-gray-400">{ }</span>
                 </div>
               </div>
             </div>
@@ -421,9 +432,11 @@ const Dashboard: React.FC = () => {
           </div>
         </main>
       }
-        {settingenabled &&
-          <div></div>
-        }
+      {ctx.enabledSetting &&
+        <div className="w-full">
+          <Setting />
+        </div>
+      }
     </div>
   );
 };

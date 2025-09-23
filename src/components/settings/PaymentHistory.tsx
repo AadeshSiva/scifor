@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { BackIcon } from "../ui/icons";
+import { useContext } from "react";
+import UserContext from "../settings/Context/UserContext";
 interface Payment {
   id: number;
   amount: number;
@@ -542,8 +544,11 @@ const PurchaseHistory = () => {
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [lastUpdated, refreshPayments]);
   const navigate = useNavigate()
+
+  const ctx = useContext(UserContext)
   const handleBackClick = () => {
-    navigate('/setting')
+    navigate(`${ctx.url}`)
+    ctx.setEnabledSetting(true)
   }
   return (
     <div className="max-w-6xl mx-auto p-6 pt-24">

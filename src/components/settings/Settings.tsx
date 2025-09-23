@@ -1,9 +1,8 @@
-import { BackButton } from "@/components/ui/BackButton";
 import { useAuth } from "@/utils/AuthContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Setting: React.FC = ()=>{
+const Setting: React.FC = () => {
   const [mobileView, setMobileView] = useState<Boolean>(false);
   const navigate = useNavigate()
   const handleProfleView = () => {
@@ -28,9 +27,6 @@ const Setting: React.FC = ()=>{
         {!mobileView &&
           <div className="flex flex-col mt-16 w-full min-h-screen justify-center items-center overflow-hidden">
             <div className="flex flex-col w-1/2 h-[80vh] justify-left items-left p-4 gap-8">
-              <div>
-                <span><BackButton /></span>
-              </div>
               <div className="flex justify-left items-left">
                 <span className="text-2xl items-left">Basic Information</span>
               </div>
