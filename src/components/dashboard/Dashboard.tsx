@@ -18,7 +18,6 @@ import Setting from "../settings/Settings";
 import { useContext } from "react";
 import UserContext from "../settings/Context/UserContext";
 
-
 type Task = {
   id: number;
   title: string;
@@ -92,7 +91,6 @@ const Dashboard: React.FC = () => {
   const [IdNeeded, setIdNeeded] = useState<Task | null>(tasks.find(task => task.id === 1) || null);
   const [Mobile, setMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [settingenabled, setSettingEnabled] = useState(false);
   const ctx=useContext(UserContext)
   useEffect(() => {
     const handleResize = () => {

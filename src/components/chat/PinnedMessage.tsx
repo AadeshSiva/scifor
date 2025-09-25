@@ -1,5 +1,4 @@
-import React from 'react';
-import { ArrowLeft, ArrowRightCircle, MessageSquare } from 'lucide-react';
+import {  ArrowRightCircle, MessageSquare } from 'lucide-react';
 
 const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) => {
   const groupMessagesByDate = (messages) => {

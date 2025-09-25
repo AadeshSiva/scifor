@@ -1,24 +1,20 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./utils/AuthContext";
 import NotFound from "./components/extras/NotFound";
-import Pricing_Plan from "./pages/Pricing_Plan";
+import Pricing_Plan from "./components/pricing-page/Pricing_Plan";
 import Payment from "./components/paymentSystem/PaymentPage";
 import Auth from "./components/authok/Auth";
 import NavBar from "./components/Navbar/NavBar";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import PaymentSuccess from "./components/paymentSystem/PymentSuccess";
-import ArticlePage from "./pages/ArticlePage";
+import ArticlePage from "./Homepage/ArticlePage";
 import PaymentCancelled from "./components/paymentSystem/PaymentCancelled";
 import ConfirmationGuest from "./components/paymentSystem/confirmationGuestPage";
 import ConfirmationMember from "./components/paymentSystem/confirmationMemberPage";
-import Landing from "./pages/Landing";
+import Landing from "./Homepage/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
-import AboutUs from "./pages/AboutUs";
-import ProofPage from "./pages/Proof";
+import ProofPage from "./components/proofpage/Proof";
 import AddDetails from "./components/paymentSystem/AddDetails";
 import Coming from "./components/extras/Coming";
 import BrandAssignment from "./components/assignment/Brandassignment";
@@ -34,16 +30,14 @@ import EmailSettings from "./components/settings/EmailSettings";
 import { PasswordChangeForm } from "./components/settings/PasswordChangeForm";
 import PurchaseHistory from "./components/settings/PaymentHistory";
 import UserContextProvider from "./components/settings/Context/UserContextProvider";
-
+import { AboutUs } from "./components/aboutpage/AboutUs";
+import Index from "./components/chat/Poll";
 
 const queryClient = new QueryClient();
 const routes = ["brand-diagnostic-details", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent"]
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <div className="fixed top-0 left-0 w-full z-50">
               <NavBar />
@@ -282,9 +276,16 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/test"
+              element={
+                <ProtectedRoute>
+                  <Index/>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
