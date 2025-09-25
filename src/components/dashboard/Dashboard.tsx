@@ -257,7 +257,7 @@ const Dashboard: React.FC = () => {
           <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
             <div className="flex flex-col text-center">
               <span>Welcome to your Prspera dashboard,</span>
-              <span>[{user.full_name}]</span>
+              <span>{user.full_name}</span>
             </div>
           </h1>
           <div className="w-full max-w-4xl mx-auto space-y-6">
