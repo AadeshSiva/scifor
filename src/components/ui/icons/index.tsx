@@ -1,5 +1,4 @@
 import React from "react";
-
 export const HomeIcon: React.FC = () => (
   <div
     dangerouslySetInnerHTML={{
@@ -8,7 +7,6 @@ export const HomeIcon: React.FC = () => (
     }}
   />
 );
-
 export const SettingsIcon: React.FC = () => (
   <div
     dangerouslySetInnerHTML={{
@@ -17,7 +15,6 @@ export const SettingsIcon: React.FC = () => (
     }}
   />
 );
-
 export const BackIcon: React.FC = () => (
   <div
     dangerouslySetInnerHTML={{

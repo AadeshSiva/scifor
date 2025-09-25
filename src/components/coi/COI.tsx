@@ -1,5 +1,5 @@
 import Accordion from "@/components/coi/Accordion";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/footer/Footer";
 
 const COI: React.FC = () => {
   return (
