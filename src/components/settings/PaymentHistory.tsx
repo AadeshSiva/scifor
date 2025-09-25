@@ -25,7 +25,11 @@ interface TransactionDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetailsModalProps) => {
+const TransactionDetailsModal = ({
+  payment,
+  isOpen,
+  onClose,
+}: TransactionDetailsModalProps) => {
   if (!isOpen || !payment) return null;
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -65,8 +69,13 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-medium text-black">Transaction Details</h2>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+            <h2 className="text-2xl font-medium text-black">
+              Transaction Details
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 text-2xl"
+            >
               ×
             </button>
           </div>
@@ -86,12 +95,18 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-2">TRANSACTION ID</h3>
-              <p className="text-black font-mono text-sm break-all">{payment.stripe_session_id}</p>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                TRANSACTION ID
+              </h3>
+              <p className="text-black font-mono text-sm break-all">
+                {payment.stripe_session_id}
+              </p>
             </div>
             {payment.stripe_payment_intent_id && (
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-2">PAYMENT INTENT ID</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">
+                  PAYMENT INTENT ID
+                </h3>
                 <p className="text-black font-mono text-sm break-all">
                   {payment.stripe_payment_intent_id}
                 </p>
@@ -104,12 +119,16 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-2">CUSTOMER NAME</h3>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                CUSTOMER NAME
+              </h3>
               <p className="text-black">{payment.customer_name}</p>
             </div>
             {payment.company_name && (
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-2">COMPANY</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">
+                  COMPANY
+                </h3>
                 <p className="text-black">{payment.company_name}</p>
               </div>
             )}
@@ -121,7 +140,9 @@ const TransactionDetailsModal = ({ payment, isOpen, onClose }: TransactionDetail
             </div>
           )}
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">TRANSACTION DATE</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">
+              TRANSACTION DATE
+            </h3>
             <p className="text-black">{formatDate(payment.created_at)}</p>
           </div>
           <div className="flex gap-4 pt-4">
@@ -195,7 +216,10 @@ interface PurchaseHistoryRowProps {
   payment: Payment;
   onViewDetails: (payment: Payment) => void;
 }
-const PurchaseHistoryRow = ({ payment, onViewDetails }: PurchaseHistoryRowProps) => {
+const PurchaseHistoryRow = ({
+  payment,
+  onViewDetails,
+}: PurchaseHistoryRowProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -310,7 +334,7 @@ Thank you for your business!
       </div>
       <div
         className={`w-[67px] text-base font-normal leading-[17.6px] ml-[46px] max-md:w-auto capitalize ${getStatusColor(
-          payment.status
+          payment.status,
         )}`}
       >
         {payment.status}
@@ -346,7 +370,13 @@ const LoadingSpinner = () => (
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
   </div>
 );
-const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
+const ErrorMessage = ({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) => (
   <div className="text-center py-12">
     <p className="text-red-600 mb-4">{message}</p>
     <button
@@ -360,7 +390,9 @@ const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => vo
 const EmptyState = () => (
   <div className="text-center py-12">
     <p className="text-gray-600 text-lg mb-4">No payment history found</p>
-    <p className="text-gray-500">Your payment history will appear here once you make a purchase.</p>
+    <p className="text-gray-500">
+      Your payment history will appear here once you make a purchase.
+    </p>
   </div>
 );
 const PurchaseHistoryTable = ({
@@ -406,7 +438,11 @@ const PurchaseHistoryTable = ({
       </div>
       <div className="w-[984px] h-px bg-[#555] mb-8" />
       {payments.map((payment) => (
-        <PurchaseHistoryRow key={payment.id} payment={payment} onViewDetails={onViewDetails} />
+        <PurchaseHistoryRow
+          key={payment.id}
+          payment={payment}
+          onViewDetails={onViewDetails}
+        />
       ))}
     </div>
   );
@@ -442,7 +478,9 @@ const PurchaseHistory = () => {
         if (response.status === 403) {
           throw new Error("Access denied. Please check your permissions.");
         }
-        throw new Error(`Failed to fetch payments: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch payments: ${response.status} ${response.statusText}`,
+        );
       }
       const data: PaymentResponse = await response.json();
       console.log("Payment data received:", data);
@@ -455,7 +493,9 @@ const PurchaseHistory = () => {
       setLastUpdated(new Date());
     } catch (err) {
       console.error("Error fetching payments:", err);
-      setError(err instanceof Error ? err.message : "Failed to load payment history");
+      setError(
+        err instanceof Error ? err.message : "Failed to load payment history",
+      );
     } finally {
       setLoading(false);
     }
@@ -473,7 +513,9 @@ const PurchaseHistory = () => {
     async (sessionId: string) => {
       try {
         console.log("Checking payment status for:", sessionId);
-        const currentPayment = payments.find((p) => p.stripe_session_id === sessionId);
+        const currentPayment = payments.find(
+          (p) => p.stripe_session_id === sessionId,
+        );
         if (currentPayment && currentPayment.status === "pending") {
           const shouldUpdate = Math.random() > 0.7;
           if (shouldUpdate) {
@@ -485,7 +527,7 @@ const PurchaseHistory = () => {
         console.error("Error checking payment status:", error);
       }
     },
-    [payments, refreshPayments]
+    [payments, refreshPayments],
   );
   const handleViewDetails = useCallback((payment: Payment) => {
     setSelectedPayment(payment);
@@ -500,7 +542,7 @@ const PurchaseHistory = () => {
   }, [fetchPayments]);
   useEffect(() => {
     const pendingPayments = payments.filter(
-      (p) => p.status === "pending" || p.status === "processing"
+      (p) => p.status === "pending" || p.status === "processing",
     );
     if (pendingPayments.length === 0) {
       return;
@@ -517,7 +559,7 @@ const PurchaseHistory = () => {
   }, [payments, checkPaymentStatus]);
   useEffect(() => {
     const hasPendingPayments = payments.some(
-      (p) => p.status === "pending" || p.status === "processing"
+      (p) => p.status === "pending" || p.status === "processing",
     );
     if (hasPendingPayments) {
       return;
@@ -541,18 +583,22 @@ const PurchaseHistory = () => {
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [lastUpdated, refreshPayments]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const ctx = useContext(UserContext)
+  const ctx = useContext(UserContext);
   const handleBackClick = () => {
-    navigate(`${ctx.url}`)
-    ctx.setEnabledSetting(true)
-  }
+    navigate(`${ctx.url}`);
+    ctx.setEnabledSetting(true);
+  };
   return (
     <div className="max-w-6xl mx-auto p-6 pt-24">
-      <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={handleBackClick}>
+      <div
+        className="flex items-center gap-4 cursor-pointer mb-12"
+        onClick={handleBackClick}
+      >
         <BackIcon />
         <div className="text-gray-600 text-2xl">Back</div>
       </div>

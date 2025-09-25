@@ -2,7 +2,7 @@ import About from "/assets/AboutUs.png";
 import { AiFillLinkedin } from "react-icons/ai";
 import { Footer } from "@/components/footer/Footer";
 
-export const AboutUs=()=> {
+export const AboutUs = () => {
   return (
     <>
       <main className="bg-[#c9c9c9] px-4 md:px-8 lg:px-12 py-8 md:py-12 lg:py-16 mt-8">
@@ -17,21 +17,25 @@ export const AboutUs=()=> {
                 <span className="font-medium">PRSPERA</span>
                 <span>
                   {" "}
-                  and inventor of the UPh™️ (Unifying Philosophy), a proven system for converting
-                  hidden intangible assets into measurable enterprise value. Harish is the author of
-                  Unconventional Business - 3 Startling Truths for Corporate Prosperity.
+                  and inventor of the UPh™️ (Unifying Philosophy), a proven
+                  system for converting hidden intangible assets into measurable
+                  enterprise value. Harish is the author of Unconventional
+                  Business - 3 Startling Truths for Corporate Prosperity.
                 </span>
               </p>
               <p>
-                With over three decades of experience advising 200+ CEOs, building 150+ brands, and
-                leading growth consultancies, he has helped businesses achieve premium exits and
-                sustainable wealth. After a health emergency in 2012 forced him to rebuild from
-                scratch, Harish returned with a renewed mission: to ensure leaders scale smarter,
-                preserve their legacy, and exit richer.
+                With over three decades of experience advising 200+ CEOs,
+                building 150+ brands, and leading growth consultancies, he has
+                helped businesses achieve premium exits and sustainable wealth.
+                After a health emergency in 2012 forced him to rebuild from
+                scratch, Harish returned with a renewed mission: to ensure
+                leaders scale smarter, preserve their legacy, and exit richer.
               </p>
             </div>
             <div className="pt-8 space-y-4">
-              <h3 className="text-2xl font-walbaum font-normal text-black">PRSPERA</h3>
+              <h3 className="text-2xl font-walbaum font-normal text-black">
+                PRSPERA
+              </h3>
               <div className="text-black font-linear-grotesk font-normal text-base md:text-lg leading-relaxed">
                 <p>99 Lamp Crescent</p>
                 <p>Vaughan Ontario</p>
@@ -68,6 +72,4 @@ export const AboutUs=()=> {
       <Footer />
     </>
   );
-}
-
-
+};

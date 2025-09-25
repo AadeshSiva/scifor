@@ -47,7 +47,10 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
         </p>
         <div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-2"
+            >
               Current Password
             </label>
             <input
@@ -103,7 +106,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [pendingFormData, setPendingFormData] = useState<ProfileFormData | null>(null);
+  const [pendingFormData, setPendingFormData] =
+    useState<ProfileFormData | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [notification, setNotification] = useState<{
@@ -127,13 +131,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       if (!token) {
         throw new Error("No authentication token found");
       }
-      const response = await fetch("https://api.prspera.com/extract-user-data/", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://api.prspera.com/extract-user-data/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
@@ -203,7 +210,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       setNotification({
         type: "success",
         message: "Profile updated successfully!",
-      })
+      });
       setIsPasswordModalOpen(false);
       setPendingFormData(null);
       // Call the onSubmit prop if provided
@@ -217,7 +224,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     } catch (error) {
       console.error("Error updating profile:", error);
       setPasswordError(
-        error instanceof Error ? error.message : "Failed to update profile. Please try again."
+        error instanceof Error
+          ? error.message
+          : "Failed to update profile. Please try again.",
       );
     } finally {
       setIsPasswordLoading(false);
@@ -237,13 +246,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   const handleConnectLinkedIn = () => {
     console.log("Connecting to LinkedIn...");
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const ctx = useContext(UserContext)
+  const ctx = useContext(UserContext);
   const handleBackClick = () => {
-    navigate(`${ctx.url}`)
-    ctx.setEnabledSetting(true)
-  }
+    navigate(`${ctx.url}`);
+    ctx.setEnabledSetting(true);
+  };
   if (isLoading) {
     return (
       <div className="flex pt-10 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32">
@@ -258,22 +267,29 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col pt-24 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32 justify-center items-center">
         {notification && (
           <div
-            className={`mb-6 p-4 rounded-lg ${notification.type === "success"
-              ? "bg-green-100 border border-green-300 text-green-700"
-              : "bg-red-100 border border-red-300 text-red-700"
-              }`}
+            className={`mb-6 p-4 rounded-lg ${
+              notification.type === "success"
+                ? "bg-green-100 border border-green-300 text-green-700"
+                : "bg-red-100 border border-red-300 text-red-700"
+            }`}
           >
             {notification.message}
           </div>
         )}
         <div className="max-w-4xl">
-          <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={handleBackClick}>
+          <div
+            className="flex items-center gap-4 cursor-pointer mb-12"
+            onClick={handleBackClick}
+          >
             <BackIcon />
             <div className="text-gray-600 text-2xl">Back</div>
           </div>
           <h1 className="text-3xl mb-10">Profile Information</h1>
           <div className="mb-10">
-            <label htmlFor="fullName" className="text-base font-semibold mb-3 block">
+            <label
+              htmlFor="fullName"
+              className="text-base font-semibold mb-3 block"
+            >
               Full Name*
             </label>
             <input
@@ -287,7 +303,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </div>
           <div className="mb-10">
-            <label htmlFor="phoneNumber" className="text-base font-semibold mb-3 block">
+            <label
+              htmlFor="phoneNumber"
+              className="text-base font-semibold mb-3 block"
+            >
               Phone No*
             </label>
             <input
@@ -301,7 +320,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </div>
           <div className="mb-10">
-            <label htmlFor="companyName" className="text-base font-semibold mb-3 block">
+            <label
+              htmlFor="companyName"
+              className="text-base font-semibold mb-3 block"
+            >
               Company Name
             </label>
             <input
@@ -314,7 +336,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </div>
           <div className="mb-10">
-            <label htmlFor="companyWebsite" className="text-base font-semibold mb-3 block">
+            <label
+              htmlFor="companyWebsite"
+              className="text-base font-semibold mb-3 block"
+            >
               Company Website
             </label>
             <input
@@ -327,7 +352,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </div>
           <div className="mb-10">
-            <label htmlFor="country" className="text-base font-semibold mb-3 block">
+            <label
+              htmlFor="country"
+              className="text-base font-semibold mb-3 block"
+            >
               Country*
             </label>
             <select
@@ -352,10 +380,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           </div>
           <div className="flex justify-between items-end mb-16">
             <div className="max-w-2xl">
-              <div className="text-base font-semibold mb-3">LinkedIn Profile</div>
+              <div className="text-base font-semibold mb-3">
+                LinkedIn Profile
+              </div>
               <div className="text-base text-gray-700 leading-normal">
-                Connect your LinkedIn profile to verify your professional identity and enhance your
-                credibility.
+                Connect your LinkedIn profile to verify your professional
+                identity and enhance your credibility.
               </div>
             </div>
             <button

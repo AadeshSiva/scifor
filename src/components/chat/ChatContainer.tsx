@@ -1,11 +1,11 @@
-import React from 'react';
-import { ChatMessage } from './ChatMessage';
-import { ChatHeader } from './ChatHeader';
-import { ChatInput } from './ChatInput';
+import React from "react";
+import { ChatMessage } from "./ChatMessage";
+import { ChatHeader } from "./ChatHeader";
+import { ChatInput } from "./ChatInput";
 
 export const ChatContainer: React.FC = () => {
   const handleSendMessage = (message: string) => {
-    console.log('Sending message:', message);
+    console.log("Sending message:", message);
   };
   return (
     <main className="flex flex-col h-full">
@@ -19,7 +19,7 @@ export const ChatContainer: React.FC = () => {
             message="Hello! I'm your AI assistant. How can I help you today?"
             sender="Alen McCraw"
             time="10:30 AM"
-          />  
+          />
           <ChatMessage
             message="Making good progress ! I'll share to you"
             sender="You"
@@ -32,7 +32,7 @@ export const ChatContainer: React.FC = () => {
             message="Sure ! Let me share you the details now"
             sender="Alen McCraw"
             time="10:30 AM"
-          />          
+          />
           <ChatMessage
             message="Making good progress ! I'll share to you"
             sender="You"

@@ -17,7 +17,9 @@ export function AuthForm({
     compact ? (
       <>{children}</>
     ) : (
-      <div className="flex w-full h-screen items-center justify-center">{children}</div>
+      <div className="flex w-full h-screen items-center justify-center">
+        {children}
+      </div>
     );
   return (
     <Wrapper>

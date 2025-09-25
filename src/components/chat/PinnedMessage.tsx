@@ -1,9 +1,14 @@
-import {  ArrowRightCircle, MessageSquare } from 'lucide-react';
+import { ArrowRightCircle, MessageSquare } from "lucide-react";
 
-const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) => {
+const PinnedMessages = ({
+  messages,
+  totalMessages,
+  onClose,
+  onJumpToMessage,
+}) => {
   const groupMessagesByDate = (messages) => {
     const grouped = {};
-    messages.forEach(message => {
+    messages.forEach((message) => {
       const date = message.date;
       if (!grouped[date]) {
         grouped[date] = [];
@@ -13,13 +18,13 @@ const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) =
     return grouped;
   };
   const groupedMessages = groupMessagesByDate(messages);
-  const today = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+  const today = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
   const getDateDisplayText = (date) => {
-    return date === today ? 'Today' : date;
+    return date === today ? "Today" : date;
   };
   return (
     <div className="flex flex-col h-full bg-white">
@@ -29,8 +34,20 @@ const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) =
             onClick={onClose}
             className="p-1 hover:bg-neutral-100 rounded-full"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 18l-6-6 6-6" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="#555"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
           <div className="text-lg text-black font-linear">
@@ -44,8 +61,13 @@ const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) =
             <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4">
               <MessageSquare size={24} stroke="#9E9E9E" />
             </div>
-            <h2 className="text-lg font-medium text-black mb-2">No pinned messages</h2>
-            <p className="text-[#9E9E9E] text-sm">Pin important messages to keep them handy for everyone in the chat.</p>
+            <h2 className="text-lg font-medium text-black mb-2">
+              No pinned messages
+            </h2>
+            <p className="text-[#9E9E9E] text-sm">
+              Pin important messages to keep them handy for everyone in the
+              chat.
+            </p>
           </div>
         ) : (
           <div className="p-4 space-y-6">
@@ -60,7 +82,10 @@ const PinnedMessages = ({ messages, totalMessages, onClose, onJumpToMessage }) =
                 </div>
                 <div className="space-y-8">
                   {dateMessages.map((message) => (
-                    <div key={message.messageId} className="flex items-end gap-3">
+                    <div
+                      key={message.messageId}
+                      className="flex items-end gap-3"
+                    >
                       <div
                         onClick={() => onJumpToMessage(message.messageId)}
                         className="bg-[#cbcbcb66] border max-w-xl border-[rgba(158,158,158,0.3)] rounded-lg p-4 hover:bg-[#d2d2d266] cursor-pointer transition-colors flex-1"

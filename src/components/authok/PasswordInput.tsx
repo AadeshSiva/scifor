@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PasswordInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   required?: boolean;
   placeholder?: string;
@@ -31,7 +32,9 @@ export function PasswordInput({
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           className={`border text-sm w-full px-4 py-2.5 pr-12 rounded-lg border-solid transition-colors focus:outline-none ${
-            error ? 'border-red-500 focus:border-red-500' : 'border-gray-400 focus:border-black'
+            error
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-400 focus:border-black"
           }`}
           required={required}
           {...props}
@@ -49,9 +52,7 @@ export function PasswordInput({
           )}
         </button>
       </div>
-      {error && (
-        <span className="text-red-500 text-sm">{error}</span>
-      )}
+      {error && <span className="text-red-500 text-sm">{error}</span>}
     </div>
   );
 }

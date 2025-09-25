@@ -21,13 +21,16 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState<boolean>(false);
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState<boolean>(false);
+  const [showForgotPasswordPopup, setShowForgotPasswordPopup] =
+    useState<boolean>(false);
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
     if (!currentPassword) {
@@ -46,7 +49,9 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ): Promise<void> => {
     e.preventDefault();
     if (!validateForm()) {
       return;
@@ -97,7 +102,9 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
       }, 5000);
     } catch (error) {
       console.error("Password change error:", error);
-      setErrors({ form: "Network error. Please check your connection and try again." });
+      setErrors({
+        form: "Network error. Please check your connection and try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -109,16 +116,18 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
     setShowForgotPasswordPopup(false);
   };
   const handleForgotPasswordSuccess = (): void => {
-    setSuccessMessage("Password has been reset successfully! You can now use your new password.");
+    setSuccessMessage(
+      "Password has been reset successfully! You can now use your new password.",
+    );
     setTimeout(() => {
       setSuccessMessage("");
     }, 5000);
   };
-  const navigate=useNavigate();
-  const ctx=useContext(UserContext)
+  const navigate = useNavigate();
+  const ctx = useContext(UserContext);
   const handleBack = (): void => {
-    navigate(`${ctx.url}`)
-    ctx.setEnabledSetting(true)
+    navigate(`${ctx.url}`);
+    ctx.setEnabledSetting(true);
   };
   const EyeIcon: React.FC = () => (
     <svg
@@ -152,19 +161,20 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
       <line x1="1" y1="1" x2="23" y2="23"></line>
     </svg>
   );
-  const togglePasswordVisibility = (field: "current" | "new" | "confirm") => (): void => {
-    switch (field) {
-      case "current":
-        setShowCurrentPassword(!showCurrentPassword);
-        break;
-      case "new":
-        setShowNewPassword(!showNewPassword);
-        break;
-      case "confirm":
-        setShowConfirmPassword(!showConfirmPassword);
-        break;
-    }
-  };
+  const togglePasswordVisibility =
+    (field: "current" | "new" | "confirm") => (): void => {
+      switch (field) {
+        case "current":
+          setShowCurrentPassword(!showCurrentPassword);
+          break;
+        case "new":
+          setShowNewPassword(!showNewPassword);
+          break;
+        case "confirm":
+          setShowConfirmPassword(!showConfirmPassword);
+          break;
+      }
+    };
   const handleInputChange =
     (field: "current" | "new" | "confirm") =>
     (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -185,7 +195,9 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
     <div className="flex w-full flex-col font-normal mt-24 max-md:max-w-full max-md:mt-10 px-16 align-items">
       <BackButton onClick={handleBack} />
 
-      <h1 className="text-[#0A2533] text-3xl leading-tight mt-12">Change Password</h1>
+      <h1 className="text-[#0A2533] text-3xl leading-tight mt-12">
+        Change Password
+      </h1>
 
       <p className="text-[#555555] text-lg leading-normal mt-3.5 max-md:max-w-full">
         Create a new password that is at least 6 characters long.
@@ -193,7 +205,11 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
       {successMessage && (
         <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mt-6">
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -207,7 +223,11 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
       {errors.form && (
         <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mt-6">
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -219,7 +239,10 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
         </div>
       )}
       <div className="mt-7">
-        <label htmlFor="current-password" className="text-[#0A2533] text-lg leading-normal">
+        <label
+          htmlFor="current-password"
+          className="text-[#0A2533] text-lg leading-normal"
+        >
           Type your current password <span className="text-red-500">*</span>
         </label>
 
@@ -254,7 +277,10 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
         )}
       </div>
       <div className="self-stretch flex gap-5 flex-wrap justify-between mt-6">
-        <label htmlFor="new-password" className="text-[#0A2533] text-lg leading-normal">
+        <label
+          htmlFor="new-password"
+          className="text-[#0A2533] text-lg leading-normal"
+        >
           Type your new password <span className="text-red-500">*</span>
         </label>
         <button
@@ -291,9 +317,14 @@ export const PasswordChangeForm: React.FC<PasswordProps> = ({ setDisplay }) => {
           {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
         </button>
       </div>
-      {errors.newPassword && <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>}
+      {errors.newPassword && (
+        <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+      )}
       <div className="mt-6">
-        <label htmlFor="confirm-password" className="text-[#0A2533] text-lg leading-normal">
+        <label
+          htmlFor="confirm-password"
+          className="text-[#0A2533] text-lg leading-normal"
+        >
           Retype your new password <span className="text-red-500">*</span>
         </label>
         <div

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 interface User {
   role: string;
   price: ReactNode;
@@ -37,15 +43,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const isAuthenticated = !!user;
-  const fetchUserDetails = async (accessToken: string): Promise<User | null> => {
+  const fetchUserDetails = async (
+    accessToken: string,
+  ): Promise<User | null> => {
     try {
-      const response = await fetch("https://api.prspera.com/extract-user-data/", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://api.prspera.com/extract-user-data/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       if (response.ok) {
         const userData = await response.json();
         return userData.user_data;
@@ -105,13 +116,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return;
     }
     try {
-      const response = await fetch("https://api.prspera.com/api/token/refresh/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://api.prspera.com/api/token/refresh/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refresh: refreshToken }),
         },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
+      );
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("access_token", data.access);

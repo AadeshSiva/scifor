@@ -20,16 +20,17 @@ const COI: React.FC = () => {
         </section>
         <section className="flex flex-col justify-center items-center gap-4 max-w-[1036px] w-full mx-auto px-0 py-10 max-sm:p-5 font-linear">
           <h3 className="text-black text-2xl text-center max-w-[800px] w-full max-sm:text-lg">
-            When 84% of your business value is locked inside your intangible assets
+            When 84% of your business value is locked inside your intangible
+            assets
           </h3>
           <p className="text-[#6f6f6f] text-center text-2xl font-normal max-w-[1036px] w-full max-sm:text-lg">
-            (your brand, goodwill, strategic advantage, growth potential, intellectual property,
-            human capital etc)​{" "}
+            (your brand, goodwill, strategic advantage, growth potential,
+            intellectual property, human capital etc)​{" "}
           </p>
           <div className="text-black text-center text-2xl max-w-[900px] w-full max-sm:text-lg">
             <p>
-              your business value and generational wealth is at risk – unless you unlock that
-              value...​
+              your business value and generational wealth is at risk – unless
+              you unlock that value...​
             </p>
           </div>
         </section>

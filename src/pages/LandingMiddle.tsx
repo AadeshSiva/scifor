@@ -51,16 +51,22 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
         id={`content-${id}`}
         className="bg-gradient-to-b from-gray-200 to-transparent w-full mt-8 sm:mt-10 px-4 sm:px-6 md:px-8 pb-8 sm:pb-12 hidden flex flex-col"
       >
-        <img src={PyramidDiagram} alt="Pyramid Diagram" className="w-full max-w-md mx-auto" />
+        <img
+          src={PyramidDiagram}
+          alt="Pyramid Diagram"
+          className="w-full max-w-md mx-auto"
+        />
 
         <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
-          This is your personal AI advisory layer — designed to learn your business, your tone, and
-          your needs over time - and no one else will ever know.
+          This is your personal AI advisory layer — designed to learn your
+          business, your tone, and your needs over time - and no one else will
+          ever know.
         </p>
 
         <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
-          It answers hard questions. It escalates when needed. It thinks with you. And unlike
-          ChatGPT… it's yours. No one else can ever see your thoughts.
+          It answers hard questions. It escalates when needed. It thinks with
+          you. And unlike ChatGPT… it's yours. No one else can ever see your
+          thoughts.
         </p>
 
         <div className="flex flex-col sm:flex-row mt-6 sm:mt-8 text-base sm:text-lg gap-4 sm:gap-0">
@@ -68,23 +74,23 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
             <h1 className="text-black font-semibold">DO THIS</h1>
 
             <div className="flex gap-2 mt-4">
-              <Check className="flex-shrink-0 mt-1" /> 
+              <Check className="flex-shrink-0 mt-1" />
               <span>It gets smarter the more you see it.</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <Check className="flex-shrink-0 mt-1" /> 
+              <Check className="flex-shrink-0 mt-1" />
               <span>You stop wasting time looking for insight</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <Check className="flex-shrink-0 mt-1" /> 
+              <Check className="flex-shrink-0 mt-1" />
               <span>It connects dots across your tools, data, and docs</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <Check className="flex-shrink-0 mt-1" /> 
+              <Check className="flex-shrink-0 mt-1" />
               <span>If it can't help, we send a human who can</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <Check className="flex-shrink-0 mt-1" /> 
+              <Check className="flex-shrink-0 mt-1" />
               <span>It's not a chatbot. It's a thought partner</span>
             </div>
           </div>
@@ -92,32 +98,35 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
           <div className="w-full sm:w-1/2 bg-pink-100 p-4 sm:p-6 text-pink-600 font-thin">
             <h1 className="text-pink-950 font-semibold">DON'T DO THIS</h1>
             <div className="flex gap-2 mt-4">
-              <X className="flex-shrink-0 mt-1" /> 
+              <X className="flex-shrink-0 mt-1" />
               <span>You'll keep bottlenecking decisions.</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <X className="flex-shrink-0 mt-1" /> 
+              <X className="flex-shrink-0 mt-1" />
               <span>You'll overpay for slow advice</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <X className="flex-shrink-0 mt-1" /> 
+              <X className="flex-shrink-0 mt-1" />
               <span>You'll miss chances to act quickly and win</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <X className="flex-shrink-0 mt-1" /> 
+              <X className="flex-shrink-0 mt-1" />
               <span>You'll treat strategy like a task — not a muscle</span>
             </div>
             <div className="flex gap-2 mt-4">
-              <X className="flex-shrink-0 mt-1" /> 
-              <span>You'll stay reactive when you could be radically proactive​</span>
+              <X className="flex-shrink-0 mt-1" />
+              <span>
+                You'll stay reactive when you could be radically proactive​
+              </span>
             </div>
           </div>
         </div>
 
         <p className="font-thin text-lg sm:text-xl mt-6 sm:mt-8">
-          Log into <span className="font-semibold">mivalua</span>™ - your personal AI strategy GPT
-          now. No consultants. No sales pitch. Just you and clarity — 24/7. Close your Exit Gap,
-          privately, personally for FREE.
+          Log into <span className="font-semibold">mivalua</span>™ - your
+          personal AI strategy GPT now. No consultants. No sales pitch. Just you
+          and clarity — 24/7. Close your Exit Gap, privately, personally for
+          FREE.
         </p>
         <button className="mx-auto text-lg sm:text-xl bg-black text-[#DBA958] px-6 sm:px-8 py-3 sm:py-4 mt-10 sm:mt-14 font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-300">
           Register For The Webinar
@@ -128,11 +137,7 @@ const Dropdown: React.FC<DropdownProps> = ({ id }) => {
 };
 
 function DropdownSection() {
-  return (
-    <div >
-      
-    </div>
-  );
+  return <div></div>;
 }
 
 const Index: React.FC = () => {

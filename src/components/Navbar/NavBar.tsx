@@ -9,15 +9,14 @@ const NavBar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [dashboardMobile, setDashboard] = useState<boolean>(false);
-  const urldashboard = window.location.pathname
+  const urldashboard = window.location.pathname;
   useEffect(() => {
-    if (urldashboard == '/dashboard') {
-      setDashboard(true)
+    if (urldashboard == "/dashboard") {
+      setDashboard(true);
+    } else {
+      setDashboard(false);
     }
-    else {
-      setDashboard(false)
-    }
-  }, [urldashboard])
+  }, [urldashboard]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,62 +61,58 @@ const NavBar: React.FC = () => {
                 Grow Smarter<span className="font-bold">.Exit Richer™️</span>
               </span>
             </div>
-          ) :
-            (
-              <>
-                {dashboardMobile ? (
-                  <div
-                    className="flex cursor-pointer ml-24"
-                    onClick={() => {
-                      navigate("/");
-                    }}
-                  >
-                    <img
-                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-                      alt="Prospera Logo"
-                      className="w-[190px] h-[30px]"
-                    />
-                    <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-                      Grow Smarter<span className="font-bold">.Exit Richer™️</span>
-                    </span>
-                  </div>
-                ) : (
-                  <div
-                    className="flex cursor-pointer"
-                    onClick={() => {
-                      navigate("/");
-                    }}
-                  >
-                    <img
-                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
-                      alt="Prospera Logo"
-                      className="w-[190px] h-[30px]"
-                    />
-                    <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
-                      Grow Smarter<span className="font-bold">.Exit Richer™️</span>
-                    </span>
-                  </div>
-                )
-                }
-              </>
-            )
-          }
+          ) : (
+            <>
+              {dashboardMobile ? (
+                <div
+                  className="flex cursor-pointer ml-24"
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                >
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+                    alt="Prospera Logo"
+                    className="w-[190px] h-[30px]"
+                  />
+                  <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+                    Grow Smarter
+                    <span className="font-bold">.Exit Richer™️</span>
+                  </span>
+                </div>
+              ) : (
+                <div
+                  className="flex cursor-pointer"
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                >
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
+                    alt="Prospera Logo"
+                    className="w-[190px] h-[30px]"
+                  />
+                  <span className="text-black text-lg font-medium whitespace-nowrap max-sm:hidden">
+                    Grow Smarter
+                    <span className="font-bold">.Exit Richer™️</span>
+                  </span>
+                </div>
+              )}
+            </>
+          )}
           <div className="gap-4 relative">
             {isAuthenticated ? (
               <div className="flex flex-row items-center justify-center relative gap-4">
-                {(location.pathname !== "/dashboard") && (
+                {location.pathname !== "/dashboard" && (
                   <>
-                    {
-                      !isMobile &&
-                      (
-                        <button
-                          onClick={() => navigate("/dashboard")}
-                          className="flex items-center justify-center px-3 h-7 text-md text-white bg-gray-800 transition-colors hover:bg-gray-700"
-                        >
-                          Dashboard
-                        </button>
-                      )
-                    }
+                    {!isMobile && (
+                      <button
+                        onClick={() => navigate("/dashboard")}
+                        className="flex items-center justify-center px-3 h-7 text-md text-white bg-gray-800 transition-colors hover:bg-gray-700"
+                      >
+                        Dashboard
+                      </button>
+                    )}
                   </>
                 )}
                 <button
@@ -129,8 +124,13 @@ const NavBar: React.FC = () => {
                 {showDropdown && (
                   <div className="absolute right-0 mt-[375px] w-64 bg-white rounded-md shadow-lg py-1 z-50 border mr-4">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                      <div className="font-medium truncate">{user?.full_name}</div>
-                      <div className="text-gray-500 truncate" title={user?.email}>
+                      <div className="font-medium truncate">
+                        {user?.full_name}
+                      </div>
+                      <div
+                        className="text-gray-500 truncate"
+                        title={user?.email}
+                      >
                         {user?.email ? truncateEmail(user.email) : ""}
                       </div>
                     </div>
@@ -140,23 +140,21 @@ const NavBar: React.FC = () => {
                     >
                       COI
                     </button>
-                    {
-                      user.role !== "paid_user" ? (
-                        <button
-                          onClick={() => navigate("/pricing-plan")}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        >
-                          Pricing Plan
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => navigate("/pricing-plan")}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        >
-                          Currect Plan
-                        </button>
-                      )
-                    }
+                    {user.role !== "paid_user" ? (
+                      <button
+                        onClick={() => navigate("/pricing-plan")}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      >
+                        Pricing Plan
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => navigate("/pricing-plan")}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                      >
+                        Currect Plan
+                      </button>
+                    )}
                     <button
                       onClick={() => navigate("/proof")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -253,14 +251,14 @@ const NavBar: React.FC = () => {
                           >
                             About Us
                           </button>
-                          {location.pathname !== "/auth" &&
+                          {location.pathname !== "/auth" && (
                             <button
                               className="flex items-center justify-center w-full py-1 text-md transition-colors font-light border text-white bg-black"
                               onClick={() => navigate("/auth?view=login")}
                             >
                               <span className="text-md">Login</span>
                             </button>
-                          }
+                          )}
                         </div>
                       )}
                     </div>
@@ -303,14 +301,14 @@ const NavBar: React.FC = () => {
                     >
                       <span className="text-md">About Us</span>
                     </button>
-                    {location.pathname !== "/auth" &&
+                    {location.pathname !== "/auth" && (
                       <button
                         className="flex items-center justify-center w-24 h-8 text-lg transition-colors font-light border text-white bg-black"
                         onClick={() => navigate("/auth?view=login")}
                       >
                         <span className="text-md">Login</span>
                       </button>
-                    }
+                    )}
                   </div>
                 )}
               </>
@@ -318,7 +316,10 @@ const NavBar: React.FC = () => {
           </div>
         </header>
         {showDropdown && (
-          <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setShowDropdown(false)}
+          />
         )}
       </div>
     </>

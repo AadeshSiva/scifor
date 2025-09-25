@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 interface SidebarProps {
   userName: string;
 }
@@ -11,9 +11,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           alt="User avatar"
           className="aspect-[1] object-contain w-8 shrink-0 rounded-[50%]"
         />
-        <div>
-          Welcome {userName} 👋
-        </div>
+        <div>Welcome {userName} 👋</div>
       </div>
       <div className="bg-white flex items-center gap-[7px] px-6 py-3.5">
         <img
@@ -21,25 +19,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           alt="Chat icon"
           className="aspect-[1] object-contain w-6 shrink-0"
         />
-        <div className="grow">
-          Anonymous Group Chat
-        </div>
+        <div className="grow">Anonymous Group Chat</div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {Array(10).fill(null).map((_, index) => (
-          <div key={index} className="bg-neutral-100 flex items-center gap-2.5 pl-6 pr-2.5 py-3.5">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets/57222bbc81684d2091cbea74e310342f/314922202740eafaa2e58e27e387fcecfb9e9c69?placeholderIfAbsent=true"
-              alt="Menu item icon"
-              className="aspect-[0.75] object-contain w-[18px] shrink-0"
-            />
-            <div>
-              {index === 0 ? 'Exit Wealth Calculator' : 
-              index === 1 ? 'Item Title (coming soon)' : 
-              'Item Title'}
+        {Array(10)
+          .fill(null)
+          .map((_, index) => (
+            <div
+              key={index}
+              className="bg-neutral-100 flex items-center gap-2.5 pl-6 pr-2.5 py-3.5"
+            >
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/57222bbc81684d2091cbea74e310342f/314922202740eafaa2e58e27e387fcecfb9e9c69?placeholderIfAbsent=true"
+                alt="Menu item icon"
+                className="aspect-[0.75] object-contain w-[18px] shrink-0"
+              />
+              <div>
+                {index === 0
+                  ? "Exit Wealth Calculator"
+                  : index === 1
+                    ? "Item Title (coming soon)"
+                    : "Item Title"}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
       <div className="mt-auto">
         <div className="flex items-center gap-3 font-normal whitespace-nowrap pl-6 py-3">

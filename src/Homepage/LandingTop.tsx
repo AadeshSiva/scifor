@@ -34,25 +34,34 @@ const HeroSection: React.FC = () => {
           </div>
           <div className="w-full lg:w-1/2 text-left space-y-6 text-[1.05rem] md:text-lg lg:text-xl font-linear font-light text-black">
             <p>
-              Welcome to the World’s One and Only, Fact–Based Platform to help you build a valuable
-              business — via your most lucrative assets, tax effectively.
+              Welcome to the World’s One and Only, Fact–Based Platform to help
+              you build a valuable business — via your most lucrative assets,
+              tax effectively.
             </p>
             <div>
               <p className="mb-2">Did you know:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>
-                  84% of your business value is intangible <span className="text-gray-700">[PWC]</span>
-                  <span className="block text-gray-700"> (how will you monetize it)</span>
+                  84% of your business value is intangible{" "}
+                  <span className="text-gray-700">[PWC]</span>
+                  <span className="block text-gray-700">
+                    {" "}
+                    (how will you monetize it)
+                  </span>
                 </li>
                 <li>
-                  77% of staff are disengaged globally <span className="text-gray-700">[Gallup]</span>
-                  <span className="block text-gray-700"> (that hurts your business value, every day)</span>
+                  77% of staff are disengaged globally{" "}
+                  <span className="text-gray-700">[Gallup]</span>
+                  <span className="block text-gray-700">
+                    {" "}
+                    (that hurts your business value, every day)
+                  </span>
                 </li>
               </ul>
             </div>
             <p>
-              Our proven solution is the one and only way to maximize, monetizable value of your
-              business — tax smart.
+              Our proven solution is the one and only way to maximize,
+              monetizable value of your business — tax smart.
             </p>
             <p>See for yourself.</p>
           </div>
@@ -117,38 +126,68 @@ export const StorySection: React.FC = () => {
             </h3>
             <div className="font-linear font-thin text-[#F2F2F2] text-[17px] md:text-[18px] lg:text-[19px] leading-7 space-y-3">
               <p className="leading-7">
-                Canadian Entrepreneur.<br />
-                Founder. Former CEO of Rodair.<br />
-                UPh<span style={{ fontSize: "1.8rem" }}>™</span> Global Ambassador
+                Canadian Entrepreneur.
+                <br />
+                Founder. Former CEO of Rodair.
+                <br />
+                UPh<span style={{ fontSize: "1.8rem" }}>™</span> Global
+                Ambassador
               </p>
               <p>
-                Jeff and his team didn’t just build a company called Rodair — they created a business with marketable value —
-                driven by <span className="font-semibold text-white">Prosperity For All<span style={{ fontSize: "1.8rem" }}>™</span></span>.
+                Jeff and his team didn’t just build a company called Rodair —
+                they created a business with marketable value — driven by{" "}
+                <span className="font-semibold text-white">
+                  Prosperity For All
+                  <span style={{ fontSize: "1.8rem" }}>™</span>
+                </span>
+                .
               </p>
               <p className="leading-7">
                 <span className="font-semibold text-white">
                   Prosperity For All
                   <span style={{ fontSize: "1.8rem" }}>™</span>
-                </span><br />
-                This was not a slogan or mission statement. This was the DNA of their business
-                in 6 words or less — also known as their Unifying Philosophy (UPh
+                </span>
+                <br />
+                This was not a slogan or mission statement. This was the DNA of
+                their business in 6 words or less — also known as their Unifying
+                Philosophy (UPh
                 <span style={{ fontSize: "1.8rem" }}>™</span>).
               </p>
               <p className="leading-7">
-                Their UPh–powered business was an:<br />
-                <span className="pl-5">▪ award–winning (multiple business awards)</span><br />
-                <span className="pl-5">▪ High–margin (25% higher than industry)</span><br />
-                <span className="pl-5">▪ culture–led business (near perfect engagement)</span><br />
-                resulting in a <span className="font-semibold text-white">double–digit multiplier exit</span> that monetized,
-                <span className="font-semibold text-white"> intangible assets — tax efficiently</span>.
+                Their UPh–powered business was an:
+                <br />
+                <span className="pl-5">
+                  ▪ award–winning (multiple business awards)
+                </span>
+                <br />
+                <span className="pl-5">
+                  ▪ High–margin (25% higher than industry)
+                </span>
+                <br />
+                <span className="pl-5">
+                  ▪ culture–led business (near perfect engagement)
+                </span>
+                <br />
+                resulting in a{" "}
+                <span className="font-semibold text-white">
+                  double–digit multiplier exit
+                </span>{" "}
+                that monetized,
+                <span className="font-semibold text-white">
+                  {" "}
+                  intangible assets — tax efficiently
+                </span>
+                .
               </p>
               <p>
-                Rodair’s Prosperity For All became a world–first: the first UPh operationalized business that maximized enterprise
-                value via their intangible assets.
+                Rodair’s Prosperity For All became a world–first: the first UPh
+                operationalized business that maximized enterprise value via
+                their intangible assets.
               </p>
               <p>
-                Their UPh<span style={{ fontSize: "1.8rem" }}>™</span> remarkably monetized these intangible assets all tax effectively —
-                creating generational wealth
+                Their UPh<span style={{ fontSize: "1.8rem" }}>™</span>{" "}
+                remarkably monetized these intangible assets all tax effectively
+                — creating generational wealth
               </p>
             </div>
           </div>
@@ -158,7 +197,9 @@ export const StorySection: React.FC = () => {
         <div className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin mb-16">
           <h1 className="font-thin">From dream to done</h1>
           <h1 className="font-normal mt-5">with 6 words or less.</h1>
-          <p className="font-linear font-thin text-3xl mt-10">Here's What Jeff Did</p>
+          <p className="font-linear font-thin text-3xl mt-10">
+            Here's What Jeff Did
+          </p>
         </div>
         <img
           src={JetImg}
@@ -178,8 +219,9 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                The "Prosperity Wheel" aligned incentives, maximized enterprise value, and made
-                every supplier, investor, staff, and customer a "value growth" engine.
+                The "Prosperity Wheel" aligned incentives, maximized enterprise
+                value, and made every supplier, investor, staff, and customer a
+                "value growth" engine.
               </p>
             </div>
             <div className="w-[300px]">
@@ -192,9 +234,9 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                A meeting in NYC with Fast Company magazine prompted to revisit our DNA and
-                optimizing it. Why we built it, how we implemented it, and why it worked—financially
-                and morally.
+                A meeting in NYC with Fast Company magazine prompted to revisit
+                our DNA and optimizing it. Why we built it, how we implemented
+                it, and why it worked—financially and morally.
               </p>
             </div>
             <div className="w-[300px]">
@@ -207,8 +249,9 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                A founder’s tale of two journeys. I’ll show the 7 game-changing shifts that helped
-                us grow smarter, exit richer, and live our DNA long after the deal.
+                A founder’s tale of two journeys. I’ll show the 7 game-changing
+                shifts that helped us grow smarter, exit richer, and live our
+                DNA long after the deal.
               </p>
             </div>
             <div className="w-[300px]">
@@ -221,8 +264,8 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                How we built a company that was buyer ready – making it valuable, higher performing
-                while reducing buyer risk.
+                How we built a company that was buyer ready – making it
+                valuable, higher performing while reducing buyer risk.
               </p>
             </div>
             <div className="w-[300px]">
@@ -235,9 +278,9 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                From day-one we worked hard to be investor-grade – a company that maximized,
-                marketable, monetizable value. Everything we did financially was reported regularly
-                and transparently to staff.
+                From day-one we worked hard to be investor-grade – a company
+                that maximized, marketable, monetizable value. Everything we did
+                financially was reported regularly and transparently to staff.
               </p>
             </div>
             <div className="w-[300px]">
@@ -250,9 +293,9 @@ export const StorySection: React.FC = () => {
                 Click to reveal
               </button>
               <p className="reveal-para text-white font-medium ms-4 hidden">
-                The 1.5 year due diligence was not just about the numbers – we made sure that our
-                people had a way to prosper post-sale and this helped all of us live with integrity
-                and pride every day.
+                The 1.5 year due diligence was not just about the numbers – we
+                made sure that our people had a way to prosper post-sale and
+                this helped all of us live with integrity and pride every day.
               </p>
             </div>
           </div>
@@ -264,7 +307,7 @@ export const StorySection: React.FC = () => {
 const Index: React.FC = () => {
   return (
     <div className="relative">
-      <HeroSection /> 
+      <HeroSection />
       <StorySection />
     </div>
   );

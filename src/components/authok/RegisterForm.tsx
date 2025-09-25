@@ -55,7 +55,7 @@ interface RegisterFormProps {
 export function RegisterForm({
   onSwitchToLogin,
   onSuccess,
-  onClose
+  onClose,
 }: {
   onSwitchToLogin: () => void;
   onSuccess?: (user?: any) => void;
@@ -117,20 +117,26 @@ export function RegisterForm({
   const isValidWebsiteUrl = (url: string): boolean => {
     try {
       const urlToTest =
-        url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
+        url.startsWith("http://") || url.startsWith("https://")
+          ? url
+          : `https://${url}`;
       const urlObj = new URL(urlToTest);
       return !!urlObj.hostname && urlObj.hostname.includes(".");
     } catch {
       return false;
     }
   };
-  const validateField = (name: keyof FormData, value: string): string | undefined => {
+  const validateField = (
+    name: keyof FormData,
+    value: string,
+  ): string | undefined => {
     switch (name) {
       case "full_name":
         return !value.trim() ? "Full name is required" : undefined;
       case "email":
         if (!value.trim()) return "Email is required";
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Please enter a valid email address";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Please enter a valid email address";
         return undefined;
       case "password":
         if (!value) return "Password is required";
@@ -175,9 +181,15 @@ export function RegisterForm({
       ...prev,
       [fieldName]: error,
     }));
-    if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
+    if (
+      fieldName === "password" &&
+      fieldTouched.confirmPassword &&
+      formData.confirmPassword
+    ) {
       const confirmPasswordError =
-        formData.password !== formData.confirmPassword ? "Passwords do not match" : undefined;
+        formData.password !== formData.confirmPassword
+          ? "Passwords do not match"
+          : undefined;
       setErrors((prev) => ({
         ...prev,
         confirmPassword: confirmPasswordError,
@@ -197,9 +209,15 @@ export function RegisterForm({
         [name]: undefined,
       }));
     }
-    if (fieldName === "password" && fieldTouched.confirmPassword && formData.confirmPassword) {
+    if (
+      fieldName === "password" &&
+      fieldTouched.confirmPassword &&
+      formData.confirmPassword
+    ) {
       const confirmPasswordError =
-        value !== formData.confirmPassword ? "Passwords do not match" : undefined;
+        value !== formData.confirmPassword
+          ? "Passwords do not match"
+          : undefined;
       setErrors((prev) => ({
         ...prev,
         confirmPassword: confirmPasswordError,
@@ -227,7 +245,10 @@ export function RegisterForm({
       }
     }
   };
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleOtpKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ): void => {
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -269,14 +290,17 @@ export function RegisterForm({
       clearTimeout(timeoutId);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(
+          errorData.message ||
+            `HTTP ${response.status}: ${response.statusText}`,
+        );
       }
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
       if (error instanceof Error && error.name === "AbortError") {
         throw new Error(
-          "The request took too long. Our servers might be waking up — please try again."
+          "The request took too long. Our servers might be waking up — please try again.",
         );
       }
       throw error;
@@ -300,15 +324,19 @@ export function RegisterForm({
     setLoading(true);
     setErrors({});
     try {
-      const checkData: CheckEmailResponse = await makeApiCall("/check_email_status/", {
-        email: formData.email,
-      });
+      const checkData: CheckEmailResponse = await makeApiCall(
+        "/check_email_status/",
+        {
+          email: formData.email,
+        },
+      );
       if (checkData.user_exists) {
         setErrors({
-          email: `${checkData.paid
-            ? "Email already registered as a Member in Prspera. Please log in."
-            : "Email already registered as a Guest in Prespera. Please log in."
-            }`,
+          email: `${
+            checkData.paid
+              ? "Email already registered as a Member in Prspera. Please log in."
+              : "Email already registered as a Guest in Prespera. Please log in."
+          }`,
         });
         setLoading(false);
         return;
@@ -317,7 +345,9 @@ export function RegisterForm({
     } catch (error) {
       console.error("Pre-registration error:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "Network error. Please try again.";
+        error instanceof Error
+          ? error.message
+          : "Network error. Please try again.";
       setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
@@ -333,16 +363,21 @@ export function RegisterForm({
       }
     } catch (error) {
       setErrors({
-        general: error instanceof Error ? error.message : "Failed to send OTP. Please try again.",
+        general:
+          error instanceof Error
+            ? error.message
+            : "Failed to send OTP. Please try again.",
       });
     } finally {
-      setLoading(true)
+      setLoading(true);
       setShowOtpModal(true);
       setTimer(300);
       setOtp(["", "", "", "", "", ""]);
     }
   };
-  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleOtpSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
     const otpCode = otp.join("");
     if (!otpCode || otpCode.length !== 6) {
@@ -361,11 +396,11 @@ export function RegisterForm({
         return;
       }
       const plan = getPlan();
-      let came_plan=false
-        if (plan === "guest") {
-          came_plan=false
-        } else if (plan === "paid" || plan === "member") {
-          came_plan=true
+      let came_plan = false;
+      if (plan === "guest") {
+        came_plan = false;
+      } else if (plan === "paid" || plan === "member") {
+        came_plan = true;
       }
       const registerPayload = {
         email: formData.email,
@@ -374,9 +409,12 @@ export function RegisterForm({
         phone_number: formData.phone_number,
         website_name: formData.website_name,
         no_linkedin: true,
-        came_from_plan:came_plan,
+        came_from_plan: came_plan,
       };
-      const registerData: RegisterResponse = await makeApiCall("/register/", registerPayload);
+      const registerData: RegisterResponse = await makeApiCall(
+        "/register/",
+        registerPayload,
+      );
       if (registerData.status === "success") {
         if (registerData.tokens) {
           await login(registerData.tokens);
@@ -384,10 +422,10 @@ export function RegisterForm({
         const plan = getPlan();
         if (plan === "guest") {
           navigate("/confirmation-guest");
-          setLoading(true)
+          setLoading(true);
         } else if (plan === "paid" || plan === "member") {
           navigate("/payment");
-          setLoading(true)
+          setLoading(true);
         }
       } else {
         setErrors({ otp: registerData.message });
@@ -431,196 +469,222 @@ export function RegisterForm({
     }));
   };
   const handleHiddenValue = () => {
-    setShowOtpModal(false)
-  }
+    setShowOtpModal(false);
+  };
   useEffect(() => {
-    fetch(`${API_BASE_URL}/health`, { method: "GET", mode: "no-cors", cache: "no-store" }).catch(
-      () => { }
-    );
+    fetch(`${API_BASE_URL}/health`, {
+      method: "GET",
+      mode: "no-cors",
+      cache: "no-store",
+    }).catch(() => {});
   }, []);
   return (
     <>
-    {!showOtpModal ? (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleCloseClick}
-          className="text-gray-500 hover:text-gray-700 transition-colors"
-          disabled={loading}
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-      {errors.general && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          {errors.general}
-        </div>
-      )}
-      <div className="flex flex-col gap-3">
-        <div className="text-base text-black flex items-center gap-1">
-          <span>Full Name</span>
-          <span className="text-black ml-1">*</span>
-        </div>
-        <input
-          type="text"
-          name="full_name"
-          placeholder="Enter your full name"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.full_name
-            ? "border-red-500 focus:border-red-500"
-            : "border-gray-400 focus:border-black"
-            }`}
-          value={formData.full_name}
-          onChange={handleInputChange}
-          onBlur={() => handleFieldBlur("full_name")}
-          disabled={loading}
-          required
-        />
-        {errors.full_name && fieldTouched.full_name && (
-          <span className="text-red-500 text-sm">{errors.full_name}</span>
-        )}
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="text-base text-black flex items-center gap-1">
-          <span>Company Email ID</span>
-          <span className="text-black ml-1">*</span>
-        </div>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your company email ID"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.email
-            ? "border-red-500 focus:border-red-500"
-            : "border-gray-400 focus:border-black"
-            }`}
-          value={formData.email}
-          onChange={handleInputChange}
-          onBlur={() => handleFieldBlur("email")}
-          disabled={loading}
-          required
-        />
-        {errors.email && fieldTouched.email && (
-          <span className="text-red-500 text-sm">{errors.email}</span>
-        )}
-      </div>
-      <div className="flex gap-5 max-sm:flex-col max-sm:gap-4">
-        <div className="flex-1">
-          <PasswordInput
-            label="Password"
-            required
-            placeholder="Enter password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            onBlur={() => handleFieldBlur("password")}
-            error={fieldTouched.password && errors.password ? errors.password : undefined}
-            disabled={loading}
-          />
-        </div>
-        <div className="flex-1">
-          <PasswordInput
-            label="Confirm Password"
-            required
-            placeholder="Re - enter password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            onBlur={() => handleFieldBlur("confirmPassword")}
-            error={
-              fieldTouched.confirmPassword && errors.confirmPassword
-                ? errors.confirmPassword
-                : undefined
-            }
-            disabled={loading}
-          />
-        </div>
-      </div>
-      <div className="text-xs text-gray-500 italic -mt-3">
-        Minimum 6 characters | At least 1 special character | At least 1 letter and 1 number
-      </div>
-      <div className="flex flex-col gap-3">
-        <PhoneInput
-          value={formData.phone_number}
-          onChange={handlePhoneChange}
-          error={fieldTouched.phone_number ? errors.phone_number : undefined}
-        />
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="text-base text-black flex items-center gap-1">
-          <span>Company Website</span>
-          <span className="text-black ml-1">*</span>
-        </div>
-        <input
-          type="text"
-          name="website_name"
-          placeholder="Enter your Company website URL (e.g., example.com)"
-          className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${errors.website_name
-            ? "border-red-500 focus:border-red-500"
-            : "border-gray-400 focus:border-black"
-            }`}
-          value={formData.website_name}
-          onChange={handleInputChange}
-          onBlur={() => handleFieldBlur("website_name")}
-          disabled={loading}
-          required
-        />
-        {errors.website_name && fieldTouched.website_name && (
-          <span className="text-red-500 text-sm">{errors.website_name}</span>
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={handleSubmit}
-        className="w-full text-white text-base cursor-pointer bg-black mt-4 p-4 rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+      {!showOtpModal ? (
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleCloseClick}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+              disabled={loading}
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
+              <svg
+                className="w-6 h-6"
+                fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Sending OTP...
-          </>
-        ) : (
-          "Register"
-        )}
-      </button>
-      <div className="text-center text-lg italic text-gray-500 mt-6">
-        <span>Already have an account? </span>
-        <span className="text-black cursor-pointer hover:underline" onClick={onSwitchToLogin}>
-          Login
-        </span>
-      </div>
-      </div>
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          {errors.general && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {errors.general}
+            </div>
+          )}
+          <div className="flex flex-col gap-3">
+            <div className="text-base text-black flex items-center gap-1">
+              <span>Full Name</span>
+              <span className="text-black ml-1">*</span>
+            </div>
+            <input
+              type="text"
+              name="full_name"
+              placeholder="Enter your full name"
+              className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+                errors.full_name
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:border-black"
+              }`}
+              value={formData.full_name}
+              onChange={handleInputChange}
+              onBlur={() => handleFieldBlur("full_name")}
+              disabled={loading}
+              required
+            />
+            {errors.full_name && fieldTouched.full_name && (
+              <span className="text-red-500 text-sm">{errors.full_name}</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-base text-black flex items-center gap-1">
+              <span>Company Email ID</span>
+              <span className="text-black ml-1">*</span>
+            </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your company email ID"
+              className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+                errors.email
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:border-black"
+              }`}
+              value={formData.email}
+              onChange={handleInputChange}
+              onBlur={() => handleFieldBlur("email")}
+              disabled={loading}
+              required
+            />
+            {errors.email && fieldTouched.email && (
+              <span className="text-red-500 text-sm">{errors.email}</span>
+            )}
+          </div>
+          <div className="flex gap-5 max-sm:flex-col max-sm:gap-4">
+            <div className="flex-1">
+              <PasswordInput
+                label="Password"
+                required
+                placeholder="Enter password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                onBlur={() => handleFieldBlur("password")}
+                error={
+                  fieldTouched.password && errors.password
+                    ? errors.password
+                    : undefined
+                }
+                disabled={loading}
+              />
+            </div>
+            <div className="flex-1">
+              <PasswordInput
+                label="Confirm Password"
+                required
+                placeholder="Re - enter password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                onBlur={() => handleFieldBlur("confirmPassword")}
+                error={
+                  fieldTouched.confirmPassword && errors.confirmPassword
+                    ? errors.confirmPassword
+                    : undefined
+                }
+                disabled={loading}
+              />
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 italic -mt-3">
+            Minimum 6 characters | At least 1 special character | At least 1
+            letter and 1 number
+          </div>
+          <div className="flex flex-col gap-3">
+            <PhoneInput
+              value={formData.phone_number}
+              onChange={handlePhoneChange}
+              error={
+                fieldTouched.phone_number ? errors.phone_number : undefined
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="text-base text-black flex items-center gap-1">
+              <span>Company Website</span>
+              <span className="text-black ml-1">*</span>
+            </div>
+            <input
+              type="text"
+              name="website_name"
+              placeholder="Enter your Company website URL (e.g., example.com)"
+              className={`border text-sm w-full px-4 py-2.5 rounded-lg border-solid transition-colors focus:outline-none ${
+                errors.website_name
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:border-black"
+              }`}
+              value={formData.website_name}
+              onChange={handleInputChange}
+              onBlur={() => handleFieldBlur("website_name")}
+              disabled={loading}
+              required
+            />
+            {errors.website_name && fieldTouched.website_name && (
+              <span className="text-red-500 text-sm">
+                {errors.website_name}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="w-full text-white text-base cursor-pointer bg-black mt-4 p-4 rounded-lg border-none hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Sending OTP...
+              </>
+            ) : (
+              "Register"
+            )}
+          </button>
+          <div className="text-center text-lg italic text-gray-500 mt-6">
+            <span>Already have an account? </span>
+            <span
+              className="text-black cursor-pointer hover:underline"
+              onClick={onSwitchToLogin}
+            >
+              Login
+            </span>
+          </div>
+        </div>
       ) : (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-            <button className="w-full text-right" onClick={handleHiddenValue}>X</button>
-            <h2 className="text-center text-3xl font-bold mb-6">OTP Verification</h2>
+            <button className="w-full text-right" onClick={handleHiddenValue}>
+              X
+            </button>
+            <h2 className="text-center text-3xl font-bold mb-6">
+              OTP Verification
+            </h2>
             <p className="text-center mb-4 text-lg">
               An OTP has been sent to your provided email address.
             </p>
@@ -652,7 +716,9 @@ export function RegisterForm({
               </div>
               <div className="text-center mb-6">
                 <span className="text-gray-600">Time remaining: </span>
-                <span className={`font-semibold ${timer <= 60 ? "text-red-500" : "text-black"}`}>
+                <span
+                  className={`font-semibold ${timer <= 60 ? "text-red-500" : "text-black"}`}
+                >
                   {formatTime(timer)}
                 </span>
               </div>

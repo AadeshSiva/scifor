@@ -1,6 +1,6 @@
-
 export const getAccessToken = () =>
-  sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+  sessionStorage.getItem("access_token") ||
+  localStorage.getItem("access_token");
 
 export const isAuthenticated = () => !!getAccessToken();
 
@@ -9,18 +9,34 @@ export const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-
 export async function getUserStatus() {
   const token = getAccessToken();
-  if (!token) return { authenticated: false, isGuest: false, isMember: false, name: "", email: "" };
+  if (!token)
+    return {
+      authenticated: false,
+      isGuest: false,
+      isMember: false,
+      name: "",
+      email: "",
+    };
 
   try {
-    const res = await fetch("https://intern-project-final-1.onrender.com/confirm-payment", {
-      headers: { ...authHeaders() },
-      credentials: "include",
-    });
+    const res = await fetch(
+      "https://intern-project-final-1.onrender.com/confirm-payment",
+      {
+        headers: { ...authHeaders() },
+        credentials: "include",
+      },
+    );
 
-    if (!res.ok) return { authenticated: true, isGuest: false, isMember: false, name: "", email: "" };
+    if (!res.ok)
+      return {
+        authenticated: true,
+        isGuest: false,
+        isMember: false,
+        name: "",
+        email: "",
+      };
 
     const data = await res.json();
     const isMember = !!data?.user_paid || data?.status === "paid";
@@ -33,6 +49,12 @@ export async function getUserStatus() {
       email: data?.email || "",
     };
   } catch {
-    return { authenticated: true, isGuest: false, isMember: false, name: "", email: "" };
+    return {
+      authenticated: true,
+      isGuest: false,
+      isMember: false,
+      name: "",
+      email: "",
+    };
   }
 }
