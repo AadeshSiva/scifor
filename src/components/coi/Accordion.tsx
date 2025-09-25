@@ -19,7 +19,10 @@ interface LongAccordionProps {
   data?: Category[];
   className?: string;
 }
-const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = "" }) => {
+const LongAccordion: React.FC<LongAccordionProps> = ({
+  data = [],
+  className = "",
+}) => {
   const [openSection, setOpenSection] = useState<string>("0-0"); // Only one section open at a time
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -78,7 +81,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
     } else {
       setOpenSection("");
     }
-  }, [selectedCategory]); 
+  }, [selectedCategory]);
   return (
     <div className={`w-full flex flex-col gap-7 ${className}`}>
       <div
@@ -119,7 +122,10 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
               {category.research_points.map((researchPoint, researchIndex) => {
                 const sectionId = generateId(categoryIndex, researchIndex);
                 const isOpen = openSection === sectionId;
-                const serialNumber = getSerialNumber(categoryIndex, researchIndex);
+                const serialNumber = getSerialNumber(
+                  categoryIndex,
+                  researchIndex,
+                );
                 const firstUrl = getFirstUrl(researchPoint);
                 return (
                   <div key={researchIndex} className="bg-white">
@@ -155,11 +161,16 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                         <div className="flex gap-4 bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
                           <div className="text-gray-600 text-sm sm:text-base leading-relaxed space-y-2">
                             {researchPoint.statistics.map((stat, statIndex) => (
-                              <div key={statIndex} className="flex items-start gap-2">
+                              <div
+                                key={statIndex}
+                                className="flex items-start gap-2"
+                              >
                                 <div className="flex-shrink-0 mt-1">
                                   <Dot size={20} className="text-gray-600" />
                                 </div>
-                                <span className="flex-1 leading-relaxed">{stat.context}</span>
+                                <span className="flex-1 leading-relaxed">
+                                  {stat.context}
+                                </span>
                               </div>
                             ))}
                           </div>
@@ -171,7 +182,12 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                                   className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1B7A9B] text-white text-sm font-medium rounded-md hover:bg-[#145F7A] transition-colors duration-200 whitespace-nowrap"
                                 >
                                   <div className="w-4 h-4 bg-red-600 rounded-sm flex items-center justify-center">
-                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
+                                    <svg
+                                      width="12"
+                                      height="12"
+                                      viewBox="0 0 12 12"
+                                      fill="white"
+                                    >
                                       <path d="M2 2h8v8H2V2zm1 1v6h6V3H3zm2 2h2v1H5V5zm0 2h3v1H5V7z" />
                                     </svg>
                                   </div>
@@ -201,7 +217,9 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
         <div className="max-w-6xl mx-auto p-8 text-center text-gray-500">
           <p className="text-lg mb-4">
             No data available. Connect to your backend API at{" "}
-            <code className="bg-gray-100 px-2 py-1 rounded text-sm">/category-list</code>
+            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+              /category-list
+            </code>
           </p>
           <p className="text-sm mb-4">Expected data structure:</p>
         </div>
@@ -216,7 +234,9 @@ const AccordionWithApi: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.prspera.com/category-statistics/");
+        const response = await fetch(
+          "https://api.prspera.com/category-statistics/",
+        );
         const result = await response.json();
         console.log(result);
         setData(result);
@@ -251,7 +271,8 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context: "48% of business owners who want to sell have no formal exit strategy.",
+                  context:
+                    "48% of business owners who want to sell have no formal exit strategy.",
                   url: "",
                 },
                 {
@@ -270,11 +291,13 @@ const AccordionWithApi: React.FC = () => {
                   url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view?usp=drive_link",
                 },
                 {
-                  context: "Only 17% of owners have created a written exit plan.",
+                  context:
+                    "Only 17% of owners have created a written exit plan.",
                   url: "",
                 },
                 {
-                  context: "58% of owners have never had their business formally appraised.",
+                  context:
+                    "58% of owners have never had their business formally appraised.",
                   url: "",
                 },
                 {
@@ -308,11 +331,13 @@ const AccordionWithApi: React.FC = () => {
               name: "Attitudes Toward Exit Strategies",
               statistics: [
                 {
-                  context: "14% of business owners think they don't need an exit strategy.",
+                  context:
+                    "14% of business owners think they don't need an exit strategy.",
                   url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing",
                 },
                 {
-                  context: "21% of business owners don't want to sell their business.",
+                  context:
+                    "21% of business owners don't want to sell their business.",
                   url: "",
                 },
                 {
@@ -426,7 +451,8 @@ const AccordionWithApi: React.FC = () => {
               name: "Contingency Planning",
               statistics: [
                 {
-                  context: "40% have no contingency plans for illness, death, or forced exit.",
+                  context:
+                    "40% have no contingency plans for illness, death, or forced exit.",
                   url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
                 },
                 {
@@ -476,7 +502,8 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context: "60% of first-generation business owners favor an internal exit.",
+                  context:
+                    "60% of first-generation business owners favor an internal exit.",
                   url: "",
                 },
               ],
@@ -619,11 +646,13 @@ const AccordionWithApi: React.FC = () => {
               name: "Business Sale Success Rate",
               statistics: [
                 {
-                  context: "70-80% of businesses put on the market do not sell.",
+                  context:
+                    "70-80% of businesses put on the market do not sell.",
                   url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
                 },
                 {
-                  context: "Only 20 to 30% of businesses that go to market actually sell.",
+                  context:
+                    "Only 20 to 30% of businesses that go to market actually sell.",
                   url: "",
                 },
                 {
@@ -676,7 +705,8 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context: "9% wanted family members to take another career path.",
+                  context:
+                    "9% wanted family members to take another career path.",
                   url: "",
                 },
                 {
@@ -704,7 +734,8 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context: "Only 3% operate at the fourth generation and beyond.",
+                  context:
+                    "Only 3% operate at the fourth generation and beyond.",
                   url: "",
                 },
                 {
@@ -718,7 +749,8 @@ const AccordionWithApi: React.FC = () => {
               name: "Women Business Owners & Exit Strategy",
               statistics: [
                 {
-                  context: "83% of women business owners have a long-term exit strategy.",
+                  context:
+                    "83% of women business owners have a long-term exit strategy.",
                   url: "https://drive.google.com/file/d/17A1lQMd-I7eLGRGxhRDMEh8lMwCGdfYm/view?usp=sharing",
                 },
               ],
@@ -742,7 +774,8 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context: "90% of business owners overvalue their business by 50% to 100%.",
+                  context:
+                    "90% of business owners overvalue their business by 50% to 100%.",
                   url: "",
                 },
               ],

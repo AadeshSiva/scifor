@@ -9,17 +9,19 @@ const PaymentSuccess = () => {
   const [countdown, setCountdown] = useState(5);
   const [isUpdating, setIsUpdating] = useState(true);
   const [userType, setUserType] = useState<UserType>("member");
-  const {user}=useAuth();
+  const { user } = useAuth();
 
   const confirmPayment = useCallback(async () => {
     try {
       const accessToken = localStorage.getItem("access_token");
-      const session = new URLSearchParams(window.location.search).get("session_id");
+      const session = new URLSearchParams(window.location.search).get(
+        "session_id",
+      );
       setSessionId(session);
       if (accessToken && session) {
         const response = await fetch(
           `https://api.prspera.com/payment-status/?session_id=${session}`,
-          { headers: { Authorization: `Bearer ${accessToken}` } }
+          { headers: { Authorization: `Bearer ${accessToken}` } },
         );
 
         if (response.ok) {
@@ -52,12 +54,14 @@ const PaymentSuccess = () => {
         if (prev <= 1) {
           clearInterval(timer);
           window.location.href =
-            user.role === "paid_user" ? "/confirmation-member" : "/confirmation-guest";
+            user.role === "paid_user"
+              ? "/confirmation-member"
+              : "/confirmation-guest";
           return 0;
         }
         return prev - 1;
       });
-    }, 1000); 
+    }, 1000);
     return () => clearInterval(timer);
   }, [isUpdating, userType]);
 
@@ -69,15 +73,21 @@ const PaymentSuccess = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <h1 className="text-2xl font-semibold text-gray-900 mb-2">Payment Successful</h1>
-            <p className="text-gray-600">Your payment has been processed successfully</p>
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              Payment Successful
+            </h1>
+            <p className="text-gray-600">
+              Your payment has been processed successfully
+            </p>
           </div>
           <div className="px-6 pb-8">
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               {isUpdating ? (
                 <div className="flex items-center justify-center py-4">
                   <Loader2 className="w-5 h-5 text-gray-400 animate-spin mr-3" />
-                  <span className="text-gray-600 font-medium">Finalizing your account...</span>
+                  <span className="text-gray-600 font-medium">
+                    Finalizing your account...
+                  </span>
                 </div>
               ) : (
                 <div className="text-center">
@@ -86,9 +96,13 @@ const PaymentSuccess = () => {
                     Confirmed
                   </div>
                   <p className="text-gray-700 font-medium mb-1">
-                    Redirecting to your {user.role === "paid_user" ? "Member" : "Guest"} Confirmation
+                    Redirecting to your{" "}
+                    {user.role === "paid_user" ? "Member" : "Guest"}{" "}
+                    Confirmation
                   </p>
-                  <p className="text-gray-500 text-sm mb-4">in {countdown} seconds</p>
+                  <p className="text-gray-500 text-sm mb-4">
+                    in {countdown} seconds
+                  </p>
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
                     <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-1000 ease-out"
@@ -103,7 +117,9 @@ const PaymentSuccess = () => {
                 <div className="text-center">
                   <p className="text-gray-500 text-sm mb-1">Transaction ID</p>
                   <p className="font-mono text-gray-700 text-xs bg-gray-100 px-3 py-2 rounded inline-block">
-                    {sessionId.length > 20 ? `${sessionId.substring(0, 20)}...` : sessionId}
+                    {sessionId.length > 20
+                      ? `${sessionId.substring(0, 20)}...`
+                      : sessionId}
                   </p>
                 </div>
               </div>

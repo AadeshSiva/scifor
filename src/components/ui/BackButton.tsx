@@ -6,7 +6,7 @@ interface BackButtonProps {
 
 export const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
   return (
-    <button 
+    <button
       className="flex items-stretch gap-[18px] text-2xl text-[#555] font-medium whitespace-nowrap"
       onClick={onClick}
     >

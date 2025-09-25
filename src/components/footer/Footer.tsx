@@ -14,7 +14,8 @@ export const Footer: React.FC = () => {
     marginTop: "25px",
     fontSize: windowWidth < 640 ? "20px" : windowWidth < 768 ? "24px" : "28px",
     fontWeight: "300",
-    lineHeight: windowWidth < 640 ? "28px" : windowWidth < 768 ? "32px" : "36px",
+    lineHeight:
+      windowWidth < 640 ? "28px" : windowWidth < 768 ? "32px" : "36px",
   };
   return (
     <footer className="bg-black text-white w-full">

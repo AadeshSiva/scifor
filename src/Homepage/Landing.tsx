@@ -56,17 +56,29 @@ export default function Landing() {
             </span>
           </h1>
           {/* Small subhead */}
-          <p className="mx-auto mt-6 max-w-[46ch] text-white/90 text-sm md:text-base leading-relaxed font-extralight " style={{ fontSize: "1.2rem", fontWeight: 300 }}>
-            Since 2003, Jeff successfully <br /> operationalized the Unifying Philosophy (UPh
-            <span style={{ fontSize: "1.8rem" }}>™</span> ) Strategy System TWICE.
+          <p
+            className="mx-auto mt-6 max-w-[46ch] text-white/90 text-sm md:text-base leading-relaxed font-extralight "
+            style={{ fontSize: "1.2rem", fontWeight: 300 }}
+          >
+            Since 2003, Jeff successfully <br /> operationalized the Unifying
+            Philosophy (UPh
+            <span style={{ fontSize: "1.8rem" }}>™</span> ) Strategy System
+            TWICE.
           </p>
           {/* Lead paragraphs */}
-          <p className="mx-auto mt-10 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]" style={{ fontSize: "1.2rem", fontWeight: 300 }}>
-            His 20+ year journey inspired our 6 Step Course for entrepreneurs to Grow
-            Smarter to Exit Richer.
+          <p
+            className="mx-auto mt-10 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]"
+            style={{ fontSize: "1.2rem", fontWeight: 300 }}
+          >
+            His 20+ year journey inspired our 6 Step Course for entrepreneurs to
+            Grow Smarter to Exit Richer.
           </p>
-          <p className="mx-auto mt-5 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]" style={{ fontSize: "1.2rem", fontWeight: 300 }}>
-            My interview with him captures his story <br /> in the context of these 6 Steps.
+          <p
+            className="mx-auto mt-5 max-w-[62ch] text-white/90 text-lg sm:text-xl md:text-2xl leading-snug [text-wrap:balance]"
+            style={{ fontSize: "1.2rem", fontWeight: 300 }}
+          >
+            My interview with him captures his story <br /> in the context of
+            these 6 Steps.
           </p>
         </div>
         <br />
@@ -95,10 +107,16 @@ export default function Landing() {
             >
               <Circle text="1. Endgame" active={circleinfo === 0} />
             </div>
-            <div className="absolute top-[15%] -right-8" onClick={() => setCircleinfo(1)}>
+            <div
+              className="absolute top-[15%] -right-8"
+              onClick={() => setCircleinfo(1)}
+            >
               <Circle text="2. Valufacturing" active={circleinfo === 1} />
             </div>
-            <div className="absolute bottom-[15%] -right-8" onClick={() => setCircleinfo(2)}>
+            <div
+              className="absolute bottom-[15%] -right-8"
+              onClick={() => setCircleinfo(2)}
+            >
               <Circle text="3. Scaling" active={circleinfo === 2} />
             </div>
             <div
@@ -107,18 +125,24 @@ export default function Landing() {
             >
               <Circle text="4. Staging" active={circleinfo === 3} />
             </div>
-            <div className="absolute bottom-[15%] -left-8" onClick={() => setCircleinfo(4)}>
+            <div
+              className="absolute bottom-[15%] -left-8"
+              onClick={() => setCircleinfo(4)}
+            >
               <Circle text="5. Moment(s) of Truth" active={circleinfo === 4} />
             </div>
-            <div className="absolute top-[15%] -left-8" onClick={() => setCircleinfo(5)}>
+            <div
+              className="absolute top-[15%] -left-8"
+              onClick={() => setCircleinfo(5)}
+            >
               <Circle text="6. Pride" active={circleinfo === 5} />
             </div>
           </div>
         </div>
       </section>
       <Carousel />
-      <PricingPlan/>
-      <Footer/>  
+      <PricingPlan />
+      <Footer />
     </>
   );
 }
@@ -126,7 +150,8 @@ function Circle({ text, active }: CircleProps) {
   return (
     <div
       className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex justify-center items-center text-center text-[#FFBB1BBF] text-xs sm:text-sm p-2 cursor-pointer transition-colors duration-200
-      ${active ? "bg-white  text-[#000000c5] shadow-lg scale-110" : "bg-[#2b2f33] hover:bg-gray-700"}`}>
+      ${active ? "bg-white  text-[#000000c5] shadow-lg scale-110" : "bg-[#2b2f33] hover:bg-gray-700"}`}
+    >
       {text}
     </div>
   );

@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, Loader2, Check, X } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  Check,
+  X,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordPopups from "./ForgotPassword";
 import { BackIcon } from "../ui/icons";
@@ -24,7 +33,10 @@ interface ChangeUsernameFormProps {
   onCancel?: () => void;
   setDisplay?: (display: string) => void;
 }
-const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDisplay }) => {
+const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({
+  onCancel,
+  setDisplay,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,7 +118,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
       ...(token && { Authorization: `Bearer ${token}` }),
     };
   };
-  const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}) => {
+  const makeAuthenticatedRequest = async (
+    url: string,
+    options: RequestInit = {},
+  ) => {
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...options,
       headers: {
@@ -117,7 +132,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        errorData.error || errorData.message || errorData.detail || `HTTP ${response.status}`
+        errorData.error ||
+          errorData.message ||
+          errorData.detail ||
+          `HTTP ${response.status}`,
       );
     }
     return response.json();
@@ -138,7 +156,9 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
           isAvailable: !response.exists,
           message:
             response.message ||
-            (response.exists ? "Username already taken" : "Username is available"),
+            (response.exists
+              ? "Username already taken"
+              : "Username is available"),
         });
       } catch (error) {
         console.error("Error checking username availability:", error);
@@ -150,7 +170,7 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
         setIsCheckingUsername(false);
       }
     },
-    [currentUsername]
+    [currentUsername],
   );
   useEffect(() => {
     const { usernameColor, usernameObject, usernameNum } = formData;
@@ -175,7 +195,12 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
       setIsProfileLoading(true);
       setErrorMessage(null);
       try {
-        const endpoints = ["/extract-user-data/", "/user/current/", "/auth/me/", "/profile/"];
+        const endpoints = [
+          "/extract-user-data/",
+          "/user/current/",
+          "/auth/me/",
+          "/profile/",
+        ];
         let userData: UserProfile | null = null;
         for (const endpoint of endpoints) {
           try {
@@ -189,14 +214,17 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
           throw new Error("Unable to fetch user profile from any endpoint");
         }
         const username =
-          userData.user?.username || userData.user_data?.username || userData.username;
+          userData.user?.username ||
+          userData.user_data?.username ||
+          userData.username;
         if (!username) {
           throw new Error("Username not found in profile data");
         }
         setCurrentUsername(username);
       } catch (error) {
         console.error("Error fetching user profile:", error);
-        const errorMsg = error instanceof Error ? error.message : "Unknown error occurred";
+        const errorMsg =
+          error instanceof Error ? error.message : "Unknown error occurred";
         if (errorMsg.includes("401") || errorMsg.includes("403")) {
           setErrorMessage("Authentication error. Please log in again.");
         } else if (errorMsg.includes("Network")) {
@@ -235,7 +263,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     } else if (!/^\d{1,3}$/.test(formData.usernameNum)) {
       errors.usernameNum = "Must be a valid number (0-999)";
       isValid = false;
-    } else if (parseInt(formData.usernameNum) < 0 || parseInt(formData.usernameNum) > 999) {
+    } else if (
+      parseInt(formData.usernameNum) < 0 ||
+      parseInt(formData.usernameNum) > 999
+    ) {
       errors.usernameNum = "Number must be between 000 and 999";
       isValid = false;
     }
@@ -243,12 +274,14 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     const formattedNum = formData.usernameNum.padStart(3, "0");
     const newUsername = `${formData.usernameColor}${formData.usernameObject}${formattedNum}`;
     if (newUsername === currentUsername) {
-      errors.usernameColor = "New username must be different from current username";
+      errors.usernameColor =
+        "New username must be different from current username";
       isValid = false;
     }
     // Check username availability
     if (usernameAvailability.isAvailable === false) {
-      errors.usernameColor = "Username is already taken. Please choose a different combination.";
+      errors.usernameColor =
+        "Username is already taken. Please choose a different combination.";
       isValid = false;
     }
     // Password validation
@@ -259,7 +292,9 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     setFormErrors(errors);
     return isValid;
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -317,16 +352,23 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
       }
     } catch (error) {
       console.error("Username change error:", error);
-      const errorMsg = error instanceof Error ? error.message : "An unexpected error occurred";
+      const errorMsg =
+        error instanceof Error ? error.message : "An unexpected error occurred";
       // Handle specific error cases
       if (errorMsg.includes("400")) {
-        setErrorMessage("Invalid request. Please check your input and try again.");
+        setErrorMessage(
+          "Invalid request. Please check your input and try again.",
+        );
       } else if (errorMsg.includes("401")) {
         setErrorMessage("Invalid password. Please try again.");
       } else if (errorMsg.includes("Username already taken")) {
-        setErrorMessage("Username is already taken. Please choose a different combination.");
+        setErrorMessage(
+          "Username is already taken. Please choose a different combination.",
+        );
       } else if (errorMsg.includes("Network") || errorMsg.includes("fetch")) {
-        setErrorMessage("Network error. Please check your connection and try again.");
+        setErrorMessage(
+          "Network error. Please check your connection and try again.",
+        );
       } else {
         setErrorMessage(errorMsg);
       }
@@ -351,11 +393,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     }
     setDisplay("setting");
   };
-  const navigate = useNavigate()
-  const ctx=useContext(UserContext)
+  const navigate = useNavigate();
+  const ctx = useContext(UserContext);
   const handleBackClick = () => {
-    navigate(`${ctx.url}`)
-    ctx.setEnabledSetting(true)
+    navigate(`${ctx.url}`);
+    ctx.setEnabledSetting(true);
   };
   const getPreviewUsername = () => {
     const { usernameColor, usernameObject, usernameNum } = formData;
@@ -410,11 +452,16 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
     <div className="flex flex-col w-full min-h-screen bg-white overflow-y-auto p-6 md:p-10 md:px-16 justify-center items-center align-center">
       {/* Header with Back Button */}
       <div className="max-w-md">
-        <div className="flex items-center gap-4 cursor-pointer mb-12" onClick={handleBackClick}>
+        <div
+          className="flex items-center gap-4 cursor-pointer mb-12"
+          onClick={handleBackClick}
+        >
           <BackIcon />
           <div className="text-gray-600 text-2xl">Back</div>
         </div>
-        <h1 className="text-gray-800 text-3xl font-semibold mb-8">Change Username</h1>
+        <h1 className="text-gray-800 text-3xl font-semibold mb-8">
+          Change Username
+        </h1>
         {/* Messages */}
         {successMessage && (
           <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6">
@@ -430,7 +477,9 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
         )}
         {/* Current Username Display */}
         <div className="mb-8">
-          <label className="block text-gray-800 font-medium mb-2">Current Username</label>
+          <label className="block text-gray-800 font-medium mb-2">
+            Current Username
+          </label>
           <div className="text-gray-600 text-sm">
             {isProfileLoading ? (
               <div className="flex items-center gap-2">
@@ -451,7 +500,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
               <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {/* Color Dropdown */}
                 <div>
-                  <label htmlFor="usernameColor" className="block text-gray-800 font-medium mb-2">
+                  <label
+                    htmlFor="usernameColor"
+                    className="block text-gray-800 font-medium mb-2"
+                  >
                     Color
                   </label>
                   <select
@@ -460,10 +512,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                     value={formData.usernameColor}
                     onChange={handleInputChange}
                     disabled={isLoading || isProfileLoading}
-                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${formErrors.usernameColor
-                      ? "border-red-300 focus:ring-red-500"
-                      : "border-gray-300 hover:border-gray-400"
-                      }`}
+                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      formErrors.usernameColor
+                        ? "border-red-300 focus:ring-red-500"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
                   >
                     <option value="">Select Color</option>
                     {COLOR_OPTIONS.map((color) => (
@@ -481,7 +534,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                 </div>
                 {/* Object Dropdown */}
                 <div>
-                  <label htmlFor="usernameObject" className="block text-gray-800 font-medium mb-2">
+                  <label
+                    htmlFor="usernameObject"
+                    className="block text-gray-800 font-medium mb-2"
+                  >
                     Object
                   </label>
                   <select
@@ -490,10 +546,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                     value={formData.usernameObject}
                     onChange={handleInputChange}
                     disabled={isLoading || isProfileLoading}
-                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${formErrors.usernameObject
-                      ? "border-red-300 focus:ring-red-500"
-                      : "border-gray-300 hover:border-gray-400"
-                      }`}
+                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      formErrors.usernameObject
+                        ? "border-red-300 focus:ring-red-500"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
                   >
                     <option value="">Select Object</option>
                     {OBJECT_OPTIONS.map((object) => (
@@ -511,7 +568,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                 </div>
                 {/* Username Number Input */}
                 <div>
-                  <label htmlFor="usernameNum" className="block text-gray-800 font-medium mb-2">
+                  <label
+                    htmlFor="usernameNum"
+                    className="block text-gray-800 font-medium mb-2"
+                  >
                     Number
                   </label>
                   <input
@@ -522,10 +582,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                     onChange={handleInputChange}
                     disabled={isLoading || isProfileLoading}
                     maxLength={3} // Add this to limit input to 3 characters
-                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${formErrors.usernameNum
-                      ? "border-red-300 focus:ring-red-500"
-                      : "border-gray-300 hover:border-gray-400"
-                      }`}
+                    className={`w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      formErrors.usernameNum
+                        ? "border-red-300 focus:ring-red-500"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
                     placeholder="000-999" // Update placeholder
                   />
                   {formErrors.usernameNum && (
@@ -546,7 +607,10 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
           </div>
           {/* Password Input */}
           <div>
-            <label htmlFor="password" className="block text-gray-800 font-medium mb-2">
+            <label
+              htmlFor="password"
+              className="block text-gray-800 font-medium mb-2"
+            >
               Enter Password
             </label>
             <div className="relative">
@@ -558,10 +622,11 @@ const ChangeUsernameForm: React.FC<ChangeUsernameFormProps> = ({ onCancel, setDi
                 onChange={handleInputChange}
                 placeholder="Enter your password to confirm"
                 disabled={isLoading || isProfileLoading}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${formErrors.password
-                  ? "border-red-300 focus:ring-red-500"
-                  : "border-gray-300 hover:border-gray-400"
-                  }`}
+                className={`w-full px-4 py-3 pr-12 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                  formErrors.password
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
               />
               <button
                 type="button"

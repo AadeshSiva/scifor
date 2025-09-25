@@ -1,5 +1,11 @@
 "use client";
-import React, { ReactNode, useState, useEffect, CSSProperties,useLayoutEffect } from "react";
+import React, {
+  ReactNode,
+  useState,
+  useEffect,
+  CSSProperties,
+  useLayoutEffect,
+} from "react";
 import { Footer } from "@/components/footer/Footer";
 import JoinBtn from "@/components/extras/JoinBtn";
 
@@ -44,8 +50,8 @@ const VIDEO_ID = "TEq8Fnhkza8";
 const ProofPage: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);
 
-    useLayoutEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
   return (
     <>
@@ -93,15 +99,15 @@ const ProofPage: React.FC = () => {
                         </button>
                       </>
                     ) : (
-                    <iframe
-  key="youtube"
-  src={`https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1&fs=1&controls=1`}
-  className="absolute inset-0 w-full h-full"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-  allowFullScreen
-  referrerPolicy="strict-origin-when-cross-origin"
-  title="Jeff's Success Story Video"
-/>
+                      <iframe
+                        key="youtube"
+                        src={`https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1&fs=1&controls=1`}
+                        className="absolute inset-0 w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                        allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        title="Jeff's Success Story Video"
+                      />
                     )}
                   </div>
 
@@ -143,23 +149,27 @@ const ProofPage: React.FC = () => {
             </div>
             {/* Philosophy Points */}
             <div className="max-w-4xl mx-auto space-y-5 sm:space-y-6 px-1 sm:px-2">
-              <TooltipItem>the DNA of a business in 6 words or less</TooltipItem>
+              <TooltipItem>
+                the DNA of a business in 6 words or less
+              </TooltipItem>
               <TooltipItem>built with your people and our UPh Team</TooltipItem>
               <TooltipItem>created in 5 stages over 3-9 months</TooltipItem>
               <TooltipItem>Trademarked</TooltipItem>
               <TooltipItem>Placed in a tax effective structure</TooltipItem>
-              <TooltipItem>The foundation for a performance based culture</TooltipItem>
               <TooltipItem>
-                Made operational on a daily basis by all vendors, all people, customers (connects
-                all value drivers and maximizes their value)
+                The foundation for a performance based culture
               </TooltipItem>
               <TooltipItem>
-                Maximizes, measurable value = enhancing valuation multiplier (as it streamlines
-                efficiencies and enhances profitability)
+                Made operational on a daily basis by all vendors, all people,
+                customers (connects all value drivers and maximizes their value)
               </TooltipItem>
               <TooltipItem>
-                Sold at a premium as an operational asset (rather than staffing an exit
-                thereby monetizing the intangible assets)
+                Maximizes, measurable value = enhancing valuation multiplier (as
+                it streamlines efficiencies and enhances profitability)
+              </TooltipItem>
+              <TooltipItem>
+                Sold at a premium as an operational asset (rather than staffing
+                an exit thereby monetizing the intangible assets)
               </TooltipItem>
             </div>
           </div>
@@ -176,97 +186,118 @@ const ProofPage: React.FC = () => {
           </h2>
           <h3 className="text-4xl md:text-5xl lg:text-6xl font-normal font-walbaum  mt-4">
             Here’s more proof.
-          </h3> <br />
+          </h3>{" "}
+          <br />
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-linear font-light mt-3 mb-8">
             Financial. Academic. Scientific.
           </p>
           {/* Content */}
           <div className="text-left max-w-4xl mx-auto space-y-6 mt-10 sm:mt-16">
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              1. In 1996, the Unifying Philosophy ( UPh<sup>TM</sup> ) is Founded by
-              Harish Chauhan – engineered from basic principles and systems theory.
+              1. In 1996, the Unifying Philosophy ( UPh<sup>TM</sup> ) is
+              Founded by Harish Chauhan – engineered from basic principles and
+              systems theory.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              a) The first UPh, Quality to Life your Profits, helped the largest,
-              privately owned, family business compete against Toyota. Even though Toyota
-              is world class in Quality – they could not claim – creating profits for
-              its customers like this company could. It’s now <b>2025</b>, that family
-              business has now survived its first succession and is still in business.
+              a) The first UPh, Quality to Life your Profits, helped the
+              largest, privately owned, family business compete against Toyota.
+              Even though Toyota is world class in Quality – they could not
+              claim – creating profits for its customers like this company
+              could. It’s now <b>2025</b>, that family business has now survived
+              its first succession and is still in business.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
               b) The genesis of the UPh was that Mission, Vision and Values as a
-              standard for is flawed – because its not what employees live and apply
-              every day in the business. Neither does it explicitly make money. They
-              are not business assets.
+              standard for is flawed – because its not what employees live and
+              apply every day in the business. Neither does it explicitly make
+              money. They are not business assets.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
               c) Business are systems. This was first introduced by Ludwig von
-              Bertalanffy (1940s–1950s) in his General System Theory (GST). Now, as an
-              engineer, founder Harish Chauhan states – every system has one thing that
-              synchronizes each part of that system to work together – without the
-              synchronizer the systems is dysfunctional:
+              Bertalanffy (1940s–1950s) in his General System Theory (GST). Now,
+              as an engineer, founder Harish Chauhan states – every system has
+              one thing that synchronizes each part of that system to work
+              together – without the synchronizer the systems is dysfunctional:
             </p>
-          {/* System vs Synchronizer table (all breakpoints, same look) */}
-<div className="overflow-x-auto">
-  <table className="mx-auto w-full max-w-[700px] table-fixed border-[2px] border-white text-center text-[12px] sm:text-sm md:text-lg lg:text-xl">
-    <thead>
-      <tr className="bg-[#868686] text-white">
-        <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">System</th>
-        <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Synchronizer</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3 whitespace-normal break-words">
-          Human Body
-        </td>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">DNA</td>
-      </tr>
-      <tr>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3 whitespace-normal break-words">
-          Computer – Motherboard / each Integrated Circuit
-        </td>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Crystal</td>
-      </tr>
-      <tr>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Car Motor</td>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Timing Belt</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+            {/* System vs Synchronizer table (all breakpoints, same look) */}
+            <div className="overflow-x-auto">
+              <table className="mx-auto w-full max-w-[700px] table-fixed border-[2px] border-white text-center text-[12px] sm:text-sm md:text-lg lg:text-xl">
+                <thead>
+                  <tr className="bg-[#868686] text-white">
+                    <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      System
+                    </th>
+                    <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Synchronizer
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3 whitespace-normal break-words">
+                      Human Body
+                    </td>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      DNA
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3 whitespace-normal break-words">
+                      Computer – Motherboard / each Integrated Circuit
+                    </td>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Crystal
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Car Motor
+                    </td>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Timing Belt
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light mt-6 leading-relaxed">
-              i. What synchronizes the business system? The CEO, the balance sheet,
-              profits, cashflow, the mission, vision and values? Have any of these made
-              companies perform given these 6 facts. There’s no proof any of these work
-              to synchronize the entire business system.
+              i. What synchronizes the business system? The CEO, the balance
+              sheet, profits, cashflow, the mission, vision and values? Have any
+              of these made companies perform given these 6 facts. There’s no
+              proof any of these work to synchronize the entire business system.
             </p>
             {/* Second System/Synchronizer block */}
             <div className="overflow-x-auto mt-8">
-  <table className="mx-auto w-full max-w-[700px] table-fixed border-[2px] border-white text-center text-[12px] sm:text-sm md:text-lg lg:text-xl">
-    <thead>
-      <tr className="bg-[#868686] text-white">
-        <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">System</th>
-        <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Synchronizer</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">Business</td>
-        <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
-          Unifying Philosophy (UPh)
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div >
+              <table className="mx-auto w-full max-w-[700px] table-fixed border-[2px] border-white text-center text-[12px] sm:text-sm md:text-lg lg:text-xl">
+                <thead>
+                  <tr className="bg-[#868686] text-white">
+                    <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      System
+                    </th>
+                    <th className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Synchronizer
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Business
+                    </td>
+                    <td className="border-[2px] border-white px-3 py-2 sm:px-4 sm:py-3">
+                      Unifying Philosophy (UPh)
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
               2. In 2006, Dr. Michael Meeks, Professor of Entrepreneurship and
-              Strategic Management interviewed several UPh Clients, physically and
-              virtually, using a Grounded Theory Approach. He, spontaneously, asked
-              to interrupt Harish’s presentation at the Family Firm Institute (ffi.org)
-              global conference to talk about his two research findings about the UPh:
-              (video)
+              Strategic Management interviewed several UPh Clients, physically
+              and virtually, using a Grounded Theory Approach. He,
+              spontaneously, asked to interrupt Harish’s presentation at the
+              Family Firm Institute (ffi.org) global conference to talk about
+              his two research findings about the UPh: (video)
             </p>
             <ol className="list-[lower-roman] ml-6 sm:ml-10 md:ml-16 space-y-3 sm:space-y-4 text-base sm:text-lg md:text-xl font-linear font-light">
               <li>Everyone is on the same page</li>
@@ -276,16 +307,16 @@ const ProofPage: React.FC = () => {
               This proves the UPh synchronizes the business system.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              3. In 2001, Jim Collins publishes “Good to Great”. With 10,000+ hours of
-              PhD research, he declares that his Unifying Principle (Hedgehog Concept –
-              Chapter 5) helps build Great Companies. The Unifying Philosophy is both an
-              internal transformation process (proprietary Change Management System), as
-              well as a product – a trademarked asset of 6 words or less, structured tax
-              effectively.
+              3. In 2001, Jim Collins publishes “Good to Great”. With 10,000+
+              hours of PhD research, he declares that his Unifying Principle
+              (Hedgehog Concept – Chapter 5) helps build Great Companies. The
+              Unifying Philosophy is both an internal transformation process
+              (proprietary Change Management System), as well as a product – a
+              trademarked asset of 6 words or less, structured tax effectively.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              4. In 2005, Harish Chauhan published Unconventional Business – challenging
-              the status quo:
+              4. In 2005, Harish Chauhan published Unconventional Business –
+              challenging the status quo:
             </p>
             <ol className="list-none ml-6 sm:ml-10 md:ml-16 space-y-2 text-base sm:text-lg md:text-xl font-linear font-light">
               <li>a) Business NOT JUST about Profits.</li>
@@ -293,13 +324,15 @@ const ProofPage: React.FC = () => {
               <li>c) Taglines DON’T work.</li>
             </ol>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed ml-6 sm:ml-10 md:ml-16">
-              For the answers, click here and download the book. It’s our gift to you.
+              For the answers, click here and download the book. It’s our gift
+              to you.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              5. In 2009, Simon Sinek publishes “Start With Why”. While he discusses one
-              (1 why) the UPh involves “3 Why’s” and classifies and organizes them into
-              your UPh to build a lasting DNA that aligns everyone stakeholder – in and
-              outside the business. The “3 Why’s” are in business:
+              5. In 2009, Simon Sinek publishes “Start With Why”. While he
+              discusses one (1 why) the UPh involves “3 Why’s” and classifies
+              and organizes them into your UPh to build a lasting DNA that
+              aligns everyone stakeholder – in and outside the business. The “3
+              Why’s” are in business:
             </p>
             <ol className="list-none ml-6 sm:ml-10 md:ml-16 space-y-2 text-base sm:text-lg md:text-xl font-linear font-light">
               <li>a) To make a ton of money</li>
@@ -307,18 +340,21 @@ const ProofPage: React.FC = () => {
               <li>c) make a difference in the world</li>
             </ol>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              6. From 1996 – 2012, dozens of entrepreneurs who have had varying degrees of
-              measurable success based on how well they operationalized this DNA in their
-              business. One landmark UPh client, a Foodservice Bakery, was reported to have
-              250% EBITDA growth as a result of their UPh, “Freshness On Time”. This case
-              study was authored by Sean Cavanagh, CPA, CA, CF, CBV in Peter Merrick’s Book
-              T.A.S.K. and A.S.K. – download the pdf chapter here; case study here.
+              6. From 1996 – 2012, dozens of entrepreneurs who have had varying
+              degrees of measurable success based on how well they
+              operationalized this DNA in their business. One landmark UPh
+              client, a Foodservice Bakery, was reported to have 250% EBITDA
+              growth as a result of their UPh, “Freshness On Time”. This case
+              study was authored by Sean Cavanagh, CPA, CA, CF, CBV in Peter
+              Merrick’s Book T.A.S.K. and A.S.K. – download the pdf chapter
+              here; case study here.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              7. In 2019, Jeff Cullen successfully exited his 300+ person 3PL company with
-              double–digit multiple valuation. In a world where 80% of businesses don’t sell,
-              and only 6% get fair market value – his exit was nothing short of remarkable – it’s
-              rare. Let’s rewind and review his timeline:
+              7. In 2019, Jeff Cullen successfully exited his 300+ person 3PL
+              company with double–digit multiple valuation. In a world where 80%
+              of businesses don’t sell, and only 6% get fair market value – his
+              exit was nothing short of remarkable – it’s rare. Let’s rewind and
+              review his timeline:
             </p>
             <div className="ml-2 sm:ml-4 md:ml-6 space-y-5 sm:space-y-6">
               <div>
@@ -326,7 +362,10 @@ const ProofPage: React.FC = () => {
                   1996: Jeff founded RODAIR
                 </p>
                 <ul className="list-none ml-5 sm:ml-6 md:ml-8 mt-2 space-y-2 text-base sm:text-lg md:text-xl font-linear font-light">
-                  <li>§ His business plan and exit strategy was clear as day – build to $100Million and sell</li>
+                  <li>
+                    § His business plan and exit strategy was clear as day –
+                    build to $100Million and sell
+                  </li>
                   <li>§ He implemented profit sharing from day one</li>
                 </ul>
               </div>
@@ -335,24 +374,29 @@ const ProofPage: React.FC = () => {
                   2002: RODAIR grows to $80M in annual revenues
                 </p>
                 <ul className="list-none ml-5 sm:ml-6 md:ml-8 mt-2 space-y-2 text-base sm:text-lg md:text-xl font-linear font-light">
-                  <li>§ Prior to a merger with Bellville, another collaborative 3PL company</li>
                   <li>
-                    § At an Innovators Alliance workshop, Jeff sits in the front row of the
-                    presentation on the UPh by Harish and asks him: “Does the UPh operationalize
-                    the Brand?”
+                    § Prior to a merger with Bellville, another collaborative
+                    3PL company
+                  </li>
+                  <li>
+                    § At an Innovators Alliance workshop, Jeff sits in the front
+                    row of the presentation on the UPh by Harish and asks him:
+                    “Does the UPh operationalize the Brand?”
                   </li>
                   <li>§ He implemented profit sharing from day one</li>
                 </ul>
               </div>
             </div>
             <p className="text-base sm:text-lg md:text-xl font-linear font-light leading-relaxed">
-              8. How we define WINNING in Business: maximizing, monetizable value – tax effectively
-              for all invested – by creating a Unifying Philosophy (UPh<sup>TM</sup>): Prosperity For
-              All. The financial proof of success is: an exit with double–digit multiple valuation.
-              And the best part for his people was that he invested 18+ months ensuring that the
-              strategic buyer will look after his people post acquisition. Jeff now is able to live
-              with pride and integrity knowing that his people have even more Prosperity For All
-              working within a global conglomerate with expansive growth potential.
+              8. How we define WINNING in Business: maximizing, monetizable
+              value – tax effectively for all invested – by creating a Unifying
+              Philosophy (UPh<sup>TM</sup>): Prosperity For All. The financial
+              proof of success is: an exit with double–digit multiple valuation.
+              And the best part for his people was that he invested 18+ months
+              ensuring that the strategic buyer will look after his people post
+              acquisition. Jeff now is able to live with pride and integrity
+              knowing that his people have even more Prosperity For All working
+              within a global conglomerate with expansive growth potential.
             </p>
             <div className="mt-6">
               <JoinBtn page="/pricing-plan">JOIN PRSPERA</JoinBtn>

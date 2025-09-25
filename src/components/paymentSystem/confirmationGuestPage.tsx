@@ -32,19 +32,25 @@ const ConfirmationGuest: React.FC = () => {
                 <p>
                   You have registered with Prospera using the email:
                   <br />
-                  <span className="font-semibold"> {user.email || "No email found"}</span>
+                  <span className="font-semibold">
+                    {" "}
+                    {user.email || "No email found"}
+                  </span>
                 </p>
                 <br />
                 <p>
                   The alias assigned to you by Prospera is:
                   <br />
-                  <span className="font-semibold">{user.username || "No Alias found"}</span>
+                  <span className="font-semibold">
+                    {user.username || "No Alias found"}
+                  </span>
                 </p>
                 <br />
                 <p className="text-base md:text-lg">
-                  Thank you for registering with Prspera. We will contact you shortly with further
-                  instructions on how to best use our platform for maximum efficiency, along with a
-                  link to the webinar.
+                  Thank you for registering with Prspera. We will contact you
+                  shortly with further instructions on how to best use our
+                  platform for maximum efficiency, along with a link to the
+                  webinar.
                 </p>
               </p>
             </>
@@ -61,7 +67,11 @@ const ConfirmationGuest: React.FC = () => {
               </defs>
               <circle cx="60" cy="60" r="34" fill="url(#g1)" />
             </svg>
-            <svg className="absolute w-full h-full z-10" viewBox="0 0 120 120" fill="none">
+            <svg
+              className="absolute w-full h-full z-10"
+              viewBox="0 0 120 120"
+              fill="none"
+            >
               <circle cx="60" cy="60" r="36" stroke="#071111" strokeWidth="2" />
               <circle cx="60" cy="60" r="48" stroke="#071111" strokeWidth="1" />
             </svg>
@@ -94,7 +104,13 @@ const ConfirmationGuest: React.FC = () => {
             <div className="relative z-30">
               <svg viewBox="0 0 64 64" className="w-36 h-36" aria-hidden>
                 <defs>
-                  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <filter
+                    id="glow"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                  >
                     <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                     <feMerge>
                       <feMergeNode in="coloredBlur" />

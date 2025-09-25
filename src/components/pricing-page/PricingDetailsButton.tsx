@@ -42,7 +42,7 @@ const PricingPlan: React.FC = () => {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.ok) {
         const userData = await response.json();
@@ -68,7 +68,7 @@ const PricingPlan: React.FC = () => {
       window.location.href = "/dashboard";
     } else {
       alert(
-        "You are already registered as a Guest, proceeding to upgrade your plan."
+        "You are already registered as a Guest, proceeding to upgrade your plan.",
       );
       window.location.href = "/payment";
     }
@@ -90,10 +90,11 @@ const PricingPlan: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`rounded-2xl p-8 shadow-md flex flex-col justify-between ${plan.highlight
-                ? "bg-white text-gray-800"
-                : "bg-black text-white"
-                }`}
+              className={`rounded-2xl p-8 shadow-md flex flex-col justify-between ${
+                plan.highlight
+                  ? "bg-white text-gray-800"
+                  : "bg-black text-white"
+              }`}
             >
               <div>
                 <p className="text-2xl text-center">Become a</p>
@@ -104,10 +105,12 @@ const PricingPlan: React.FC = () => {
                     className="w-[190px] h-[30px]"
                   />
                   <span
-                    className={`text-lg font-medium whitespace-nowrap max-sm:hidden ${plan.highlight ? "text-black" : "text-white"
-                      }`}
+                    className={`text-lg font-medium whitespace-nowrap max-sm:hidden ${
+                      plan.highlight ? "text-black" : "text-white"
+                    }`}
                   >
-                    Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+                    Grow Smarter
+                    <span className="font-bold">.Exit Richer™️</span>
                   </span>
                 </div>
                 <p className="text-3xl font-extrabold mb-6 text-center pt-4">
@@ -137,7 +140,8 @@ const PricingPlan: React.FC = () => {
                       <span
                         className={`text-lg font-medium whitespace-nowrap max-sm:hidden text-black `}
                       >
-                        Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+                        Grow Smarter
+                        <span className="font-bold">.Exit Richer™️</span>
                       </span>
                     </div>
                     Click to Learn More
@@ -156,7 +160,8 @@ const PricingPlan: React.FC = () => {
                       <span
                         className={`text-lg font-medium whitespace-nowrap max-sm:hidden text-black `}
                       >
-                        Grow Smarter<span className="font-bold">.Exit Richer™️</span>
+                        Grow Smarter
+                        <span className="font-bold">.Exit Richer™️</span>
                       </span>
                     </div>
                     Click to Learn More

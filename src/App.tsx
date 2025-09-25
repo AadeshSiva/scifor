@@ -34,258 +34,265 @@ import { AboutUs } from "./components/aboutpage/AboutUs";
 import Index from "./components/chat/Poll";
 
 const queryClient = new QueryClient();
-const routes = ["brand-diagnostic-details", "roicalculation", "exitwealth", "brandassets", "groupchat", "aiagent"]
+const routes = [
+  "brand-diagnostic-details",
+  "roicalculation",
+  "exitwealth",
+  "brandassets",
+  "groupchat",
+  "aiagent",
+];
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-        <BrowserRouter>
-          <div className="fixed top-0 left-0 w-full z-50">
-              <NavBar />
-          </div>
-          <Routes>
-            {routes.map((item, index) => (
-              <Route
-                key={index}
-                path={`/${item}/*`}
-                element={
-                  <ProtectedRoute requireAuth={false}>
-                    <Coming />
-                  </ProtectedRoute>
-                }
-              />
-            ))}
+      <BrowserRouter>
+        <div className="fixed top-0 left-0 w-full z-50">
+          <NavBar />
+        </div>
+        <Routes>
+          {routes.map((item, index) => (
             <Route
-              path="/brandassignment"
-              element={
-                <ProtectedRoute>
-                  <BrandAssignment />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/roiassignment"
-              element={
-                <ProtectedRoute>
-                  <ROIassignment />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/brand-diagnostic"
-              element={
-                <ProtectedRoute>
-                  <BrandDiagonist />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/businessdetails/*"
+              key={index}
+              path={`/${item}/*`}
               element={
                 <ProtectedRoute requireAuth={false}>
-                  <AddDetails />
+                  <Coming />
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/otpverify/*"
-              element={
-                <ProtectedRoute>
-                  <OTPVerification />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/auth/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Auth />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <NotFound />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/chat/*"
-              element={
-                <ProtectedRoute>
-                  <Chat />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Landing />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/coi/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <COI />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/proof/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <ProofPage />
-                </ProtectedRoute>
-              }
-            />{" "}
-            <Route
-              path="/pricing-plan/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <Pricing_Plan />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/about-us/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <AboutUs />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/article/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <ArticlePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard/*"
-              element={
-                <ProtectedRoute requireAuth={false}>
-                  <UserContextProvider>
-                    <Dashboard />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/payment/*"
-              element={
-                <ProtectedRoute>
-                  <Payment />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/payment-success/*"
-              element={
-                <ProtectedRoute>
-                  <PaymentSuccess />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/payment-cancelled/*"
-              element={
-                <ProtectedRoute>
-                  <PaymentCancelled />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/confirmation-guest/*"
-              element={
-                <ProtectedRoute>
-                  <ConfirmationGuest />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/confirmation-member/*"
-              element={
-                <ProtectedRoute>
-                  <ConfirmationMember />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/setting"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <Setting />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profileView"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <ProfileForm />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/usernameView"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <ChangeUsernameForm />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/emailView"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <EmailSettings />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/passwordView"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <PasswordChangeForm />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/historyView"
-              element={
-                <ProtectedRoute>
-                  <UserContextProvider>
-                    <PurchaseHistory />
-                  </UserContextProvider>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/test"
-              element={
-                <ProtectedRoute>
-                  <Index/>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
+          ))}
+          <Route
+            path="/brandassignment"
+            element={
+              <ProtectedRoute>
+                <BrandAssignment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/roiassignment"
+            element={
+              <ProtectedRoute>
+                <ROIassignment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/brand-diagnostic"
+            element={
+              <ProtectedRoute>
+                <BrandDiagonist />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/businessdetails/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <AddDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/otpverify/*"
+            element={
+              <ProtectedRoute>
+                <OTPVerification />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/auth/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <Auth />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <NotFound />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat/*"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <Landing />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/coi/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <COI />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proof/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <ProofPage />
+              </ProtectedRoute>
+            }
+          />{" "}
+          <Route
+            path="/pricing-plan/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <Pricing_Plan />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/about-us/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <AboutUs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/article/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <ArticlePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/*"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <UserContextProvider>
+                  <Dashboard />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/*"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment-success/*"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment-cancelled/*"
+            element={
+              <ProtectedRoute>
+                <PaymentCancelled />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/confirmation-guest/*"
+            element={
+              <ProtectedRoute>
+                <ConfirmationGuest />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/confirmation-member/*"
+            element={
+              <ProtectedRoute>
+                <ConfirmationMember />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/setting"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <Setting />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profileView"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <ProfileForm />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/usernameView"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <ChangeUsernameForm />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/emailView"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <EmailSettings />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/passwordView"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <PasswordChangeForm />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/historyView"
+            element={
+              <ProtectedRoute>
+                <UserContextProvider>
+                  <PurchaseHistory />
+                </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test"
+            element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   </QueryClientProvider>
 );

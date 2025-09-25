@@ -1,13 +1,13 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/utils/AuthContext';
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/utils/AuthContext";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAuth?: boolean;
 }
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requireAuth = true 
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requireAuth = true,
 }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();

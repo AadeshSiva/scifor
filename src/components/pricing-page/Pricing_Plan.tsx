@@ -5,12 +5,15 @@ import { Footer } from "@/components/footer/Footer";
 import { FAQSection } from "@/components/FAQSection/FAQSection";
 
 const getAccessToken = () =>
-  sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+  sessionStorage.getItem("access_token") ||
+  localStorage.getItem("access_token");
 const Pricing_Plan: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>("CROSSCHECK");
   const [authOpen, setAuthOpen] = useState(false);
   const [initialTab] = useState<"login" | "register">("register");
-  const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<"guest" | "member" | null>(
+    null,
+  );
   const [busy, setBusy] = useState(false);
   const { user, isAuthenticated } = useAuth();
   useEffect(() => {
@@ -50,16 +53,18 @@ const Pricing_Plan: React.FC = () => {
     } else if (user?.paid) {
       window.location.href = "/dashboard";
     } else {
-      alert("You are already registered as a Guest, proceeding to upgarde your plan.");
+      alert(
+        "You are already registered as a Guest, proceeding to upgarde your plan.",
+      );
       window.location.href = "/payment";
     }
   };
   const handleproofbtn = () => {
-    window.location.href = "/proof"
-  }
+    window.location.href = "/proof";
+  };
   const handleCurrentClick = () => {
-    window.location.href = '/dashboard'
-  }
+    window.location.href = "/dashboard";
+  };
   const menuItems: string[] = [
     "CROSSCHECK",
     "CONFIDANTE",
@@ -183,12 +188,12 @@ const Pricing_Plan: React.FC = () => {
   return (
     <section className="bg-white h-auto">
       <h1 className="text-center lg:text-6xl md:text-5xl text-3xl font-normal text-gray-500 font-walbaum pt-20">
-        The World’s One and Only Fact-Based Platform to Maximize and Monetize Your Business Value –
-        Tax Effectively – for All Invested.
+        The World’s One and Only Fact-Based Platform to Maximize and Monetize
+        Your Business Value – Tax Effectively – for All Invested.
       </h1>
       <h1 className="text-center text-4xl font-normal text-black font-walbaum mt-8">
-        When 84%+ of your business value is more than the cost of membership, then your decision is
-        clear.
+        When 84%+ of your business value is more than the cost of membership,
+        then your decision is clear.
       </h1>
       <div className="w-full flex flex-col md:flex-row lg:flex-row mt-14 px-4 gap-3">
         <div className="w-full lg:w-1/2 flex justify-center">
@@ -203,11 +208,15 @@ const Pricing_Plan: React.FC = () => {
           </div>
         </div>
         <div className="w-full h-auto md:space-y-3 lg:space-y-4 text-left text-lg lg:text-xl font-walbaum text-gray-700 leading-relaxed">
-          <p>“Most entrepreneurs fail not because their business wasn’t profitable enough.</p>
           <p>
-            They fail (on exit) because they didn’t create a business with marketable value that
-            creates the generational wealth they and their family dynasty deserves for the years
-            they sacrificed and invested in building that business.”
+            “Most entrepreneurs fail not because their business wasn’t
+            profitable enough.
+          </p>
+          <p>
+            They fail (on exit) because they didn’t create a business with
+            marketable value that creates the generational wealth they and their
+            family dynasty deserves for the years they sacrificed and invested
+            in building that business.”
           </p>
           <p>-Harish Chauhan</p>
         </div>
@@ -216,8 +225,12 @@ const Pricing_Plan: React.FC = () => {
       <div className="w-auto mx-2 h-auto mt-14 border-black border-2 flex flex-col md:flex-row lg:flex-row">
         {/* Left */}
         <div className="bg-gray-400 lg:w-[280px] md:w-[280px]">
-          <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">Jeff Cullen</h1>
-          <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">LIVE</h1>
+          <h1 className="text-center text-3xl lg:text-4xl font-extralight pt-4">
+            Jeff Cullen
+          </h1>
+          <h1 className="text-center text-2xl lg:text-3xl font-light pt-2">
+            LIVE
+          </h1>
 
           <div className="mt-4 border-2 border-black flex justify-center mx-auto w-fit">
             <img
@@ -227,10 +240,17 @@ const Pricing_Plan: React.FC = () => {
             />
           </div>
 
-          <p className="font-linear font-thin text-xl mt-10 text-center">Here's What Jeff Did</p>
+          <p className="font-linear font-thin text-xl mt-10 text-center">
+            Here's What Jeff Did
+          </p>
           <div className="flex justify-center mt-4 pb-10">
-            <button onClick={handleproofbtn} className=" text-base sm:text-md md:text-md p-2
-        bg-foreground border-2 border-[#DBA958] text-[#DBA958] rounded-md font-semibold">See Jeff's 10X+ Multiple Exit Story</button>
+            <button
+              onClick={handleproofbtn}
+              className=" text-base sm:text-md md:text-md p-2
+        bg-foreground border-2 border-[#DBA958] text-[#DBA958] rounded-md font-semibold"
+            >
+              See Jeff's 10X+ Multiple Exit Story
+            </button>
           </div>
         </div>
 
@@ -239,13 +259,15 @@ const Pricing_Plan: React.FC = () => {
           <h1 className="text-center text-xl lg:text-2xl text-white font-sans">
             Guest Registration
           </h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">Free</p>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">
+            Free
+          </p>
 
           <hr className="border-t-2 border-gray-400 mt-16" />
 
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
-            You’ll be entered into a lottery for any remaining 33 live seats. No cost to enter.
-            Attendance is not guaranteed.
+            You’ll be entered into a lottery for any remaining 33 live seats. No
+            cost to enter. Attendance is not guaranteed.
           </h1>
           <h1 className="text-sm lg:text-base text-white px-2 pt-4">
             If NOT selected in the lottery, you’ll still receive:
@@ -265,7 +287,8 @@ const Pricing_Plan: React.FC = () => {
             <div className="flex gap-2 items-center">
               <span className="text-lg lg:text-2xl text-white">&#10003;</span>
               <p>
-                Complete Q&amp;A report, including concepts, questions, and Jeff’s expert answers
+                Complete Q&amp;A report, including concepts, questions, and
+                Jeff’s expert answers
               </p>
             </div>
 
@@ -281,17 +304,22 @@ const Pricing_Plan: React.FC = () => {
 
         {/* Right */}
         <div className="bg-white flex-1 min-w-[300px]">
-          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">Member</h1>
-          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">$1797 USD</p>
+          <h1 className="text-center text-xl lg:text-2xl font-sans pt-4">
+            Member
+          </h1>
+          <p className="text-center text-yellow-500 text-lg lg:text-xl pt-2">
+            $1797 USD
+          </p>
           <p className="text-center font-sans font-light px-2">
-            One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time Offer.
+            One time purchase. Lifetime Value. ​Discounted 94%+. Limited Time
+            Offer.
           </p>
 
           <hr className="border-t-2 border-black mt-6" />
 
           <h1 className="text-sm lg:text-base font-sans px-2 pt-3">
-            Be one of the first 33 paid PRSPERA Lifetime members, and you are automatically
-            guaranteed a seat.
+            Be one of the first 33 paid PRSPERA Lifetime members, and you are
+            automatically guaranteed a seat.
           </h1>
 
           <div className="space-y-3 text-sm lg:text-base font-sans pt-4 px-2 pb-10">
@@ -317,7 +345,10 @@ const Pricing_Plan: React.FC = () => {
 
             <div className="flex gap-2">
               <span className="text-lg lg:text-2xl">&#10003;</span>
-              <p>Complete Q&A report, including concepts, questions, and Jeff’s expert answers</p>
+              <p>
+                Complete Q&A report, including concepts, questions, and Jeff’s
+                expert answers
+              </p>
             </div>
 
             <div className="flex gap-2">
@@ -347,8 +378,9 @@ const Pricing_Plan: React.FC = () => {
           <hr className="border-t-2 border-gray-400 mt-8" />
 
           <h1 className="text-base font-sans text-yellow-600 px-2 pt-3">
-            <br /> Sample each of the 12 PRSPERA Services with a monthly lottery so all our guests
-            can benefit through participation while also experiencing the benefits of membership.
+            <br /> Sample each of the 12 PRSPERA Services with a monthly lottery
+            so all our guests can benefit through participation while also
+            experiencing the benefits of membership.
           </h1>
         </div>
 
@@ -362,9 +394,9 @@ const Pricing_Plan: React.FC = () => {
           <hr className="border-t-2 border-black mt-8" />
 
           <h1 className="text-base font-sans text-yellow-600 px-2 pt-3">
-            <br /> Stop losing enterprise value in the chaos. Lock in PRSPERA once. Make it part of
-            your valuation narrative. Create alignment and accountability across the business. Learn
-            more
+            <br /> Stop losing enterprise value in the chaos. Lock in PRSPERA
+            once. Make it part of your valuation narrative. Create alignment and
+            accountability across the business. Learn more
           </h1>
 
           <div className="space-y-3 text-black text-base font-sans pt-4 px-2">
@@ -375,18 +407,20 @@ const Pricing_Plan: React.FC = () => {
                 <p>One Time buy – value for life</p>
 
                 <p className="text-sm ">
-                  ▪ 10 years of platform access, renewable and transferrable — boost your exit
-                  valuation by passing it to an acquirer
+                  ▪ 10 years of platform access, renewable and transferrable —
+                  boost your exit valuation by passing it to an acquirer
                 </p>
 
                 <p className="text-sm ">
-                  ▪ Permanent advantage for your entire org—execs, managers, staff, and advisors
-                  collaborate daily on your smarter growth and richer exit
+                  ▪ Permanent advantage for your entire org—execs, managers,
+                  staff, and advisors collaborate daily on your smarter growth
+                  and richer exit
                 </p>
 
                 <p className="text-sm ">
-                  Grandfathered pricing—lock in access to all future platform features under
-                  Lifetime or Subscription plans (excludes DFY &amp; some DWY services)
+                  Grandfathered pricing—lock in access to all future platform
+                  features under Lifetime or Subscription plans (excludes DFY
+                  &amp; some DWY services)
                 </p>
               </div>
             </div>
@@ -398,25 +432,34 @@ const Pricing_Plan: React.FC = () => {
                 <p>Why membership matters: ​</p>
 
                 <p className="text-sm">
-                  1.Disengaged teams destroy value. PRSPERA flips that. Every person in your company
-                  stays: <br />
+                  1.Disengaged teams destroy value. PRSPERA flips that. Every
+                  person in your company stays: <br />
                   <span className="font-medium">
                     ▪ Informed (real-time visibility)​{" "}
-                  </span> <br />{" "}
-                  <span className="font-medium">▪ Invested (strategic clarity)​</span> <br />
-                  <span className="font-medium">▪ Incentivized (value-creation metrics)​</span>
+                  </span>{" "}
+                  <br />{" "}
+                  <span className="font-medium">
+                    ▪ Invested (strategic clarity)​
+                  </span>{" "}
+                  <br />
+                  <span className="font-medium">
+                    ▪ Incentivized (value-creation metrics)​
+                  </span>
                 </p>
 
                 <p className="text-sm">
                   2.Every day becomes an opportunity to: ​ <br />
-                  <span className="font-medium">▪ Resude Risk​ </span> <br />{" "}
-                  <span className="font-medium">▪ Increase EBITDA​​</span> <br />
+                  <span className="font-medium">
+                    ▪ Resude Risk​{" "}
+                  </span> <br />{" "}
+                  <span className="font-medium">▪ Increase EBITDA​​</span>{" "}
+                  <br />
                   <span className="font-medium">▪ Monetize intangibles​​</span>
                 </p>
 
                 <p className="text-sm pb-10">
-                  Not someday Now Everyone becomes accountable and incentivized to build value
-                  smarter.
+                  Not someday Now Everyone becomes accountable and incentivized
+                  to build value smarter.
                 </p>
               </div>
             </div>
@@ -430,8 +473,9 @@ const Pricing_Plan: React.FC = () => {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${activeItem === item ? "bg-yellow-300 font-semibold" : ""
-                }`}
+              className={`py-3 px-2 text-sm cursor-pointer border-b hover:bg-gray-200 ${
+                activeItem === item ? "bg-yellow-300 font-semibold" : ""
+              }`}
               onClick={() => setActiveItem(item)}
             >
               {index + 1}. {item}
@@ -452,7 +496,7 @@ const Pricing_Plan: React.FC = () => {
               <p className="text-base">{messages1[activeItem]}</p>
             )}
           </div>
-          {(user?.role !== "paid_user" && user?.role !== "guest") && (
+          {user?.role !== "paid_user" && user?.role !== "guest" && (
             <button
               onClick={handleFreeClick}
               disabled={busy}

@@ -48,14 +48,17 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const response = await fetch(`${API_BASE_URL}/forgot-password-send-otp/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      const response = await fetch(
+        `${API_BASE_URL}/forgot-password-send-otp/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          body: JSON.stringify({ email: email.trim() }),
         },
-        body: JSON.stringify({ email: email.trim() }),
-      });
+      );
       const data = await response.json();
       if (response.ok) {
         setSuccessMessage("OTP sent to your email");
@@ -144,11 +147,11 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
       setIsLoading(false);
     }
   };
-  const navigate = useNavigate()
-  const ctx = useContext(UserContext)
+  const navigate = useNavigate();
+  const ctx = useContext(UserContext);
   const handleBack = () => {
-    navigate(`${ctx.url}`)
-    ctx.setEnabledSetting(true)
+    navigate(`${ctx.url}`);
+    ctx.setEnabledSetting(true);
     if (step > 1) {
       setStep(step - 1);
       setErrorMessage("");
@@ -209,10 +212,14 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           {step === 1 && (
             <div className="space-y-4">
               <p className="text-gray-600 text-sm mb-4">
-                Enter your email address and we'll send you an OTP to reset your password.
+                Enter your email address and we'll send you an OTP to reset your
+                password.
               </p>
               <div>
-                <label htmlFor="forgotEmail" className="block text-gray-800 font-medium mb-2">
+                <label
+                  htmlFor="forgotEmail"
+                  className="block text-gray-800 font-medium mb-2"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -238,17 +245,23 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           {step === 2 && (
             <div className="space-y-4">
               <p className="text-gray-600 text-sm mb-4">
-                We've sent a 6-digit code to <strong>{email}</strong>. Enter it below.
+                We've sent a 6-digit code to <strong>{email}</strong>. Enter it
+                below.
               </p>
               <div>
-                <label htmlFor="otp" className="block text-gray-800 font-medium mb-2">
+                <label
+                  htmlFor="otp"
+                  className="block text-gray-800 font-medium mb-2"
+                >
                   Verification Code
                 </label>
                 <input
                   type="text"
                   id="otp"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  onChange={(e) =>
+                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
                   placeholder="Enter 6-digit code"
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 text-center text-lg tracking-widest"
@@ -268,10 +281,15 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
           {/* Step 3: New Password */}
           {step === 3 && (
             <div className="space-y-4">
-              <p className="text-gray-600 text-sm mb-4">Create a new password for your account.</p>
+              <p className="text-gray-600 text-sm mb-4">
+                Create a new password for your account.
+              </p>
 
               <div>
-                <label htmlFor="newPassword" className="block text-gray-800 font-medium mb-2">
+                <label
+                  htmlFor="newPassword"
+                  className="block text-gray-800 font-medium mb-2"
+                >
                   New Password
                 </label>
                 <div className="relative">
@@ -300,7 +318,10 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-gray-800 font-medium mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-gray-800 font-medium mb-2"
+                >
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -323,7 +344,11 @@ const ForgotPasswordPopups = ({ isOpen, onClose, onSuccess }) => {
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                     disabled={isLoading}
                   >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                 </div>
               </div>

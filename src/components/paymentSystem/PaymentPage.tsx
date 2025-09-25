@@ -73,7 +73,7 @@ const Payment: React.FC = () => {
       try {
         if ((window as any).Stripe) {
           const s = (window as any).Stripe(
-            "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
+            "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL",
           );
           await setupStripeElements(s);
           return;
@@ -84,7 +84,7 @@ const Payment: React.FC = () => {
         script.onload = async () => {
           try {
             const s = (window as any).Stripe(
-              "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL"
+              "pk_live_51RPvxVGq7lR7zc6NAc818PzlCvPUUm7GN01P5GyrWE0gdtopHrbOk68uyBiCyXBwuQZtdID4MfUTuQQqD3F9Hcoc00ZEoUsoVL",
             );
             await setupStripeElements(s);
           } catch (error) {
@@ -101,10 +101,13 @@ const Payment: React.FC = () => {
       cancelled = true;
       try {
         cardElementRef.current?.unmount();
-      } catch { }
+      } catch {}
     };
   }, []);
-  const getAuthToken = (): string | null => localStorage.getItem("access_token") || sessionStorage.getItem("access_token") || null;
+  const getAuthToken = (): string | null =>
+    localStorage.getItem("access_token") ||
+    sessionStorage.getItem("access_token") ||
+    null;
   const processPayment = async () => {
     try {
       const token = getAuthToken();
@@ -121,17 +124,22 @@ const Payment: React.FC = () => {
           companyName: billingInfo.companyName,
         },
       };
-      const response = await fetch("https://api.prspera.com/api/create-checkout-session/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://api.prspera.com/api/create-checkout-session/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
         },
-        body: JSON.stringify(requestData),
-      });
+      );
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || data.message || `Server error: ${response.status}`);
+        throw new Error(
+          data.error || data.message || `Server error: ${response.status}`,
+        );
       }
       if (data.url) {
         window.location.href = data.url;
@@ -155,49 +163,101 @@ const Payment: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-2/5">
             <section className="bg-white rounded-2xl shadow-lg p-6 md:p-8 sticky top-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Plan Details</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Plan Details
+              </h2>
               <div className="mb-8">
-                <h3 className="text-2xl text-gray-900 mb-2">{planDetails.name}</h3>
+                <h3 className="text-2xl text-gray-900 mb-2">
+                  {planDetails.name}
+                </h3>
                 <p className="text-gray-600 mb-4">{planDetails.description}</p>
                 <div className="mb-8">
                   <span className="text-4xl font-bold text-gray-900">
                     ${planDetails.price / 100}
                   </span>
-                  <span className="text-sm text-gray-500 ml-2">/ one time payment</span>
+                  <span className="text-sm text-gray-500 ml-2">
+                    / one time payment
+                  </span>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                  <h4 className="font-medium text-blue-800 mb-2">This plan includes:</h4>
+                  <h4 className="font-medium text-blue-800 mb-2">
+                    This plan includes:
+                  </h4>
                   <ul className="space-y-2">
                     <li className="flex items-start">
-                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                       <span className="text-gray-700">Lifetime access</span>
                     </li>
                     <li className="flex items-start">
-                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
-                      <span className="text-gray-700">All premium features</span>
+                      <span className="text-gray-700">
+                        All premium features
+                      </span>
                     </li>
                     <li className="flex items-start">
-                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                       <span className="text-gray-700">Priority support</span>
                     </li>
                     <li className="flex items-start">
-                      <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                       <span className="text-gray-700">Exclusive content</span>
                     </li>
                   </ul>
                 </div>
-              </div>           
+              </div>
               <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                 <span className="text-lg font-medium text-gray-600">Total</span>
-                <span className="text-2xl font-bold text-gray-900">${planDetails.price / 100}</span>
+                <span className="text-2xl font-bold text-gray-900">
+                  ${planDetails.price / 100}
+                </span>
               </div>
               <button
                 onClick={processPayment}
@@ -231,11 +291,17 @@ const Payment: React.FC = () => {
               <div className="text-center text-sm text-gray-500 mt-4">
                 <p>By completing this purchase, you agree to our</p>
                 <p>
-                  <a href="#" className="underline hover:text-gray-700 transition-colors">
+                  <a
+                    href="#"
+                    className="underline hover:text-gray-700 transition-colors"
+                  >
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="underline hover:text-gray-700 transition-colors">
+                  <a
+                    href="#"
+                    className="underline hover:text-gray-700 transition-colors"
+                  >
                     Privacy Policy
                   </a>
                 </p>
@@ -262,10 +328,14 @@ const Payment: React.FC = () => {
           </div>
           <div className="w-full lg:w-3/5">
             <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Billing Information</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Billing Information
+              </h2>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     value={user.full_name}
@@ -274,37 +344,73 @@ const Payment: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     value={user.email}
                     readOnly
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-gray-50"
                   />
-                </div> 
+                </div>
                 <div>
-                  <p className="text-xs text-gray-500 mt-2">Your payment details are encrypted and processed securely</p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Your payment details are encrypted and processed securely
+                  </p>
                 </div>
               </div>
             </div>
             <div className="bg-blue-50 rounded-2xl p-6 mt-6">
-              <h3 className="text-lg font-semibold text-blue-800 mb-3">What happens next?</h3>
+              <h3 className="text-lg font-semibold text-blue-800 mb-3">
+                What happens next?
+              </h3>
               <ul className="space-y-2 text-blue-700">
                 <li className="flex items-start">
-                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                   <span>Immediate access to all features after payment</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                   <span>Lifetime membership with no recurring fees</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                   <span>Downloadable invoice for your records</span>
                 </li>

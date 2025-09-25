@@ -7,13 +7,13 @@ const PaymentCancelled = () => {
     try {
       window.location.href = "/pricing-plan";
     } catch (error) {
-      console.error('Navigation error:', error);
+      console.error("Navigation error:", error);
       window.location.href = "/";
     }
   }, []);
   useEffect(() => {
     const countdownInterval = setInterval(() => {
-      setCountdown(prev => {
+      setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(countdownInterval);
           handleNavigation();
@@ -47,15 +47,15 @@ const PaymentCancelled = () => {
           </div>
           <div className="px-6 pb-8">
             <div className="space-y-3 mb-6">
-              <button 
+              <button
                 onClick={handleRetry}
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 <span>Try Again</span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={handleManualNavigation}
                 className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
               >
@@ -69,7 +69,7 @@ const PaymentCancelled = () => {
                   Redirecting to plans in {countdown} seconds
                 </p>
                 <div className="w-full bg-gray-200 rounded-full h-1 mt-3">
-                  <div 
+                  <div
                     className="bg-gray-600 h-1 rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${((10 - countdown) / 10) * 100}%` }}
                   ></div>
@@ -79,9 +79,7 @@ const PaymentCancelled = () => {
           </div>
         </div>
         <div className="text-center mt-4">
-          <p className="text-gray-500 text-sm">
-            Need help? Contact support
-          </p>
+          <p className="text-gray-500 text-sm">Need help? Contact support</p>
         </div>
       </div>
     </div>
