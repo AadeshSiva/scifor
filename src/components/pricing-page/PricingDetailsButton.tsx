@@ -19,7 +19,7 @@ const plans: Plan[] = [
   },
   {
     title: "Become a PRSPERA Member",
-    price: "$797",
+    price: "$1797",
     features: [
       "Grow Smarter to Exit Richer Immediately",
       "Get TIME on your side and STOP value destruction in your business NOW",
@@ -77,12 +77,12 @@ const PricingPlan: React.FC = () => {
     if (!isAuthenticated) {
       window.location.href = "/auth?plan=guest&view=register";
     } else {
-      window.location.href = "/dashboard";
+      window.location.href = "/pricing-plan";
     }
   };
   return (
-    <section className="bg-gray-100 py-16">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="bg-gray-200 py-16 shadow-lg">
+      <div className="max-w-5xl mx-auto px-4">
         <h2 className="text-center text-4xl font-semibold text-gray-800 mb-12">
           Pricing Plan
         </h2>
@@ -96,7 +96,7 @@ const PricingPlan: React.FC = () => {
                   : "bg-black text-white"
               }`}
             >
-              <div>
+              <div className="flex flex-col justify-center items-center">
                 <p className="text-2xl text-center">Become a</p>
                 <div className="flex cursor-pointer pt-4 items-center gap-2">
                   <img
@@ -116,7 +116,7 @@ const PricingPlan: React.FC = () => {
                 <p className="text-3xl font-extrabold mb-6 text-center pt-4">
                   {plan.price}
                 </p>
-                <ul className="space-y-8">
+                <ul className="space-y-8 mt-16">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="text-green-500">✔</span>
@@ -125,20 +125,20 @@ const PricingPlan: React.FC = () => {
                   ))}
                 </ul>
               </div>
-              <div className="mt-8 flex justify-center items-center">
+              <div className="flex justify-center items-center w-full mt-64">
                 {plan.highlight ? (
                   <button
-                    className="w-full py-3 rounded-lg font-semibold transition text-black border border-gray-300"
+                    className="w-full py-3 rounded-lg font-semibold transition text-white border border-[#ffd700] bg-black flex flex-col justify-center items-center border-lg"
                     onClick={handlePaidClick}
                   >
-                    <div className="flex cursor-pointer pt-4 items-center gap-2 bg-white">
+                    <div className="flex cursor-pointer pt-4 items-center gap-2 bg-black">
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
                         alt="Prospera Logo"
-                        className="w-[190px] h-[30px]"
+                        className="w-[190px] h-[30px] bg-black"
                       />
                       <span
-                        className={`text-lg font-medium whitespace-nowrap max-sm:hidden text-black `}
+                        className={`text-lg font-medium whitespace-nowrap max-sm:hidden text-white `}
                       >
                         Grow Smarter
                         <span className="font-bold">.Exit Richer™️</span>
@@ -148,14 +148,14 @@ const PricingPlan: React.FC = () => {
                   </button>
                 ) : (
                   <button
-                    className="w-full py-3 rounded-lg font-semibold transition bg-white text-black shadow-lg"
+                    className="w-full py-3 rounded-lg font-semibold transition bg-white text-black shadow-lg flex flex-col justify-center items-center border border-[#ffd700] border-lg"
                     onClick={handleFreeClick}
                   >
                     <div className="flex cursor-pointer pt-4 items-center gap-2 bg-white">
                       <img
                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/b9229a48c4e1f3b70f2231b9effad024402047f5"
                         alt="Prospera Logo"
-                        className="w-[190px] h-[30px]"
+                        className="w-[190px] h-[30px] bg-black"
                       />
                       <span
                         className={`text-lg font-medium whitespace-nowrap max-sm:hidden text-black `}

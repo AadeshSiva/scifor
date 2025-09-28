@@ -19,8 +19,7 @@ const Payment: React.FC = () => {
   const cardElementRef = useRef<any>(null);
   const planDetails = {
     name: "Founding Lifetime Member",
-    price: 179700,
-    description: "Seats available for 50 members",
+    price: 179700
   };
   useEffect(() => {
     let cancelled = false;
@@ -101,7 +100,7 @@ const Payment: React.FC = () => {
       cancelled = true;
       try {
         cardElementRef.current?.unmount();
-      } catch {}
+      } catch { }
     };
   }, []);
   const getAuthToken = (): string | null =>
@@ -170,7 +169,6 @@ const Payment: React.FC = () => {
                 <h3 className="text-2xl text-gray-900 mb-2">
                   {planDetails.name}
                 </h3>
-                <p className="text-gray-600 mb-4">{planDetails.description}</p>
                 <div className="mb-8">
                   <span className="text-4xl font-bold text-gray-900">
                     ${planDetails.price / 100}

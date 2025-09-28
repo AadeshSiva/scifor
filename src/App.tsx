@@ -15,7 +15,6 @@ import ConfirmationMember from "./components/paymentSystem/confirmationMemberPag
 import Landing from "./Homepage/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import ProofPage from "./components/proofpage/Proof";
-import AddDetails from "./components/paymentSystem/AddDetails";
 import Coming from "./components/extras/Coming";
 import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
@@ -32,6 +31,7 @@ import PurchaseHistory from "./components/settings/PaymentHistory";
 import UserContextProvider from "./components/settings/Context/UserContextProvider";
 import { AboutUs } from "./components/aboutpage/AboutUs";
 import Index from "./components/chat/Poll";
+import AddDetails from "./components/assignment/AddDetails";
 
 const queryClient = new QueryClient();
 const routes = [
@@ -89,7 +89,7 @@ const App = () => (
             path="/businessdetails/*"
             element={
               <ProtectedRoute requireAuth={false}>
-                <AddDetails />
+                <AddDetails/>
               </ProtectedRoute>
             }
           />

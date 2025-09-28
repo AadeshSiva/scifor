@@ -140,21 +140,12 @@ const NavBar: React.FC = () => {
                     >
                       COI
                     </button>
-                    {user.role !== "paid_user" ? (
                       <button
                         onClick={() => navigate("/pricing-plan")}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       >
-                        Pricing Plan
+                        Pricing
                       </button>
-                    ) : (
-                      <button
-                        onClick={() => navigate("/pricing-plan")}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                      >
-                        Currect Plan
-                      </button>
-                    )}
                     <button
                       onClick={() => navigate("/proof")}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"

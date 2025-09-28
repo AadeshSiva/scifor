@@ -83,15 +83,15 @@ export default function Landing() {
         </div>
         <br />
         <div className="flex justify-center items-center text-white p-8">
-          <div className="relative w-[80vw] max-w-[400px] aspect-square bg-white rounded-full flex justify-center items-center">
-            <div className="absolute flex flex-col items-center text-center px-4">
+          <div className="relative w-[85vw] max-w-[430px] aspect-square bg-white rounded-full flex justify-center items-center">
+            <div className="absolute flex flex-col items-center text-center px-8">
               <p className="text-black font-semibold text-sm mb-2">
                 {circleinfodata[circleinfo].heading}
               </p>
               <p className="text-black text-xs sm:text-xs mb-4">
                 {circleinfodata[circleinfo].text}
               </p>
-              <div className="w-56 h-48 sm:w-56 sm:h-32 mt-2">
+              <div className="w-66 h-58 sm:w-46 sm:h-48 mb-4">
                 <iframe
                   src={circleinfodata[circleinfo].Url}
                   className="w-full h-full rounded-lg border border-gray-300"
