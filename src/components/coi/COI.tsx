@@ -3,7 +3,7 @@ import { Footer } from "@/components/footer/Footer";
 
 const COI: React.FC = () => {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative mt-16">
       <main className="container mx-auto px-6 py-8 max-w-7xl">
         <section className="w-full flex justify-center items-center px-0 py-8">
           <div className="w-full max-w-[1000px] px-5 text-center">
@@ -30,7 +30,7 @@ const COI: React.FC = () => {
           <div className="text-black text-center text-2xl max-w-[900px] w-full max-sm:text-lg">
             <p>
               your business value and generational wealth is at risk – unless
-              you unlock that value...​
+              you unlock that value...
             </p>
           </div>
         </section>
@@ -48,7 +48,7 @@ const COI: React.FC = () => {
           <div className="w-full max-w-[900px] text-center">
             <h2 className="text-[#777] text-7xl font-normal max-md:text-5xl max-sm:text-[32px] font-walbaum">
               The numbers prove​ <br />
-              why its easier to​
+              why its easier to
             </h2>
             <h2 className="text-[#777] text-7xl font-normal  max-w-[736px] mx-auto max-md:text-5xl max-sm:text-[32px] font-walbaum">
               <span className="text-[#D02C31]">LOSE</span> than it is to{" "}
@@ -57,7 +57,7 @@ const COI: React.FC = () => {
           </div>
         </section>
         <h2 className="text-[#777] text-4xl font-normal text-center pt-10 max-md:text-5xl max-sm:text-[32px] font-walbaum">
-          (See for yourself) ​
+          (See for yourself)
         </h2>
         <div className="flex gap-8 justify-center items-start max-lg:flex-col max-lg:items-center py-8">
           <div>
@@ -65,14 +65,14 @@ const COI: React.FC = () => {
           </div>
         </div>
       </main>
-      <aside className="absolute right-4 top-4 z-10">
-        <div className="flex flex-col items-end">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc"
-            alt="Side Logo"
-            className="w-[140px] h-[35px]"
-          />
-          <div className="-rotate-90 text-black text-[18px] mt-5 origin-center whitespace-nowrap pt-8 font-linear md:block hidden">
+      <img
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/53e157ea9e6912d2bf3a95839b06656d5dc44abc"
+        alt="Side Logo"
+        className="w-[140px] h-[35px] right-0 absolute top-0"
+      />
+      <aside className="absolute top-8 right-4 z-50 flex flex-col items-end">
+        <div className="flex justify-end">
+          <div className="-rotate-90 text-black text-[18px] origin-right whitespace-nowrap font-linear md:block hidden">
             <span>
               Grow Smarter. <span className="font-bold">Exit Richer™</span>
             </span>

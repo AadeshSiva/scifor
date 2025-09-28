@@ -7,7 +7,7 @@ import JoinBtn from "@/components/extras/JoinBtn";
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="bg-[#f5f5f5] py-16 px-4 md:px-8 lg:px-16">
+    <div className="bg-[#f5f5f5] py-16 px-4 md:px-8 lg:px-16 mt-4">
       <div className="max-w-6xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-walbaum font-thin text-gray-700 mb-3">
           Your Business Is Profitable -

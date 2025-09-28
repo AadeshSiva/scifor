@@ -202,7 +202,7 @@ const Dashboard: React.FC = () => {
     setIdNeeded(data || null);
   };
   const handleUpgrade = () => {
-    navigate("/payment");
+    navigate("/pricing-plan");
   };
   const handleSettingPage = (e) => {
     e.preventDefault();

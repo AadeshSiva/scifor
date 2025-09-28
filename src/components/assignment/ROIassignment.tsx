@@ -3,19 +3,8 @@ import {
   faArrowLeft,
   faArrowRight,
   faCheckCircle,
-  faDollarSign,
-  faEuroSign,
-  faIndianRupeeSign,
   faRegistered,
-  faSterlingSign,
-  faYenSign,
-  faY,
-  faAustralSign,
-  faSackDollar,
-  faFrancSign,
-  faCrown,
-  faR,
-  faD,
+
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +22,6 @@ interface Currency {
   code: string;
   name: string;
   countrylogo: string;
-  currencylogo: any;
   symbol: string;
   format: (amount: number) => string;
 }
@@ -51,7 +39,6 @@ const ROIassignment: React.FC = () => {
       code: "USD",
       name: "United States Dollar",
       countrylogo: "/assets/Image/countrylogo/United-States.jpg",
-      currencylogo: faDollarSign,
       symbol: "$",
       format: (amount: number) =>
         new Intl.NumberFormat("en-US", {
@@ -65,7 +52,6 @@ const ROIassignment: React.FC = () => {
       code: "EUR",
       name: "Euro (European Union)",
       countrylogo: "/assets/Image/countrylogo/European-Union.jpg",
-      currencylogo: faEuroSign,
       symbol: "€",
       format: (amount: number) =>
         new Intl.NumberFormat("de-DE", {
@@ -79,7 +65,6 @@ const ROIassignment: React.FC = () => {
       code: "GBP",
       name: "British Pound Sterling",
       countrylogo: "/assets/Image/countrylogo/United-Kindom.jpg",
-      currencylogo: faSterlingSign,
       symbol: "£",
       format: (amount: number) =>
         new Intl.NumberFormat("en-GB", {
@@ -93,7 +78,6 @@ const ROIassignment: React.FC = () => {
       code: "JPY",
       name: "Japanese Yen",
       countrylogo: "/assets/Image/countrylogo/Japan.jpg",
-      currencylogo: faYenSign,
       symbol: "¥",
       format: (amount: number) =>
         new Intl.NumberFormat("ja-JP", {
@@ -105,9 +89,8 @@ const ROIassignment: React.FC = () => {
     },
     {
       code: "CNY",
-      name: "Chinese Yuan / Renminbi",
+      name: "Chinese Yuan (Renminbi)",
       countrylogo: "/assets/Image/countrylogo/China.jpg",
-      currencylogo: faY,
       symbol: "¥",
       format: (amount: number) =>
         new Intl.NumberFormat("zh-CN", {
@@ -121,7 +104,6 @@ const ROIassignment: React.FC = () => {
       code: "INR",
       name: "Indian Rupee",
       countrylogo: "/assets/Image/countrylogo/India.jpg",
-      currencylogo: faIndianRupeeSign,
       symbol: "₹",
       format: (amount: number) =>
         new Intl.NumberFormat("en-IN", {
@@ -131,12 +113,127 @@ const ROIassignment: React.FC = () => {
           maximumFractionDigits: 0,
         }).format(amount),
     },
+    {
+      code: "AUD",
+      name: "Australian Dollar",
+      countrylogo: "/assets/Image/countrylogo/Australia.jpg",
+      symbol: "$",
+      format: (amount: number) =>
+        new Intl.NumberFormat("en-AU", {
+          style: "currency",
+          currency: "AUD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "CAD",
+      name: "Canadian Dollar",
+      countrylogo: "/assets/Image/countrylogo/Canada.jpg",
+      symbol: "$",
+      format: (amount: number) =>
+        new Intl.NumberFormat("en-CA", {
+          style: "currency",
+          currency: "CAD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "CHF",
+      name: "Swiss Franc",
+      countrylogo: "/assets/Image/countrylogo/Switzerland.jpg",
+      symbol: "CHF",
+      format: (amount: number) =>
+        new Intl.NumberFormat("de-CH", {
+          style: "currency",
+          currency: "CHF",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "AED",
+      name: "United Arab Emirates Dirham",
+      countrylogo: "/assets/Image/countrylogo/UAE.jpg",
+      symbol: "AED",
+      format: (amount: number) =>
+        new Intl.NumberFormat("ar-AE", {
+          style: "currency",
+          currency: "AED",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "SAR",
+      name: "Saudi Riyal",
+      countrylogo: "/assets/Image/countrylogo/Saudi.jpg",
+      symbol: "SAR",
+      format: (amount: number) =>
+        new Intl.NumberFormat("ar-SA", {
+          style: "currency",
+          currency: "SAR",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "SGD",
+      name: "Singapore Dollar",
+      countrylogo: "/assets/Image/countrylogo/Singapur.jpg",
+      symbol: "S$",
+      format: (amount: number) =>
+        new Intl.NumberFormat("en-SG", {
+          style: "currency",
+          currency: "SGD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "HKD",
+      name: "Hong Kong Dollar",
+      countrylogo: "/assets/Image/countrylogo/Hongkong.jpg",
+      symbol: "HK$",
+      format: (amount: number) =>
+        new Intl.NumberFormat("zh-HK", {
+          style: "currency",
+          currency: "HKD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "ZAR",
+      name: "South African Rand",
+      countrylogo: "/assets/Image/countrylogo/South-Africa.jpg",
+      symbol: "R",
+      format: (amount: number) =>
+        new Intl.NumberFormat("en-ZA", {
+          style: "currency",
+          currency: "ZAR",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
+    {
+      code: "NZD",
+      name: "New Zealand Dollar",
+      countrylogo: "/assets/Image/countrylogo/New-Zealand.jpg",
+      symbol: "NZ$",
+      format: (amount: number) =>
+        new Intl.NumberFormat("en-NZ", {
+          style: "currency",
+          currency: "NZD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount),
+    },
   ];
-
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
     currencies[0],
   );
-
   const tasks: Task[] = [
     {
       id: 1,
@@ -553,10 +650,7 @@ const ROIassignment: React.FC = () => {
                   {selectedCurrency.code}
                 </span>
               </div>
-              <FontAwesomeIcon
-                icon={selectedCurrency.currencylogo}
-                className="text-gray-700"
-              />
+              <span>{selectedCurrency.symbol}</span>
             </button>
 
             {isOpen && (
@@ -568,11 +662,10 @@ const ROIassignment: React.FC = () => {
                       setSelectedCurrency(currency);
                       setIsOpen(false);
                     }}
-                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
-                      selectedCurrency.code === currency.code
-                        ? "bg-blue-100 font-semibold"
-                        : "hover:bg-gray-100"
-                    }`}
+                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${selectedCurrency.code === currency.code
+                      ? "bg-blue-100 font-semibold"
+                      : "hover:bg-gray-100"
+                      }`}
                   >
                     <img
                       src={currency.countrylogo}
@@ -580,10 +673,7 @@ const ROIassignment: React.FC = () => {
                       className="w-5 h-5 rounded-full"
                     />
                     <span className="flex-1">{currency.code}</span>
-                    <FontAwesomeIcon
-                      icon={currency.currencylogo}
-                      className="text-gray-600"
-                    />
+                    <span>{currency.symbol}</span>
                   </div>
                 ))}
               </div>
@@ -625,10 +715,7 @@ const ROIassignment: React.FC = () => {
                     <th className="py-3 px-4 text-left font-semibold text-gray-700">
                       <div className="flex flex-col">
                         <span className="flex items-center">
-                          <FontAwesomeIcon
-                            icon={selectedCurrency.currencylogo}
-                            className="mr-1 text-gray-600"
-                          />
+                          <span className="mr-2">{selectedCurrency.symbol}</span>
                           VALUE
                         </span>
                         <span className="text-xs font-normal">
@@ -667,7 +754,7 @@ const ROIassignment: React.FC = () => {
                               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               value={
                                 ratings[
-                                  `task-${tasks.indexOf(task)}-q-${qIndex}`
+                                `task-${tasks.indexOf(task)}-q-${qIndex}`
                                 ] || ""
                               }
                               onChange={(e) =>
@@ -706,11 +793,10 @@ const ROIassignment: React.FC = () => {
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 1}
-              className={`flex items-center justify-center px-4 py-2 rounded-lg ${
-                currentSection === 1
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-gray-600 text-white hover:bg-gray-700"
-              }`}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg ${currentSection === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-gray-700"
+                }`}
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
