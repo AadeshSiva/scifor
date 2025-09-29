@@ -35,7 +35,10 @@ const AddDetails: React.FC = () => {
   const [date, setDate] = useState<string | null>(null);
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getMonth() + 1).padStart(2, "0")}/${String(today.getDate()).padStart(2, "0")}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}/${String(today.getDate()).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
   const handleBackButton = () => {
@@ -67,7 +70,7 @@ const AddDetails: React.FC = () => {
     culture: "",
   });
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -84,7 +87,7 @@ const AddDetails: React.FC = () => {
           return {
             ...prev,
             growthStage: prev.growthStage.filter(
-              (item) => item !== checkboxValue,
+              (item) => item !== checkboxValue
             ),
           };
         }
@@ -619,11 +622,32 @@ const AddDetails: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="w-full flex justify-center items-center pt-8">
+            {/* <div className="w-full flex justify-center items-center pt-8">
               <button
                 onClick={handleFormSubmit}
                 type="submit"
                 className="w-full md:w-1/3 bg-black py-3 rounded-3xl border border-[#DBA958] text-[#DBA958] font-bold hover:bg-[#DBA958] hover:text-black transition-colors"
+              >
+                Submit
+              </button>
+            </div> */}
+            <div className="w-full flex justify-center items-center pt-8">
+              <button
+                onClick={handleFormSubmit}
+                type="submit"
+                disabled={Object.values(formData).some(
+                  (value) =>
+                    value === "" || (Array.isArray(value) && value.length === 0)
+                )} // disable if any required field empty
+                className={`w-full md:w-1/3 py-3 rounded-3xl border border-[#DBA958] font-bold transition-colors
+      ${
+        Object.values(formData).some(
+          (value) =>
+            value === "" || (Array.isArray(value) && value.length === 0)
+        )
+          ? "bg-gray-300 text-gray-500 opacity-50 cursor-not-allowed"
+          : "bg-black text-[#DBA958] hover:bg-[#DBA958] hover:text-black"
+      }`}
               >
                 Submit
               </button>
