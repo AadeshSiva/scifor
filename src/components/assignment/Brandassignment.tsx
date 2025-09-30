@@ -1,9 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faArrowRight,
-  faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 interface Task {
@@ -11,71 +7,79 @@ interface Task {
   title: string;
   description: string;
 }
+
 const BrandAssignment: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string>("");
   const [currentSection, setCurrentSection] = useState<number>(1);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [popup, setPopup] = useState<boolean>(false);
+
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  });
+
   const handleRatingChange = (questionId: string, value: number) => {
     setRatings((prev) => ({ ...prev, [questionId]: value }));
   };
+
   console.log(ratings);
   const handleNextSection = () => {
     if (currentSection < 4) {
       setCurrentSection((prev) => prev + 1);
     }
   };
+
   const handlePrevSection = () => {
     if (currentSection > 1) {
       setCurrentSection((prev) => prev - 1);
     }
   };
+
   const handleBackButton = () => {
     setPopup(true);
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("assign-1", "true");
     navigate("/dashboard");
   };
+
   const handleSaveButton = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("assign-1", "true");
     navigate("/dashboard");
   };
+
   const handlecancelbutton = () => {
     setPopup(false);
   };
+
   const handlenotsave = () => {
     navigate("/dashboard");
   };
-  useEffect(() => {
-    if (window.location.pathname === "/") {
-      window.addEventListener("beforeunload", function (e) {
-        e.preventDefault();
-        e.returnValue = "";
-      });
-    }
-  });
 
   const tasks: Task[] = [
     {
       id: 1,
       title: "SECTION 1 – LEADERSHIP",
-      description:
-        "1. Our company values are well demonstrated by leaders and staff.",
+      description: "1. Our company values are well demonstrated by leaders and staff.",
     },
     {
       id: 1,
       title: "SECTION 1 – LEADERSHIP",
-      description:
-        "2. Our company is clear on how we are different than our competitors.",
+      description: "2. Our company is clear on how we are different than our competitors.",
     },
     {
       id: 1,
@@ -145,8 +149,7 @@ const BrandAssignment: React.FC = () => {
     {
       id: 2,
       title: "SECTION 2 - MESSAGE",
-      description:
-        "4. Our Brand message genuinely represents our business philosophy.",
+      description: "4. Our Brand message genuinely represents our business philosophy.",
     },
     {
       id: 2,
@@ -181,14 +184,12 @@ const BrandAssignment: React.FC = () => {
     {
       id: 2,
       title: "SECTION 2 - MESSAGE",
-      description:
-        "10. The industry, our customers and prospects revere our Brand.",
+      description: "10. The industry, our customers and prospects revere our Brand.",
     },
     {
       id: 3,
       title: "SECTION 3 – OPERATIONS",
-      description:
-        "1. Our Branding initiatives are smart and measured for performance.",
+      description: "1. Our Branding initiatives are smart and measured for performance.",
     },
     {
       id: 3,
@@ -199,8 +200,7 @@ const BrandAssignment: React.FC = () => {
     {
       id: 3,
       title: "SECTION 3 – OPERATIONS",
-      description:
-        "3. Each product and service offering expresses our Brand philosophy.",
+      description: "3. Each product and service offering expresses our Brand philosophy.",
     },
     {
       id: 3,
@@ -229,14 +229,12 @@ const BrandAssignment: React.FC = () => {
     {
       id: 3,
       title: "SECTION 3 – OPERATIONS",
-      description:
-        "8. We have financial systems to quantify the value of our Brand.",
+      description: "8. We have financial systems to quantify the value of our Brand.",
     },
     {
       id: 3,
       title: "SECTION 3 – OPERATIONS",
-      description:
-        "9. Our customers and staff consistently experience our Brand promise.",
+      description: "9. Our customers and staff consistently experience our Brand promise.",
     },
     {
       id: 3,
@@ -253,8 +251,7 @@ const BrandAssignment: React.FC = () => {
     {
       id: 4,
       title: "SECTION 4 – BRAND ARTIFACTS",
-      description:
-        "2. Our philosophy is consistently expressed in our Branding artifacts.",
+      description: "2. Our philosophy is consistently expressed in our Branding artifacts.",
     },
     {
       id: 4,
@@ -348,32 +345,20 @@ const BrandAssignment: React.FC = () => {
                 <thead>
                   <tr className="bg-gray-200 text-gray-700 border border-gray-300 shadow-md">
                     <th className="w-2/3 p-4 text-left text-md"></th>
-                    {[
-                      "Strongly Disagree",
-                      "Disagree",
-                      "Don't Know",
-                      "Agree",
-                      "Strongly Agree",
-                    ].map((header, index) => (
-                      <th
-                        key={index}
-                        className="p-2 text-center border border-gray-300 w-8"
-                      >
-                        <div className="flex items-center justify-center h-10 border-b">
-                          <span className="flex text-center font-semibold text-md">
-                            {header}
-                          </span>
-                        </div>
-                      </th>
-                    ))}
+                    {["Strongly Disagree", "Disagree", "Don't Know", "Agree", "Strongly Agree"].map(
+                      (header, index) => (
+                        <th key={index} className="p-2 text-center border border-gray-300 w-8">
+                          <div className="flex items-center justify-center h-10 border-b">
+                            <span className="flex text-center font-semibold text-md">{header}</span>
+                          </div>
+                        </th>
+                      )
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {currentTasks.map((task, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-500 h-4 bg-gray-400"
-                    >
+                    <tr key={index} className="border-b border-gray-500 h-4 bg-gray-400">
                       <td className="px-6 text-md border border-gray-500 h-4">
                         {task.description}
                       </td>
@@ -385,14 +370,9 @@ const BrandAssignment: React.FC = () => {
                           <input
                             type="radio"
                             name={`s${currentSection}-q${index}`}
-                            checked={
-                              ratings[`s${currentSection}-q${index}`] === value
-                            }
+                            checked={ratings[`s${currentSection}-q${index}`] === value}
                             onChange={() =>
-                              handleRatingChange(
-                                `s${currentSection}-q${index}`,
-                                value,
-                              )
+                              handleRatingChange(`s${currentSection}-q${index}`, value)
                             }
                             className="h-6 w-6 text-blue-600 focus:ring-blue-500"
                             required
@@ -408,7 +388,11 @@ const BrandAssignment: React.FC = () => {
               <button
                 onClick={handlePrevSection}
                 disabled={currentSection === 1}
-                className={`flex items-center px-4 py-2 rounded text-md ${currentSection === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-600 text-white hover:bg-gray-700"}`}
+                className={`flex items-center px-4 py-2 rounded text-md ${
+                  currentSection === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-600 text-white hover:bg-gray-700"
+                }`}
               >
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 Previous
@@ -437,15 +421,9 @@ const BrandAssignment: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
           <div className="w-full max-w-md bg-gray-100 p-6 flex flex-col space-y-6 rounded-lg shadow-xl">
             <div className="text-center space-y-3">
-              <h1 className="text-xl font-semibold text-gray-800">
-                You have unsaved changes.
-              </h1>
-              <h1 className="text-xl font-semibold text-gray-800">
-                Do you want to save them
-              </h1>
-              <h1 className="text-xl font-semibold text-gray-800">
-                before leaving?
-              </h1>
+              <h1 className="text-xl font-semibold text-gray-800">You have unsaved changes.</h1>
+              <h1 className="text-xl font-semibold text-gray-800">Do you want to save them</h1>
+              <h1 className="text-xl font-semibold text-gray-800">before leaving?</h1>
             </div>
             <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button

@@ -4,7 +4,6 @@ import {
   faArrowRight,
   faCheckCircle,
   faRegistered,
-
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -231,9 +230,7 @@ const ROIassignment: React.FC = () => {
         }).format(amount),
     },
   ];
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
-    currencies[0],
-  );
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(currencies[0]);
   const tasks: Task[] = [
     {
       id: 1,
@@ -548,7 +545,9 @@ const ROIassignment: React.FC = () => {
 
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
 
@@ -569,6 +568,13 @@ const ROIassignment: React.FC = () => {
     });
     setSectionTotal(total);
   }, [ratings, tasks, currentSection]);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  });
 
   const handleBackButton = () => {
     navigate("/dashboard");
@@ -592,11 +598,7 @@ const ROIassignment: React.FC = () => {
     navigate("/dashboard");
   };
 
-  const handleRatingChange = (
-    taskIndex: number,
-    questionIndex: number,
-    value: number,
-  ) => {
+  const handleRatingChange = (taskIndex: number, questionIndex: number, value: number) => {
     const key = `task-${taskIndex}-q-${questionIndex}`;
     setRatings((prev) => ({ ...prev, [key]: value }));
   };
@@ -646,9 +648,7 @@ const ROIassignment: React.FC = () => {
                   alt={selectedCurrency.name}
                   className="w-6 h-6 rounded-full"
                 />
-                <span className="text-gray-800 font-medium">
-                  {selectedCurrency.code}
-                </span>
+                <span className="text-gray-800 font-medium">{selectedCurrency.code}</span>
               </div>
               <span>{selectedCurrency.symbol}</span>
             </button>
@@ -662,10 +662,11 @@ const ROIassignment: React.FC = () => {
                       setSelectedCurrency(currency);
                       setIsOpen(false);
                     }}
-                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${selectedCurrency.code === currency.code
-                      ? "bg-blue-100 font-semibold"
-                      : "hover:bg-gray-100"
-                      }`}
+                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
+                      selectedCurrency.code === currency.code
+                        ? "bg-blue-100 font-semibold"
+                        : "hover:bg-gray-100"
+                    }`}
                   >
                     <img
                       src={currency.countrylogo}
@@ -683,13 +684,9 @@ const ROIassignment: React.FC = () => {
           {/* Section Header */}
           <div className="bg-gray-200 rounded-lg p-4 mb-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-              <h2 className="text-lg font-bold text-gray-800 mb-2 md:mb-0">
-                {currentTitle}
-              </h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-2 md:mb-0">{currentTitle}</h2>
               <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-700">
-                  Progress: {currentSection}/7
-                </span>
+                <span className="text-sm text-gray-700">Progress: {currentSection}/7</span>
                 <div className="w-24 h-2 bg-gray-300 rounded-full">
                   <div
                     className="h-full bg-blue-600 rounded-full transition-all duration-300"
@@ -706,9 +703,7 @@ const ROIassignment: React.FC = () => {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="py-3 px-4 text-left font-semibold text-gray-700">
-                      ISSUE
-                    </th>
+                    <th className="py-3 px-4 text-left font-semibold text-gray-700">ISSUE</th>
                     <th className="py-3 px-4 text-left font-semibold text-gray-700">
                       {currentTitle}
                     </th>
@@ -719,11 +714,7 @@ const ROIassignment: React.FC = () => {
                           VALUE
                         </span>
                         <span className="text-xs font-normal">
-                          Pre-UPh{" "}
-                          <FontAwesomeIcon
-                            icon={faRegistered}
-                            className="text-xs"
-                          />
+                          Pre-UPh <FontAwesomeIcon icon={faRegistered} className="text-xs" />
                         </span>
                       </div>
                     </th>
@@ -745,23 +736,17 @@ const ROIassignment: React.FC = () => {
                               {task.issues}
                             </td>
                           )}
-                          <td className="py-3 px-4 text-gray-600">
-                            {question}
-                          </td>
+                          <td className="py-3 px-4 text-gray-600">{question}</td>
                           <td className="py-3 px-4">
                             <input
                               type="number"
                               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              value={
-                                ratings[
-                                `task-${tasks.indexOf(task)}-q-${qIndex}`
-                                ] || ""
-                              }
+                              value={ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`] || ""}
                               onChange={(e) =>
                                 handleRatingChange(
                                   tasks.indexOf(task),
                                   qIndex,
-                                  parseInt(e.target.value) || 0,
+                                  parseInt(e.target.value) || 0
                                 )
                               }
                               placeholder="Enter amount"
@@ -773,15 +758,10 @@ const ROIassignment: React.FC = () => {
                     </React.Fragment>
                   ))}
                   <tr className="bg-blue-50 font-semibold">
-                    <td
-                      colSpan={2}
-                      className="py-3 px-4 text-right text-gray-800"
-                    >
+                    <td colSpan={2} className="py-3 px-4 text-right text-gray-800">
                       {currentIssue}
                     </td>
-                    <td className="py-3 px-4 text-blue-700">
-                      {formatCurrency(sectionTotal)}
-                    </td>
+                    <td className="py-3 px-4 text-blue-700">{formatCurrency(sectionTotal)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -793,10 +773,11 @@ const ROIassignment: React.FC = () => {
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 1}
-              className={`flex items-center justify-center px-4 py-2 rounded-lg ${currentSection === 1
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gray-600 text-white hover:bg-gray-700"
-                }`}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg ${
+                currentSection === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gray-600 text-white hover:bg-gray-700"
+              }`}
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
