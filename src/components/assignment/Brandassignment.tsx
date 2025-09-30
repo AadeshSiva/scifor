@@ -2,6 +2,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBackPopup } from "@/hooks/useBackPopup";
+import BackPopup from "../extras/BackPopup";
+
 interface Task {
   id: number;
   title: string;
@@ -13,7 +16,7 @@ const BrandAssignment: React.FC = () => {
   const [date, setDate] = useState<string>("");
   const [currentSection, setCurrentSection] = useState<number>(1);
   const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [popup, setPopup] = useState<boolean>(false);
+  const back = useBackPopup();
 
   useEffect(() => {
     const today = new Date();
@@ -47,26 +50,9 @@ const BrandAssignment: React.FC = () => {
     }
   };
 
-  const handleBackButton = () => {
-    setPopup(true);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("assign-1", "true");
-    navigate("/dashboard");
-  };
-
-  const handleSaveButton = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate("/dashboard");
-  };
-
-  const handlecancelbutton = () => {
-    setPopup(false);
-  };
-
-  const handlenotsave = () => {
     navigate("/dashboard");
   };
 
@@ -310,7 +296,7 @@ const BrandAssignment: React.FC = () => {
         <div className="flex items-center mb-2 md:mb-0">
           <button
             className="flex items-center text-blue-600 hover:text-blue-800 mr-8"
-            onClick={handleBackButton}
+            onClick={back.handleBackButton}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back
           </button>
@@ -325,7 +311,8 @@ const BrandAssignment: React.FC = () => {
           <p className="text-md">{date}</p>
         </span>
       </header>
-      {!popup ? (
+
+      {!back.popup ? (
         <div className="pt-16 w-[100vw]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-400 text-black p-4">
             <h2 className="font-bold text-lg">{currentTitle}</h2>
@@ -418,35 +405,11 @@ const BrandAssignment: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
-          <div className="w-full max-w-md bg-gray-100 p-6 flex flex-col space-y-6 rounded-lg shadow-xl">
-            <div className="text-center space-y-3">
-              <h1 className="text-xl font-semibold text-gray-800">You have unsaved changes.</h1>
-              <h1 className="text-xl font-semibold text-gray-800">Do you want to save them</h1>
-              <h1 className="text-xl font-semibold text-gray-800">before leaving?</h1>
-            </div>
-            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
-              <button
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
-                onClick={handleSaveButton}
-              >
-                Save
-              </button>
-              <button
-                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
-                onClick={handlenotsave}
-              >
-                Don't Save
-              </button>
-              <button
-                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
-                onClick={handlecancelbutton}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <BackPopup
+          onSave={back.handleSave}
+          onDontSave={back.handleDontSave}
+          onCancel={back.handleCancel}
+        />
       )}
     </div>
   );
