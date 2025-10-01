@@ -247,9 +247,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   };
   const handleConnectLinkedIn = () => {
     console.log("Connecting to LinkedIn...");
+    window.open(
+      "https://www.linkedin.com/in/harishkchauhan",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const ctx = useContext(UserContext);
   const handleBackClick = () => {
     navigate(`${ctx.url}`);
@@ -269,11 +274,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col pt-24 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32 justify-center items-center">
         {notification && (
           <div
-            className={`mb-6 p-4 rounded-lg ${
-              notification.type === "success"
-                ? "bg-green-100 border border-green-300 text-green-700"
-                : "bg-red-100 border border-red-300 text-red-700"
-            }`}
+            className={`mb-6 p-4 rounded-lg ${notification.type === "success"
+              ? "bg-green-100 border border-green-300 text-green-700"
+              : "bg-red-100 border border-red-300 text-red-700"
+              }`}
           >
             {notification.message}
           </div>
