@@ -2,8 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBackPopup } from "@/hooks/useBackPopup";
-import BackPopup from "../extras/BackPopup";
 
 interface Question {
   id: string;
@@ -14,8 +12,6 @@ const BrandDiagnostic: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string | null>(null);
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const back = useBackPopup();
-
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
@@ -23,14 +19,6 @@ const BrandDiagnostic: React.FC = () => {
     ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", function (e) {
-      e.preventDefault();
-      e.returnValue = "";
-    });
-  });
-
   const questions: Question[] = [
     {
       id: "logo_1",
@@ -193,11 +181,12 @@ const BrandDiagnostic: React.FC = () => {
       section: "CUSTOMER",
     },
   ];
-
+  const handleBackButton = () => {
+    navigate("/dashboard");
+  };
   const handleResponseChange = (questionId: string, value: string) => {
     setResponses((prev) => ({ ...prev, [questionId]: value }));
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     const allAnswered = questions.every((question) => responses[question.id]);
 
@@ -210,7 +199,6 @@ const BrandDiagnostic: React.FC = () => {
       navigate("/dashboard");
     }
   };
-  
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -218,19 +206,20 @@ const BrandDiagnostic: React.FC = () => {
     acc[question.section].push(question);
     return acc;
   }, {} as Record<string, Question[]>);
-  
   return (
     <div className="bg-gray-100 min-h-screen">
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
         <div className="flex flex-row gap-4 items-center">
           <button
             className="text-blue-500 flex items-center hover:text-blue-700"
-            onClick={back.handleBackButton}
+            onClick={handleBackButton}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
           </button>
           <div className="flex flex-col">
-            <span className="text-md font-semibold">BRAND DIAGNOSTIC ASSESSMENT</span>
+            <span className="text-md font-semibold">
+              BRAND DIAGNOSTIC ASSESSMENT
+            </span>
             <span className="text-xs text-gray-500">
               Evaluate your brand's health and growth potential.
             </span>
@@ -238,11 +227,10 @@ const BrandDiagnostic: React.FC = () => {
         </div>
         <span className="text-sm">{date}</span>
       </header>
-
-      {!back.popup ? (
-        <div className="pt-20 px-8 pb-8">
-          <div className="max-w-6xl mx-auto">
-            {Object.entries(groupedQuestions).map(([sectionName, sectionQuestions]) => (
+      <div className="pt-20 px-8 pb-8">
+        <div className="max-w-6xl mx-auto">
+          {Object.entries(groupedQuestions).map(
+            ([sectionName, sectionQuestions]) => (
               <div key={sectionName} className="mb-8">
                 <div className="bg-gray-400 text-white rounded-t-lg px-4 py-3">
                   <h2 className="font-bold text-lg">{sectionName}</h2>
@@ -257,11 +245,15 @@ const BrandDiagnostic: React.FC = () => {
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           }`}
                         >
-                          <td className="p-4 text-sm font-medium w-full">{question.text}</td>
+                          <td className="p-4 text-sm font-medium w-full">
+                            {question.text}
+                          </td>
                           <td className="text-center p-0">
                             <button
                               type="button"
-                              onClick={() => handleResponseChange(question.id, "Y")}
+                              onClick={() =>
+                                handleResponseChange(question.id, "Y")
+                              }
                               className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
                                 responses[question.id] === "Y"
                                   ? "bg-green-400 text-white"
@@ -274,7 +266,9 @@ const BrandDiagnostic: React.FC = () => {
                           <td className="text-center p-0">
                             <button
                               type="button"
-                              onClick={() => handleResponseChange(question.id, "N")}
+                              onClick={() =>
+                                handleResponseChange(question.id, "N")
+                              }
                               className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
                                 responses[question.id] === "N"
                                   ? "bg-red-400 text-white"
@@ -290,25 +284,18 @@ const BrandDiagnostic: React.FC = () => {
                   </table>
                 </div>
               </div>
-            ))}
-            
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={handleSubmit}
-                className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
-              >
-                Submit
-              </button>
-            </div>
+            )
+          )}
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handleSubmit}
+              className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
+            >
+              Submit
+            </button>
           </div>
         </div>
-      ) : (
-        <BackPopup
-          onSave={back.handleSave}
-          onDontSave={back.handleDontSave}
-          onCancel={back.handleCancel}
-        />
-      )}
+      </div>
     </div>
   );
 };
