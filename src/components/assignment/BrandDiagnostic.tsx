@@ -210,7 +210,7 @@ const BrandDiagnostic: React.FC = () => {
       navigate("/dashboard");
     }
   };
-
+  
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -218,7 +218,7 @@ const BrandDiagnostic: React.FC = () => {
     acc[question.section].push(question);
     return acc;
   }, {} as Record<string, Question[]>);
-
+  
   return (
     <div className="bg-gray-100 min-h-screen">
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
@@ -291,6 +291,7 @@ const BrandDiagnostic: React.FC = () => {
                 </div>
               </div>
             ))}
+            
             <div className="flex justify-center mt-8">
               <button
                 onClick={handleSubmit}

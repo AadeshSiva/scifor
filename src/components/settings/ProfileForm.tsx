@@ -100,8 +100,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   const [formData, setFormData] = useState<ProfileFormData>({
     fullName: "",
     phoneNumber: "",
-    companyName: "",
     companyWebsite: "",
+    companyName: "",
     country: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -149,8 +149,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         setFormData({
           fullName: data.user_data.full_name || "",
           phoneNumber: data.user_data.phone_number || "",
-          companyName: data.user_data.website_name || "",
           companyWebsite: data.user_data.website_name || "",
+          companyName: data.user_data.company_name || "",
           country: data.user_data.country || "",
         });
       }
@@ -188,7 +188,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       const updateData = {
         full_name: pendingFormData.fullName,
         phone_number: pendingFormData.phoneNumber,
-        website_name: pendingFormData.companyName,
+        website_name: pendingFormData.companyWebsite,
+        company_name: pendingFormData.companyName,
+        country: pendingFormData.country,
         password: password,
       };
       const response = await fetch("https://api.prspera.com/profile/", {
@@ -245,9 +247,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   };
   const handleConnectLinkedIn = () => {
     console.log("Connecting to LinkedIn...");
+    window.open(
+      "https://www.linkedin.com/in/harishkchauhan",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const ctx = useContext(UserContext);
   const handleBackClick = () => {
     navigate(`${ctx.url}`);
@@ -267,11 +274,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="flex flex-col pt-24 px-10 max-md:p-5 max-sm:order-1 overflow-auto w-full pb-32 justify-center items-center">
         {notification && (
           <div
-            className={`mb-6 p-4 rounded-lg ${
-              notification.type === "success"
-                ? "bg-green-100 border border-green-300 text-green-700"
-                : "bg-red-100 border border-red-300 text-red-700"
-            }`}
+            className={`mb-6 p-4 rounded-lg ${notification.type === "success"
+              ? "bg-green-100 border border-green-300 text-green-700"
+              : "bg-red-100 border border-red-300 text-red-700"
+              }`}
           >
             {notification.message}
           </div>
@@ -290,7 +296,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               htmlFor="fullName"
               className="text-base font-semibold mb-3 block"
             >
-              Full Name*
+              Full Name
             </label>
             <input
               id="fullName"
@@ -307,7 +313,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               htmlFor="phoneNumber"
               className="text-base font-semibold mb-3 block"
             >
-              Phone No*
+              Phone No
             </label>
             <input
               id="phoneNumber"
@@ -333,6 +339,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               className="w-full h-16 border text-base px-4 py-0 rounded-xl border-gray-300 focus:border-blue-500 focus:outline-none"
               value={formData.companyName}
               onChange={(e) => handleChange("companyName", e.target.value)}
+              required
             />
           </div>
           <div className="mb-10">
@@ -349,6 +356,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               className="w-full h-16 border text-base px-4 py-0 rounded-xl border-gray-300 focus:border-blue-500 focus:outline-none"
               value={formData.companyWebsite}
               onChange={(e) => handleChange("companyWebsite", e.target.value)}
+              required
             />
           </div>
           <div className="mb-10">
@@ -356,7 +364,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               htmlFor="country"
               className="text-base font-semibold mb-3 block"
             >
-              Country*
+              Country
             </label>
             <select
               id="country"
@@ -366,16 +374,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               required
             >
               <option value="">Select Country</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="UK">United Kingdom</option>
-              <option value="AU">Australia</option>
-              <option value="DE">Germany</option>
-              <option value="FR">France</option>
-              <option value="IN">India</option>
-              <option value="CN">China</option>
-              <option value="JP">Japan</option>
-              <option value="BR">Brazil</option>
+              <option value="United States">United States</option>
+              <option value="Canada">Canada</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Australia">Australia</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="India">India</option>
+              <option value="China">China</option>
+              <option value="Japan">Japan</option>
+              <option value="Brazil">Brazil</option>
             </select>
           </div>
           <div className="flex justify-between items-end mb-16">

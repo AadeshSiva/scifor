@@ -71,16 +71,15 @@ const HeroSection: React.FC = () => {
   );
 };
 export const StorySection: React.FC = () => {
-  const handleReveal = () => {
-    const paragraphs = document.getElementsByClassName("reveal-para");
-    const btns = document.getElementsByClassName("reveal-btn");
-    for (let i = 0; i < paragraphs.length; i++) {
-      const para = paragraphs[i] as HTMLElement;
-      const btn = btns[i] as HTMLElement;
-      btn.classList.toggle("hidden");
-      para.classList.toggle("hidden");
-    }
-  };
+  const handleReveal = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const btn = e.currentTarget; 
+  const parent = btn.parentElement; 
+  if (!parent) return;
+  const para = parent.querySelector(".reveal-para") as HTMLElement;
+  if (!para) return;
+  btn.classList.toggle("hidden");
+  para.classList.toggle("hidden");
+};
   return (
     <div className="bg-[#757575] text-white py-16 px-4 md:px-8 lg:px-16">
       <div className="max-w-6xl mx-auto text-center">
@@ -224,7 +223,7 @@ export const StorySection: React.FC = () => {
                 "value growth" engine.
               </p>
             </div>
-            <div className="w-[300px]">
+            <div className="w-[330px]">
               2. The UPh Story: Prosperity for all
               <button
                 onClick={handleReveal}

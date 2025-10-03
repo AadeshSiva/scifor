@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBackPopup } from "@/hooks/useBackPopup";
 import BackPopup from "../extras/BackPopup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 
 interface FormData {
@@ -42,6 +44,7 @@ const AddDetails: React.FC = () => {
     const formattedDate = `${String(today.getMonth() + 1).padStart(2, "0")}/${String(
       today.getDate()
     ).padStart(2, "0")}/${today.getFullYear()}`;
+
     setDate(formattedDate);
   }, []);
 
@@ -78,7 +81,9 @@ const AddDetails: React.FC = () => {
     culture: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
       const checkbox = e.target as HTMLInputElement;
@@ -93,7 +98,9 @@ const AddDetails: React.FC = () => {
         } else {
           return {
             ...prev,
-            growthStage: prev.growthStage.filter((item) => item !== checkboxValue),
+            growthStage: prev.growthStage.filter(
+              (item) => item !== checkboxValue
+            ),
           };
         }
       });
@@ -113,10 +120,45 @@ const AddDetails: React.FC = () => {
     }));
   };
 
+  // const handleFormSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   sessionStorage.setItem("add-details", "true");
+  //   navigate("/dashboard");
+  // };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("add-details", "true");
-    navigate("/dashboard");
+
+    const hasEmpty = Object.entries(formData).some(
+      ([key, value]) =>
+        (value === "" || (Array.isArray(value) && value.length === 0)) &&
+        key !== "address2" &&
+        key !== "departmentOther"
+    );
+
+    if (hasEmpty) {
+      toast.error(" Please fill all required fields before submitting!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
+    }
+
+    toast.success(" Business details submitted successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+      theme: "colored",
+    });
+
+    setTimeout(() => {
+      sessionStorage.setItem("add-details", "true");
+      navigate("/dashboard");
+    }, 2000);
   };
 
   return (
@@ -640,6 +682,8 @@ const AddDetails: React.FC = () => {
         />
       )}
     </div>
+    <ToastContainer />
+    </>
   );
 };
 export default AddDetails;

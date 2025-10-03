@@ -19,10 +19,7 @@ interface LongAccordionProps {
   data?: Category[];
   className?: string;
 }
-const LongAccordion: React.FC<LongAccordionProps> = ({
-  data = [],
-  className = "",
-}) => {
+const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = "" }) => {
   const [openSection, setOpenSection] = useState<string>("0-0"); // Only one section open at a time
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const navbarRef = useRef<HTMLDivElement>(null);
@@ -81,7 +78,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
     } else {
       setOpenSection("");
     }
-  }, [selectedCategory]);
+  }, [selectedCategory]); 
   return (
     <div className={`w-full flex flex-col gap-7 ${className}`}>
       <div
@@ -122,10 +119,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
               {category.research_points.map((researchPoint, researchIndex) => {
                 const sectionId = generateId(categoryIndex, researchIndex);
                 const isOpen = openSection === sectionId;
-                const serialNumber = getSerialNumber(
-                  categoryIndex,
-                  researchIndex,
-                );
+                const serialNumber = getSerialNumber(categoryIndex, researchIndex);
                 const firstUrl = getFirstUrl(researchPoint);
                 return (
                   <div key={researchIndex} className="bg-white">
@@ -161,16 +155,11 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                         <div className="flex gap-4 bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
                           <div className="text-gray-600 text-sm sm:text-base leading-relaxed space-y-2">
                             {researchPoint.statistics.map((stat, statIndex) => (
-                              <div
-                                key={statIndex}
-                                className="flex items-start gap-2"
-                              >
+                              <div key={statIndex} className="flex items-start gap-2">
                                 <div className="flex-shrink-0 mt-1">
                                   <Dot size={20} className="text-gray-600" />
                                 </div>
-                                <span className="flex-1 leading-relaxed">
-                                  {stat.context}
-                                </span>
+                                <span className="flex-1 leading-relaxed">{stat.context}</span>
                               </div>
                             ))}
                           </div>
@@ -182,12 +171,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
                                   className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1B7A9B] text-white text-sm font-medium rounded-md hover:bg-[#145F7A] transition-colors duration-200 whitespace-nowrap"
                                 >
                                   <div className="w-4 h-4 bg-red-600 rounded-sm flex items-center justify-center">
-                                    <svg
-                                      width="12"
-                                      height="12"
-                                      viewBox="0 0 12 12"
-                                      fill="white"
-                                    >
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
                                       <path d="M2 2h8v8H2V2zm1 1v6h6V3H3zm2 2h2v1H5V5zm0 2h3v1H5V7z" />
                                     </svg>
                                   </div>
@@ -217,9 +201,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({
         <div className="max-w-6xl mx-auto p-8 text-center text-gray-500">
           <p className="text-lg mb-4">
             No data available. Connect to your backend API at{" "}
-            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-              /category-list
-            </code>
+            <code className="bg-gray-100 px-2 py-1 rounded text-sm">/category-list</code>
           </p>
           <p className="text-sm mb-4">Expected data structure:</p>
         </div>
@@ -234,9 +216,7 @@ const AccordionWithApi: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://api.prspera.com/category-statistics/",
-        );
+        const response = await fetch("https://api.prspera.com/unique-statistics/");
         const result = await response.json();
         console.log(result);
         setData(result);
@@ -271,8 +251,7 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context:
-                    "48% of business owners who want to sell have no formal exit strategy.",
+                  context: "48% of business owners who want to sell have no formal exit strategy.",
                   url: "",
                 },
                 {
@@ -291,13 +270,11 @@ const AccordionWithApi: React.FC = () => {
                   url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view?usp=drive_link",
                 },
                 {
-                  context:
-                    "Only 17% of owners have created a written exit plan.",
+                  context: "Only 17% of owners have created a written exit plan.",
                   url: "",
                 },
                 {
-                  context:
-                    "58% of owners have never had their business formally appraised.",
+                  context: "58% of owners have never had their business formally appraised.",
                   url: "",
                 },
                 {
@@ -331,13 +308,11 @@ const AccordionWithApi: React.FC = () => {
               name: "Attitudes Toward Exit Strategies",
               statistics: [
                 {
-                  context:
-                    "14% of business owners think they don't need an exit strategy.",
+                  context: "14% of business owners think they don't need an exit strategy.",
                   url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing",
                 },
                 {
-                  context:
-                    "21% of business owners don't want to sell their business.",
+                  context: "21% of business owners don't want to sell their business.",
                   url: "",
                 },
                 {
@@ -368,46 +343,16 @@ const AccordionWithApi: React.FC = () => {
           category: "Planning & Strategy",
           research_points: [
             {
-              name: "Importance of early planning",
+              name: "Exit Planning Awareness & Preparedness",
               statistics: [
                 {
                   context:
-                    "75% of owners believe they can sell their business in a year or less, which is often unrealistic.",
-                  url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view?usp=drive_link",
-                },
-                {
-                  context:
-                    "The average business owner spends 4-6 years preparing for a transition, but only 2-3 years actively planning.",
-                  url: "",
-                },
-                {
-                  context:
-                    "85% of owners who believed themselves to be best-in-class or better in exit planning had sought education, and 84% received outside advice.",
-                  url: "",
-                },
-              ],
-            },
-            {
-              name: "Exit Planning Education & Awareness",
-              statistics: [
-                {
-                  context:
-                    "68% of business owners have formal exit planning education, up from 35% in 2013.",
+                    "67% of business owners are unfamiliar with all of their exit planning options.",
                   url: "https://drive.google.com/file/d/1msYjAK0wBVpgFmydwkd-zJmyi2Wb7S7W/view?usp=sharing",
                 },
                 {
                   context:
-                    "70% of business owners said they were aware of all their exit options, up from 34% in 2013.",
-                  url: "",
-                },
-                {
-                  context:
-                    "52% of business owners include written detailed personal planning in their exit strategy, compared to only 9% in previous surveys.",
-                  url: "",
-                },
-                {
-                  context:
-                    "70% of business owners said they were aware of all their exit options in 2023, up from 34% in 2013.",
+                    "49% have done no planning at all.",
                   url: "",
                 },
               ],
@@ -415,21 +360,29 @@ const AccordionWithApi: React.FC = () => {
             {
               name: "Succession Planning vs. Other Planning",
               statistics: [
-                {
-                  context:
-                    "52% of business owners have a will in place, but only 32% have a succession plan.",
-                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing",
-                },
+               
                 {
                   context:
                     "48% of business owners have a pension in place, but only 36% have considered how their pension fits into their succession plan.",
-                  url: "",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing",
+
+                },
+               
+              ],
+            },
+            {
+              name: "Formal Transition Planning",
+              statistics: [
+                {
+                  context:
+                    "78% have no formal transition plan.",
+                  url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
                 },
                 {
                   context:
-                    "61% of family-owned businesses in North America have no formal succession plan.",
+                    "83% have no written transition plan.",
                   url: "",
-                },
+                }
               ],
             },
             {
@@ -440,35 +393,20 @@ const AccordionWithApi: React.FC = () => {
                     'Less than 7% had a formal post-transition plan for what they were going to do "next."',
                   url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
                 },
-                {
-                  context:
-                    "41% of former business owners have no idea what they want to do with their time after selling their business.",
-                  url: "",
-                },
               ],
             },
             {
               name: "Contingency Planning",
               statistics: [
                 {
-                  context:
-                    "40% have no contingency plans for illness, death, or forced exit.",
+                  context: "40% have no contingency plans for illness, death, or forced exit.",
                   url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
-                },
-                {
-                  context:
-                    "57% of business owners have not considered how they would exit their business in the event of ill health or death.",
-                  url: "",
-                },
-                {
-                  context:
-                    "52% of business owners have not considered how they would exit their business in the event of a dispute with a business partner.",
-                  url: "",
                 },
               ],
             },
           ],
         },
+        
         {
           category: "Choosing the Right Exit Path",
           research_points: [
@@ -492,18 +430,7 @@ const AccordionWithApi: React.FC = () => {
                 },
                 {
                   context:
-                    "39% of business owners (men and women) plan to ultimately sell their business.",
-                  url: "",
-                },
-
-                {
-                  context:
-                    "The most common succession plan is to pass the business to a family member (41%), followed by selling the business to a third party (31%).",
-                  url: "",
-                },
-                {
-                  context:
-                    "60% of first-generation business owners favor an internal exit.",
+                    "18% plan to close the business, and 10% don’t know.",
                   url: "",
                 },
               ],
@@ -518,21 +445,6 @@ const AccordionWithApi: React.FC = () => {
                 },
                 {
                   context: "49% are looking to find a work-life balance.",
-                  url: "",
-                },
-                {
-                  context:
-                    "After exiting, 42% of owners plan to retire, 39% intend to invest in another business, and 31% want to pursue philanthropy or civic engagement.",
-                  url: "",
-                },
-                {
-                  context:
-                    "79% of women planning to sell their businesses intend to retire after the sale.",
-                  url: "",
-                },
-                {
-                  context:
-                    "22% of women planning to sell intend to own a new business in the future.",
                   url: "",
                 },
               ],
@@ -557,51 +469,6 @@ const AccordionWithApi: React.FC = () => {
                 },
               ],
             },
-            {
-              name: "Factors Influencing Sale Decisions",
-              statistics: [
-                {
-                  context:
-                    "85% of both men and women ranked sale price as the most important factor in the decision to sell.",
-                  url: "https://drive.google.com/file/d/17A1lQMd-I7eLGRGxhRDMEh8lMwCGdfYm/view?usp=sharing",
-                },
-                {
-                  context:
-                    "72% of women business owners considered the personality of prospective buyers important, compared to 39% of men.",
-                  url: "",
-                },
-                {
-                  context:
-                    "79% of women vs. 52% of men considered a prospective buyer's plans for the business influential.",
-                  url: "",
-                },
-                {
-                  context:
-                    "86% of women vs. 61% of men considered plans for current employees influential in evaluating a buy-out offer.",
-                  url: "",
-                },
-              ],
-            },
-            {
-              name: "Third-Party Sales",
-              statistics: [
-                {
-                  context:
-                    "Only 12% of businesses that sell to a third party sell to private equity firms, with the majority selling to individual buyers.",
-                  url: "https://drive.google.com/file/d/1R9EGE5JZkdkNUpJcV7jjOoU4b3nCaZo0/view?usp=sharing",
-                },
-                {
-                  context:
-                    "The success rate of businesses sold to private equity firms is significantly higher than those sold to individual buyers.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Only 2% of businesses that sell to a third party use an auction process, but those that do achieve significantly higher sale prices.",
-                  url: "",
-                },
-              ],
-            },
           ],
         },
         {
@@ -620,16 +487,6 @@ const AccordionWithApi: React.FC = () => {
                     "The pandemic and shifting age of owners have made exit planning more critical.",
                   url: "",
                 },
-                {
-                  context:
-                    "The number of businesses transitioning ownership is expected to double in the next 10-15 years, creating a significant demand for transition planning services.",
-                  url: "",
-                },
-                {
-                  context:
-                    "The most common transition challenge is finding a buyer, followed by valuing the business and preparing for the transition.",
-                  url: "",
-                },
               ],
             },
             {
@@ -639,50 +496,6 @@ const AccordionWithApi: React.FC = () => {
                   context:
                     "85% of owners who believed themselves to be best-in-class or better in exit planning had sought education, and 84% received outside advice.",
                   url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view?usp=drive_link",
-                },
-              ],
-            },
-            {
-              name: "Business Sale Success Rate",
-              statistics: [
-                {
-                  context:
-                    "70-80% of businesses put on the market do not sell.",
-                  url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
-                },
-                {
-                  context:
-                    "Only 20 to 30% of businesses that go to market actually sell.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Up to 80% of businesses that go to market do not sell, leaving owners without solid options to harvest their wealth and ensure economic continuity into the next generation.",
-                  url: "",
-                },
-              ],
-            },
-            {
-              name: "Business Ownership Demographics",
-              statistics: [
-                {
-                  context:
-                    "51% of privately held U.S. businesses are owned by baby boomers, leading to a significant wealth transfer as they sell to millennials.",
-                  url: "https://drive.google.com/file/d/1Lm09YDOIdZeH_yy3N8S9lIDCv5PVCBO_/view?usp=sharing",
-                },
-                {
-                  context:
-                    "51% of the current American business market is owned by Baby Boomers, who are set to transition over the next 0 to 10 years.",
-                  url: "",
-                },
-                {
-                  context: "10,000 baby boomers are turning 65 every day.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Baby boomers own 51% of privately held businesses in the United States.",
-                  url: "",
                 },
               ],
             },
@@ -705,42 +518,7 @@ const AccordionWithApi: React.FC = () => {
                   url: "",
                 },
                 {
-                  context:
-                    "9% wanted family members to take another career path.",
-                  url: "",
-                },
-                {
-                  context:
-                    "53% of business owners expect their children to take over the business, but only 32% of children are interested.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Only 25% of former business owners discussed family wealth with their children before the sale.",
-                  url: "",
-                },
-              ],
-            },
-            {
-              name: "Family Business Succession",
-              statistics: [
-                {
-                  context:
-                    "Only 30% of all family-owned businesses survive into the second generation.",
-                  url: "https://drive.google.com/file/d/1sB2Ma-FPou3pW4NSa5dOjREU7er43Yyj/view?usp=sharing",
-                },
-                {
-                  context: "Only 12% survive into the third generation.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Only 3% operate at the fourth generation and beyond.",
-                  url: "",
-                },
-                {
-                  context:
-                    "Only 35% of family-owned businesses survive to the second generation, and only 12% to the third generation.",
+                  context: "9% wanted family members to take another career path.",
                   url: "",
                 },
               ],
@@ -749,8 +527,7 @@ const AccordionWithApi: React.FC = () => {
               name: "Women Business Owners & Exit Strategy",
               statistics: [
                 {
-                  context:
-                    "83% of women business owners have a long-term exit strategy.",
+                  context: "83% of women business owners have a long-term exit strategy.",
                   url: "https://drive.google.com/file/d/17A1lQMd-I7eLGRGxhRDMEh8lMwCGdfYm/view?usp=sharing",
                 },
               ],
@@ -761,32 +538,12 @@ const AccordionWithApi: React.FC = () => {
           category: "Business Valuation & Sale Readiness",
           research_points: [
             {
-              name: "Business Valuation & Appraisal",
+              name: "Business Valuation Considerations",
               statistics: [
                 {
                   context:
-                    "58% of business owners have never had their business formally appraised.",
-                  url: "https://drive.google.com/file/d/1ZXkCjUEaTFRkFGRPIvAibZx4FqeK8s0X/view?usp=sharing",
-                },
-                {
-                  context:
-                    "51% of business owners have not considered how their business would be valued in the event of a sale.",
-                  url: "",
-                },
-                {
-                  context:
-                    "90% of business owners overvalue their business by 50% to 100%.",
-                  url: "",
-                },
-              ],
-            },
-            {
-              name: "Expectations About Selling Timeline",
-              statistics: [
-                {
-                  context:
-                    "75% of business owners believe they can sell their business in a year or less, which is unrealistic.",
-                  url: "https://drive.google.com/file/d/1ZXkCjUEaTFRkFGRPIvAibZx4FqeK8s0X/view?usp=sharing",
+                    "51% of business owners have not considered how their business would be valued in the event of a sale.",
+                  url: "https://drive.google.com/file/d/1nfmrL7tfErQ6kJQrIN2tilJITK3HNPLP/view?usp=sharing",
                 },
               ],
             },
@@ -802,31 +559,6 @@ const AccordionWithApi: React.FC = () => {
                   context:
                     "Exit planning helps owners mentally prepare to exit by identifying goals and conditions for exit.",
                   url: "https://drive.google.com/file/d/1gevHl4PV5zEPBfBI1JYIE6lgIP_ph3P7/view?usp=drive_link",
-                },
-                {
-                  context:
-                    "75% of owners profoundly regret selling their business just a year after selling it.",
-                  url: "",
-                },
-                {
-                  context:
-                    '12 months after selling, three out of four (75%) business owners "profoundly regretted" their decision to sell.',
-                  url: "",
-                },
-                {
-                  context:
-                    'In recent surveys, 3 out of 4 business owners (75%) "profoundly regretted" their decision to sell within one year of exiting due to lack of "readiness."',
-                  url: "",
-                },
-                {
-                  context:
-                    "38% of former business owners experienced a sense of loss after the sale.",
-                  url: "",
-                },
-                {
-                  context:
-                    "75% of business owners profoundly regretted selling their business within a year after the sale.",
-                  url: "",
                 },
               ],
             },
