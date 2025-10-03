@@ -27,7 +27,6 @@ const BrandDiagnostic: React.FC = () => {
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
-      e.returnValue = "";
     };
 
     window.addEventListener("beforeunload", handler);
