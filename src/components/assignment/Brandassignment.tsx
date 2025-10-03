@@ -27,10 +27,15 @@ const BrandAssignment: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("beforeunload", function (e) {
+    const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = "";
-    });
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => {
+      window.removeEventListener("beforeunload", handler);
+    };
   });
 
   const handleRatingChange = (questionId: string, value: number) => {
