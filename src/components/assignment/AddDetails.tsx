@@ -81,9 +81,7 @@ const AddDetails: React.FC = () => {
     culture: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
       const checkbox = e.target as HTMLInputElement;
@@ -98,9 +96,7 @@ const AddDetails: React.FC = () => {
         } else {
           return {
             ...prev,
-            growthStage: prev.growthStage.filter(
-              (item) => item !== checkboxValue
-            ),
+            growthStage: prev.growthStage.filter((item) => item !== checkboxValue),
           };
         }
       });
@@ -681,9 +677,10 @@ const AddDetails: React.FC = () => {
           onCancel={back.handleCancel}
         />
       )}
+
+      <ToastContainer />
     </div>
-    <ToastContainer />
-    </>
   );
 };
+
 export default AddDetails;
