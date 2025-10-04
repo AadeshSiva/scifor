@@ -199,18 +199,18 @@ const BrandDiagnostic: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const allAnswered = questions.every((question) => responses[question.id]);
 
     if (!allAnswered) {
       alert("Please answer all questions before submitting.");
       return;
     } else {
-      e.preventDefault();
       sessionStorage.setItem("assign-3", "true");
       navigate("/dashboard");
     }
   };
-  
+
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -218,7 +218,7 @@ const BrandDiagnostic: React.FC = () => {
     acc[question.section].push(question);
     return acc;
   }, {} as Record<string, Question[]>);
-  
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
@@ -253,20 +253,18 @@ const BrandDiagnostic: React.FC = () => {
                       {sectionQuestions.map((question, index) => (
                         <tr
                           key={question.id}
-                          className={`border-b border-gray-200 hover:bg-gray-50 ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          }`}
+                          className={`border-b border-gray-200 hover:bg-gray-50 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            }`}
                         >
                           <td className="p-4 text-sm font-medium w-full">{question.text}</td>
                           <td className="text-center p-0">
                             <button
                               type="button"
                               onClick={() => handleResponseChange(question.id, "Y")}
-                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
-                                responses[question.id] === "Y"
+                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${responses[question.id] === "Y"
                                   ? "bg-green-400 text-white"
                                   : "text-gray-700"
-                              }`}
+                                }`}
                             >
                               Y
                             </button>
@@ -275,11 +273,10 @@ const BrandDiagnostic: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleResponseChange(question.id, "N")}
-                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
-                                responses[question.id] === "N"
+                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${responses[question.id] === "N"
                                   ? "bg-red-400 text-white"
                                   : "text-gray-700"
-                              }`}
+                                }`}
                             >
                               N
                             </button>
@@ -291,11 +288,15 @@ const BrandDiagnostic: React.FC = () => {
                 </div>
               </div>
             ))}
-            
+         
             <div className="flex justify-center mt-8">
               <button
                 onClick={handleSubmit}
-                className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
+                disabled={!questions.every((q) => responses[q.id])}
+                className={`flex items-center px-6 py-2 rounded font-semibold transition-colors duration-200
+                   ${questions.every((q) => responses[q.id])
+                    ? "bg-green-500 text-white hover:bg-green-600"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
               >
                 Submit
               </button>
