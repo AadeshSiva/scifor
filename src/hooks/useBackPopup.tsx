@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const useBackPopup = () => {
+export const useBackPopup = (onSaveCallback: () => void) => {
   const [popup, setPopup] = useState(false);
   const navigate = useNavigate();
 
   const handleBackButton = () => setPopup(true);
   const handleSave = () => {
+    onSaveCallback();
     navigate("/dashboard");
   };
   const handleDontSave = () => navigate("/dashboard");

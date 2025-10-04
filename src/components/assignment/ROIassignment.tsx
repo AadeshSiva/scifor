@@ -29,12 +29,9 @@ interface Currency {
 
 const ROIassignment: React.FC = () => {
   const navigate = useNavigate();
-  const [currentSection, setCurrentSection] = useState<number>(1);
   const [date, setDate] = useState<string | null>(null);
-  const [ratings, setRatings] = useState<Record<string, number>>({});
   const [sectionTotal, setSectionTotal] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
-  const back = useBackPopup();
 
   const currencies: Currency[] = [
     {
@@ -233,7 +230,42 @@ const ROIassignment: React.FC = () => {
         }).format(amount),
     },
   ];
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(currencies[0]);
+
+  // --- START MODIFICATION: LOAD SAVED DATA ---
+  const loadFormData = () => {
+    const savedData = sessionStorage.getItem("roiFormData");
+    if (savedData) {
+      return JSON.parse(savedData);
+    }
+    return {};
+  };
+
+  const initialData = loadFormData();
+
+  const [currentSection, setCurrentSection] = useState<number>(initialData.currentSection || 1);
+  const [ratings, setRatings] = useState<Record<string, number>>(initialData.ratings || {});
+
+  const initialCurrency =
+    currencies.find((c) => c.code === initialData.selectedCurrencyCode) || currencies[0];
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(initialCurrency);
+
+  // --- END MODIFICATION: LOAD SAVED DATA ---
+
+  // --- START MODIFICATION: IMPLEMENT saveFormData ---
+  const saveFormData = () => {
+    const formData = {
+      currentSection,
+      ratings,
+      selectedCurrencyCode: selectedCurrency.code,
+    };
+    sessionStorage.setItem("roiFormData", JSON.stringify(formData));
+    console.log("Form data successfully saved to sessionStorage.");
+  };
+
+  const back = useBackPopup(saveFormData);
+
+  // --- END MODIFICATION: IMPLEMENT saveFormData ---
+
   const tasks: Task[] = [
     {
       id: 1,
@@ -573,10 +605,17 @@ const ROIassignment: React.FC = () => {
   }, [ratings, tasks, currentSection]);
 
   useEffect(() => {
-    window.addEventListener("beforeunload", function (e) {
+    const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
+      // Added for legacy support/compatibility, as previously discussed
       e.returnValue = "";
-    });
+    };
+
+    window.addEventListener("beforeunload", handler);
+
+    return () => {
+      window.removeEventListener("beforeunload", handler);
+    };
   });
 
   const handleNextSection = () => {
@@ -742,6 +781,7 @@ const ROIassignment: React.FC = () => {
                               <input
                                 type="number"
                                 className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                // The taskIndex here needs to be the index in the global tasks array for stable storage keys
                                 value={ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`] || ""}
                                 onChange={(e) =>
                                   handleRatingChange(
@@ -760,7 +800,9 @@ const ROIassignment: React.FC = () => {
                     ))}
                     <tr className="bg-blue-50 font-semibold">
                       <td colSpan={2} className="py-3 px-4 text-right text-gray-800">
-                        {currentIssue}
+                        {/* Using currentTitle for the subtotal title for simplicity,
+                            but task.subtotal could also be used from a specific task */}
+                        {currentTitle} SUBTOTAL
                       </td>
                       <td className="py-3 px-4 text-blue-700">{formatCurrency(sectionTotal)}</td>
                     </tr>

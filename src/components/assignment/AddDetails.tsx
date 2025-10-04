@@ -49,10 +49,14 @@ const AddDetails: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("beforeunload", function (e) {
+    const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
-      e.returnValue = "";
-    });
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => {
+      window.removeEventListener("beforeunload", handler);
+    };
   });
 
   const [formData, setFormData] = useState<FormData>({
@@ -115,12 +119,6 @@ const AddDetails: React.FC = () => {
       [name]: value,
     }));
   };
-
-  // const handleFormSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   sessionStorage.setItem("add-details", "true");
-  //   navigate("/dashboard");
-  // };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
