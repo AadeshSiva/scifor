@@ -89,7 +89,7 @@ const App = () => (
             path="/businessdetails/*"
             element={
               <ProtectedRoute requireAuth={false}>
-                <AddDetails/>
+                <AddDetails />
               </ProtectedRoute>
             }
           />

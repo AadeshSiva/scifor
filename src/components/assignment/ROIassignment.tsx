@@ -4,10 +4,11 @@ import {
   faArrowRight,
   faCheckCircle,
   faRegistered,
-
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 
 interface Task {
@@ -232,7 +233,7 @@ const ROIassignment: React.FC = () => {
     },
   ];
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
-    currencies[0],
+    currencies[0]
   );
   const tasks: Task[] = [
     {
@@ -548,7 +549,9 @@ const ROIassignment: React.FC = () => {
 
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
 
@@ -586,16 +589,53 @@ const ROIassignment: React.FC = () => {
     }
   };
 
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   sessionStorage.setItem("assign-2", "true");
+  //   navigate("/dashboard");
+  // };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("assign-2", "true");
-    navigate("/dashboard");
+
+    // ✅ Check if every question for the current section has been rated
+    const sectionTasks = tasks.filter((task) => task.id === currentSection);
+    const allAnswered = sectionTasks.every((task, tIndex) =>
+      task.description.every(
+        (_, qIndex) => ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`]
+      )
+    );
+
+    if (!allAnswered) {
+      toast.error("Please answer all questions before submitting!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
+    }
+
+    // ✅ Success message
+    toast.success("ROI assessment submitted successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+      theme: "colored",
+    });
+
+    setTimeout(() => {
+      sessionStorage.setItem("assign-3", "true");
+      navigate("/dashboard");
+    }, 2000);
   };
 
   const handleRatingChange = (
     taskIndex: number,
     questionIndex: number,
-    value: number,
+    value: number
   ) => {
     const key = `task-${taskIndex}-q-${questionIndex}`;
     setRatings((prev) => ({ ...prev, [key]: value }));
@@ -662,10 +702,11 @@ const ROIassignment: React.FC = () => {
                       setSelectedCurrency(currency);
                       setIsOpen(false);
                     }}
-                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${selectedCurrency.code === currency.code
-                      ? "bg-blue-100 font-semibold"
-                      : "hover:bg-gray-100"
-                      }`}
+                    className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
+                      selectedCurrency.code === currency.code
+                        ? "bg-blue-100 font-semibold"
+                        : "hover:bg-gray-100"
+                    }`}
                   >
                     <img
                       src={currency.countrylogo}
@@ -715,7 +756,9 @@ const ROIassignment: React.FC = () => {
                     <th className="py-3 px-4 text-left font-semibold text-gray-700">
                       <div className="flex flex-col">
                         <span className="flex items-center">
-                          <span className="mr-2">{selectedCurrency.symbol}</span>
+                          <span className="mr-2">
+                            {selectedCurrency.symbol}
+                          </span>
                           VALUE
                         </span>
                         <span className="text-xs font-normal">
@@ -754,14 +797,14 @@ const ROIassignment: React.FC = () => {
                               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               value={
                                 ratings[
-                                `task-${tasks.indexOf(task)}-q-${qIndex}`
+                                  `task-${tasks.indexOf(task)}-q-${qIndex}`
                                 ] || ""
                               }
                               onChange={(e) =>
                                 handleRatingChange(
                                   tasks.indexOf(task),
                                   qIndex,
-                                  parseInt(e.target.value) || 0,
+                                  parseInt(e.target.value) || 0
                                 )
                               }
                               placeholder="Enter amount"
@@ -793,10 +836,11 @@ const ROIassignment: React.FC = () => {
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 1}
-              className={`flex items-center justify-center px-4 py-2 rounded-lg ${currentSection === 1
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gray-600 text-white hover:bg-gray-700"
-                }`}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg ${
+                currentSection === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gray-600 text-white hover:bg-gray-700"
+              }`}
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
@@ -822,6 +866,17 @@ const ROIassignment: React.FC = () => {
           </div>
         </div>
       </main>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

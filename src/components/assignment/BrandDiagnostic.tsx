@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Question {
   id: string;
@@ -187,18 +189,33 @@ const BrandDiagnostic: React.FC = () => {
   const handleResponseChange = (questionId: string, value: string) => {
     setResponses((prev) => ({ ...prev, [questionId]: value }));
   };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   const allAnswered = questions.every((question) => responses[question.id]);
+
+  //   if (!allAnswered) {
+  //     alert("Please answer all questions before submitting.");
+  //     return;
+  //   } else {
+  //     e.preventDefault();
+  //     sessionStorage.setItem("assign-3", "true");
+  //     navigate("/dashboard");
+  //   }
+  // };
+
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const allAnswered = questions.every((question) => responses[question.id]);
 
     if (!allAnswered) {
-      alert("Please answer all questions before submitting.");
+      toast.error("Please answer all questions before submitting!");
       return;
-    } else {
-      e.preventDefault();
-      sessionStorage.setItem("assign-3", "true");
-      navigate("/dashboard");
     }
+
+    sessionStorage.setItem("assign-3", "true");
+    toast.success("Assessment submitted successfully!");
+    setTimeout(() => navigate("/dashboard"), 1500);
   };
+
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -296,6 +313,17 @@ const BrandDiagnostic: React.FC = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

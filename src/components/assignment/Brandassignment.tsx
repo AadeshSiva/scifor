@@ -6,6 +6,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface Task {
   id: number;
   title: string;
@@ -19,7 +21,9 @@ const BrandAssignment: React.FC = () => {
   const [popup, setPopup] = useState<boolean>(false);
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
   const handleRatingChange = (questionId: string, value: number) => {
@@ -39,11 +43,32 @@ const BrandAssignment: React.FC = () => {
   const handleBackButton = () => {
     setPopup(true);
   };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   sessionStorage.setItem("assign-1", "true");
+  //   navigate("/dashboard");
+  // };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const currentTasks = tasks.filter((task) => task.id === currentSection);
+
+    const allAnswered = currentTasks.every((_, index) =>
+      ratings.hasOwnProperty(`s${currentSection}-q${index}`)
+    );
+
+    if (!allAnswered) {
+      toast.error(" Please answer all questions before submitting!");
+      return;
+    }
+
+    // Save and navigate
     sessionStorage.setItem("assign-1", "true");
-    navigate("/dashboard");
+    toast.success("Assessment submitted successfully!");
+    setTimeout(() => navigate("/dashboard"), 1500);
   };
+
   const handleSaveButton = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("assign-1", "true");
@@ -391,7 +416,7 @@ const BrandAssignment: React.FC = () => {
                             onChange={() =>
                               handleRatingChange(
                                 `s${currentSection}-q${index}`,
-                                value,
+                                value
                               )
                             }
                             className="h-6 w-6 text-blue-600 focus:ring-blue-500"
@@ -408,7 +433,11 @@ const BrandAssignment: React.FC = () => {
               <button
                 onClick={handlePrevSection}
                 disabled={currentSection === 1}
-                className={`flex items-center px-4 py-2 rounded text-md ${currentSection === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-600 text-white hover:bg-gray-700"}`}
+                className={`flex items-center px-4 py-2 rounded text-md ${
+                  currentSection === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-600 text-white hover:bg-gray-700"
+                }`}
               >
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 Previous
@@ -470,6 +499,17 @@ const BrandAssignment: React.FC = () => {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };
