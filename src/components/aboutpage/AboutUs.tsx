@@ -1,4 +1,4 @@
-import About from "/assets/AboutUs.png";
+import About from "/assets/AboutUs.webp";
 import { AiFillLinkedin } from "react-icons/ai";
 import { Footer } from "@/components/footer/Footer";
 
