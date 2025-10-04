@@ -97,6 +97,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
         className="top-[86px] z-10 bg-[#F5F5F5] px-4 sm:px-6 lg:px-8 py-4 border border-gray-500 shadow-lg rounded-lg"
       >
         <div className="flex flex-wrap gap-2 lg:flex-nowrap lg:overflow-x-auto lg:overflow-y-visible min-w-0">
+        {/* All button */}
           <button
             onClick={() => handleCategorySelect("All")}
             className={`px-3 py-2 rounded-[7px] text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
@@ -167,6 +168,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                       <div className="border-t border-gray-200">
                         <div className="bg-neutral-100 px-4 sm:px-6 lg:px-8 py-6">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                            {/* Statistics */}
                             <div className="min-w-0 text-gray-600 text-sm sm:text-base leading-relaxed space-y-2 mb-4 md:mb-0">
                               {researchPoint.statistics.map((stat, statIndex) => (
                                 <div key={statIndex} className="flex items-start gap-2">
@@ -179,7 +181,7 @@ const LongAccordion: React.FC<LongAccordionProps> = ({ data = [], className = ""
                                 </div>
                               ))}
                             </div>
-
+                          {/* Buttons */}
                             {firstUrl && (
                               <div className="min-w-0 flex flex-col sm:flex-row flex-wrap gap-2 justify-start md:justify-center md:place-self-center">
                                 <button
