@@ -243,9 +243,8 @@ const Dashboard: React.FC = () => {
       {(sidebarOpen || !Mobile) && (
         <aside
           className={`fixed top-0 left-0 w-64 bg-white border border-gray-200 flex flex-col h-full overflow-y-auto z-40 
-          ${Mobile ? "shadow-xl" : ""} transition-transform duration-300 ${
-            Mobile && !sidebarOpen ? "-translate-x-full" : ""
-          }`}
+          ${Mobile ? "shadow-xl" : ""} transition-transform duration-300 ${Mobile && !sidebarOpen ? "-translate-x-full" : ""
+            }`}
         >
           <nav className="flex-1 px-4 space-y-3 text-gray-700 mt-20">
             <a
@@ -300,7 +299,7 @@ const Dashboard: React.FC = () => {
           <h1 className="text-xl flex justify-center md:text-2xl font-walbaum text-gray-700 mb-6 mt-14 text-center md:text-left">
             <div className="flex flex-col text-center">
               <span>Welcome to your Prspera dashboard,</span>
-              <span>{user.full_name}</span>
+              <span>{user.full_name} </span>
             </div>
           </h1>
           <div className="w-full max-w-4xl mx-auto space-y-6">
@@ -308,23 +307,23 @@ const Dashboard: React.FC = () => {
               <div className="divide-y divide-gray-200 text-gray-700">
                 <div className="flex justify-between py-2">
                   <span>Alias</span>
-                  <span className="text-gray-400">{user.username}</span>
+                  <span className="text-gray-400">{user.username ? user.username : "Detail Not Provided"} </span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span>Name</span>
-                  <span className="text-gray-400">{user.full_name}</span>
+                  <span className="text-gray-400">{user.full_name ? user.full_name : "Detail Not Provided"}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span>Company Email</span>
-                  <span className="text-gray-400">{user.email}</span>
+                  <span className="text-gray-400">{user.email ? user.email : "Detail Not Provided"}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span>Phone</span>
-                  <span className="text-gray-400">{user.phone_number}</span>
+                  <span className="text-gray-400">{user.phone_number ? user.phone_number : "Detail Not Provided"}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span>Country</span>
-                  <span className="text-gray-400">{}</span>
+                  <span className="text-gray-400">{user.country ? user.country : "Detail Not Provided"}</span>
                 </div>
               </div>
             </div>
@@ -348,55 +347,48 @@ const Dashboard: React.FC = () => {
                     style={{ width: `${IdNeeded?.progress || 0}%` }}
                   ></div>
                 </div>
-                <span className="text-sm md:text-base whitespace-nowrap">{`${
-                  IdNeeded?.progress || 0
-                }% Completed`}</span>
+                <span className="text-sm md:text-base whitespace-nowrap">{`${IdNeeded?.progress || 0
+                  }% Completed`}</span>
               </div>
               <div className="w-full flex flex-col md:flex-row gap-6">
                 <div className="flex flex-col w-full md:w-1/3 gap-2">
                   <button
-                    className={`text-start text-sm p-3 rounded-lg border ${
-                      IdNeeded?.id === 1 ? "border-blue-500 bg-blue-50" : "border-gray-300"
-                    }`}
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 1 ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                      }`}
                   >
                     <span className="flex items-center">
                       <FontAwesomeIcon
                         icon={faCircleCheck}
-                        className={`mr-2 ${
-                          IdNeeded && IdNeeded.id > 1 ? "text-green-500" : "text-gray-400"
-                        }`}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 1 ? "text-green-500" : "text-gray-400"
+                          }`}
                       />
                       Add Business Details
                     </span>
                   </button>
                   <button
-                    className={`text-start text-sm p-3 rounded-lg border ${
-                      IdNeeded?.id === 2 ? "border-blue-500 bg-blue-50" : "border-gray-300"
-                    }`}
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded?.id === 2 ? "border-blue-500 bg-blue-50" : "border-gray-300"
+                      }`}
                   >
                     <span className="flex items-center">
                       <FontAwesomeIcon
                         icon={faCircleCheck}
-                        className={`mr-2 ${
-                          IdNeeded && IdNeeded.id > 2 ? "text-green-500" : "text-gray-400"
-                        }`}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 2 ? "text-green-500" : "text-gray-400"
+                          }`}
                       />
                       Book with Harish Chauhan
                     </span>
                   </button>
                   <button
-                    className={`text-start text-sm p-3 rounded-lg border ${
-                      IdNeeded && IdNeeded.id >= 3
+                    className={`text-start text-sm p-3 rounded-lg border ${IdNeeded && IdNeeded.id >= 3
                         ? "border-blue-500 bg-blue-50"
                         : "border-gray-300"
-                    }`}
+                      }`}
                   >
                     <span className="flex items-center">
                       <FontAwesomeIcon
                         icon={faCircleCheck}
-                        className={`mr-2 ${
-                          IdNeeded && IdNeeded.id > 3 ? "text-green-500" : "text-gray-400"
-                        }`}
+                        className={`mr-2 ${IdNeeded && IdNeeded.id > 3 ? "text-green-500" : "text-gray-400"
+                          }`}
                       />
                       Strategic Business Assessment
                     </span>

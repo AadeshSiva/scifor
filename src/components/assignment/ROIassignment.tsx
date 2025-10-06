@@ -7,8 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBackPopup } from "@/hooks/useBackPopup";
-import BackPopup from "../extras/BackPopup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 
 interface Task {
@@ -18,7 +18,6 @@ interface Task {
   description: string[];
   subtotal: string;
 }
-
 interface Currency {
   code: string;
   name: string;
@@ -26,13 +25,14 @@ interface Currency {
   symbol: string;
   format: (amount: number) => string;
 }
-
 const ROIassignment: React.FC = () => {
   const navigate = useNavigate();
+  const [currentSection, setCurrentSection] = useState<number>(1);
   const [date, setDate] = useState<string | null>(null);
+  const [ratings, setRatings] = useState<Record<string, number>>({});
   const [sectionTotal, setSectionTotal] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [popup, setPopup] = useState(false);
   const currencies: Currency[] = [
     {
       code: "USD",
@@ -230,42 +230,9 @@ const ROIassignment: React.FC = () => {
         }).format(amount),
     },
   ];
-
-  // --- START MODIFICATION: LOAD SAVED DATA ---
-  const loadFormData = () => {
-    const savedData = sessionStorage.getItem("roiFormData");
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-    return {};
-  };
-
-  const initialData = loadFormData();
-
-  const [currentSection, setCurrentSection] = useState<number>(initialData.currentSection || 1);
-  const [ratings, setRatings] = useState<Record<string, number>>(initialData.ratings || {});
-
-  const initialCurrency =
-    currencies.find((c) => c.code === initialData.selectedCurrencyCode) || currencies[0];
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(initialCurrency);
-
-  // --- END MODIFICATION: LOAD SAVED DATA ---
-
-  // --- START MODIFICATION: IMPLEMENT saveFormData ---
-  const saveFormData = () => {
-    const formData = {
-      currentSection,
-      ratings,
-      selectedCurrencyCode: selectedCurrency.code,
-    };
-    sessionStorage.setItem("roiFormData", JSON.stringify(formData));
-    console.log("Form data successfully saved to sessionStorage.");
-  };
-
-  const back = useBackPopup(saveFormData);
-
-  // --- END MODIFICATION: IMPLEMENT saveFormData ---
-
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
+    currencies[0]
+  );
   const tasks: Task[] = [
     {
       id: 1,
@@ -571,13 +538,11 @@ const ROIassignment: React.FC = () => {
       subtotal: "SHAREHOLDER VALUE & WEALTH SUBTOTAL",
     },
   ];
-
   const currentTasks = tasks.filter((task) => task.id === currentSection);
   const sectionTitles = [...new Set(tasks.map((task) => task.title))];
   const currentTitle = sectionTitles[currentSection - 1] || "";
   const sectionIssue = [...new Set(tasks.map((task) => task.issues))];
   const currentIssue = sectionIssue[currentSection - 1] || "";
-
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
@@ -603,258 +568,331 @@ const ROIassignment: React.FC = () => {
     });
     setSectionTotal(total);
   }, [ratings, tasks, currentSection]);
-
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      // Added for legacy support/compatibility, as previously discussed
-      e.returnValue = "";
-    };
-
-    window.addEventListener("beforeunload", handler);
-
-    return () => {
-      window.removeEventListener("beforeunload", handler);
-    };
-  });
-
+  const handleBackButton = () => {
+    setPopup(true)
+  };
   const handleNextSection = () => {
     if (currentSection < 7) {
       setCurrentSection((prev) => prev + 1);
     }
   };
-
   const handlePrevSection = () => {
     if (currentSection > 1) {
       setCurrentSection((prev) => prev - 1);
     }
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("assign-2", "true");
-    navigate("/dashboard");
+    const sectionTasks = tasks.filter((task) => task.id === currentSection);
+    const allAnswered = sectionTasks.every((task, tIndex) =>
+      task.description.every(
+        (_, qIndex) => ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`]
+      )
+    );
+    if (!allAnswered) {
+      toast.error("Please answer all questions before submitting!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
+    }
+    toast.success("ROI assessment submitted successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+      theme: "colored",
+    });
+    setTimeout(() => {
+      sessionStorage.setItem("assign-3", "true");
+      navigate("/dashboard");
+    }, 2000);
   };
-
-  const handleRatingChange = (taskIndex: number, questionIndex: number, value: number) => {
+  const handleRatingChange = (
+    taskIndex: number,
+    questionIndex: number,
+    value: number
+  ) => {
     const key = `task-${taskIndex}-q-${questionIndex}`;
     setRatings((prev) => ({ ...prev, [key]: value }));
   };
-
   const formatCurrency = (amount: number) => {
     return selectedCurrency.format(amount);
   };
-
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => {
+      window.removeEventListener("beforeunload", handler);
+    };
+  });
+  const handleSave=()=>{
+    navigate('/dashboard')
+  }
+  const handleDontSave =()=>{
+    navigate('/dashboard')
+  }
+  const handleCancel =()=>{
+    setPopup(false)
+  }
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-md py-3 px-4 md:px-8 fixed w-full z-50">
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-          <div className="flex items-center space-x-4">
-            <button
-              className="text-blue-600 flex items-center text-sm md:text-base"
-              onClick={back.handleBackButton}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className="mr-1 md:mr-2" />
-              <span>Back</span>
-            </button>
-            <div className="flex flex-col">
-              <span className="text-sm md:text-base font-semibold">
-                BRAND DIAGNOSTIC ASSESSMENT
-              </span>
-              <span className="text-xs text-gray-500 hidden md:block">
-                Evaluate your brand's health and growth potential.
-              </span>
-            </div>
-          </div>
-          <span className="text-sm text-gray-600">{date}</span>
-        </div>
-      </header>
-
-      {/* Main Content */}
-
-      {!back.popup ? (
-        <main className="flex-1 pt-16 pb-20 px-4 md:px-8">
-          <div className="max-w-6xl mx-auto">
-            {/* Currency Selector */}
-            <div className="relative mb-4 md:absolute md:top-20 md:right-4">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="px-3 py-2 bg-gray-200 rounded-lg shadow flex items-center justify-between w-full md:w-40"
-              >
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={selectedCurrency.countrylogo}
-                    alt={selectedCurrency.name}
-                    className="w-6 h-6 rounded-full"
-                  />
-                  <span className="text-gray-800 font-medium">{selectedCurrency.code}</span>
+    <>
+      {!popup ? (
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+          <header className="bg-white shadow-md py-3 px-4 md:px-8 fixed w-full z-50">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+              <div className="flex items-center space-x-4">
+                <button
+                  className="text-blue-600 flex items-center text-sm md:text-base"
+                  onClick={handleBackButton}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="mr-1 md:mr-2" />
+                  <span>Back</span>
+                </button>
+                <div className="flex flex-col">
+                  <span className="text-sm md:text-base font-semibold">
+                    BRAND DIAGNOSTIC ASSESSMENT
+                  </span>
+                  <span className="text-xs text-gray-500 hidden md:block">
+                    Evaluate your brand's health and growth potential.
+                  </span>
                 </div>
-                <span>{selectedCurrency.symbol}</span>
-              </button>
-
-              {isOpen && (
-                <div className="absolute mt-1 w-full md:w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                  {currencies.map((currency) => (
-                    <div
-                      key={currency.code}
-                      onClick={() => {
-                        setSelectedCurrency(currency);
-                        setIsOpen(false);
-                      }}
-                      className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${
-                        selectedCurrency.code === currency.code
-                          ? "bg-blue-100 font-semibold"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      <img
-                        src={currency.countrylogo}
-                        alt={currency.name}
-                        className="w-5 h-5 rounded-full"
-                      />
-                      <span className="flex-1">{currency.code}</span>
-                      <span>{currency.symbol}</span>
+              </div>
+              <span className="text-sm text-gray-600">{date}</span>
+            </div>
+          </header>
+          <main className="flex-1 pt-16 pb-20 px-4 md:px-8">
+            <div className="max-w-6xl mx-auto">
+              <div className="relative mb-4 md:absolute md:top-20 md:right-4">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="px-3 py-2 bg-gray-200 rounded-lg shadow flex items-center justify-between w-full md:w-40"
+                >
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={selectedCurrency.countrylogo}
+                      alt={selectedCurrency.name}
+                      className="w-6 h-6 rounded-full"
+                    />
+                    <span className="text-gray-800 font-medium">
+                      {selectedCurrency.code}
+                    </span>
+                  </div>
+                  <span>{selectedCurrency.symbol}</span>
+                </button>
+                {isOpen && (
+                  <div className="absolute mt-1 w-full md:w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                    {currencies.map((currency) => (
+                      <div
+                        key={currency.code}
+                        onClick={() => {
+                          setSelectedCurrency(currency);
+                          setIsOpen(false);
+                        }}
+                        className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${selectedCurrency.code === currency.code
+                            ? "bg-blue-100 font-semibold"
+                            : "hover:bg-gray-100"
+                          }`}
+                      >
+                        <img
+                          src={currency.countrylogo}
+                          alt={currency.name}
+                          className="w-5 h-5 rounded-full"
+                        />
+                        <span className="flex-1">{currency.code}</span>
+                        <span>{currency.symbol}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="bg-gray-200 rounded-lg p-4 mb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                  <h2 className="text-lg font-bold text-gray-800 mb-2 md:mb-0">
+                    {currentTitle}
+                  </h2>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm text-gray-700">
+                      Progress: {currentSection}/7
+                    </span>
+                    <div className="w-24 h-2 bg-gray-300 rounded-full">
+                      <div
+                        className="h-full bg-blue-600 rounded-full transition-all duration-300"
+                        style={{ width: `${(currentSection / 7) * 100}%` }}
+                      ></div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Section Header */}
-            <div className="bg-gray-200 rounded-lg p-4 mb-4">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-                <h2 className="text-lg font-bold text-gray-800 mb-2 md:mb-0">{currentTitle}</h2>
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-700">Progress: {currentSection}/7</span>
-                  <div className="w-24 h-2 bg-gray-300 rounded-full">
-                    <div
-                      className="h-full bg-blue-600 rounded-full transition-all duration-300"
-                      style={{ width: `${(currentSection / 7) * 100}%` }}
-                    ></div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Assessment Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden mb-4">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="py-3 px-4 text-left font-semibold text-gray-700">ISSUE</th>
-                      <th className="py-3 px-4 text-left font-semibold text-gray-700">
-                        {currentTitle}
-                      </th>
-                      <th className="py-3 px-4 text-left font-semibold text-gray-700">
-                        <div className="flex flex-col">
-                          <span className="flex items-center">
-                            <span className="mr-2">{selectedCurrency.symbol}</span>
-                            VALUE
-                          </span>
-                          <span className="text-xs font-normal">
-                            Pre-UPh <FontAwesomeIcon icon={faRegistered} className="text-xs" />
-                          </span>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentTasks.map((task, taskIndex) => (
-                      <React.Fragment key={taskIndex}>
-                        {task.description.map((question, qIndex) => (
-                          <tr
-                            key={`${taskIndex}-${qIndex}`}
-                            className="border-b border-gray-200 hover:bg-gray-50"
-                          >
-                            {qIndex === 0 && (
-                              <td
-                                className="py-3 px-4 align-top text-gray-700 font-medium"
-                                rowSpan={task.description.length}
-                              >
-                                {task.issues}
-                              </td>
-                            )}
-                            <td className="py-3 px-4 text-gray-600">{question}</td>
-                            <td className="py-3 px-4">
-                              <input
-                                type="number"
-                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                // The taskIndex here needs to be the index in the global tasks array for stable storage keys
-                                value={ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`] || ""}
-                                onChange={(e) =>
-                                  handleRatingChange(
-                                    tasks.indexOf(task),
-                                    qIndex,
-                                    parseInt(e.target.value) || 0
-                                  )
-                                }
-                                placeholder="Enter amount"
-                                required
+              <div className="bg-white rounded-lg shadow overflow-hidden mb-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">
+                          ISSUE
+                        </th>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">
+                          {currentTitle}
+                        </th>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">
+                          <div className="flex flex-col">
+                            <span className="flex items-center">
+                              <span className="mr-2">
+                                {selectedCurrency.symbol}
+                              </span>
+                              VALUE
+                            </span>
+                            <span className="text-xs font-normal">
+                              Pre-UPh{" "}
+                              <FontAwesomeIcon
+                                icon={faRegistered}
+                                className="text-xs"
                               />
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                    <tr className="bg-blue-50 font-semibold">
-                      <td colSpan={2} className="py-3 px-4 text-right text-gray-800">
-                        {/* Using currentTitle for the subtotal title for simplicity,
-                            but task.subtotal could also be used from a specific task */}
-                        {currentTitle} SUBTOTAL
-                      </td>
-                      <td className="py-3 px-4 text-blue-700">{formatCurrency(sectionTotal)}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentTasks.map((task, taskIndex) => (
+                        <React.Fragment key={taskIndex}>
+                          {task.description.map((question, qIndex) => (
+                            <tr
+                              key={`${taskIndex}-${qIndex}`}
+                              className="border-b border-gray-200 hover:bg-gray-50"
+                            >
+                              {qIndex === 0 && (
+                                <td
+                                  className="py-3 px-4 align-top text-gray-700 font-medium"
+                                  rowSpan={task.description.length}
+                                >
+                                  {task.issues}
+                                </td>
+                              )}
+                              <td className="py-3 px-4 text-gray-600">
+                                {question}
+                              </td>
+                              <td className="py-3 px-4">
+                                <input
+                                  type="number"
+                                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  value={
+                                    ratings[
+                                    `task-${tasks.indexOf(task)}-q-${qIndex}`
+                                    ] || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleRatingChange(
+                                      tasks.indexOf(task),
+                                      qIndex,
+                                      parseInt(e.target.value) || 0
+                                    )
+                                  }
+                                  placeholder="Enter amount"
+                                  required
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                      <tr className="bg-blue-50 font-semibold">
+                        <td
+                          colSpan={2}
+                          className="py-3 px-4 text-right text-gray-800"
+                        >
+                          {currentIssue}
+                        </td>
+                        <td className="py-3 px-4 text-blue-700">
+                          {formatCurrency(sectionTotal)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="flex flex-col-reverse md:flex-row justify-between space-y-4 space-y-reverse md:space-y-0">
+                <button
+                  onClick={handlePrevSection}
+                  disabled={currentSection === 1}
+                  className={`flex items-center justify-center px-4 py-2 rounded-lg ${currentSection === 1
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-600 text-white hover:bg-gray-700"
+                    }`}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                  Previous
+                </button>
+                {currentSection === 7 ? (
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
+                  >
+                    Submit
+                    <FontAwesomeIcon icon={faCheckCircle} className="ml-2" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleNextSection}
+                    className="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Next
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  </button>
+                )}
               </div>
             </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex flex-col-reverse md:flex-row justify-between space-y-4 space-y-reverse md:space-y-0">
+          </main>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </div>
+      ) : (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
+          <div className="w-full max-w-md bg-gray-100 p-6 flex flex-col space-y-6 rounded-lg shadow-xl">
+            <div className="text-center space-y-3">
+              <h1 className="text-xl font-semibold text-gray-800">You have unsaved changes.</h1>
+              <h1 className="text-xl font-semibold text-gray-800">Do you want to save them</h1>
+              <h1 className="text-xl font-semibold text-gray-800">before leaving?</h1>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
-                onClick={handlePrevSection}
-                disabled={currentSection === 1}
-                className={`flex items-center justify-center px-4 py-2 rounded-lg ${
-                  currentSection === 1
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-600 text-white hover:bg-gray-700"
-                }`}
+                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700"
+                onClick={handleSave}
               >
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-                Previous
+                Save
               </button>
-
-              {currentSection === 7 ? (
-                <button
-                  onClick={handleSubmit}
-                  className="flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
-                >
-                  Submit
-                  <FontAwesomeIcon icon={faCheckCircle} className="ml-2" />
-                </button>
-              ) : (
-                <button
-                  onClick={handleNextSection}
-                  className="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  Next
-                  <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                </button>
-              )}
+              <button
+                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700"
+                onClick={handleDontSave}
+              >
+                Don't Save
+              </button>
+              <button
+                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
             </div>
           </div>
-        </main>
-      ) : (
-        <BackPopup
-          onSave={back.handleSave}
-          onDontSave={back.handleDontSave}
-          onCancel={back.handleCancel}
-        />
+        </div>
       )}
-    </div>
+  </>
   );
 };
-
 export default ROIassignment;
