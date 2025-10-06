@@ -2,8 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBackPopup } from "@/hooks/useBackPopup";
-import BackPopup from "../extras/BackPopup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Question {
   id: string;
@@ -14,8 +14,7 @@ const BrandDiagnostic: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string | null>(null);
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const back = useBackPopup();
-
+  const [popup, setpopup] = useState(false)
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
@@ -23,18 +22,24 @@ const BrandDiagnostic: React.FC = () => {
     ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
-
+  const handleSaveButton = () => {
+    navigate('/dashboard')
+  }
+  const handleDontSaveButton = () => {
+    navigate('/dashboard')
+  }
+  const handleCancelButton = () => {
+    setpopup(false)
+  }
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
     };
-
     window.addEventListener("beforeunload", handler);
     return () => {
       window.removeEventListener("beforeunload", handler);
     };
   });
-
   const questions: Question[] = [
     {
       id: "logo_1",
@@ -197,24 +202,35 @@ const BrandDiagnostic: React.FC = () => {
       section: "CUSTOMER",
     },
   ];
-
+  const handleBackButton = () => {
+    setpopup(true)
+  };
   const handleResponseChange = (questionId: string, value: string) => {
     setResponses((prev) => ({ ...prev, [questionId]: value }));
   };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   const allAnswered = questions.every((question) => responses[question.id]);
 
+  //   if (!allAnswered) {
+  //     alert("Please answer all questions before submitting.");
+  //     return;
+  //   } else {
+  //     e.preventDefault();
+  //     sessionStorage.setItem("assign-3", "true");
+  //     navigate("/dashboard");
+  //   }
+  // };
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const allAnswered = questions.every((question) => responses[question.id]);
-
     if (!allAnswered) {
-      alert("Please answer all questions before submitting.");
+      toast.error("Please answer all questions before submitting!");
       return;
-    } else {
-      e.preventDefault();
-      sessionStorage.setItem("assign-3", "true");
-      navigate("/dashboard");
     }
+    sessionStorage.setItem("assign-3", "true");
+    toast.success("Assessment submitted successfully!");
+    setTimeout(() => navigate("/dashboard"), 1500);
   };
-
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -222,98 +238,140 @@ const BrandDiagnostic: React.FC = () => {
     acc[question.section].push(question);
     return acc;
   }, {} as Record<string, Question[]>);
-
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
-        <div className="flex flex-row gap-4 items-center">
-          <button
-            className="text-blue-500 flex items-center hover:text-blue-700"
-            onClick={back.handleBackButton}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
-          </button>
-          <div className="flex flex-col">
-            <span className="text-md font-semibold">BRAND DIAGNOSTIC ASSESSMENT</span>
-            <span className="text-xs text-gray-500">
-              Evaluate your brand's health and growth potential.
-            </span>
-          </div>
-        </div>
-        <span className="text-sm">{date}</span>
-      </header>
-
-      {!back.popup ? (
-        <div className="pt-20 px-8 pb-8">
-          <div className="max-w-6xl mx-auto">
-            {Object.entries(groupedQuestions).map(([sectionName, sectionQuestions]) => (
-              <div key={sectionName} className="mb-8">
-                <div className="bg-gray-400 text-white rounded-t-lg px-4 py-3">
-                  <h2 className="font-bold text-lg">{sectionName}</h2>
-                </div>
-                <div className="bg-white shadow-md overflow-hidden mt-5">
-                  <table className="w-full">
-                    <tbody>
-                      {sectionQuestions.map((question, index) => (
-                        <tr
-                          key={question.id}
-                          className={`border-b border-gray-200 hover:bg-gray-50 ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          }`}
-                        >
-                          <td className="p-4 text-sm font-medium w-full">{question.text}</td>
-                          <td className="text-center p-0">
-                            <button
-                              type="button"
-                              onClick={() => handleResponseChange(question.id, "Y")}
-                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
-                                responses[question.id] === "Y"
-                                  ? "bg-green-400 text-white"
-                                  : "text-gray-700"
-                              }`}
-                            >
-                              Y
-                            </button>
-                          </td>
-                          <td className="text-center p-0">
-                            <button
-                              type="button"
-                              onClick={() => handleResponseChange(question.id, "N")}
-                              className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${
-                                responses[question.id] === "N"
-                                  ? "bg-red-400 text-white"
-                                  : "text-gray-700"
-                              }`}
-                            >
-                              N
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))}
-
-            <div className="flex justify-center mt-8">
+    <>
+      {!popup ? (
+        <div className="bg-gray-100 min-h-screen">
+          <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
+            <div className="flex flex-row gap-4 items-center">
               <button
-                onClick={handleSubmit}
-                className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
+                className="text-blue-500 flex items-center hover:text-blue-700"
+                onClick={handleBackButton}
               >
-                Submit
+                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
+              </button>
+              <div className="flex flex-col">
+                <span className="text-md font-semibold">
+                  BRAND DIAGNOSTIC ASSESSMENT
+                </span>
+                <span className="text-xs text-gray-500">
+                  Evaluate your brand's health and growth potential.
+                </span>
+              </div>
+            </div>
+            <span className="text-sm">{date}</span>
+          </header>
+          <div className="pt-20 px-8 pb-8">
+            <div className="max-w-6xl mx-auto">
+              {Object.entries(groupedQuestions).map(
+                ([sectionName, sectionQuestions]) => (
+                  <div key={sectionName} className="mb-8">
+                    <div className="bg-gray-400 text-white rounded-t-lg px-4 py-3">
+                      <h2 className="font-bold text-lg">{sectionName}</h2>
+                    </div>
+                    <div className="bg-white shadow-md overflow-hidden mt-5">
+                      <table className="w-full">
+                        <tbody>
+                          {sectionQuestions.map((question, index) => (
+                            <tr
+                              key={question.id}
+                              className={`border-b border-gray-200 hover:bg-gray-50 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                }`}
+                            >
+                              <td className="p-4 text-sm font-medium w-full">
+                                {question.text}
+                              </td>
+                              <td className="text-center p-0">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleResponseChange(question.id, "Y")
+                                  }
+                                  className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${responses[question.id] === "Y"
+                                    ? "bg-green-400 text-white"
+                                    : "text-gray-700"
+                                    }`}
+                                >
+                                  Y
+                                </button>
+                              </td>
+                              <td className="text-center p-0">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleResponseChange(question.id, "N")
+                                  }
+                                  className={`w-16 h-16 border font-bold text-lg transition-colors duration-200 ${responses[question.id] === "N"
+                                    ? "bg-red-400 text-white"
+                                    : "text-gray-700"
+                                    }`}
+                                >
+                                  N
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )
+              )}
+              <div className="flex justify-center mt-8">
+                <button
+                  onClick={handleSubmit}
+                  className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </div>
+      ) : (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
+          <div className="w-full max-w-md bg-gray-100 p-6 flex flex-col space-y-6 rounded-lg shadow-xl">
+            <div className="text-center space-y-3">
+              <h1 className="text-xl font-semibold text-gray-800">You have unsaved changes.</h1>
+              <h1 className="text-xl font-semibold text-gray-800">Do you want to save them</h1>
+              <h1 className="text-xl font-semibold text-gray-800">before leaving?</h1>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
+              <button
+                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700"
+                onClick={handleSaveButton}
+              >
+                Save
+              </button>
+              <button
+                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700"
+                onClick={handleDontSaveButton}
+              >
+                Don't Save
+              </button>
+              <button
+                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700"
+                onClick={handleCancelButton}
+              >
+                Cancel
               </button>
             </div>
           </div>
         </div>
-      ) : (
-        <BackPopup
-          onSave={back.handleSave}
-          onDontSave={back.handleDontSave}
-          onCancel={back.handleCancel}
-        />
-      )}
-    </div>
+      )
+      }
+    </>
   );
 };
 export default BrandDiagnostic;

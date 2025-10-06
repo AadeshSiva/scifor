@@ -6,6 +6,27 @@ interface BillingFormData {
   email: string;
   companyName: string;
 }
+interface Coupon {
+  id: number;
+  code: string;
+  discount_type: string;
+  discount_value: string;
+  valid_from: string;
+  valid_to: string;
+  active: boolean;
+  usage_limit: number;
+  used_count: number;
+}
+
+interface CouponResponse {
+  coupon: Coupon;
+  amount_before_discount: number;
+  amount_after_discount: number;
+  error: string;
+}
+interface value {
+  value: string
+}
 const Payment: React.FC = () => {
   const { user } = useAuth();
   const [billingInfo] = useState<BillingFormData>({
@@ -15,12 +36,12 @@ const Payment: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [stripe, setStripe] = useState<any>(null);
+  const [coupondata, setCouponData] = useState<CouponResponse | null>(null);
   const cardMountRef = useRef<HTMLDivElement | null>(null);
   const cardElementRef = useRef<any>(null);
-  const planDetails = {
-    name: "Founding Lifetime Member",
-    price: 179700
-  };
+  const [value, setValue] = useState("");
+
+
   useEffect(() => {
     let cancelled = false;
     const setupStripeElements = async (stripeInstance: any) => {
@@ -156,6 +177,41 @@ const Payment: React.FC = () => {
       setIsLoading(false);
     }
   };
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const token = getAuthToken();
+  const url = "https://api.prspera.com/coupons/"
+  const payload = {
+    "code": value,
+    "amount": 1797
+  }
+  async function handleSubmit() {
+    try {
+      if (url) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload)
+
+        })
+        const data: CouponResponse = await response.json();
+        setCouponData(data)
+      }
+    }
+    catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+  const planDetails = {
+    name: "Founding Lifetime Member",
+    price: coupondata?.amount_before_discount ? coupondata?.amount_after_discount * 100 : 1797 * 100
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8 mt-16">
       <div className="max-w-5xl mx-auto">
@@ -176,6 +232,7 @@ const Payment: React.FC = () => {
                   <span className="text-sm text-gray-500 ml-2">
                     / one time payment
                   </span>
+                  {coupondata?.amount_before_discount && <li className="font-bold list-none text-md">Actual price: ${coupondata?.amount_before_discount}</li>}
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg mb-6">
                   <h4 className="font-medium text-blue-800 mb-2">
@@ -257,6 +314,7 @@ const Payment: React.FC = () => {
                   ${planDetails.price / 100}
                 </span>
               </div>
+              {coupondata?.amount_after_discount && <li className="text-green-500 list-none text-md">Your final price: ${coupondata?.amount_after_discount}</li>}
               <button
                 onClick={processPayment}
                 disabled={isLoading}
@@ -413,6 +471,44 @@ const Payment: React.FC = () => {
                   <span>Downloadable invoice for your records</span>
                 </li>
               </ul>
+            </div>
+            <div className="p-6 mt-6 bg-gray-200 rounded-md w-full max-w-3xl mx-auto">
+              <p className="font-bold mb-4 text-blue-500 text-center sm:text-left">
+                Apply coupon for more discount
+              </p>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <label
+                  htmlFor="coupon"
+                  className="font-bold text-lg text-center sm:text-left whitespace-nowrap"
+                >
+                  Coupon Code:
+                </label>
+                <input
+                  id="coupon"
+                  type="text"
+                  placeholder="Enter your code"
+                  className="rounded-md border border-gray-300 px-3 py-2 w-full sm:w-48 md:w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  onChange={handleChange}
+                />
+
+                <button
+                  onClick={handleSubmit}
+                  id="couponbutton"
+                  className="text-black bg-green-200 hover:bg-green-300 font-semibold px-4 py-2 rounded-md w-full sm:w-auto"
+                >
+                  Apply Now
+                </button>
+              </div>
+              {coupondata?.coupon?.discount_value && (
+                <p className="text-green-600 text-sm font-semibold mt-3 text-center sm:text-left">
+                  🎉 Congratulations! {coupondata.coupon.discount_value}% discount applied.
+                </p>
+              )}
+              {coupondata?.error && (
+                <p className="text-red-500 text-sm mt-3 text-center sm:text-left">
+                  {coupondata.error}
+                </p>
+              )}
             </div>
           </div>
         </div>

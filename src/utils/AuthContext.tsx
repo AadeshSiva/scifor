@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 interface User {
+  country: ReactNode;
   role: string;
   price: ReactNode;
   id: string;

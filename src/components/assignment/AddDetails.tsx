@@ -2,8 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBackPopup } from "@/hooks/useBackPopup";
-import BackPopup from "../extras/BackPopup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
@@ -37,28 +35,17 @@ interface FormData {
 const AddDetails: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string | null>(null);
-  const back = useBackPopup();
-
   useEffect(() => {
     const today = new Date();
-    const formattedDate = `${String(today.getMonth() + 1).padStart(2, "0")}/${String(
-      today.getDate()
-    ).padStart(2, "0")}/${today.getFullYear()}`;
-
+    const formattedDate = `${String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}/${String(today.getDate()).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
   }, []);
-
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-    };
-
-    window.addEventListener("beforeunload", handler);
-    return () => {
-      window.removeEventListener("beforeunload", handler);
-    };
-  });
-
+  const handleBackButton = () => {
+    navigate("/dashboard");
+  };
   const [formData, setFormData] = useState<FormData>({
     businessName: "",
     industry: "",
@@ -84,8 +71,9 @@ const AddDetails: React.FC = () => {
     marketingStrategy: "",
     culture: "",
   });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
       const checkbox = e.target as HTMLInputElement;
@@ -100,7 +88,9 @@ const AddDetails: React.FC = () => {
         } else {
           return {
             ...prev,
-            growthStage: prev.growthStage.filter((item) => item !== checkboxValue),
+            growthStage: prev.growthStage.filter(
+              (item) => item !== checkboxValue
+            ),
           };
         }
       });
@@ -111,7 +101,6 @@ const AddDetails: React.FC = () => {
       }));
     }
   };
-
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -119,17 +108,14 @@ const AddDetails: React.FC = () => {
       [name]: value,
     }));
   };
-
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const hasEmpty = Object.entries(formData).some(
       ([key, value]) =>
         (value === "" || (Array.isArray(value) && value.length === 0)) &&
         key !== "address2" &&
         key !== "departmentOther"
     );
-
     if (hasEmpty) {
       toast.error(" Please fill all required fields before submitting!", {
         position: "top-center",
@@ -142,40 +128,43 @@ const AddDetails: React.FC = () => {
       });
       return;
     }
-
     toast.success(" Business details submitted successfully!", {
       position: "top-center",
       autoClose: 2000,
       theme: "colored",
     });
-
     setTimeout(() => {
       sessionStorage.setItem("add-details", "true");
       navigate("/dashboard");
     }, 2000);
   };
-
   return (
-    <div className="bg-gray-300 min-h-screen">
-      <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
-        <div className="flex flex-row gap-4 items-center">
-          <button className="text-blue-500 flex items-center" onClick={back.handleBackButton}>
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
-          </button>
-          <div className="flex flex-col">
-            <span className="text-md font-semibold">BUSINESS DETAILS</span>
-            <span className="text-xs text-gray-500">Add Business Details</span>
+    <>
+      <div className="bg-gray-300 min-h-screen">
+        <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
+          <div className="flex flex-row gap-4 items-center">
+            <button
+              className="text-blue-500 flex items-center"
+              onClick={handleBackButton}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back
+            </button>
+            <div className="flex flex-col">
+              <span className="text-md font-semibold">BUSINESS DETAILS</span>
+              <span className="text-xs text-gray-500">
+                Add Business Details
+              </span>
+            </div>
           </div>
-        </div>
-        <span className="text-sm">{date}</span>
-      </header>
-
-      {!back.popup ? (
+          <span className="text-sm">{date}</span>
+        </header>
         <div className="pt-24 pb-12">
           <div className="w-4/5 mx-auto bg-white shadow-md p-8 md:p-16 rounded-lg">
             <form className="space-y-8">
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold border-b pb-2">Basic Information</h2>
+                <h2 className="text-2xl font-bold border-b pb-2">
+                  Basic Information
+                </h2>
                 <div className="flex flex-col md:flex-row md:items-center mb-4">
                   <label
                     htmlFor="business-name"
@@ -279,7 +268,9 @@ const AddDetails: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold border-b pb-2">Company Details</h2>
+                <h2 className="text-2xl font-bold border-b pb-2">
+                  Company Details
+                </h2>
                 <div className="flex flex-col md:flex-row">
                   <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">
                     Stage of Growth:
@@ -304,7 +295,10 @@ const AddDetails: React.FC = () => {
                           onChange={handleChange}
                           className="mr-3 h-5 w-5"
                         />
-                        <label htmlFor={`growth-${stage.replace(/\s+/g, "-")}`} className="text-lg">
+                        <label
+                          htmlFor={`growth-${stage.replace(/\s+/g, "-")}`}
+                          className="text-lg"
+                        >
                           {stage}
                         </label>
                       </div>
@@ -398,7 +392,9 @@ const AddDetails: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold border-b pb-2">Business Health</h2>
+                <h2 className="text-2xl font-bold border-b pb-2">
+                  Business Health
+                </h2>
                 <div className="flex flex-col md:flex-row">
                   <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-lg">
                     Company Succession Plan:
@@ -668,17 +664,9 @@ const AddDetails: React.FC = () => {
             </form>
           </div>
         </div>
-      ) : (
-        <BackPopup
-          onSave={back.handleSave}
-          onDontSave={back.handleDontSave}
-          onCancel={back.handleCancel}
-        />
-      )}
-
+      </div>
       <ToastContainer />
-    </div>
+    </>
   );
 };
-
 export default AddDetails;
