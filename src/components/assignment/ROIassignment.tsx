@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
-
 interface Task {
   id: number;
   title: string;
@@ -25,6 +24,12 @@ interface Currency {
   symbol: string;
   format: (amount: number) => string;
 }
+interface SavedData {
+  ratings: Record<string, number>;
+  currentSection: number;
+  selectedCurrency: Currency;
+  lastSaved: string;
+}
 const ROIassignment: React.FC = () => {
   const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState<number>(1);
@@ -33,6 +38,36 @@ const ROIassignment: React.FC = () => {
   const [sectionTotal, setSectionTotal] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
   const [popup, setPopup] = useState(false);
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}/${today.getFullYear()}`;
+    setDate(formattedDate);
+    const savedData = localStorage.getItem("roi-assessment-data");
+    if (savedData) {
+      try {
+        const parsedData: SavedData = JSON.parse(savedData);
+        setRatings(parsedData.ratings || {});
+        setCurrentSection(parsedData.currentSection || 1);
+        const savedCurrency = currencies.find(
+          (currency) => currency.code === parsedData.selectedCurrency?.code
+        );
+        if (savedCurrency) {
+          setSelectedCurrency(savedCurrency);
+        }
+        if (Object.keys(parsedData.ratings || {}).length > 0) {
+          toast.info("Recovered previously saved progress!", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading saved data:", error);
+        localStorage.removeItem("roi-assessment-data");
+      }
+    }
+  }, []);
   const currencies: Currency[] = [
     {
       code: "USD",
@@ -233,6 +268,95 @@ const ROIassignment: React.FC = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
     currencies[0]
   );
+  const saveToLocalStorage = (currentRatings: Record<string, number>, section: number) => {
+    const saveData: SavedData = {
+      ratings: currentRatings,
+      currentSection: section,
+      selectedCurrency: selectedCurrency,
+      lastSaved: new Date().toISOString(),
+    };
+    localStorage.setItem("roi-assessment-data", JSON.stringify(saveData));
+  };
+  const handleRatingChange = (
+    taskIndex: number,
+    questionIndex: number,
+    value: number
+  ) => {
+    const key = `task-${taskIndex}-q-${questionIndex}`;
+    const newRatings = { ...ratings, [key]: value };
+    setRatings(newRatings);
+    saveToLocalStorage(newRatings, currentSection);
+  };
+  const handleCurrencyChange = (currency: Currency) => {
+    setSelectedCurrency(currency);
+    saveToLocalStorage(ratings, currentSection);
+  };
+  const handleNextSection = () => {
+    if (currentSection < 7) {
+      const newSection = currentSection + 1;
+      setCurrentSection(newSection);
+      saveToLocalStorage(ratings, newSection);
+    }
+  };
+  const handlePrevSection = () => {
+    if (currentSection > 1) {
+      const newSection = currentSection - 1;
+      setCurrentSection(newSection);
+      saveToLocalStorage(ratings, newSection);
+    }
+  };
+  const handleBackButton = () => {
+    setPopup(true);
+  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sessionStorage.setItem("assign-2", "true");
+    localStorage.removeItem("roi-assessment-data");
+    navigate("/dashboard")
+  };
+  const handleSaveButton = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveToLocalStorage(ratings, currentSection);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    setPopup(false);
+  };
+  const handleSaveAndExit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveToLocalStorage(ratings, currentSection);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    setTimeout(() => navigate('/dashboard'), 500);
+  };
+  const handleDontSave = () => {
+    localStorage.removeItem("roi-assessment-data");
+    navigate('/dashboard');
+  };
+  const handleCancel = () => {
+    setPopup(false);
+  };
+  const getSaveStatus = () => {
+    const savedData = localStorage.getItem("roi-assessment-data");
+    if (savedData) {
+      const data: SavedData = JSON.parse(savedData);
+      return `Last saved: ${new Date(data.lastSaved).toLocaleTimeString()}`;
+    }
+    return "Not saved yet";
+  };
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      saveToLocalStorage(ratings, currentSection);
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => {
+      window.removeEventListener("beforeunload", handler);
+    };
+  }, [ratings, currentSection]);
+
   const tasks: Task[] = [
     {
       id: 1,
@@ -538,18 +662,13 @@ const ROIassignment: React.FC = () => {
       subtotal: "SHAREHOLDER VALUE & WEALTH SUBTOTAL",
     },
   ];
+
+
   const currentTasks = tasks.filter((task) => task.id === currentSection);
   const sectionTitles = [...new Set(tasks.map((task) => task.title))];
   const currentTitle = sectionTitles[currentSection - 1] || "";
   const sectionIssue = [...new Set(tasks.map((task) => task.issues))];
   const currentIssue = sectionIssue[currentSection - 1] || "";
-  useEffect(() => {
-    const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
-      today.getMonth() + 1
-    ).padStart(2, "0")}/${today.getFullYear()}`;
-    setDate(formattedDate);
-  }, []);
 
   useEffect(() => {
     const newSubtotals: Record<string, number> = {};
@@ -568,78 +687,11 @@ const ROIassignment: React.FC = () => {
     });
     setSectionTotal(total);
   }, [ratings, tasks, currentSection]);
-  const handleBackButton = () => {
-    setPopup(true)
-  };
-  const handleNextSection = () => {
-    if (currentSection < 7) {
-      setCurrentSection((prev) => prev + 1);
-    }
-  };
-  const handlePrevSection = () => {
-    if (currentSection > 1) {
-      setCurrentSection((prev) => prev - 1);
-    }
-  };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const sectionTasks = tasks.filter((task) => task.id === currentSection);
-    const allAnswered = sectionTasks.every((task, tIndex) =>
-      task.description.every(
-        (_, qIndex) => ratings[`task-${tasks.indexOf(task)}-q-${qIndex}`]
-      )
-    );
-    if (!allAnswered) {
-      toast.error("Please answer all questions before submitting!", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-      });
-      return;
-    }
-    toast.success("ROI assessment submitted successfully!", {
-      position: "top-center",
-      autoClose: 2000,
-      theme: "colored",
-    });
-    setTimeout(() => {
-      sessionStorage.setItem("assign-3", "true");
-      navigate("/dashboard");
-    }, 2000);
-  };
-  const handleRatingChange = (
-    taskIndex: number,
-    questionIndex: number,
-    value: number
-  ) => {
-    const key = `task-${taskIndex}-q-${questionIndex}`;
-    setRatings((prev) => ({ ...prev, [key]: value }));
-  };
+
   const formatCurrency = (amount: number) => {
     return selectedCurrency.format(amount);
   };
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => {
-      window.removeEventListener("beforeunload", handler);
-    };
-  });
-  const handleSave=()=>{
-    navigate('/dashboard')
-  }
-  const handleDontSave =()=>{
-    navigate('/dashboard')
-  }
-  const handleCancel =()=>{
-    setPopup(false)
-  }
+
   return (
     <>
       {!popup ? (
@@ -661,13 +713,27 @@ const ROIassignment: React.FC = () => {
                   <span className="text-xs text-gray-500 hidden md:block">
                     Evaluate your brand's health and growth potential.
                   </span>
+                  <span className="text-xs text-green-600 font-medium mt-1">
+                    {getSaveStatus()}
+                  </span>
                 </div>
               </div>
               <span className="text-sm text-gray-600">{date}</span>
             </div>
           </header>
-          <main className="flex-1 pt-16 pb-20 px-4 md:px-8">
+          <main className="flex-1 pt-24 pb-20 px-4 md:px-8">
             <div className="max-w-6xl mx-auto">
+
+              {/* Save Progress Button */}
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={handleSaveButton}
+                  className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm font-semibold"
+                >
+                  Save Progress
+                </button>
+              </div>
+
               <div className="relative mb-4 md:absolute md:top-20 md:right-4">
                 <button
                   onClick={() => setIsOpen(!isOpen)}
@@ -691,12 +757,12 @@ const ROIassignment: React.FC = () => {
                       <div
                         key={currency.code}
                         onClick={() => {
-                          setSelectedCurrency(currency);
+                          handleCurrencyChange(currency);
                           setIsOpen(false);
                         }}
                         className={`px-4 py-2 cursor-pointer flex items-center space-x-3 ${selectedCurrency.code === currency.code
-                            ? "bg-blue-100 font-semibold"
-                            : "hover:bg-gray-100"
+                          ? "bg-blue-100 font-semibold"
+                          : "hover:bg-gray-100"
                           }`}
                       >
                         <img
@@ -822,8 +888,8 @@ const ROIassignment: React.FC = () => {
                   onClick={handlePrevSection}
                   disabled={currentSection === 1}
                   className={`flex items-center justify-center px-4 py-2 rounded-lg ${currentSection === 1
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-gray-600 text-white hover:bg-gray-700"
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-600 text-white hover:bg-gray-700"
                     }`}
                 >
                   <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
@@ -871,19 +937,25 @@ const ROIassignment: React.FC = () => {
             </div>
             <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700"
-                onClick={handleSave}
+                className="rounded-lg bg-green-600 text-white px-4 py-1.5 hover:bg-green-700 transition-colors flex-1 sm:flex-none"
+                onClick={handleSaveAndExit}
               >
-                Save
+                Save & Exit
               </button>
               <button
-                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700"
+                className="rounded-lg bg-blue-600 text-white px-4 py-1.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
+                onClick={handleSaveButton}
+              >
+                Save Only
+              </button>
+              <button
+                className="rounded-lg bg-gray-600 text-white px-4 py-1.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleDontSave}
               >
                 Don't Save
               </button>
               <button
-                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700"
+                className="rounded-lg bg-red-600 text-white px-4 py-1.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleCancel}
               >
                 Cancel
@@ -892,7 +964,8 @@ const ROIassignment: React.FC = () => {
           </div>
         </div>
       )}
-  </>
+    </>
   );
 };
+
 export default ROIassignment;
