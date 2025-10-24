@@ -10,36 +10,105 @@ interface Question {
   text: string;
   section: string;
 }
+interface SavedData {
+  responses: Record<string, string>;
+  lastSaved: string;
+}
 const BrandDiagnostic: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string | null>(null);
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const [popup, setpopup] = useState(false)
+  const [popup, setpopup] = useState(false);
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
       today.getMonth() + 1
     ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
+    const savedData = localStorage.getItem("brand-diagnostic-data");
+    if (savedData) {
+      try {
+        const parsedData: SavedData = JSON.parse(savedData);
+        setResponses(parsedData.responses || {});
+        if (Object.keys(parsedData.responses || {}).length > 0) {
+          toast.info("Recovered previously saved progress!", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading saved data:", error);
+        localStorage.removeItem("brand-diagnostic-data");
+      }
+    }
   }, []);
+  const saveToLocalStorage = (currentResponses: Record<string, string>) => {
+    const saveData: SavedData = {
+      responses: currentResponses,
+      lastSaved: new Date().toISOString(),
+    };
+    localStorage.setItem("brand-diagnostic-data", JSON.stringify(saveData));
+  };
+  const handleResponseChange = (questionId: string, value: string) => {
+    const newResponses = { ...responses, [questionId]: value };
+    setResponses(newResponses);
+    saveToLocalStorage(newResponses);
+  };
+  const handleBackButton = () => {
+    setpopup(true);
+  };
   const handleSaveButton = () => {
-    navigate('/dashboard')
-  }
+    saveToLocalStorage(responses);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    setTimeout(() => navigate('/dashboard'), 500);
+  };
+  const handleSaveOnly = () => {
+    saveToLocalStorage(responses);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    setpopup(false);
+  };
   const handleDontSaveButton = () => {
-    navigate('/dashboard')
-  }
+    localStorage.removeItem("brand-diagnostic-data");
+    navigate('/dashboard');
+  };
   const handleCancelButton = () => {
-    setpopup(false)
-  }
+    setpopup(false);
+  };
+  const getSaveStatus = () => {
+    const savedData = localStorage.getItem("brand-diagnostic-data");
+    if (savedData) {
+      const data: SavedData = JSON.parse(savedData);
+      return `Last saved: ${new Date(data.lastSaved).toLocaleTimeString()}`;
+    }
+    return "Not saved yet";
+  };
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
+      saveToLocalStorage(responses);
     };
     window.addEventListener("beforeunload", handler);
     return () => {
       window.removeEventListener("beforeunload", handler);
     };
-  });
+  }, [responses]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const allAnswered = questions.every((question) => responses[question.id]);
+    if (!allAnswered) {
+      toast.error("Please answer all questions before submitting!");
+      return;
+    }
+    sessionStorage.setItem("assign-3", "true");
+    localStorage.removeItem("brand-diagnostic-data");
+    toast.success("Assessment submitted successfully!");
+    setTimeout(() => navigate("/dashboard"), 1500);
+  };
   const questions: Question[] = [
     {
       id: "logo_1",
@@ -202,35 +271,6 @@ const BrandDiagnostic: React.FC = () => {
       section: "CUSTOMER",
     },
   ];
-  const handleBackButton = () => {
-    setpopup(true)
-  };
-  const handleResponseChange = (questionId: string, value: string) => {
-    setResponses((prev) => ({ ...prev, [questionId]: value }));
-  };
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   const allAnswered = questions.every((question) => responses[question.id]);
-
-  //   if (!allAnswered) {
-  //     alert("Please answer all questions before submitting.");
-  //     return;
-  //   } else {
-  //     e.preventDefault();
-  //     sessionStorage.setItem("assign-3", "true");
-  //     navigate("/dashboard");
-  //   }
-  // };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const allAnswered = questions.every((question) => responses[question.id]);
-    if (!allAnswered) {
-      toast.error("Please answer all questions before submitting!");
-      return;
-    }
-    sessionStorage.setItem("assign-3", "true");
-    toast.success("Assessment submitted successfully!");
-    setTimeout(() => navigate("/dashboard"), 1500);
-  };
   const groupedQuestions = questions.reduce((acc, question) => {
     if (!acc[question.section]) {
       acc[question.section] = [];
@@ -257,12 +297,23 @@ const BrandDiagnostic: React.FC = () => {
                 <span className="text-xs text-gray-500">
                   Evaluate your brand's health and growth potential.
                 </span>
+                <span className="text-xs text-green-600 font-medium mt-1">
+                  {getSaveStatus()}
+                </span>
               </div>
             </div>
             <span className="text-sm">{date}</span>
           </header>
-          <div className="pt-20 px-8 pb-8">
+          <div className="pt-24 px-8 pb-8">
             <div className="max-w-6xl mx-auto">
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={handleSaveOnly}
+                  className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm font-semibold"
+                >
+                  Save Progress
+                </button>
+              </div>
               {Object.entries(groupedQuestions).map(
                 ([sectionName, sectionQuestions]) => (
                   <div key={sectionName} className="mb-8">
@@ -323,6 +374,7 @@ const BrandDiagnostic: React.FC = () => {
                   className="flex items-center px-6 py-2 rounded bg-green-500 text-white hover:bg-green-600 font-semibold"
                 >
                   Submit
+                  <FontAwesomeIcon icon={faCheckCircle} className="ml-2" />
                 </button>
               </div>
             </div>
@@ -349,19 +401,25 @@ const BrandDiagnostic: React.FC = () => {
             </div>
             <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700"
+                className="rounded-lg bg-green-600 text-white px-4 py-1.5 hover:bg-green-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleSaveButton}
               >
-                Save
+                Save & Exit
               </button>
               <button
-                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700"
+                className="rounded-lg bg-blue-600 text-white px-4 py-1.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
+                onClick={handleSaveOnly}
+              >
+                Save Only
+              </button>
+              <button
+                className="rounded-lg bg-gray-600 text-white px-4 py-1.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleDontSaveButton}
               >
                 Don't Save
               </button>
               <button
-                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700"
+                className="rounded-lg bg-red-600 text-white px-4 py-1.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
                 onClick={handleCancelButton}
               >
                 Cancel
@@ -369,8 +427,7 @@ const BrandDiagnostic: React.FC = () => {
             </div>
           </div>
         </div>
-      )
-      }
+      )}
     </>
   );
 };

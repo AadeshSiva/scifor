@@ -20,7 +20,6 @@ import BrandAssignment from "./components/assignment/Brandassignment";
 import ROIassignment from "./components/assignment/ROIassignment";
 import BrandDiagonist from "./components/assignment/BrandDiagnostic";
 import OTPVerification from "./components/authok/OtpVerification";
-import Chat from "./components/chat/Chat";
 import COI from "./components/coi/COI";
 import Setting from "./components/settings/Settings";
 import ProfileForm from "./components/settings/ProfileForm";
@@ -30,8 +29,8 @@ import { PasswordChangeForm } from "./components/settings/PasswordChangeForm";
 import PurchaseHistory from "./components/settings/PaymentHistory";
 import UserContextProvider from "./components/settings/Context/UserContextProvider";
 import { AboutUs } from "./components/aboutpage/AboutUs";
-import Index from "./components/chat/Poll";
 import AddDetails from "./components/assignment/AddDetails";
+import DetailsResult from "./components/resultpage/DetailsResult";
 
 const queryClient = new QueryClient();
 const routes = [
@@ -117,14 +116,14 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/chat/*"
             element={
               <ProtectedRoute>
                 <Chat />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/"
             element={
@@ -280,14 +279,6 @@ const App = () => (
                 <UserContextProvider>
                   <PurchaseHistory />
                 </UserContextProvider>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/test"
-            element={
-              <ProtectedRoute>
-                <Index />
               </ProtectedRoute>
             }
           />

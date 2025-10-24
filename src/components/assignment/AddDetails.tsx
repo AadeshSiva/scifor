@@ -15,7 +15,7 @@ interface FormData {
   country: string;
   growthStage: string[];
   companySize: string;
-  department: string;
+  yourRole: string;
   offerings: string;
   companySuccessionPlan: string;
   companyBusinessPlan: string;
@@ -30,7 +30,7 @@ interface FormData {
   publicityAdvertisingPlan: string;
   marketingStrategy: string;
   culture: string;
-  departmentOther?: string;
+  yourRoleOther?: string;
 }
 const AddDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const AddDetails: React.FC = () => {
     country: "",
     growthStage: [],
     companySize: "",
-    department: "",
+    yourRole: "",
     offerings: "",
     companySuccessionPlan: "",
     companyBusinessPlan: "",
@@ -94,7 +94,10 @@ const AddDetails: React.FC = () => {
           };
         }
       });
-    } else {
+    }else if(formData.yourRole==="Other"){
+      formData.yourRole=formData.yourRoleOther
+    }
+     else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -103,6 +106,12 @@ const AddDetails: React.FC = () => {
   };
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if(value=="Other"){
+      setOtherNav(true);
+    }
+    else if(value=="Executive/Owner" || value== "Advertising" || value== "Operations" || value== "Customer Service" || value== "Publicity" || value== "Finance" || value== "Marketing" || value== "Sales" || value== "Technology"){
+      setOtherNav(false)
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -138,6 +147,30 @@ const AddDetails: React.FC = () => {
       navigate("/dashboard");
     }, 2000);
   };
+  const accessToken = localStorage.getItem("access_token")
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("https://api.prspera.com/company-surveys/", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, [accessToken, formData]);
+  const [OtherNav,setOtherNav]=useState(false);
+  console.log(formData)
   return (
     <>
       <div className="bg-gray-300 min-h-screen">
@@ -345,9 +378,9 @@ const AddDetails: React.FC = () => {
                       <label key={role} className="flex items-center">
                         <input
                           type="radio"
-                          name="department"
+                          name="yourRole"
                           value={role}
-                          checked={formData.department === role}
+                          checked={formData.yourRole === role}
                           onChange={handleRadioChange}
                           className="mr-2 h-5 w-5"
                         />
@@ -356,20 +389,21 @@ const AddDetails: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                {formData.department === "Other" && (
+                {OtherNav && (
                   <div className="flex flex-col md:flex-row md:items-center">
                     <label className="w-full md:w-1/3 text-lg font-medium mb-2 md:mb-0">
                       Specify Role:
                     </label>
                     <input
                       type="text"
-                      name="departmentOther"
-                      value={formData.departmentOther || ""}
+                      name="yourRoleOther"
+                      value={formData.yourRoleOther || ""}
                       onChange={handleChange}
                       className="w-full md:w-2/3 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                 )}
+                
                 <div className="flex flex-col md:flex-row">
                   <label className="block font-medium mb-4 w-full md:w-1/3 text-left text-xl">
                     Offerings:

@@ -13,6 +13,11 @@ interface Task {
   title: string;
   description: string;
 }
+interface SavedData {
+  ratings: Record<string, number>;
+  currentSection: number;
+  lastSaved: string;
+}
 const BrandAssignment: React.FC = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState<string>("");
@@ -25,70 +30,113 @@ const BrandAssignment: React.FC = () => {
       today.getMonth() + 1
     ).padStart(2, "0")}/${today.getFullYear()}`;
     setDate(formattedDate);
+    const savedData = localStorage.getItem("brand-assessment-data");
+    if (savedData) {
+      try {
+        const parsedData: SavedData = JSON.parse(savedData);
+        setRatings(parsedData.ratings || {});
+        setCurrentSection(parsedData.currentSection || 1);
+        if (Object.keys(parsedData.ratings || {}).length > 0) {
+          toast.info("Recovered previously saved progress!", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading saved data:", error);
+        localStorage.removeItem("brand-assessment-data");
+      }
+    }
   }, []);
   const handleRatingChange = (questionId: string, value: number) => {
-    setRatings((prev) => ({ ...prev, [questionId]: value }));
+    const newRatings = { ...ratings, [questionId]: value };
+    setRatings(newRatings);
+    saveToLocalStorage(newRatings, currentSection);
   };
-  console.log(ratings);
+  const saveToLocalStorage = (currentRatings: Record<string, number>, section: number) => {
+    const saveData: SavedData = {
+      ratings: currentRatings,
+      currentSection: section,
+      lastSaved: new Date().toISOString(),
+    };
+    localStorage.setItem("brand-assessment-data", JSON.stringify(saveData));
+  };
   const handleNextSection = () => {
     if (currentSection < 4) {
-      setCurrentSection((prev) => prev + 1);
+      const newSection = currentSection + 1;
+      setCurrentSection(newSection);
+      saveToLocalStorage(ratings, newSection);
     }
   };
   const handlePrevSection = () => {
     if (currentSection > 1) {
-      setCurrentSection((prev) => prev - 1);
+      const newSection = currentSection - 1;
+      setCurrentSection(newSection);
+      saveToLocalStorage(ratings, newSection);
     }
   };
   const handleBackButton = () => {
     setPopup(true);
   };
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   sessionStorage.setItem("assign-1", "true");
-  //   navigate("/dashboard");
-  // };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const currentTasks = tasks.filter((task) => task.id === currentSection);
-
     const allAnswered = currentTasks.every((_, index) =>
       ratings.hasOwnProperty(`s${currentSection}-q${index}`)
     );
-
     if (!allAnswered) {
       toast.error(" Please answer all questions before submitting!");
       return;
     }
-
-    // Save and navigate
     sessionStorage.setItem("assign-1", "true");
+    localStorage.removeItem("brand-assessment-data");
     toast.success("Assessment submitted successfully!");
     setTimeout(() => navigate("/dashboard"), 500);
   };
-
   const handleSaveButton = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("assign-1", "true");
-    navigate("/dashboard");
+    saveToLocalStorage(ratings, currentSection);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    setPopup(false);
+  };
+  const handleSaveAndExit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveToLocalStorage(ratings, currentSection);
+    toast.success("Progress saved successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    
+    setTimeout(() => navigate("/dashboard"), 500);
   };
   const handlecancelbutton = () => {
     setPopup(false);
   };
   const handlenotsave = () => {
+    localStorage.removeItem("brand-assessment-data");
     navigate("/dashboard");
   };
-   useEffect(() => {
+  const getSaveStatus = () => {
+    const savedData = localStorage.getItem("brand-assessment-data");
+    if (savedData) {
+      const data: SavedData = JSON.parse(savedData);
+      return `Last saved: ${new Date(data.lastSaved).toLocaleTimeString()}`;
+    }
+    return "Not saved yet";
+  };
+  useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
+      saveToLocalStorage(ratings, currentSection);
     };
     window.addEventListener("beforeunload", handler);
     return () => {
       window.removeEventListener("beforeunload", handler);
     };
-  });
+  }, [ratings, currentSection]);
+
   const tasks: Task[] = [
     {
       id: 1,
@@ -347,6 +395,9 @@ const BrandAssignment: React.FC = () => {
             <p className="text-xs text-gray-600">
               Evaluate your brand's health and growth potential.
             </p>
+            <p className="text-xs text-green-600 font-medium mt-1">
+              {getSaveStatus()}
+            </p>
           </div>
         </div>
         <span>
@@ -442,10 +493,16 @@ const BrandAssignment: React.FC = () => {
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 Previous
               </button>
+              <button
+                onClick={handleSaveButton}
+                className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-md"
+              >
+                Save Progress
+              </button>
               {currentSection === 4 ? (
                 <button
                   onClick={handleSubmit}
-                  className="flex items-center px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-md"
+                  className="flex items-center px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 text-md"
                 >
                   Submit
                   <FontAwesomeIcon icon={faCheckCircle} className="ml-2" />
@@ -478,19 +535,25 @@ const BrandAssignment: React.FC = () => {
             </div>
             <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
-                onClick={handleSaveButton}
+                className="rounded-lg bg-green-600 text-white px-4 py-1.5 hover:bg-green-700 transition-colors flex-1 sm:flex-none"
+                onClick={handleSaveAndExit}
               >
-                Save
+                Save & Exit
               </button>
               <button
-                className="rounded-lg bg-gray-600 text-white px-5 py-2.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
+                className="rounded-lg bg-blue-600 text-white px-4 py-1.5 hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
+                onClick={handleSaveButton}
+              >
+                Save Only
+              </button>
+              <button
+                className="rounded-lg bg-gray-600 text-white px-4 py-1.5 hover:bg-gray-700 transition-colors flex-1 sm:flex-none"
                 onClick={handlenotsave}
               >
                 Don't Save
               </button>
               <button
-                className="rounded-lg bg-red-600 text-white px-5 py-2.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
+                className="rounded-lg bg-red-600 text-white px-4 py-1.5 hover:bg-red-700 transition-colors flex-1 sm:flex-none"
                 onClick={handlecancelbutton}
               >
                 Cancel
