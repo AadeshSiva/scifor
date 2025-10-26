@@ -31,6 +31,9 @@ import UserContextProvider from "./components/settings/Context/UserContextProvid
 import { AboutUs } from "./components/aboutpage/AboutUs";
 import AddDetails from "./components/assignment/AddDetails";
 import DetailsResult from "./components/resultpage/DetailsResult";
+import BrandDiagnosticResult from "./components/resultpage/BrandDiagnosticResult";
+import BrandassignmentResult from "./components/resultpage/BrandassignmentResult";
+import ROIassignmentResult from "./components/resultpage/ROIassignmentResult";
 
 const queryClient = new QueryClient();
 const routes = [
@@ -88,7 +91,7 @@ const App = () => (
             path="/businessdetails/*"
             element={
               <ProtectedRoute requireAuth={false}>
-                <AddDetails/>
+                <AddDetails />
               </ProtectedRoute>
             }
           />
@@ -279,6 +282,14 @@ const App = () => (
                 <UserContextProvider>
                   <PurchaseHistory />
                 </UserContextProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test"
+            element={
+              <ProtectedRoute>
+                <BrandDiagnosticResult />
               </ProtectedRoute>
             }
           />

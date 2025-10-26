@@ -60,6 +60,7 @@ const BrandAssignment: React.FC = () => {
       lastSaved: new Date().toISOString(),
     };
     localStorage.setItem("brand-assessment-data", JSON.stringify(saveData));
+    console.log(saveData.ratings)
   };
   const handleNextSection = () => {
     if (currentSection < 4) {
@@ -381,7 +382,7 @@ const BrandAssignment: React.FC = () => {
   const sectionTitles = [...new Set(tasks.map((task) => task.title))];
   const currentTitle = sectionTitles[currentSection - 1] || "";
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-gray-100">
       <header className="flex justify-between items-center px-16 py-3 bg-gray-100 w-full fixed z-50 top-0 shadow-md">
         <div className="flex items-center mb-2 md:mb-0">
           <button
@@ -405,7 +406,7 @@ const BrandAssignment: React.FC = () => {
         </span>
       </header>
       {!popup ? (
-        <div className="pt-16 w-[100vw]">
+        <div className="lg:pt-20 md:pt-20 w-[100vw] lg:mt-0 md:mt-0">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-400 text-black p-4">
             <h2 className="font-bold text-lg">{currentTitle}</h2>
             <div className="flex items-center space-x-2">
