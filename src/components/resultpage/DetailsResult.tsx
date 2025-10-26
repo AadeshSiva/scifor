@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
+// Interfaces (keep as is)
 interface User {
   country: string;
   role: string;
@@ -13,6 +14,7 @@ interface User {
   iswebinarformfilled: boolean;
   is_staff: boolean;
 }
+
 interface CompanyDetails {
   businessName: string;
   industry: string;
@@ -38,9 +40,20 @@ interface CompanyDetails {
   marketingStrategy: string;
   culture: string;
 }
+
 interface DetailsResultProps {
   isLoading?: boolean;
 }
+
+// API configuration
+const API_CONFIG = {
+  BASE_URL: 'https://api.prspera.com',
+  ENDPOINTS: {
+    USER_DATA: '/extract-user-data/',
+    COMPANY_SURVEYS: '/company-surveys/'
+  }
+};
+
 const DetailsResult: React.FC<DetailsResultProps> = ({ 
   isLoading = false 
 }) => {
@@ -49,49 +62,57 @@ const DetailsResult: React.FC<DetailsResultProps> = ({
   const [companyData, setCompanyData] = useState<CompanyDetails | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!token) {
-        console.warn("No access token found in localStorage");
-        setDataLoading(false);
-        return;
-      }
-      try {
-        setDataLoading(true);
-        setError(null);
-        const userResponse = await fetch("https://api.prspera.com/extract-user-data/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!userResponse.ok) {
-          throw new Error(`HTTP error! Status: ${userResponse.status}`);
-        }
-        const userData = await userResponse.json();
-        setUserData(userData["user_data"]);
-        const companyResponse = await fetch("https://api.prspera.com/company-surveys/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!companyResponse.ok) {
-          throw new Error(`HTTP error! Status: ${companyResponse.status}`);
-        }
-        const companyData = await companyResponse.json();
-        setCompanyData(companyData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError(error instanceof Error ? error.message : 'An error occurred');
-      } finally {
-        setDataLoading(false);
-      }
-    };
-    fetchData();
+
+  const fetchWithAuth = useCallback(async (endpoint: string) => {
+    if (!token) throw new Error('No access token available');
+    
+    const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
   }, [token]);
+
+  const fetchData = useCallback(async () => {
+    if (!token) {
+      console.warn("No access token found in localStorage");
+      setDataLoading(false);
+      return;
+    }
+
+    try {
+      setDataLoading(true);
+      setError(null);
+
+      // Fetch data in parallel for better performance
+      const [userData, companyData] = await Promise.all([
+        fetchWithAuth(API_CONFIG.ENDPOINTS.USER_DATA),
+        fetchWithAuth(API_CONFIG.ENDPOINTS.COMPANY_SURVEYS)
+      ]);
+
+      setUserData(userData["user_data"]);
+      setCompanyData(companyData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setDataLoading(false);
+    }
+  }, [token, fetchWithAuth]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Loading state
   if (isLoading || dataLoading) {
     return (
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 p-8">
@@ -106,25 +127,36 @@ const DetailsResult: React.FC<DetailsResultProps> = ({
       </div>
     );
   }
+
+  // Error state
   if (error) {
     return (
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <div className="text-center text-red-600">
           <h2 className="text-xl font-semibold mb-2">Error Loading Data</h2>
           <p>{error}</p>
+          <button 
+            onClick={fetchData}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
   }
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mt-16">
+    <div className="min-w-screen mx-auto bg-white shadow-lg border border-gray-200 overflow-hidden mt-16">
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
         <h1 className="text-2xl font-bold text-white">Details Result</h1>
         <p className="text-blue-100 text-sm mt-1">
           Submitted on {companyData?.incorporationDate || 'N/A'}
         </p>
       </div>
+      
       <div className="p-6">
+        {/* Personal Information Section */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
             Personal Information
@@ -133,8 +165,11 @@ const DetailsResult: React.FC<DetailsResultProps> = ({
             <DetailItem label="Name" value={userData?.full_name} />
             <DetailItem label="Alias" value={userData?.username} />
             <DetailItem label="Email ID" value={userData?.email} />
+            <DetailItem label="Submitted Date" value={companyData?.incorporationDate || 'N/A'} />
           </div>
         </div>
+
+        {/* Company Information Section */}
         <div>
           <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
             Company Information
@@ -199,12 +234,15 @@ const DetailsResult: React.FC<DetailsResultProps> = ({
     </div>
   );
 };
+
+// Sub-components (keep as is, they're well implemented)
 const DetailItem: React.FC<{ label: string; value?: string }> = ({ label, value }) => (
   <div className="flex flex-col">
     <span className="text-sm font-medium text-gray-600 mb-1">{label}</span>
     <span className="text-gray-900 font-semibold">{value || 'N/A'}</span>
   </div>
 );
+
 const StatusItem: React.FC<{ 
   label: string; 
   value?: string; 
@@ -225,6 +263,7 @@ const StatusItem: React.FC<{
     }
     return 'text-gray-900';
   };
+
   return (
     <div className="flex flex-col">
       <span className="text-sm font-medium text-gray-600 mb-1">{label}</span>
@@ -234,9 +273,11 @@ const StatusItem: React.FC<{
     </div>
   );
 };
+
 const ProcessItem: React.FC<{ label: string; value?: string }> = ({ label, value }) => {
   const isFormal = value?.toLowerCase() === 'formal';
   const displayValue = value || 'N/A';
+  
   return (
     <div className="flex flex-col">
       <span className="text-sm font-medium text-gray-600 mb-1">{label}</span>
@@ -260,6 +301,7 @@ const ProcessItem: React.FC<{ label: string; value?: string }> = ({ label, value
     </div>
   );
 };
+
 const CultureItem: React.FC<{ label: string; value?: string }> = ({ label, value }) => (
   <div className="flex flex-col">
     <span className="text-sm font-medium text-gray-600 mb-1">{label}</span>
@@ -273,4 +315,5 @@ const CultureItem: React.FC<{ label: string; value?: string }> = ({ label, value
     </div>
   </div>
 );
+
 export default DetailsResult;
